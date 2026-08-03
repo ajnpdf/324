@@ -5,36 +5,30 @@ service cloud.firestore {
       return request.auth != null;
     }
 
-    function owns(uid) {
-      return signedIn() && request.auth.uid == uid;
-    }
-
     match /users/{uid} {
-      allow get, create, update, delete: if owns(uid);
-      allow list: if false;
+      allow read, create, update, delete: if signedIn() && request.auth.uid == uid;
     }
 
     match /entitlements/{uid} {
-      allow get: if owns(uid);
-      allow list: if false;
-      allow create, update, delete: if false;
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow write: if false;
     }
 
-    match /feedback/{feedbackId} {
+    match /feedback/{id} {
       allow create: if request.resource.data.keys().size() <= 12;
-      allow read, list, update, delete: if false;
+      allow read, update, delete: if false;
     }
 
     match /stats/platform {
-      allow get: if true;
-      allow create, update, delete: if false;
+      allow read: if true;
+      allow write: if false;
     }
 
-    match /subscriptionEvents/{eventId} {
+    match /subscriptionEvents/{id} {
       allow read, write: if false;
     }
 
-    match /playPurchases/{purchaseId} {
+    match /playPurchases/{id} {
       allow read, write: if false;
     }
 

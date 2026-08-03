@@ -1,11 +1,10 @@
 import { adminAuth } from './firebase-admin';
 
 export async function requireUser(request: Request) {
-  const header = request.headers.get('authorization') || '';
-  if (!header.startsWith('Bearer ')) {
+  const authorization = request.headers.get('authorization') || '';
+  if (!authorization.startsWith('Bearer ')) {
     throw new Error('UNAUTHENTICATED');
   }
 
-  const token = header.slice('Bearer '.length).trim();
-  return adminAuth.verifyIdToken(token, true);
+  return adminAuth.verifyIdToken(authorization.slice(7).trim(), true);
 }

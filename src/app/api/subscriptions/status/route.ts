@@ -7,12 +7,18 @@ export const runtime = 'nodejs';
 export async function GET(request: Request) {
   try {
     const user = await requireUser(request);
-    const snapshot = await adminDb.collection('entitlements').doc(user.uid).get();
+    const document = await adminDb.collection('entitlements').doc(user.uid).get();
+
     return NextResponse.json({
-      entitlement: snapshot.exists ? snapshot.data() : { active: false, tier: 'free' },
+      entitlement: document.exists
+        ? document.data()
+        : { active: false, tier: 'free', provider: null },
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error';
-    return NextResponse.json({ error: message }, { status: message === 'UNAUTHENTICATED' ? 401 : 500 });
+    return NextResponse.json(
+      { error: message },
+      { status: message === 'UNAUTHENTICATED' ? 401 : 500 },
+    );
   }
 }

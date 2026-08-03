@@ -2,28 +2,31 @@ import crypto from 'crypto';
 import { google } from 'googleapis';
 import { FieldValue } from 'firebase-admin/firestore';
 import { adminDb } from './firebase-admin';
-import { PLAY_PRODUCT_IDS } from '../subscription-plans';
 
-function credentials() {
+const productIds = new Set([
+  process.env.GOOGLE_PLAY_PRODUCT_MONTHLY || 'ajn_pdf_premium_monthly',
+  process.env.GOOGLE_PLAY_PRODUCT_YEARLY || 'ajn_pdf_premium_yearly',
+]);
+
+function serviceAccount() {
   const raw = process.env.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON;
   if (!raw) throw new Error('GOOGLE_PLAY_SERVICE_ACCOUNT_JSON is missing.');
-  const parsed = JSON.parse(raw);
-  if (typeof parsed.private_key === 'string') {
-    parsed.private_key = parsed.private_key.replace(/\\n/g, '\n');
+
+  const value = JSON.parse(raw);
+  if (typeof value.private_key === 'string') {
+    value.private_key = value.private_key.replace(/\\n/g, '\n');
   }
-  return parsed;
+  return value;
 }
 
 export function purchaseDocumentId(token: string) {
   return crypto.createHash('sha256').update(token).digest('hex');
 }
 
-export async function verifyPlaySubscription(purchaseToken: string) {
-  const packageName = process.env.GOOGLE_PLAY_PACKAGE_NAME;
-  if (!packageName) throw new Error('GOOGLE_PLAY_PACKAGE_NAME is missing.');
-
+export async function verifyGooglePlayPurchase(purchaseToken: string) {
+  const packageName = process.env.GOOGLE_PLAY_PACKAGE_NAME || 'com.ajnpdf.app';
   const auth = new google.auth.GoogleAuth({
-    credentials: credentials(),
+    credentials: serviceAccount(),
     scopes: ['https://www.googleapis.com/auth/androidpublisher'],
   });
 
@@ -34,11 +37,11 @@ export async function verifyPlaySubscription(purchaseToken: string) {
   });
 
   const data = response.data;
-  const productIds =
-    data.lineItems?.map((item) => item.productId).filter((value): value is string => Boolean(value)) || [];
+  const purchasedProducts =
+    data.lineItems?.map((item) => item.productId).filter((id): id is string => Boolean(id)) || [];
 
-  if (!productIds.some((id) => PLAY_PRODUCT_IDS.has(id))) {
-    throw new Error('The purchase does not contain an AJN PDF subscription product.');
+  if (!purchasedProducts.some((id) => productIds.has(id))) {
+    throw new Error('This is not an AJN PDF subscription.');
   }
 
   const activeStates = new Set([
@@ -49,18 +52,17 @@ export async function verifyPlaySubscription(purchaseToken: string) {
   return {
     active: activeStates.has(data.subscriptionState || ''),
     state: data.subscriptionState || 'SUBSCRIPTION_STATE_UNSPECIFIED',
-    productIds,
-    expiryTime: data.lineItems?.[0]?.expiryTime || null,
-    raw: data,
+    productIds: purchasedProducts,
+    expiresAt: data.lineItems?.[0]?.expiryTime || null,
   };
 }
 
-export async function persistPlayEntitlement(uid: string, purchaseToken: string) {
-  const verified = await verifyPlaySubscription(purchaseToken);
+export async function saveGooglePlayEntitlement(uid: string, purchaseToken: string) {
+  const verified = await verifyGooglePlayPurchase(purchaseToken);
   const purchaseId = purchaseDocumentId(purchaseToken);
 
-  await adminDb.runTransaction(async (tx) => {
-    tx.set(
+  await adminDb.runTransaction(async (transaction) => {
+    transaction.set(
       adminDb.collection('playPurchases').doc(purchaseId),
       {
         uid,
@@ -71,15 +73,15 @@ export async function persistPlayEntitlement(uid: string, purchaseToken: string)
       { merge: true },
     );
 
-    tx.set(
+    transaction.set(
       adminDb.collection('entitlements').doc(uid),
       {
         active: verified.active,
         tier: verified.active ? 'pro' : 'free',
         provider: 'google_play',
-        productIds: verified.productIds,
         providerStatus: verified.state,
-        expiresAt: verified.expiryTime,
+        productIds: verified.productIds,
+        expiresAt: verified.expiresAt,
         updatedAt: FieldValue.serverTimestamp(),
       },
       { merge: true },

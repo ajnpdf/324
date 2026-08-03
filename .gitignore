@@ -132,3 +132,12 @@ apps/ajn_pdf_app/.dart_tool/
 apps/ajn_pdf_app/windows/flutter/ephemeral/
 backend/.pytest_cache/
 backend/__pycache__/
+*.before-*.bak
+.env
+.env.local
+.env.*.local
+release/
+apps/ajn_pdf_app/android/key.properties
+apps/ajn_pdf_app/android/upload-keystore.jks
+apps/ajn_pdf_app/build/
+apps/ajn_pdf_app/.dart_tool/
