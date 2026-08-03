@@ -42,4 +42,27 @@ next-env.d.ts
 
 # firebase
 firebase-debug.log
-firestore-debug.log
+firestore-debug.log# Local environment and secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.p12
+*.pfx
+*.jks
+*.keystore
+key.properties
+serviceAccount*.json
+firebase-adminsdk*.json
+# Build output
+.next/
+out/
+dist/
+build/
+node_modules/
+.firebase/
+# Android signing
+android/key.properties
+android/app/*.jks
+android/app/*.keystore
