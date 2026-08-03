@@ -1,0 +1,33 @@
+DEPLOYMENT MAP
+
+Canonical production domain:
+Upload to https://ajnpdf.com/
+- sitemap.xml
+- sitemap-main.xml
+- sitemap-tools.xml
+- sitemap-blog.xml
+- sitemap-seo-pages.xml
+- robots.txt
+
+Subdomains:
+Upload sitemap-ai-ajnpdf-500.xml as:
+- https://ai.ajnpdf.com/sitemap.xml
+
+Upload sitemap-pdf-ajnpdf.xml as:
+- https://pdf.ajnpdf.com/sitemap.xml
+
+Upload sitemap-merge-ajnpdf.xml as:
+- https://merge.ajnpdf.com/sitemap.xml
+
+Upload sitemap-ilove-ajnpdf.xml as:
+- https://ilove.ajnpdf.com/sitemap.xml
+
+Upload sitemap-ajn-ajnpdf.xml as:
+- https://ajn.ajnpdf.com/sitemap.xml
+
+Do not index staging:
+- If https://ajn-pdf.vercel.app is only preview/staging, use robots-vercel.txt there or redirect all pages to https://ajnpdf.com.
+
+Canonical redirects:
+- Redirect https://www.ajnpdf.com/* to https://ajnpdf.com/*
+- Redirect http://ajnpdf.com/* to https://ajnpdf.com/*

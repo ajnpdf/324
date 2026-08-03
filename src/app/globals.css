@@ -1,0 +1,101 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 231 100% 99%; /* #faf9ff */
+    --foreground: 222 47% 11%; /* #101b32 */
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 221 89% 61%; /* #467AF2 - Sky Blue */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 262 58% 70%; /* #a885e2 - Purple */
+    --secondary-foreground: 262 58% 20%;
+    --muted: 225 39% 96%;
+    --muted-foreground: 222 10% 40%;
+    --accent: 225 39% 96%;
+    --accent-foreground: 222 47% 11%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 221 89% 61%;
+    --radius: 1rem; /* 16px standard for Skyline Modern */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+    -webkit-tap-highlight-color: transparent;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    min-height: 100vh;
+  }
+}
+
+.liquid-card {
+  @apply relative overflow-hidden transition-all duration-500 bg-white;
+  border-radius: 1.5rem; /* 24px */
+  border: 1.5px solid rgba(16, 27, 50, 0.1); /* Black border with low opacity */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+  transform-style: preserve-3d;
+}
+
+.liquid-card:hover {
+  @apply border-primary/40;
+  box-shadow: 0 20px 40px -12px rgba(70, 122, 242, 0.15);
+  transform: translateY(-6px) scale(1.02);
+}
+
+.liquid-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at var(--x, 50%) var(--y, 50%),
+    rgba(70, 122, 242, 0.08),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.4s;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.liquid-card:hover::after {
+  opacity: 1;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@keyframes heart-beat {
+  0% { transform: scale(1); }
+  15% { transform: scale(1.2); }
+  30% { transform: scale(1); }
+  45% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.animate-heart-beat {
+  animation: heart-beat 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+h1, h2, h3, h4, .font-display {
+  font-family: var(--font-montserrat), sans-serif;
+  @apply tracking-tighter;
+}

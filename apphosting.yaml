@@ -1,0 +1,18 @@
+# AJN STUDIO - Firebase App Hosting Configuration
+runConfig:
+  maxInstances: 10
+  minInstances: 0
+
+# Requested build and framework metadata
+framework: nextjs
+buildCommand: npm run build
+installCommand: npm install
+
+# COOP/COEP Headers for WASM local processing
+headers:
+  - source: "/(.*)"
+    headers:
+      - key: "Cross-Origin-Embedder-Policy"
+        value: "credentialless"
+      - key: "Cross-Origin-Opener-Policy"
+        value: "same-origin"

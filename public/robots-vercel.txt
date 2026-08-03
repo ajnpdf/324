@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /
+
+# Keep Vercel preview/staging out of Google when the custom domain is live.
+# Do not submit a sitemap for https://ajn-pdf.vercel.app if https://ajnpdf.com is the canonical production domain.

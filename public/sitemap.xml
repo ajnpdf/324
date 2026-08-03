@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- PRIMARY DOMAIN -->
+  <url><loc>https://ajnpdf.com/</loc><lastmod>2026-06-03</lastmod><changefreq>weekly</changefreq><priority>1.00</priority></url>
+  <url><loc>https://ajnpdf.com/pdf-tools</loc><lastmod>2026-06-03</lastmod><changefreq>weekly</changefreq><priority>0.95</priority></url>
+  <url><loc>https://ajnpdf.com/image-tools</loc><lastmod>2026-06-03</lastmod><changefreq>weekly</changefreq><priority>0.90</priority></url>
+  <url><loc>https://ajnpdf.com/about</loc><lastmod>2026-06-03</lastmod><changefreq>monthly</changefreq><priority>0.70</priority></url>
+  <url><loc>https://ajnpdf.com/pricing</loc><lastmod>2026-06-03</lastmod><changefreq>monthly</changefreq><priority>0.70</priority></url>
+  <url><loc>https://ajnpdf.com/security</loc><lastmod>2026-06-03</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://ajnpdf.com/blog</loc><lastmod>2026-06-03</lastmod><changefreq>weekly</changefreq><priority>0.80</priority></url>
+
+  <!-- SUBDOMAINS -->
+  <url><loc>https://ai.ajnpdf.com/</loc><lastmod>2026-06-03</lastmod><changefreq>weekly</changefreq><priority>1.00</priority></url>
+  <url><loc>https://merge.ajnpdf.com/</loc><lastmod>2026-06-03</lastmod><changefreq>monthly</changefreq><priority>1.00</priority></url>
+  <url><loc>https://pdf.ajnpdf.com/</loc><lastmod>2026-06-03</lastmod><changefreq>monthly</changefreq><priority>1.00</priority></url>
+  <url><loc>https://ilove.ajnpdf.com/</loc><lastmod>2026-06-03</lastmod><changefreq>monthly</changefreq><priority>1.00</priority></url>
+  <url><loc>https://ajn.ajnpdf.com/</loc><lastmod>2026-06-03</lastmod><changefreq>monthly</changefreq><priority>1.00</priority></url>
+
+  <!-- AI TOOLS (AI.AJNPDF.COM) -->
+  <url><loc>https://ai.ajnpdf.com/tools</loc><lastmod>2026-06-03</lastmod><priority>0.95</priority></url>
+  <url><loc>https://ai.ajnpdf.com/ai-pdf-summarizer</loc><lastmod>2026-06-03</lastmod><priority>0.95</priority></url>
+  <url><loc>https://ai.ajnpdf.com/chat-with-pdf</loc><lastmod>2026-06-03</lastmod><priority>0.95</priority></url>
+  <url><loc>https://ai.ajnpdf.com/ai-pdf-translator</loc><lastmod>2026-06-03</lastmod><priority>0.95</priority></url>
+  <url><loc>https://ai.ajnpdf.com/ai-ocr</loc><lastmod>2026-06-03</lastmod><priority>0.95</priority></url>
+  <url><loc>https://ai.ajnpdf.com/tools/ai-summarize-pdf</loc><lastmod>2026-06-03</lastmod><priority>0.75</priority></url>
+
+  <!-- FREE TOOLS (AJNPDF.COM) -->
+  <url><loc>https://ajnpdf.com/merge-pdf-free</loc><lastmod>2026-06-03</lastmod><priority>0.85</priority></url>
+  <url><loc>https://ajnpdf.com/split-pdf-free</loc><lastmod>2026-06-03</lastmod><priority>0.85</priority></url>
+  <url><loc>https://ajnpdf.com/compress-pdf-free</loc><lastmod>2026-06-03</lastmod><priority>0.85</priority></url>
+  <url><loc>https://ajnpdf.com/convert-pdf-to-word-free</loc><lastmod>2026-06-03</lastmod><priority>0.85</priority></url>
+
+  <!-- BLOG FEED -->
+  <url><loc>https://ajnpdf.com/blog/browser-native-pdf-merging</loc><lastmod>2026-06-03</lastmod><priority>0.65</priority></url>
+  <url><loc>https://ajnpdf.com/blog/pdf-compression-guide-2026</loc><lastmod>2026-06-03</lastmod><priority>0.65</priority></url>
+  <url><loc>https://ajnpdf.com/blog/why-local-first-is-better</loc><lastmod>2026-06-03</lastmod><priority>0.65</priority></url>
+  <url><loc>https://ajnpdf.com/blog/neural-ocr-deep-dive</loc><lastmod>2026-06-03</lastmod><priority>0.65</priority></url>
+
+  <!-- RECENT TOOLS MIRRORS (ILOVE. / PDF. ) -->
+  <url><loc>https://ilove.ajnpdf.com/ilovepdf-alternative</loc><lastmod>2026-06-03</lastmod><priority>0.90</priority></url>
+  <url><loc>https://pdf.ajnpdf.com/pdf-to-word</loc><lastmod>2026-06-03</lastmod><priority>0.90</priority></url>
+  <url><loc>https://pdf.ajnpdf.com/sign-pdf</loc><lastmod>2026-06-03</lastmod><priority>0.85</priority></url>
+</urlset>

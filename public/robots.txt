@@ -1,0 +1,131 @@
+# ==================================================
+# robots.txt for ajnpdf.com
+# ==================================================
+
+User-agent: *
+Allow: /
+
+# ==================== BLOCK SYSTEM & PRIVATE PATHS ====================
+Disallow: /api/
+Disallow: /admin/
+Disallow: /cdn-cgi/
+Disallow: /tmp/
+Disallow: /cache/
+Disallow: /private/
+
+# ==================== SPECIFIC BOT RULES ====================
+
+# Google
+User-agent: Googlebot
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Crawl-delay: 0
+
+# Google Images
+User-agent: Googlebot-Image
+Allow: /
+Crawl-delay: 0
+
+# Google AdsBot
+User-agent: AdsBot-Google
+Allow: /
+
+# Bing
+User-agent: Bingbot
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Crawl-delay: 1
+
+# Apple
+User-agent: Applebot
+Allow: /
+Crawl-delay: 1
+
+# DuckDuckGo
+User-agent: DuckDuckBot
+Allow: /
+Crawl-delay: 1
+
+# Yandex
+User-agent: YandexBot
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Crawl-delay: 2
+
+# Facebook
+User-agent: facebookexternalhit
+Allow: /
+
+# Twitter
+User-agent: Twitterbot
+Allow: /
+
+# LinkedIn
+User-agent: LinkedInBot
+Allow: /
+
+# WhatsApp
+User-agent: WhatsApp
+Allow: /
+
+# Pinterest
+User-agent: Pinterest
+Allow: /
+
+# Slack
+User-agent: Slackbot
+Allow: /
+
+# Telegram
+User-agent: TelegramBot
+Allow: /
+
+# ==================== BLOCK BAD BOTS ====================
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: BLEXBot
+Disallow: /
+
+User-agent: PetalBot
+Disallow: /
+
+User-agent: SeznamBot
+Disallow: /
+
+User-agent: AspiegelBot
+Disallow: /
+
+User-agent: DataForSeoBot
+Disallow: /
+
+User-agent: serpstatbot
+Disallow: /
+
+User-agent: Zbots
+Disallow: /
+
+User-agent: BomboraBot
+Disallow: /
+
+User-agent: proximic
+Disallow: /
+
+User-agent: Buck
+Disallow: /
+
+# ==================== SITEMAP LOCATION ====================
+Sitemap: https://ajnpdf.com/sitemap.xml

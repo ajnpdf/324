@@ -1,0 +1,40 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * AJN STUDIO SECURITY RULES
+     */
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // --- Collection Rules ---
+
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow list: if false;
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId);
+      allow delete: if isOwner(userId);
+    }
+
+    match /feedback/{feedbackId} {
+      // Allow creation by anyone (anonymous or authenticated)
+      allow create: if true;
+      // Restrict reading to admins (this logic assumes custom claims or specific ID check in production)
+      allow read, list, update, delete: if false;
+    }
+    
+    // Legacy support for user stats
+    match /stats/platform {
+      allow get: if true;
+      allow update: if true; // Used by processed-counter.tsx
+    }
+  }
+}

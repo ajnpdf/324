@@ -1,0 +1,26 @@
+{
+  "name": "AJN Studio — Free Online PDF Tools",
+  "short_name": "AJN Studio",
+  "description": "Professional document engineering. Stays private on your device.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#c3d9fa",
+  "theme_color": "#1e3a8a",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/favicon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/favicon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}

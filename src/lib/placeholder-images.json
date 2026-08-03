@@ -1,0 +1,34 @@
+{
+  "placeholderImages": [
+    {
+      "id": "hero-bg",
+      "description": "Wide industrial office for desktop hero",
+      "imageUrl": "/images/image.png",
+      "imageHint": "office workspace"
+    },
+    {
+      "id": "hero-mobile",
+      "description": "Portrait document processing for mobile hero",
+      "imageUrl": "https://picsum.photos/seed/mobile-ajn/800/1200",
+      "imageHint": "phone document"
+    },
+    {
+      "id": "hero-main",
+      "description": "Primary hero illustration for landing page",
+      "imageUrl": "/images/image.png",
+      "imageHint": "pdf workspace"
+    },
+    {
+      "id": "founder-portrait",
+      "description": "Anjan - Founder of AJN",
+      "imageUrl": "/anjan.png",
+      "imageHint": "founder portrait"
+    },
+    {
+      "id": "story-main-image",
+      "description": "Main branding image for AJN Story",
+      "imageUrl": "https://picsum.photos/seed/ajn-story/1200/800",
+      "imageHint": "professional branding"
+    }
+  ]
+}
