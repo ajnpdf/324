@@ -350,6 +350,15 @@ class PurchaseController extends ChangeNotifier {
     }
   }
 
+  void reportStartupFailure(Object error, StackTrace stackTrace) {
+    loading = false;
+    message =
+        'Online subscriptions are temporarily unavailable. PDF tools remain available.';
+    debugPrint('AJN PDF startup service error: $error');
+    debugPrintStack(stackTrace: stackTrace);
+    notifyListeners();
+  }
+
   @override
   void dispose() {
     _refreshTimer?.cancel();
@@ -452,7 +461,9 @@ class _MergePdfPageState extends State<MergePdfPage> {
           const SizedBox(height: 12),
           FilledButton(
             onPressed: _busy || _files.length < 2 ? null : _merge,
-            child: Text(_busy ? 'MergingÃ¢â‚¬Â¦' : 'Merge PDFs'),
+            child: Text(
+              _busy ? 'MergingÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¦' : 'Merge PDFs',
+            ),
           ),
           if (_result != null) ...[
             const SizedBox(height: 20),
@@ -542,7 +553,9 @@ class _ImagesToPdfPageState extends State<ImagesToPdfPage> {
           const SizedBox(height: 12),
           FilledButton(
             onPressed: _busy || _images.isEmpty ? null : _create,
-            child: Text(_busy ? 'CreatingÃ¢â‚¬Â¦' : 'Create PDF'),
+            child: Text(
+              _busy ? 'CreatingÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¦' : 'Create PDF',
+            ),
           ),
           if (_result != null) ...[
             const SizedBox(height: 20),
@@ -779,9 +792,29 @@ class _ToolCard extends StatelessWidget {
   }
 }
 
+Future<void> _initialiseOptionalServices(
+  PurchaseController purchases,
+  AdsController ads,
+) async {
+  try {
+    await purchases.initialise();
+  } catch (error, stackTrace) {
+    purchases.reportStartupFailure(error, stackTrace);
+  }
+  try {
+    await ads.initialise();
+  } catch (error, stackTrace) {
+    debugPrint('AJN PDF ads startup error: $error');
+    debugPrintStack(stackTrace: stackTrace);
+  }
+}
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  FlutterError.onError = (details) {
+    FlutterError.presentError(details);
+    debugPrint('AJN PDF Flutter error: ${details.exceptionAsString()}');
+  };
   final dio = Dio(
     BaseOptions(
       connectTimeout: const Duration(seconds: 30),
@@ -791,10 +824,8 @@ Future<void> main() async {
   final auth = AnonymousAuthService(dio);
   final purchases = PurchaseController(dio, auth);
   final ads = AdsController();
-
-  await Future.wait([purchases.initialise(), ads.initialise()]);
-
   runApp(AjnPdfApp(ads: ads, purchases: purchases));
+  unawaited(_initialiseOptionalServices(purchases, ads));
 }
 
 class AjnPdfApp extends StatelessWidget {
