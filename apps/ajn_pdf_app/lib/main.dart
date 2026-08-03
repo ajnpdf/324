@@ -1,9 +1,6 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
-import 'package:cross_file/cross_file.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
@@ -32,8 +29,9 @@ class AppConfig {
     defaultValue: false,
   );
   static const bannerAdUnit = String.fromEnvironment('ADMOB_BANNER_ANDROID');
-  static const interstitialAdUnit =
-      String.fromEnvironment('ADMOB_INTERSTITIAL_ANDROID');
+  static const interstitialAdUnit = String.fromEnvironment(
+    'ADMOB_INTERSTITIAL_ANDROID',
+  );
   static const monthlyProduct = String.fromEnvironment(
     'PLAY_MONTHLY_PRODUCT_ID',
     defaultValue: 'ajn_pdf_premium_monthly',
@@ -71,7 +69,9 @@ class AnonymousAuthService {
     if (AppConfig.firebaseApiKey.isEmpty) return null;
     if (_idToken == null ||
         _expiresAt == null ||
-        DateTime.now().isAfter(_expiresAt!.subtract(const Duration(minutes: 2)))) {
+        DateTime.now().isAfter(
+          _expiresAt!.subtract(const Duration(minutes: 2)),
+        )) {
       if (_refreshToken == null) {
         await _signUp();
       } else {
@@ -103,13 +103,8 @@ class AnonymousAuthService {
     final response = await _dio.post<Map<String, dynamic>>(
       'https://securetoken.googleapis.com/v1/token',
       queryParameters: {'key': AppConfig.firebaseApiKey},
-      options: Options(
-        contentType: Headers.formUrlEncodedContentType,
-      ),
-      data: {
-        'grant_type': 'refresh_token',
-        'refresh_token': _refreshToken,
-      },
+      options: Options(contentType: Headers.formUrlEncodedContentType),
+      data: {'grant_type': 'refresh_token', 'refresh_token': _refreshToken},
     );
     final value = response.data!;
     _idToken = value['id_token'] as String?;
@@ -132,8 +127,9 @@ class AdsController extends ChangeNotifier {
   InterstitialAd? _interstitial;
   int _completedOperations = 0;
 
-  String get _bannerId =>
-      !AppConfig.productionAds || kDebugMode ? _testBanner : AppConfig.bannerAdUnit;
+  String get _bannerId => !AppConfig.productionAds || kDebugMode
+      ? _testBanner
+      : AppConfig.bannerAdUnit;
   String get _interstitialId => !AppConfig.productionAds || kDebugMode
       ? _testInterstitial
       : AppConfig.interstitialAdUnit;
@@ -325,20 +321,23 @@ class PurchaseController extends ChangeNotifier {
       try {
         final token = await _auth.token();
         if (token == null) {
-          throw StateError('Firebase anonymous authentication is not configured.');
+          throw StateError(
+            'Firebase anonymous authentication is not configured.',
+          );
         }
 
         final response = await _dio.post<Map<String, dynamic>>(
           '${AppConfig.websiteUrl}/api/google-play/verify',
           data: {
-            'purchaseToken':
-                purchase.verificationData.serverVerificationData,
+            'purchaseToken': purchase.verificationData.serverVerificationData,
           },
           options: Options(headers: {'authorization': 'Bearer $token'}),
         );
 
         premium = response.data?['active'] == true;
-        message = premium ? 'AJN PDF Premium is active.' : 'Subscription is not active.';
+        message = premium
+            ? 'AJN PDF Premium is active.'
+            : 'Subscription is not active.';
         notifyListeners();
 
         if (purchase.pendingCompletePurchase) {
@@ -380,7 +379,7 @@ class _MergePdfPageState extends State<MergePdfPage> {
   String? _result;
 
   Future<void> _pick() async {
-    final value = await FilePicker.platform.pickFiles(
+    final value = await FilePicker.pickFiles(
       allowMultiple: true,
       type: FileType.custom,
       allowedExtensions: const ['pdf'],
@@ -399,7 +398,9 @@ class _MergePdfPageState extends State<MergePdfPage> {
     try {
       final uploads = <MultipartFile>[];
       for (final file in _files) {
-        uploads.add(await MultipartFile.fromFile(file.path!, filename: file.name));
+        uploads.add(
+          await MultipartFile.fromFile(file.path!, filename: file.name),
+        );
       }
 
       final response = await Dio().post<List<int>>(
@@ -420,9 +421,9 @@ class _MergePdfPageState extends State<MergePdfPage> {
       final detail = error.response?.data is Map
           ? '${(error.response?.data as Map)['detail']}'
           : 'Check the AJN PDF API connection.';
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Merge failed: $detail')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Merge failed: $detail')));
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -451,7 +452,7 @@ class _MergePdfPageState extends State<MergePdfPage> {
           const SizedBox(height: 12),
           FilledButton(
             onPressed: _busy || _files.length < 2 ? null : _merge,
-            child: Text(_busy ? 'Merging…' : 'Merge PDFs'),
+            child: Text(_busy ? 'Mergingâ€¦' : 'Merge PDFs'),
           ),
           if (_result != null) ...[
             const SizedBox(height: 20),
@@ -487,7 +488,7 @@ class _ImagesToPdfPageState extends State<ImagesToPdfPage> {
   String? _result;
 
   Future<void> _pick() async {
-    final value = await FilePicker.platform.pickFiles(
+    final value = await FilePicker.pickFiles(
       allowMultiple: true,
       type: FileType.image,
       withData: true,
@@ -507,9 +508,8 @@ class _ImagesToPdfPageState extends State<ImagesToPdfPage> {
         final value = pw.MemoryImage(image.bytes!);
         document.addPage(
           pw.Page(
-            build: (_) => pw.Center(
-              child: pw.Image(value, fit: pw.BoxFit.contain),
-            ),
+            build: (_) =>
+                pw.Center(child: pw.Image(value, fit: pw.BoxFit.contain)),
           ),
         );
       }
@@ -542,7 +542,7 @@ class _ImagesToPdfPageState extends State<ImagesToPdfPage> {
           const SizedBox(height: 12),
           FilledButton(
             onPressed: _busy || _images.isEmpty ? null : _create,
-            child: Text(_busy ? 'Creating…' : 'Create PDF'),
+            child: Text(_busy ? 'Creatingâ€¦' : 'Create PDF'),
           ),
           if (_result != null) ...[
             const SizedBox(height: 20),
@@ -583,8 +583,8 @@ class PremiumPage extends StatelessWidget {
                     ? 'Premium is active'
                     : 'Remove ads and unlock higher limits',
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.w900,
-                    ),
+                  fontWeight: FontWeight.w900,
+                ),
               ),
               const SizedBox(height: 14),
               const Text(
@@ -632,11 +632,7 @@ class PremiumPage extends StatelessWidget {
 }
 
 class HomePage extends StatelessWidget {
-  const HomePage({
-    super.key,
-    required this.ads,
-    required this.purchases,
-  });
+  const HomePage({super.key, required this.ads, required this.purchases});
 
   final AdsController ads;
   final PurchaseController purchases;
@@ -695,7 +691,8 @@ class HomePage extends StatelessWidget {
               _ToolCard(
                 icon: Icons.call_merge,
                 title: 'Merge PDF',
-                subtitle: 'Combine multiple PDFs with validated secure processing.',
+                subtitle:
+                    'Combine multiple PDFs with validated secure processing.',
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -795,20 +792,13 @@ Future<void> main() async {
   final purchases = PurchaseController(dio, auth);
   final ads = AdsController();
 
-  await Future.wait([
-    purchases.initialise(),
-    ads.initialise(),
-  ]);
+  await Future.wait([purchases.initialise(), ads.initialise()]);
 
   runApp(AjnPdfApp(ads: ads, purchases: purchases));
 }
 
 class AjnPdfApp extends StatelessWidget {
-  const AjnPdfApp({
-    super.key,
-    required this.ads,
-    required this.purchases,
-  });
+  const AjnPdfApp({super.key, required this.ads, required this.purchases});
 
   final AdsController ads;
   final PurchaseController purchases;
