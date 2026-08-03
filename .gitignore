@@ -110,3 +110,25 @@ apps/ajn_pdf_app/.dart_tool/
 apps/ajn_pdf_app/windows/flutter/ephemeral/
 backend/.pytest_cache/
 backend/__pycache__/
+# AJN PDF production secrets
+.env
+.env.local
+.env.*.local
+service-account*.json
+firebase-adminsdk*.json
+google-play-service-account*.json
+*.jks
+*.keystore
+*.p12
+*.pfx
+android/key.properties
+apps/ajn_pdf_app/android/key.properties
+apps/ajn_pdf_app/android/app/*.jks
+apps/ajn_pdf_app/android/app/*.keystore
+# Generated outputs
+release/
+apps/ajn_pdf_app/build/
+apps/ajn_pdf_app/.dart_tool/
+apps/ajn_pdf_app/windows/flutter/ephemeral/
+backend/.pytest_cache/
+backend/__pycache__/

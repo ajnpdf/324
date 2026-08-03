@@ -1,9 +1,17 @@
+function required(name: string): string {
+  const value = process.env[name];
+  if (!value) {
+    throw new Error(`Missing required Firebase environment variable: ${name}`);
+  }
+  return value;
+}
+
 export const firebaseConfig = {
-  "projectId": "studio-656130239-fd28b",
-  "appId": "1:92710152843:web:6a1deaaa9029f23526028e",
-  "apiKey": "AIzaSyAC_pymBXsE17EGp3x02IkCy-XGI_CNaQQ",
-  "authDomain": "studio-656130239-fd28b.firebaseapp.com",
-  "storageBucket": "studio-656130239-fd28b.firebasestorage.app",
-  "measurementId": "",
-  "messagingSenderId": "92710152843"
+  apiKey: required('NEXT_PUBLIC_FIREBASE_API_KEY'),
+  authDomain: required('NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN'),
+  projectId: required('NEXT_PUBLIC_FIREBASE_PROJECT_ID'),
+  storageBucket: required('NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET'),
+  messagingSenderId: required('NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID'),
+  appId: required('NEXT_PUBLIC_FIREBASE_APP_ID'),
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || undefined,
 };

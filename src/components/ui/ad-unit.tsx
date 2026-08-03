@@ -1,6 +1,8 @@
-"use client";
+'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { hasConsent } from './cookie-consent';
+import { usePremiumEntitlement } from '@/hooks/use-premium-entitlement';
 
 interface AdUnitProps {
   className?: string;
@@ -8,33 +10,37 @@ interface AdUnitProps {
   format?: string;
 }
 
-/**
- * AJN AdSense Unit - Simple Vertical Integration
- * Defaulting to slot 3648223351 for network consistency.
- */
-export function AdUnit({ 
-  className, 
-  slot = "3648223351", 
-  format = "vertical" 
+export function AdUnit({
+  className,
+  slot = process.env.NEXT_PUBLIC_ADSENSE_PRIMARY_SLOT || '3648223351',
+  format = 'auto',
 }: AdUnitProps) {
+  const [mounted, setMounted] = useState(false);
+  const { premium, loading } = usePremiumEntitlement();
+
+  useEffect(() => setMounted(true), []);
+
   useEffect(() => {
+    if (!mounted || loading || premium || !hasConsent('advertising')) return;
     try {
-      const adsbygoogle = (window as any).adsbygoogle || [];
+      const adsbygoogle = ((window as unknown as { adsbygoogle?: unknown[] }).adsbygoogle ||= []);
       adsbygoogle.push({});
     } catch {
-      // Silence background errors
+      // Never allow advertising failures to affect file processing.
     }
-  }, []);
+  }, [loading, mounted, premium, slot]);
+
+  if (!mounted || loading || premium || !hasConsent('advertising')) return null;
 
   return (
     <div className={className}>
-      <ins 
+      <ins
         className="adsbygoogle"
-        style={{ display: 'block', maxWidth: '300px', maxHeight: '250px' }}
-        data-ad-client="ca-pub-4495802176396975"
+        style={{ display: 'block' }}
+        data-ad-client={process.env.NEXT_PUBLIC_ADSENSE_CLIENT || 'ca-pub-4495802176396975'}
         data-ad-slot={slot}
         data-ad-format={format}
-        data-full-width-responsive="false"
+        data-full-width-responsive="true"
       />
     </div>
   );
