@@ -379,7 +379,7 @@ class _MergePdfPageState extends State<MergePdfPage> {
   String? _result;
 
   Future<void> _pick() async {
-    final value = await FilePicker.pickFiles(
+    final value = await FilePicker.platform.pickFiles(
       allowMultiple: true,
       type: FileType.custom,
       allowedExtensions: const ['pdf'],
@@ -452,7 +452,7 @@ class _MergePdfPageState extends State<MergePdfPage> {
           const SizedBox(height: 12),
           FilledButton(
             onPressed: _busy || _files.length < 2 ? null : _merge,
-            child: Text(_busy ? 'Mergingâ€¦' : 'Merge PDFs'),
+            child: Text(_busy ? 'MergingÃ¢â‚¬Â¦' : 'Merge PDFs'),
           ),
           if (_result != null) ...[
             const SizedBox(height: 20),
@@ -488,7 +488,7 @@ class _ImagesToPdfPageState extends State<ImagesToPdfPage> {
   String? _result;
 
   Future<void> _pick() async {
-    final value = await FilePicker.pickFiles(
+    final value = await FilePicker.platform.pickFiles(
       allowMultiple: true,
       type: FileType.image,
       withData: true,
@@ -542,7 +542,7 @@ class _ImagesToPdfPageState extends State<ImagesToPdfPage> {
           const SizedBox(height: 12),
           FilledButton(
             onPressed: _busy || _images.isEmpty ? null : _create,
-            child: Text(_busy ? 'Creatingâ€¦' : 'Create PDF'),
+            child: Text(_busy ? 'CreatingÃ¢â‚¬Â¦' : 'Create PDF'),
           ),
           if (_result != null) ...[
             const SizedBox(height: 20),
