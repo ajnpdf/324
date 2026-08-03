@@ -28,21 +28,12 @@ function Require-Command([string]$Name, [string]$Help) {
 }
 
 function Set-Utf8File([string]$Path, [string]$Content) {
-    # System.IO resolves relative paths against the process working directory,
-    # which can differ from PowerShell's current folder. Resolve explicitly.
-    $ResolvedPath = if ([System.IO.Path]::IsPathRooted($Path)) {
-        $Path
-    } else {
-        Join-Path -Path (Get-Location).Path -ChildPath $Path
-    }
-
-    $Parent = Split-Path -Parent $ResolvedPath
+    $Parent = Split-Path -Parent $Path
     if ($Parent -and -not (Test-Path -LiteralPath $Parent)) {
         New-Item -ItemType Directory -Path $Parent -Force | Out-Null
     }
-
     [System.IO.File]::WriteAllText(
-        $ResolvedPath,
+        $Path,
         ($Content -replace "`r?`n", "`n"),
         [System.Text.UTF8Encoding]::new($false)
     )
@@ -855,7 +846,7 @@ export function SubscriptionCheckoutButton({
 
   return (
     <Button onClick={startCheckout} disabled={loading} className="w-full">
-      {loading ? 'Opening secure checkoutâ€¦' : children}
+      {loading ? 'Opening secure checkout…' : children}
     </Button>
   );
 }
@@ -883,7 +874,7 @@ export default function PremiumPage() {
   return (
     <main className="min-h-screen bg-slate-950 text-white px-6 py-16">
       <div className="mx-auto max-w-5xl">
-        <Link href="/" className="text-sm text-blue-300">â† AJN PDF</Link>
+        <Link href="/" className="text-sm text-blue-300">← AJN PDF</Link>
         <h1 className="mt-8 text-4xl md:text-6xl font-black">AJN PDF Premium</h1>
         <p className="mt-4 max-w-2xl text-slate-300">
           Core local tools remain available. Premium removes ads and supports larger,
@@ -893,7 +884,7 @@ export default function PremiumPage() {
         <ul className="mt-8 grid gap-3 md:grid-cols-2">
           {benefits.map((benefit) => (
             <li key={benefit} className="rounded-2xl border border-white/10 bg-white/5 p-4">
-              âœ“ {benefit}
+              ✓ {benefit}
             </li>
           ))}
         </ul>
@@ -1676,7 +1667,7 @@ class _MergePdfScreenState extends State<MergePdfScreen> {
           const SizedBox(height: 16),
           FilledButton(
             onPressed: _busy || _files.length < 2 ? null : _merge,
-            child: Text(_busy ? 'Mergingâ€¦' : 'Merge PDFs'),
+            child: Text(_busy ? 'Merging…' : 'Merge PDFs'),
           ),
           if (_resultPath != null) ...[
             const SizedBox(height: 24),
@@ -1781,7 +1772,7 @@ class _ImagesToPdfScreenState extends State<ImagesToPdfScreen> {
           const SizedBox(height: 16),
           FilledButton(
             onPressed: _busy || _images.isEmpty ? null : _create,
-            child: Text(_busy ? 'Creating PDFâ€¦' : 'Create PDF'),
+            child: Text(_busy ? 'Creating PDF…' : 'Create PDF'),
           ),
           if (_resultPath != null) ...[
             const SizedBox(height: 24),
