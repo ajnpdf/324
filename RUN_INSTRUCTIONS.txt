@@ -1,0 +1,29 @@
+AJN PDF Multiplatform V1
+
+1. Download and extract this ZIP.
+2. Copy both .ps1 files into:
+   C:\Users\ANJAN PATEL\Downloads\AJN-PDF-dev (2)\AJN-PDF-dev
+
+3. Open PowerShell in that AJN-PDF folder.
+4. Run:
+
+Set-ExecutionPolicy -Scope Process Bypass -Force; & ".\SETUP_AJN_PDF_MULTIPLATFORM_V1.ps1"
+
+The script creates and pushes:
+production/multiplatform-v1
+
+After external IDs/signing are configured, build releases with:
+
+Set-ExecutionPolicy -Scope Process Bypass -Force; & ".\BUILD_AJN_PDF_RELEASES.ps1"
+
+Production ads example:
+
+Set-ExecutionPolicy -Scope Process Bypass -Force; & ".\BUILD_AJN_PDF_RELEASES.ps1" `
+  -ProductionAds `
+  -AdMobBannerAndroid "YOUR_BANNER_ID" `
+  -AdMobInterstitialAndroid "YOUR_INTERSTITIAL_ID"
+
+
+Before building the Play AAB, configure signing once:
+
+Set-ExecutionPolicy -Scope Process Bypass -Force; & ".\CONFIGURE_AJN_ANDROID_SIGNING.ps1"
