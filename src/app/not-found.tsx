@@ -1,0 +1,41 @@
+import Link from 'next/link';
+import { ArrowLeft, FileSearch, Home, Search } from 'lucide-react';
+import { Navbar } from '@/components/landing/navbar';
+import { MainFooter } from '@/components/landing/main-footer';
+import { BUILD_PUBLIC_TOOLS } from '@/lib/build-public-tools';
+
+export default function NotFoundPage() {
+  const suggestions = BUILD_PUBLIC_TOOLS.slice(0, 6);
+  return (
+    <div className="ajn-page-shell">
+      <Navbar />
+      <main className="mx-auto max-w-5xl px-4 pb-24 pt-32 text-center md:px-8 md:pt-40">
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl bg-blue-600 text-white shadow-[0_18px_42px_rgba(37,99,235,.24)]"><FileSearch className="h-7 w-7" /></div>
+        <p className="mt-7 text-xs font-black uppercase tracking-[.18em] text-blue-600 dark:text-blue-300">404 · Page not found</p>
+        <h1 className="mt-4 text-[clamp(2.6rem,7vw,5.6rem)] font-black leading-[.95] tracking-[-.055em] text-foreground">That AJN PDF page is unavailable.</h1>
+        <p className="mx-auto mt-6 max-w-2xl text-base font-medium leading-8 text-muted-foreground">The link may be outdated, mistyped or connected to a tool that is not available in this production build.</p>
+        <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+          <Link href="/" className="ajn-primary-button"><Home className="h-4 w-4" />Return home</Link>
+          <Link href="/pdf-tools" className="ajn-secondary-button"><Search className="h-4 w-4" />Browse available tools</Link>
+        </div>
+
+        {suggestions.length > 0 && (
+          <section className="mt-16 text-left">
+            <h2 className="text-xl font-black text-foreground">Available tools</h2>
+            <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {suggestions.map((tool) => (
+                <Link key={tool.id} href={`/tools/${tool.id}`} className="rounded-2xl border border-border bg-card p-5 text-card-foreground shadow-sm transition hover:-translate-y-0.5 hover:border-blue-300 dark:hover:border-blue-500/50">
+                  <tool.icon className="h-5 w-5 text-blue-600 dark:text-blue-300" />
+                  <h3 className="mt-4 font-black">{tool.name}</h3>
+                  <p className="mt-2 line-clamp-2 text-xs font-medium leading-5 text-muted-foreground">{tool.desc}</p>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+        <Link href="/contact" className="mt-10 inline-flex items-center gap-2 text-xs font-black text-blue-600 dark:text-blue-300"><ArrowLeft className="h-4 w-4" />Report a broken link</Link>
+      </main>
+      <MainFooter />
+    </div>
+  );
+}

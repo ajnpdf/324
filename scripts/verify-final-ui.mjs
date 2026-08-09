@@ -1,0 +1,18 @@
+import fs from 'node:fs';
+import path from 'node:path';
+const root=process.cwd(); const read=(f)=>fs.readFileSync(path.join(root,f),'utf8'); let failed=false;
+const pass=(m)=>console.log(`PASS: ${m}`); const fail=(m)=>{failed=true;console.error(`FAIL: ${m}`)};
+const home=read('src/app/page.tsx'),hero=read('src/components/landing/hero.tsx'),directory=read('src/app/pdf-tools/page.tsx'),grid=read('src/components/landing/services-grid.tsx'),navbar=read('src/components/landing/navbar.tsx'),cats=read('src/components/landing/tool-categories.tsx'),css=read('src/app/globals.css'),logic=read('src/lib/all-tools-logic.ts'),pkg=JSON.parse(read('package.json'));
+for(const id of ['conversion','image','pdf']) directory.includes(`'${id}'`)&&grid.includes('getPublicToolCategory')?pass(`Category ${id} wired`):fail(`Category ${id} missing`);
+hero.includes("t('home.title1')")&&hero.includes("t('home.title2')")&&hero.includes("t('home.subtitle')")?pass('Localized truthful hero heading/copy'):fail('Localized hero copy missing');
+const en=JSON.parse(read('src/i18n/locales/en.json'));
+String(en['home.subtitle']||'').includes('browser or temporary processing')?pass('Truthful processing text'):fail('Processing text inaccurate');
+const responsive=css+'\n'+hero+'\n'+directory;
+for(const marker of ['clamp(','@media (min-width:1024px) and (max-width:1280px)','@media (max-width:430px)','prefers-reduced-motion','overflow-x: hidden']) responsive.includes(marker)?pass(`Responsive marker ${marker}`):fail(`Missing ${marker}`);
+for(const cls of ['ajn-tool-card','ajn-category-card','ajn-feature-chip','ajn-visual-stage']) css.includes(`.${cls}`)?pass(`Component .${cls}`):fail(`Missing .${cls}`);
+for(const key of ['common.conversion','common.image','common.pdf','common.howItWorks','common.guides','common.about']) navbar.includes(`key: '${key}'`)?pass(`Header ${key}`):fail(`Header missing ${key}`);
+cats.includes('Three clear categories')&&cats.includes('Conversion')&&cats.includes('Image')&&cats.includes('PDF')?pass('Category cards correct'):fail('Category cards incomplete');
+logic.includes('const selectedLevel: CompressionLevel')&&logic.includes('level: selectedLevel')?pass('Compression typing fixed'):fail('Compression typing missing');
+for(const prohibited of [/100%\s*(private|local)/i,/trusted by millions/i,/99\.9%\s*uptime/i]) prohibited.test([home,hero,directory,navbar,cats].join('\n'))?fail(`Prohibited ${prohibited}`):pass(`Avoids ${prohibited}`);
+pkg.scripts?.check?.includes('verify:final-ui')?pass('Final UI verifier in production check'):fail('Final UI verifier missing from check');
+if(failed)process.exit(1); console.log('Final UI verification completed successfully.');

@@ -1,0 +1,71 @@
+import type { Metadata } from 'next';
+import type { ServiceTool } from './tools-data';
+import { getToolPolicy, isToolPublic } from './tool-policy';
+import { getToolSeoProfile } from './seo-strategy';
+import { isBuildToolAvailable } from './tool-capabilities';
+
+export const SITE_URL = 'https://ajnpdf.com';
+export const SITE_NAME = 'AJN PDF';
+export const ADSENSE_CLIENT = 'ca-pub-4495802176396975';
+
+export const SEO_EXCLUDED_TOOL_IDS = new Set([
+  'pdf-ppt',
+  'ocr-searchable',
+  'pdf-a',
+  'pdf-ua',
+  'smart-read',
+  'psd-pdf',
+  'upscale-image',
+  'remove-bg',
+  'blur-face',
+]);
+
+export const TOOL_CANONICAL_OVERRIDES: Record<string, string> = {
+  'smart-read': '/tools/pdf-text',
+};
+
+export function buildToolMetadata(tool: ServiceTool): Metadata {
+  const pathname = `/tools/${tool.id}`;
+  const canonicalPath = TOOL_CANONICAL_OVERRIDES[tool.id] || pathname;
+  const policy = getToolPolicy(tool.id);
+  const seo = getToolSeoProfile(tool);
+  const processing = policy.processingMode === 'browser'
+    ? 'Designed for supported browser processing.'
+    : 'Uses the AJN PDF conversion service with request-file cleanup after delivery.';
+  const limitation = policy.limitation ? ` ${policy.limitation}` : '';
+  const description = `${seo.description} ${processing}${limitation}`.slice(0, 158);
+  const shouldIndex = isToolPublic(tool.id) && isBuildToolAvailable(tool.id) && !SEO_EXCLUDED_TOOL_IDS.has(tool.id);
+
+  return {
+    title: seo.title,
+    description,
+    alternates: { canonical: canonicalPath },
+    keywords: [seo.primaryKeyword, ...seo.secondaryKeywords, ...seo.questionKeywords, 'AJN PDF'],
+    category: seo.categoryLabel,
+    robots: {
+      index: shouldIndex,
+      follow: true,
+      googleBot: {
+        index: shouldIndex,
+        follow: true,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+        'max-video-preview': -1,
+      },
+    },
+    openGraph: {
+      type: 'website',
+      url: canonicalPath,
+      siteName: SITE_NAME,
+      title: seo.title,
+      description,
+      images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: `${tool.name} online tool by AJN PDF` }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: seo.title,
+      description,
+      images: ['/og-image.jpg'],
+    },
+  };
+}

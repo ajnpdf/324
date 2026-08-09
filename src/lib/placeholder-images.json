@@ -1,0 +1,22 @@
+{
+  "placeholderImages": [
+    {
+      "id": "hero-bg",
+      "description": "AJN PDF product processing illustration",
+      "imageUrl": "/images/ajn-product-visual.svg",
+      "imageHint": "AJN PDF processing interface"
+    },
+    {
+      "id": "founder-portrait",
+      "description": "Anjan Kumar, developer of AJN PDF",
+      "imageUrl": "/images/anjan-kumar-developer.webp",
+      "imageHint": "Anjan Kumar developer portrait"
+    },
+    {
+      "id": "story-main-image",
+      "description": "AJN PDF browser and server processing architecture",
+      "imageUrl": "/images/ajn-processing-architecture.svg",
+      "imageHint": "document processing architecture"
+    }
+  ]
+}
