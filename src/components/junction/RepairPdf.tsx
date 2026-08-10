@@ -18,7 +18,7 @@ export default function RepairPdf() {
   const { online } = usePdfBackendStatus();
 
   const run = async () => {
-    const validation = validateFiles(files.map(item => item.file), { extensions: [".pdf"], minFiles: 1, maxFiles: 1, maxSizeMb: 50 });
+    const validation = validateFiles(files.map(item => item.file), { extensions: [".pdf"], minFiles: 1, maxFiles: 1, maxSizeMb: 30 });
     if (validation) { setError(validation); return; }
     if (!online) { setError("Secure processing service is temporarily unavailable. Check the service status and try again."); return; }
     setError(""); setLoading(true);
@@ -34,7 +34,7 @@ export default function RepairPdf() {
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           <BackendStatus />
-          <Drop files={files} onChange={setFiles} accept=".pdf,application/pdf" label="Select a damaged PDF" sub="Temporary server processing · maximum 50 MB" />
+          <Drop files={files} onChange={setFiles} accept=".pdf,application/pdf" label="Select a damaged PDF" sub="Temporary server processing · maximum 30 MB" />
           <F label="Output filename"><input style={IS} value={outputName} onChange={event => setOutputName(event.target.value)} /></F>
           <Info>Recovery rebuilds readable PDF structures when possible. Severely damaged documents may not be recoverable.</Info>
           <Err msg={error} />

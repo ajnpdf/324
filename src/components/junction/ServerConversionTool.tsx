@@ -19,6 +19,7 @@ const IMAGE_OUTPUT_IDS = new Set([
   'pdf-to-tiff', 'pdf-to-bmp', 'pdf-to-gif', 'pdf-to-svg', 'pdf-to-avif', 'pdf-to-heic',
 ]);
 const SCAN_IDS = new Set(['camera-scan-to-pdf', 'receipt-to-pdf', 'document-scanner-to-pdf']);
+const SERVER_REQUEST_LIMIT_MB = 30;
 function extensionAccept(extensions: string[] | undefined): string {
   if (!extensions?.length) return '*/*';
   return extensions.join(',');
@@ -83,11 +84,15 @@ export default function ServerConversionTool({ toolId }: { toolId: string }) {
   const isUrlTool = toolId === 'url-to-pdf';
   const multiple = manifest?.multiFile ?? policy.maxFiles > 1;
   const accept = extensionAccept(manifest?.inputExtensions);
+  const totalInputBytes = useMemo(() => files.reduce((sum, item) => sum + item.file.size, 0), [files]);
+  const totalInputWithinLimit = totalInputBytes <= SERVER_REQUEST_LIMIT_MB * 1024 * 1024;
+
   const canProcess = Boolean(
     tool &&
     status !== 'processing' &&
     backendReady &&
     manifest?.available === true &&
+    (isUrlTool || totalInputWithinLimit) &&
     (isUrlTool ? /^https?:\/\//i.test(sourceUrl.trim()) : files.length > 0),
   );
 
@@ -104,6 +109,10 @@ export default function ServerConversionTool({ toolId }: { toolId: string }) {
 
   const process = async () => {
     setError('');
+    if (!isUrlTool && !totalInputWithinLimit) {
+      setError(t('errors.FILE_TOO_LARGE'));
+      return;
+    }
     setResult(null);
     const latestHealth = await checkPdfBackendHealth();
     if (latestHealth.status !== 'online' || manifest?.available !== true) {
@@ -199,7 +208,7 @@ export default function ServerConversionTool({ toolId }: { toolId: string }) {
                 accept={accept}
                 multiple={multiple}
                 label={multiple ? t('common.chooseFiles') : t('common.chooseFile')}
-                sub={`${manifest?.inputExtensions?.join(', ') || t('conversion.supportedFormats')} • Up to ${policy.maxFileSizeMb} MB each`}
+                sub={`${manifest?.inputExtensions?.join(', ') || t('conversion.supportedFormats')} • Up to ${policy.maxFileSizeMb} MB each • ${SERVER_REQUEST_LIMIT_MB} MB total`}
               />
             )}
 

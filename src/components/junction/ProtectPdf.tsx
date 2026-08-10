@@ -22,7 +22,7 @@ export default function ProtectPdf() {
   const { online } = usePdfBackendStatus();
 
   const run = async () => {
-    const validation = validateFiles(files.map(item => item.file), { extensions: [".pdf"], minFiles: 1, maxFiles: 1, maxSizeMb: 50 });
+    const validation = validateFiles(files.map(item => item.file), { extensions: [".pdf"], minFiles: 1, maxFiles: 1, maxSizeMb: 30 });
     if (validation) { setError(validation); return; }
     if (!online) { setError("Secure processing service is temporarily unavailable. Check the service status and try again."); return; }
     if (password.length < 8) { setError("Use an open password with at least 8 characters for stronger protection."); return; }
@@ -55,7 +55,7 @@ export default function ProtectPdf() {
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           <BackendStatus />
-          <Drop files={files} onChange={setFiles} accept=".pdf,application/pdf" label="Select one PDF" sub="Temporary encrypted processing · maximum 50 MB" />
+          <Drop files={files} onChange={setFiles} accept=".pdf,application/pdf" label="Select one PDF" sub="Temporary encrypted processing · maximum 30 MB" />
           <G2><F label="Open password" hint="Minimum 8 characters recommended"><input style={IS} type="password" autoComplete="new-password" value={password} onChange={event => setPassword(event.target.value)} /></F><F label="Confirm password"><input style={IS} type="password" autoComplete="new-password" value={confirm} onChange={event => setConfirm(event.target.value)} /></F></G2>
           <G2><F label="Owner password" hint="Optional and not shown again"><input style={IS} type="password" autoComplete="new-password" value={ownerPassword} onChange={event => setOwnerPassword(event.target.value)} /></F><F label="Output filename"><input style={IS} value={outputName} onChange={event => setOutputName(event.target.value)} /></F></G2>
           <F label="Document permissions">

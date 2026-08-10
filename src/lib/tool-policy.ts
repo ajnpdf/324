@@ -79,7 +79,9 @@ export function getToolPolicy(id: string): ToolPolicy {
     return {
       maturity: 'backend', processingMode: 'temporary-server',
       maxFiles: multiFileConversionIds.has(id) ? 30 : 1,
-      maxFileSizeMb: 75,
+      // Cloud Run production uses a 30 MB request ceiling so the multipart body
+      // stays below the platform HTTP/1 request limit with encoding overhead.
+      maxFileSizeMb: 30,
       publicByDefault: true,
       limitation: conversionBackendIds.has(id)
         ? 'Processed by the AJN PDF conversion service. Uploaded files are used only for the requested conversion and removed after the response.'

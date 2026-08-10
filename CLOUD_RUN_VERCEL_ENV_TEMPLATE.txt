@@ -1,0 +1,6 @@
+# Set these in Vercel after DEPLOY_CLOUD_RUN_BACKEND.ps1 prints the Cloud Run URL.
+NEXT_PUBLIC_PDF_BACKEND_URL=https://YOUR-CLOUD-RUN-SERVICE.run.app
+NEXT_PUBLIC_APP_URL=https://ajn-delta.vercel.app
+
+# Keep the existing AdSense variables already configured in Vercel.
+# When ajnpdf.com is connected, change NEXT_PUBLIC_APP_URL to https://ajnpdf.com.

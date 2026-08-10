@@ -21,7 +21,7 @@ export default function UnlockPdf() {
   const { online } = usePdfBackendStatus();
 
   const run = async () => {
-    const validation = validateFiles(files.map(item => item.file), { extensions: [".pdf"], minFiles: 1, maxFiles: 1, maxSizeMb: 50 });
+    const validation = validateFiles(files.map(item => item.file), { extensions: [".pdf"], minFiles: 1, maxFiles: 1, maxSizeMb: 30 });
     if (validation) { setError(validation); return; }
     if (!online) { setError("Secure processing service is temporarily unavailable. Check the service status and try again."); return; }
     if (!password) { setError("Enter the current valid PDF password."); return; }
@@ -43,7 +43,7 @@ export default function UnlockPdf() {
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           <BackendStatus />
-          <Drop files={files} onChange={setFiles} accept=".pdf,application/pdf" label="Select an encrypted PDF" sub="Temporary secure processing · maximum 50 MB" />
+          <Drop files={files} onChange={setFiles} accept=".pdf,application/pdf" label="Select an encrypted PDF" sub="Temporary secure processing · maximum 30 MB" />
           <F label="Current PDF password"><input style={IS} type="password" autoComplete="current-password" value={password} onChange={event => setPassword(event.target.value)} placeholder="Enter the existing password" /></F>
           <F label="Output filename"><input style={IS} value={outputName} onChange={event => setOutputName(event.target.value)} /></F>
           <label className="jn-file-pill" style={{ justifyContent: "flex-start", alignItems: "flex-start" }}><input type="checkbox" checked={authorized} onChange={event => setAuthorized(event.target.checked)} /><span style={{ fontSize: 10, fontWeight: 800, lineHeight: 1.5 }}>I own this document or have permission to remove its password.</span></label>

@@ -1,0 +1,13 @@
+AJN PDF 3.1.0 Cloud Run Backend Production Fix R1
+Files:
+- vercel.json: frontend-only Vercel project configuration
+- backend/Dockerfile: native-engine Cloud Run container
+- backend/.dockerignore: clean container build context
+- src/lib/tool-policy.ts: server-assisted tools advertise the Cloud Run 30 MB ceiling
+- ServerConversionTool/Protect/Unlock/Repair: reject oversized requests before upload
+- DEPLOY_CLOUD_RUN_BACKEND.ps1: one-command build/deploy/readiness verification
+- TEST_CLOUD_RUN_BACKEND.ps1: live endpoint + Protect/Unlock/OCR/LibreOffice critical tests
+- CLOUD_RUN_VERCEL_ENV_TEMPLATE.txt: Vercel backend URL template
+- CLOUD_RUN_BACKEND_DEPLOYMENT.md: deployment workflow
+
+This patch intentionally does not overwrite package.json or package-lock.json.
