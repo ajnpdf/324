@@ -1,6 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
+import { CheckCircle2 } from "lucide-react";
 import { cn } from "../../lib/utils";
 
 interface ProgressBarProps {
@@ -10,34 +11,22 @@ interface ProgressBarProps {
 }
 
 export function ProgressBar({ progress, status, className }: ProgressBarProps) {
+  const reduceMotion = useReducedMotion();
+  const safeProgress = Math.min(100, Math.max(0, progress));
   return (
-    <div role="status" aria-live="polite" className={cn("w-full space-y-4 p-8 bg-card text-card-foreground border border-border rounded-2xl shadow-sm", className)}>
-      <div className="flex justify-between items-end">
-        <div className="space-y-1">
-          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Current Sequence</p>
-          <span className="text-slate-900 text-lg font-bold uppercase tracking-tight">
-            {status}
-          </span>
+    <div role="status" aria-live="polite" className={cn("ajn-progress-card w-full rounded-[1.6rem] p-5 md:p-6", className)}>
+      <div className="flex items-end justify-between gap-4">
+        <div className="min-w-0">
+          <p className="text-[10px] font-black uppercase tracking-[0.17em] text-slate-400 dark:text-zinc-500">Processing</p>
+          <span className="mt-1 block truncate text-base font-black tracking-tight text-slate-950 dark:text-white md:text-lg">{status}</span>
         </div>
-        <span className="text-primary text-3xl font-black italic tabular-nums">
-          {Math.round(progress)}%
-        </span>
+        <span className="ajn-progress-value shrink-0 text-2xl font-black tabular-nums md:text-3xl">{Math.round(safeProgress)}%</span>
       </div>
-      
-      <div role="progressbar" aria-label={status} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress)} className="h-3 bg-black/5 rounded-full overflow-hidden border border-black/5 p-0.5">
-        <motion.div
-          initial={{ width: 0 }}
-          animate={{ width: `${progress}%` }}
-          className="h-full bg-primary rounded-full shadow-[0_0_15px_rgba(30,58,138,0.4)]"
-          transition={{ duration: 0.3, ease: "easeOut" }}
-        />
+      <div role="progressbar" aria-label={status} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(safeProgress)} className="ajn-progress-track mt-4 h-2.5 overflow-hidden rounded-full p-[2px]">
+        <motion.div initial={reduceMotion ? false : { width: 0 }} animate={{ width: `${safeProgress}%` }} className="ajn-progress-fill h-full rounded-full" transition={{ duration: reduceMotion ? 0 : 0.35, ease: "easeOut" }} />
       </div>
-
-      <div className="flex items-center gap-2 pt-2 opacity-50">
-        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-          Safe Session Buffer Active
-        </p>
+      <div className="mt-4 flex items-center gap-2 text-[10px] font-extrabold text-slate-500 dark:text-zinc-400">
+        <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" /> Keep this tab open until the result is ready.
       </div>
     </div>
   );

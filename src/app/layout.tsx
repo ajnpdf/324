@@ -1,4 +1,3 @@
-import { ProcessingActivityProvider } from "@/components/ajnpdf/processing-activity-provider";
 import type { Metadata } from 'next';
 import './globals.css';
 import { Inter, JetBrains_Mono, Manrope } from 'next/font/google';
@@ -13,6 +12,8 @@ import { ADSENSE_PUBLISHER } from '../lib/ad-slots';
 import { GoogleAnalytics } from '../components/analytics/google-analytics';
 import { SiteAnalytics } from '../components/analytics/site-analytics';
 import { ThemeProvider } from '../components/theme/theme-provider';
+import { ProcessingActivityProvider } from '../components/ajnpdf/processing-activity-provider';
+import { MobileBottomNav } from '../components/landing/mobile-bottom-nav';
 import { AJN_BRAND, AJN_CONFIRMED_SOCIAL_LINKS, AJN_PRODUCT_ALTERNATE_NAMES, AJN_STUDIO_ALTERNATE_NAMES } from '../lib/brand';
 
 const manrope = Manrope({ subsets: ['latin'], variable: '--font-syne', display: 'swap' });
@@ -115,7 +116,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning className={`${manrope.variable} ${inter.variable} ${jetBrainsMono.variable}`}>
       <body className="font-sans antialiased">
-        <ProcessingActivityProvider />
         <Script
           id="ajn-theme-bootstrap"
           strategy="beforeInteractive"
@@ -126,6 +126,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Script id="json-ld" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} strategy="afterInteractive" />
         <ThemeProvider>
           <LanguageProvider>
+          <ProcessingActivityProvider />
           <LiveTranslationBridge />
           {children}
           <GoogleAnalytics />
@@ -133,6 +134,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <AdSenseScriptLoader />
           <CookieConsent />
           <Toaster />
+          <MobileBottomNav />
           </LanguageProvider>
         </ThemeProvider>
       </body>

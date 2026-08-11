@@ -75,7 +75,7 @@ async function postPdf(path: string, form: FormData): Promise<Blob> {
     throw new PdfBackendError('Processing service is not configured.', 'SERVICE_UNAVAILABLE');
   }
   const controller = new AbortController();
-  const timeout = window.setTimeout(() => controller.abort(), 295_000);
+  const timeout = window.setTimeout(() => controller.abort(), 190_000);
   try {
     const response = await fetch(`${PDF_BACKEND_URL}${path}`, {
       method: 'POST',
@@ -187,7 +187,7 @@ export async function convertOnServer(args: {
   form.set('options_json', JSON.stringify(args.options || {}));
 
   const controller = new AbortController();
-  const timeout = window.setTimeout(() => controller.abort(), 295_000);
+  const timeout = window.setTimeout(() => controller.abort(), 310_000);
   try {
     const response = await fetch(`${PDF_BACKEND_URL}/api/convert/${encodeURIComponent(args.toolId)}`, {
       method: 'POST',

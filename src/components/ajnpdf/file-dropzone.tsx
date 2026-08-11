@@ -2,9 +2,9 @@
 
 import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { Upload, ShieldCheck, Zap } from "lucide-react";
+import { CloudUpload, ShieldCheck, Sparkles } from "lucide-react";
 import { cn } from "../../lib/utils";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 
 interface FileDropzoneProps {
   onFilesAdded: (files: File[]) => void;
@@ -12,39 +12,34 @@ interface FileDropzoneProps {
   multiple?: boolean;
 }
 
-/**
- * AJN File Dropzone - Hardened v15.7
- * Fixed: Corrected ReferenceError by synchronizing isDragActive state setter.
- */
-export function FileDropzone({ 
-  onFilesAdded, 
-  accept = { "application/pdf": [".pdf"] }, 
-  multiple = true 
+export function FileDropzone({
+  onFilesAdded,
+  accept = { "application/pdf": [".pdf"] },
+  multiple = true,
 }: FileDropzoneProps) {
   const [isDragActive, setIsDragActive] = useState(false);
+  const reduceMotion = useReducedMotion();
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setIsDragActive(false);
-    if (acceptedFiles.length > 0) {
-      onFilesAdded(acceptedFiles);
-    }
+    if (acceptedFiles.length > 0) onFilesAdded(acceptedFiles);
   }, [onFilesAdded]);
 
   const { getRootProps, getInputProps, open } = useDropzone({
     onDrop,
     accept,
     multiple,
-    noClick: true, 
+    noClick: true,
     onDragEnter: () => setIsDragActive(true),
     onDragLeave: () => setIsDragActive(false),
   });
 
   const rootProps = getRootProps();
   const dropzoneHandlers = {
-    onDrop: rootProps.onDrop as any,
-    onDragOver: rootProps.onDragOver as any,
-    onDragEnter: rootProps.onDragEnter as any,
-    onDragLeave: rootProps.onDragLeave as any,
+    onDrop: rootProps.onDrop as React.DragEventHandler<HTMLDivElement>,
+    onDragOver: rootProps.onDragOver as React.DragEventHandler<HTMLDivElement>,
+    onDragEnter: rootProps.onDragEnter as React.DragEventHandler<HTMLDivElement>,
+    onDragLeave: rootProps.onDragLeave as React.DragEventHandler<HTMLDivElement>,
   };
 
   return (
@@ -60,55 +55,43 @@ export function FileDropzone({
       tabIndex={0}
       aria-label="Choose files or drag and drop files here"
       {...dropzoneHandlers}
-      initial={{ opacity: 0, y: 20 }}
+      initial={reduceMotion ? false : { opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
       className={cn(
-        "relative h-80 rounded-[3rem] border-2 border-dashed transition-all duration-500 cursor-pointer flex flex-col items-center justify-center group overflow-hidden",
-        isDragActive 
-          ? "border-primary bg-primary/5 scale-[0.99] shadow-xl" 
-          : "border-black/10 bg-white/20 backdrop-blur-md hover:border-primary/40 hover:bg-white/40"
+        "ajn-dropzone group relative flex min-h-[250px] cursor-pointer flex-col items-center justify-center overflow-hidden rounded-[2rem] border border-dashed px-5 py-8 text-center transition duration-300 md:min-h-[290px] md:px-10",
+        isDragActive && "is-active"
       )}
     >
       <input {...getInputProps()} />
-      
-      <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-primary/20 rounded-tl-[3rem] group-hover:border-primary transition-colors" />
-      <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-primary/20 rounded-tr-[3rem] group-hover:border-primary transition-colors" />
-      <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-primary/20 rounded-bl-[3rem] group-hover:border-primary transition-colors" />
-      <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-primary/20 rounded-br-[3rem] group-hover:border-primary transition-colors" />
+      <span className="ajn-dropzone-orb" aria-hidden="true" />
 
-      <motion.div 
-        animate={{ y: isDragActive ? -10 : 0 }}
-        className="w-20 h-20 rounded-2xl bg-card border border-border flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500"
+      <motion.div
+        animate={reduceMotion ? undefined : { y: isDragActive ? -7 : 0, scale: isDragActive ? 1.05 : 1 }}
+        className="ajn-upload-icon relative z-10 mb-5 flex h-16 w-16 items-center justify-center rounded-[1.35rem] md:h-20 md:w-20"
       >
-        <Upload className="w-10 h-10 text-primary" />
+        <CloudUpload className="h-8 w-8 md:h-9 md:w-9" />
       </motion.div>
 
-      <div className="text-center space-y-2 px-12 relative z-10">
-        <h3 className="text-2xl font-black uppercase tracking-tight text-slate-900">
-          {isDragActive ? "Drop to Process" : "Drop Files Here"}
+      <div className="relative z-10 max-w-lg">
+        <h3 className="text-xl font-black tracking-[-.025em] text-slate-950 dark:text-white md:text-2xl">
+          {isDragActive ? "Drop files to continue" : "Choose or drop your files"}
         </h3>
-        <p className="text-sm font-medium text-slate-500 uppercase tracking-widest text-center">
-          Browser tools stay in this tab. Tools that require temporary server processing are clearly labelled.
+        <p className="mx-auto mt-2 max-w-md text-[12px] font-semibold leading-5 text-slate-500 dark:text-zinc-400 md:text-sm">
+          Select the files needed for this tool. Processing location and limitations are shown clearly in each workflow.
         </p>
-        <div className="flex items-center justify-center gap-4 pt-4">
-          <span className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-emerald-600">
-            <ShieldCheck className="w-4 h-4" /> Secure Buffer
-          </span>
-          <span className="w-1 h-1 rounded-full bg-black/10" />
-          <span className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-primary">
-            <Zap className="w-4 h-4" /> Client-Side
-          </span>
-        </div>
+        <span className="ajn-dropzone-button mt-5 inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl px-5 text-xs font-black">
+          <CloudUpload className="h-4 w-4" /> Choose {multiple ? "files" : "file"}
+        </span>
+      </div>
+
+      <div className="relative z-10 mt-5 flex flex-wrap items-center justify-center gap-2 text-[10px] font-extrabold">
+        <span className="ajn-mini-trust"><ShieldCheck className="h-3.5 w-3.5" /> Validated input</span>
+        <span className="ajn-mini-trust"><Sparkles className="h-3.5 w-3.5" /> Clear workflow</span>
       </div>
 
       <AnimatePresence>
         {isDragActive && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-primary/5 pointer-events-none"
-          />
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="ajn-dropzone-active-layer absolute inset-0 pointer-events-none" />
         )}
       </AnimatePresence>
     </motion.div>

@@ -83,23 +83,6 @@ export default function ServerConversionTool({ toolId }: { toolId: string }) {
   const isUrlTool = toolId === 'url-to-pdf';
   const multiple = manifest?.multiFile ?? policy.maxFiles > 1;
   const accept = extensionAccept(manifest?.inputExtensions);
-  const serverTotalLimitBytes = 30 * 1024 * 1024;
-
-  const handleFilesChange = (next: ToolFile[]) => {
-    const selected = next.slice(0, policy.maxFiles);
-    const perFileLimitBytes = policy.maxFileSizeMb * 1024 * 1024;
-    const tooLarge = selected.some((item) => item.file.size > perFileLimitBytes);
-    const totalBytes = selected.reduce((sum, item) => sum + item.file.size, 0);
-    if (tooLarge || totalBytes > serverTotalLimitBytes) {
-      setFiles([]);
-      setResult(null);
-      setError(t('errors.FILE_TOO_LARGE'));
-      return;
-    }
-    setError('');
-    setFiles(selected);
-  };
-
   const canProcess = Boolean(
     tool &&
     status !== 'processing' &&
@@ -212,11 +195,11 @@ export default function ServerConversionTool({ toolId }: { toolId: string }) {
             ) : (
               <Drop
                 files={files}
-                onChange={handleFilesChange}
+                onChange={(next) => setFiles(next.slice(0, policy.maxFiles))}
                 accept={accept}
                 multiple={multiple}
                 label={multiple ? t('common.chooseFiles') : t('common.chooseFile')}
-                sub={`${manifest?.inputExtensions?.join(', ') || t('conversion.supportedFormats')} • Up to ${policy.maxFileSizeMb} MB each • 30 MB total server request`}
+                sub={`${manifest?.inputExtensions?.join(', ') || t('conversion.supportedFormats')} • Up to ${policy.maxFileSizeMb} MB each`}
               />
             )}
 

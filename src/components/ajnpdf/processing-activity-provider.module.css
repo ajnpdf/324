@@ -260,3 +260,40 @@
     background: #315ee8;
   }
 }
+
+/* AJN PDF 3.2 premium liquid theme */
+.panel {
+  border-color: rgba(115, 103, 255, .18);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at top right, rgba(185, 167, 255, .23), transparent 40%),
+    radial-gradient(circle at bottom left, rgba(76, 141, 255, .09), transparent 36%),
+    rgba(255,255,255,.98);
+}
+.progressBar { background: linear-gradient(90deg,#7367ff,#4c8dff,#7367ff); }
+.stageActive .stageDot { background:#6a5ef3; }
+.cancel { border-radius:16px; }
+:global(.dark) .backdrop { background:rgba(0,0,0,.68); }
+:global(.dark) .panel {
+  border-color:rgba(255,138,0,.18);
+  color:#fff8ef;
+  background:
+    radial-gradient(circle at top right, rgba(255,138,0,.14), transparent 42%),
+    linear-gradient(145deg,rgba(24,24,24,.99),rgba(8,8,8,.99));
+  box-shadow:0 32px 90px rgba(0,0,0,.68),inset 0 1px 0 rgba(255,255,255,.04);
+}
+:global(.dark) .eyebrow,
+:global(.dark) .description,
+:global(.dark) .jobLabel { color:#a9a29b; }
+:global(.dark) .title { color:#fff8ef; }
+:global(.dark) .elapsed { background:#1f1a15; color:#ffc778; }
+:global(.dark) .progressTrack { background:#2b241d; }
+:global(.dark) .progressBar { background:linear-gradient(90deg,#ff7500,#ffb03c,#ff7500); }
+:global(.dark) .stage { color:#756f69; }
+:global(.dark) .stageActive { color:#e9ded2; }
+:global(.dark) .stageDot { background:#332b24; box-shadow:0 0 0 3px #121212; }
+:global(.dark) .stageActive .stageDot { background:#ff8a00; }
+:global(.dark) .meta { border-top-color:#29231e; color:#918b84; }
+:global(.dark) .cancel { border-color:#342b23; background:#151515; color:#d9d2ca; }
+:global(.dark) .cancel:hover { border-color:#5c3b18; background:#21170e; color:#ffb14a; }
+:global(.dark) .cancel:focus-visible { outline-color:rgba(255,138,0,.30); }

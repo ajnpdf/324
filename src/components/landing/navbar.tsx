@@ -40,7 +40,7 @@ export function Navbar() {
 
   return (
     <>
-      <header className={cn('fixed inset-x-0 top-0 z-[100] transition-all duration-300', scrolled || mobileOpen ? 'border-b border-slate-200/80 bg-white/90 shadow-[0_12px_40px_rgba(15,23,42,.08)] backdrop-blur-2xl dark:border-slate-800/90 dark:bg-slate-950/90 dark:shadow-[0_12px_40px_rgba(0,0,0,.32)]' : 'bg-white/62 backdrop-blur-xl dark:bg-slate-950/62')}>
+      <header className={cn('fixed inset-x-0 top-0 z-[100] transition-all duration-300', scrolled || mobileOpen ? 'ajn-nav-scrolled border-b backdrop-blur-2xl' : 'ajn-nav-idle backdrop-blur-xl')}>
         <div className="mx-auto flex h-[64px] w-full max-w-7xl items-center justify-between gap-3 px-4 md:h-[72px] md:px-6 xl:px-8">
           <Link href="/" className="flex items-center" aria-label="AJN PDF home" data-analytics-id="nav-logo">
             <LogoAnimation className="h-9 w-[138px] md:h-11 md:w-[166px]" />
@@ -58,7 +58,7 @@ export function Navbar() {
             <Button type="button" variant="ghost" size="icon" aria-label={t('nav.searchLabel')} data-analytics-id="nav-search" onClick={() => setSearchOpen(true)} className="h-10 w-10 rounded-xl text-slate-600 hover:bg-blue-50 hover:text-blue-600 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-blue-300"><Search className="h-[18px] w-[18px]" /></Button>
             <LanguageSwitcher compact className="hidden sm:inline-flex" />
             <ThemeToggle />
-            <Link href="/pdf-tools" className="hidden lg:block" data-analytics-id="nav-explore-tools"><Button className="h-10 rounded-xl bg-blue-600 px-5 text-[11px] font-black text-white shadow-[0_12px_28px_rgba(37,99,235,.24)] transition hover:-translate-y-0.5 hover:bg-blue-700">{t('home.explore')}</Button></Link>
+            <Link href="/pdf-tools" className="hidden lg:block" data-analytics-id="nav-explore-tools"><Button className="ajn-primary-action h-10 rounded-2xl px-5 text-[11px] font-black">{t('home.explore')}</Button></Link>
             <Button type="button" variant="ghost" size="icon" aria-label={mobileOpen ? t('nav.closeMenu') : t('nav.menu')} aria-expanded={mobileOpen} onClick={() => setMobileOpen((value) => !value)} className="h-10 w-10 rounded-xl xl:hidden">
               {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
@@ -75,7 +75,7 @@ export function Navbar() {
                     {t(link.key)}<ArrowRight className="h-4 w-4" />
                   </Link>
                 ))}
-                <Link href="/pdf-tools" onClick={() => setMobileOpen(false)} className="mt-2" data-analytics-id="mobile-open-all-tools"><Button className="h-12 w-full rounded-2xl bg-blue-600 font-black text-white">{t('common.openAllTools')}</Button></Link>
+                <Link href="/pdf-tools" onClick={() => setMobileOpen(false)} className="mt-2" data-analytics-id="mobile-open-all-tools"><Button className="ajn-primary-action h-12 w-full rounded-2xl font-black">{t('common.openAllTools')}</Button></Link>
               </nav>
             </motion.div>
           )}

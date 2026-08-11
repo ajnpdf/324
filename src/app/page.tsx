@@ -13,6 +13,7 @@ import { BUILD_PUBLIC_TOOLS } from '@/lib/build-public-tools';
 import { sendAjnAnalytics } from '../components/analytics/site-analytics';
 import { useLanguage } from '@/lib/i18n/language-context';
 import { PremiumBackground } from '@/components/premium/premium-background';
+import { MobileHomeHero } from '@/components/landing/mobile-home-hero';
 
 const FormatStrip = dynamic(() => import('../components/landing/format-strip').then((module) => module.FormatStrip));
 const ProcessingArchitecture = dynamic(() => import('../components/landing/live-demo').then((module) => module.LiveDemo));
@@ -67,12 +68,13 @@ export default function HomePage() {
     <div className="ajn-page-shell">
       <Navbar />
       <main>
+        <MobileHomeHero />
         <div className="hidden md:block">
           <Hero searchValue={search} onSearchChange={setSearch} />
           <FormatStrip />
         </div>
 
-        <section className="relative mx-auto max-w-7xl scroll-mt-[72px] px-4 pb-10 pt-[76px] md:px-8 md:py-28" id="public-tools">
+        <section className="relative mx-auto max-w-7xl scroll-mt-[72px] px-4 pb-10 pt-4 md:px-8 md:py-28" id="public-tools">
           <PremiumBackground compact />
           <div className="border-b border-slate-200 pb-3 dark:border-slate-800 md:pb-8">
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between md:gap-6">
