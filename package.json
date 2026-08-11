@@ -97,5 +97,8 @@
     "unrs-resolver@1.11.1": true,
     "core-js": false,
     "tesseract.js": false
+  },
+  "overrides": {
+    "strip-bom": "3.0.0"
   }
 }
