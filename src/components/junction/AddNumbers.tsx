@@ -5,7 +5,7 @@ import { RuntimeImage } from '@/components/ui/runtime-image';
 import React, { useState, useRef } from "react";
 import * as pdfjsLib from 'pdfjs-dist';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
-import { FileDigit, CheckCircle2, Download, Loader2, Activity, FileText, RefreshCcw, Zap, Settings2, Edit3 } from 'lucide-react';
+import { FileDigit, CheckCircle2, Download, Loader2, Activity, FileText, RefreshCcw, Zap, Settings2, Edit3, Share2} from 'lucide-react';
 import { motion, AnimatePresence } from "framer-motion";
 
 import { Card } from '../ui/card';
@@ -18,7 +18,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { useToast } from '../../hooks/use-toast';
 
 import { cn } from '../../lib/utils';
-import { ToolWorkspace, dl, fmtBytes, getFilesFromEvent } from './_shared';
+import { ToolWorkspace, dl, fmtBytes, getFilesFromEvent, shareResult, beginToolProcessing, completeToolProcessing, failToolProcessing} from './_shared';
 import { initPdfWorker } from "@/lib/pdfjs-worker";
 
 export default function AddNumbers() {
@@ -63,6 +63,7 @@ export default function AddNumbers() {
       await page.render({ canvasContext: ctx, viewport: viewport }).promise;
       setPreview(canvas.toDataURL('image/jpeg', 0.8));
     } catch {
+      failToolProcessing();
       toast({ title: "Analysis failed", variant: "destructive" });
       setPhase('upload');
     }
@@ -75,6 +76,7 @@ export default function AddNumbers() {
 
   const executePagination = async () => {
     if (!file) return;
+    beginToolProcessing("AddNumbers");
     setPhase('processing');
     setProgress(0);
     setStatus("Adding page numbers…");
@@ -104,7 +106,9 @@ export default function AddNumbers() {
       const finalBytes = await pdfDoc.save();
       setResultBlob(new Blob([finalBytes.buffer as ArrayBuffer], { type: 'application/pdf' }));
       setPhase('done');
+      completeToolProcessing();
     } catch {
+      failToolProcessing();
       setPhase('configure');
       toast({ title: "Process Error", variant: "destructive" });
     }
@@ -134,7 +138,6 @@ export default function AddNumbers() {
                 </div>
                 <div className="text-center space-y-1 px-8 relative z-10">
                   <h3 className="text-2xl font-black tracking-tighter uppercase text-slate-950">Drop PDF to Index</h3>
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">Runs in your browser</p>
                 </div>
               </div>
             </motion.div>
@@ -262,6 +265,9 @@ export default function AddNumbers() {
               <div className="w-full max-w-sm flex flex-col gap-4 mx-auto pt-4">
                 <Button onClick={() => dl(resultBlob, `${outputName}.pdf`)} className="h-16 bg-emerald-500 text-white font-black text-sm uppercase tracking-widest rounded-2xl shadow-xl hover:bg-emerald-600 transition-all gap-3 border-2 border-white/20 active:scale-95">
                   <Download className="w-4 h-4" /> Download PDF
+                </Button>
+                <Button variant="outline" onClick={() => void shareResult(resultBlob, `${outputName}.pdf`)} className="h-12 border-slate-200 bg-white text-slate-700 font-black text-xs rounded-xl shadow-sm hover:border-blue-200 hover:bg-blue-50/60 gap-2">
+                  <Share2 className="w-4 h-4" /> Share result
                 </Button>
                 <button onClick={reset} className="h-12 rounded-xl font-black text-[10px] uppercase text-slate-400 gap-2 flex items-center justify-center hover:bg-black/5 transition-all">
                   <RefreshCcw className="w-3.5 h-3.5" /> Process another file

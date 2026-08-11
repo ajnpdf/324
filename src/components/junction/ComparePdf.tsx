@@ -3,7 +3,7 @@
 import { RuntimeImage } from '@/components/ui/runtime-image';
 import React, { useState, useRef } from "react";
 import * as pdfjsLib from 'pdfjs-dist';
-import { Diff, CheckCircle2, Loader2, Activity, FileText, RefreshCcw, ShieldCheck, Search, AlertCircle, FileWarning } from 'lucide-react';
+import { Diff, CheckCircle2, Loader2, Activity, FileText, RefreshCcw, Search, AlertCircle, FileWarning } from 'lucide-react';
 import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from '../ui/badge';
 import { Card } from '../ui/card';
@@ -11,7 +11,7 @@ import { Button } from '../ui/button';
 import { Progress } from '../ui/progress';
 import { useToast } from '../../hooks/use-toast';
 import { cn } from '../../lib/utils';
-import { ToolWorkspace, getFilesFromEvent } from './_shared';
+import { ToolWorkspace, getFilesFromEvent, beginToolProcessing, completeToolProcessing, failToolProcessing} from './_shared';
 import { initPdfWorker } from "@/lib/pdfjs-worker";
 
 interface DiffMark {
@@ -65,6 +65,7 @@ export default function ComparePdf() {
 
   const executeComparison = async () => {
     if (!fileA || !fileB) return;
+    beginToolProcessing("ComparePdf");
     setPhase('processing');
     setProgress(0);
     setStatus("Loading both PDF versions…");
@@ -137,7 +138,9 @@ export default function ComparePdf() {
       setDiffs(results);
       setStats({ additions: totalAdd, deletions: totalRem, totalPages: maxPages });
       setPhase('done');
+      completeToolProcessing();
     } catch (err) {
+      failToolProcessing();
       console.error(err);
       toast({ title: "Audit failed", description: "PDF comparison stopped unexpectedly.", variant: "destructive" });
       setPhase('upload');
@@ -214,10 +217,6 @@ export default function ComparePdf() {
                 >
                   <Diff className="w-4 h-4" /> Compare PDFs
                 </Button>
-                <div className="flex items-center gap-3 px-6 py-2 bg-white/40 border border-black/5 rounded-full shadow-sm">
-                  <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                  <span className="text-[9px] font-black uppercase tracking-widest text-slate-500 leading-none">Runs in your browser</span>
-                </div>
               </div>
             </motion.div>
           )}

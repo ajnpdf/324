@@ -65,6 +65,12 @@ export interface EngineResponse {
 
 type ToolFunction = (files: File[], options: any, onProgress: (p: JobProgress) => void, signal?: AbortSignal) => Promise<Blob | any>;
 
+type ProcessingUiEvent = 'ajn:processing-start' | 'ajn:processing-progress' | 'ajn:processing-finish' | 'ajn:processing-error';
+function emitProcessingUiEvent(type: ProcessingUiEvent, detail: Record<string, unknown>) {
+  if (typeof window === 'undefined') return;
+  window.dispatchEvent(new CustomEvent(type, { detail }));
+}
+
 const TOOL_REGISTRY: Record<string, ToolFunction> = {
   'merge-pdf': async (files, options, onProgress) => {
     const { PDFManipulator } = await import('./pdf-manipulator');
@@ -289,13 +295,19 @@ class AJNStudioSystem {
     const files = Array.isArray(inputs) ? inputs : (inputs ? [inputs] : []);
     const controller = new AbortController();
     this.activeJobs.set(jobId, controller);
+    emitProcessingUiEvent('ajn:processing-start', { label: toolId, jobId });
+
+    const reportProgress = (progress: JobProgress) => {
+      onProgress(progress);
+      emitProcessingUiEvent('ajn:processing-progress', { label: toolId, jobId, pct: progress.pct, stage: progress.stage });
+    };
 
     try {
       const toolFn = TOOL_REGISTRY[toolId];
       if (!toolFn) throw new Error(`Tool [${toolId}] not registered in the processing engine.`);
 
-      onProgress({ stage: "Starting", detail: "Initializing local buffer...", pct: 5, phase: 'loading' });
-      const result = await toolFn(files, options, onProgress, controller.signal);
+      reportProgress({ stage: "Starting", detail: "Preparing your file…", pct: 5, phase: 'loading' });
+      const result = await toolFn(files, options, reportProgress, controller.signal);
 
       if (controller.signal.aborted) throw new Error("ABORTED");
 
@@ -303,6 +315,7 @@ class AJNStudioSystem {
       if (!resultBlob) throw new Error("The output file could not be created.");
 
       this.activeJobs.delete(jobId);
+      emitProcessingUiEvent('ajn:processing-finish', { label: toolId, jobId });
       return {
         success: true,
         message: "Complete",
@@ -313,6 +326,7 @@ class AJNStudioSystem {
       };
     } catch (err: any) {
       this.activeJobs.delete(jobId);
+      emitProcessingUiEvent('ajn:processing-error', { label: toolId, jobId });
       if (err.message === 'ABORTED') return { success: false, message: "Cancelled", error: 'ABORTED' };
       return { success: false, message: err.message || "An error occurred.", error: err.toString() };
     }

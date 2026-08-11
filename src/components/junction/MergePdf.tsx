@@ -48,7 +48,7 @@ export default function MergePdf() {
   return (
     <ToolWorkspace title="Merge PDF" description="Combine PDF files in your chosen order" icon="🔗" badge="PDF MERGE" accent={T.blue}>
       {result ? (
-        <Done msg="PDFs merged successfully" onDownload={() => dl(result, safeOutputName(outputName, "merged", ".pdf"))} onReset={reset} />
+        <Done msg="PDFs merged successfully" onDownload={() => dl(result, safeOutputName(outputName, "merged", ".pdf"))} shareFile={{ blob: result, name: safeOutputName(outputName, "merged", ".pdf") }} onReset={reset} />
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           <div className="jn-drop" onClick={() => inputRef.current?.click()}>

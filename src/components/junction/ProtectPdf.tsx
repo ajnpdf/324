@@ -51,7 +51,7 @@ export default function ProtectPdf() {
   return (
     <ToolWorkspace title="Protect PDF" description="Apply real AES-256 password encryption" icon="🔒" badge="SECURE PROCESSING" accent="#2563EB" processingMode="temporary-server">
       {result ? (
-        <Done msg="PDF protected successfully" processingMode="temporary-server" onDownload={() => dl(result, safeOutputName(outputName, "protected", ".pdf"))} onReset={reset} />
+        <Done msg="PDF protected successfully" processingMode="temporary-server" onDownload={() => dl(result, safeOutputName(outputName, "protected", ".pdf"))} shareFile={{ blob: result, name: safeOutputName(outputName, "protected", ".pdf") }} onReset={reset} />
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           <BackendStatus />

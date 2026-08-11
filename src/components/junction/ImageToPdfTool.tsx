@@ -48,7 +48,7 @@ export default function ImageToPdfTool({ title, description, accept, extensions,
   return (
     <ToolWorkspace title={title} description={description} icon="🖼️" accent={accent} badge={badge}>
       {result ? (
-        <Done msg="PDF created successfully" onDownload={() => dl(result, safeOutputName(outputName, "images", ".pdf"))} onReset={() => { setResult(null); setFiles([]); setError(""); }} />
+        <Done msg="PDF created successfully" onDownload={() => dl(result, safeOutputName(outputName, "images", ".pdf"))} shareFile={{ blob: result, name: safeOutputName(outputName, "images", ".pdf") }} onReset={() => { setResult(null); setFiles([]); setError(""); }} />
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           <Drop files={files} onChange={setFiles} accept={accept} multiple label="Select images" sub="Up to 30 images · 25 MB each · processed locally" />

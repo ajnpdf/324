@@ -124,7 +124,7 @@ function injectStyles(accent = T.red) {
   document.head.appendChild(s);
 }
 
-export function ToolWorkspace({ title, description, accent = T.red, children }: WorkspaceProps) {
+export function ToolWorkspace({ title, description, accent = T.red, processingMode = "browser", children }: WorkspaceProps) {
   const router = useRouter();
   const pathname = usePathname();
   const { t, tool: localizeTool } = useLanguage();

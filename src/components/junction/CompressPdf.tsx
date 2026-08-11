@@ -70,7 +70,7 @@ export default function CompressPdf() {
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           <Info><strong>{fmtBytes(result.original)}</strong> → <strong>{fmtBytes(result.output)}</strong> · {reduction >= 0 ? `${reduction}% smaller` : `${Math.abs(reduction)}% larger`}</Info>
           {reduction < 0 && <Info bg="rgba(245,158,11,.08)" col="#92400E">This PDF was already optimized. The selected raster quality produced a larger file.</Info>}
-          <Done msg="Compression completed" onDownload={() => dl(result.blob, safeOutputName(outputName, "compressed", ".pdf"))} onReset={() => { setResult(null); setFiles([]); setError(""); setProgress(0); }} />
+          <Done msg="Compression completed" onDownload={() => dl(result.blob, safeOutputName(outputName, "compressed", ".pdf"))} shareFile={{ blob: result.blob, name: safeOutputName(outputName, "compressed", ".pdf") }} onReset={() => { setResult(null); setFiles([]); setError(""); setProgress(0); }} />
         </div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>

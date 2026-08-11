@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from "react";
 
-import { FileText, CheckCircle2, Download, Loader2, Activity, RefreshCcw, Zap, ShieldCheck, Settings2, Search, User, Type, Tag } from 'lucide-react';
+import { FileText, CheckCircle2, Download, Loader2, Activity, RefreshCcw, Zap, Settings2, Search, User, Type, Tag, Share2} from 'lucide-react';
 import { motion, AnimatePresence } from "framer-motion";
 
 import { Card } from '../ui/card';
@@ -12,7 +12,7 @@ import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { useToast } from '../../hooks/use-toast';
 import { cn } from '../../lib/utils';
-import { ToolWorkspace, dl, fmtBytes, getFilesFromEvent } from './_shared';
+import { ToolWorkspace, dl, fmtBytes, getFilesFromEvent, shareResult, beginToolProcessing, completeToolProcessing, failToolProcessing} from './_shared';
 import { loadPdf, editMetadata } from "./_pdfUtils";
 
 /**
@@ -50,6 +50,7 @@ export default function PdfMetadata() {
       });
       setPhase('configure');
     } catch {
+      failToolProcessing();
       toast({ title: "Read failed", variant: "destructive" });
     }
   };
@@ -61,6 +62,7 @@ export default function PdfMetadata() {
 
   const executeSave = async () => {
     if (!file) return;
+    beginToolProcessing("PdfMetadata");
     setPhase('processing');
     setProgress(0);
     setStatus("Updating document properties…");
@@ -70,7 +72,9 @@ export default function PdfMetadata() {
       setProgress(100);
       setResultBlob(blob);
       setPhase('done');
+      completeToolProcessing();
     } catch {
+      failToolProcessing();
       setPhase('configure');
       toast({ title: "Process Error", variant: "destructive" });
     }
@@ -100,7 +104,6 @@ export default function PdfMetadata() {
                 </div>
                 <div className="text-center space-y-1 px-8 relative z-10">
                   <h3 className="text-2xl font-black tracking-tighter uppercase text-slate-950">Drop PDF to Inspect</h3>
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">Runs in your browser</p>
                 </div>
               </div>
             </motion.div>
@@ -150,11 +153,6 @@ export default function PdfMetadata() {
                   </Card>
                 </section>
 
-                <div className="p-6 bg-emerald-500/5 border border-emerald-500/10 rounded-[2rem] flex items-center justify-center gap-2 text-emerald-600 shadow-sm">
-                  <ShieldCheck className="w-4 h-4" />
-                  <span className="text-[9px] font-black uppercase tracking-widest">Runs in your browser</span>
-                </div>
-
                 <Button onClick={executeSave} className="w-full h-16 bg-primary text-white font-black text-xs uppercase tracking-widest rounded-2xl shadow-xl hover:scale-105 transition-all gap-3 border-2 border-white/20 active:scale-95">
                   <Zap className="w-4 h-4" /> Save Metadata
                 </Button>
@@ -198,6 +196,9 @@ export default function PdfMetadata() {
               <div className="w-full max-w-sm flex flex-col gap-4 mx-auto pt-4 pb-32">
                 <Button onClick={() => dl(resultBlob, "Scrubbed_Document.pdf")} className="h-16 bg-emerald-500 text-white font-black text-sm uppercase tracking-widest rounded-2xl shadow-xl hover:bg-emerald-600 transition-all gap-3 border-2 border-white/20 active:scale-95">
                   <Download className="w-4 h-4" /> Download PDF
+                </Button>
+                <Button variant="outline" onClick={() => void shareResult(resultBlob, "Scrubbed_Document.pdf")} className="h-12 border-slate-200 bg-white text-slate-700 font-black text-xs rounded-xl shadow-sm hover:border-blue-200 hover:bg-blue-50/60 gap-2">
+                  <Share2 className="w-4 h-4" /> Share result
                 </Button>
                 <button onClick={reset} className="h-12 rounded-xl font-black text-[10px] uppercase text-slate-400 gap-2 flex items-center justify-center hover:bg-black/5 transition-all">
                   <RefreshCcw className="w-3.5 h-3.5" /> Process another file

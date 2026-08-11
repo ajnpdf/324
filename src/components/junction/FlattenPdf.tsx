@@ -5,7 +5,7 @@ import { RuntimeImage } from '@/components/ui/runtime-image';
 import React, { useState, useRef } from "react";
 import * as pdfjsLib from 'pdfjs-dist';
 import { PDFDocument } from 'pdf-lib';
-import { Layers, CheckCircle2, Download, Loader2, Activity, FileText, RefreshCcw, Zap, ShieldCheck, Settings2, Edit3 } from 'lucide-react';
+import { Layers, CheckCircle2, Download, Loader2, Activity, FileText, RefreshCcw, Zap, Settings2, Edit3, Share2} from 'lucide-react';
 import { motion, AnimatePresence } from "framer-motion";
 
 import { Card } from '../ui/card';
@@ -16,7 +16,7 @@ import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { useToast } from '../../hooks/use-toast';
 import { cn } from '../../lib/utils';
-import { ToolWorkspace, dl, fmtBytes, getFilesFromEvent } from './_shared';
+import { ToolWorkspace, dl, fmtBytes, getFilesFromEvent, shareResult, beginToolProcessing, completeToolProcessing, failToolProcessing} from './_shared';
 import { initPdfWorker } from "@/lib/pdfjs-worker";
 
 export default function FlattenPdf() {
@@ -53,6 +53,7 @@ export default function FlattenPdf() {
       await page.render({ canvasContext: ctx, viewport: viewport }).promise;
       setPreview(canvas.toDataURL('image/jpeg', 0.8));
     } catch {
+      failToolProcessing();
       toast({ title: "Analysis failed", variant: "destructive" });
       setPhase('upload');
     }
@@ -65,6 +66,7 @@ export default function FlattenPdf() {
 
   const executeFlatten = async () => {
     if (!file) return;
+    beginToolProcessing("FlattenPdf");
     setPhase('processing');
     setProgress(0);
     setStatus("Collapsing interactive elements...");
@@ -77,6 +79,7 @@ export default function FlattenPdf() {
       try {
         form.flatten();
       } catch {
+      failToolProcessing();
         console.warn("No interactive form fields found to flatten.");
       }
 
@@ -87,7 +90,9 @@ export default function FlattenPdf() {
       setResultBlob(new Blob([finalBytes.buffer as ArrayBuffer], { type: 'application/pdf' }));
       setProgress(100);
       setPhase('done');
+      completeToolProcessing();
     } catch {
+      failToolProcessing();
       setPhase('configure');
       toast({ title: "Flatten Error", variant: "destructive" });
     }
@@ -117,7 +122,6 @@ export default function FlattenPdf() {
                 </div>
                 <div className="text-center space-y-1 px-8 relative z-10">
                   <h3 className="text-2xl font-black tracking-tighter uppercase text-slate-950">Drop PDF to Flatten</h3>
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">Runs in your browser</p>
                 </div>
               </div>
             </motion.div>
@@ -171,13 +175,6 @@ export default function FlattenPdf() {
                     </Card>
                   </section>
 
-                  <div className="p-6 bg-emerald-500/5 border border-emerald-500/10 rounded-[2rem] flex items-start gap-4">
-                    <ShieldCheck className="w-5 h-5 text-emerald-600 mt-0.5" />
-                    <p className="text-[9px] font-bold text-slate-500 uppercase leading-relaxed tracking-wide text-center w-full">
-                      Runs in your browser.
-                    </p>
-                  </div>
-
                   <Button onClick={executeFlatten} className="w-full h-16 bg-primary text-white font-black text-xs uppercase tracking-widest rounded-2xl shadow-xl hover:scale-105 transition-all gap-3 border-2 border-white/20 active:scale-95">
                     <Zap className="w-4 h-4" /> Flatten PDF
                   </Button>
@@ -222,6 +219,9 @@ export default function FlattenPdf() {
               <div className="w-full max-w-sm flex flex-col gap-4 mx-auto pt-4 pb-32">
                 <Button onClick={() => dl(resultBlob, `${outputName}.pdf`)} className="h-16 bg-emerald-500 text-white font-black text-sm uppercase tracking-widest rounded-2xl shadow-xl hover:bg-emerald-600 transition-all gap-3 border-2 border-white/20 active:scale-95">
                   <Download className="w-4 h-4" /> Download PDF
+                </Button>
+                <Button variant="outline" onClick={() => void shareResult(resultBlob, `${outputName}.pdf`)} className="h-12 border-slate-200 bg-white text-slate-700 font-black text-xs rounded-xl shadow-sm hover:border-blue-200 hover:bg-blue-50/60 gap-2">
+                  <Share2 className="w-4 h-4" /> Share result
                 </Button>
                 <button onClick={reset} className="h-12 rounded-xl font-black text-[10px] uppercase text-slate-400 gap-2 flex items-center justify-center hover:bg-black/5 transition-all">
                   <RefreshCcw className="w-3.5 h-3.5" /> Process another file

@@ -30,11 +30,11 @@ export default function RepairPdf() {
   return (
     <ToolWorkspace title="Repair PDF" description="Attempt safe recovery of minor PDF structure damage" icon="🔧" badge="PDF REPAIR" accent="#DC2626" processingMode="temporary-server">
       {result ? (
-        <Done msg="Repair completed" processingMode="temporary-server" onDownload={() => dl(result, safeOutputName(outputName, "repaired", ".pdf"))} onReset={() => { setResult(null); setFiles([]); setError(""); }} />
+        <Done msg="Repair completed" processingMode="temporary-server" onDownload={() => dl(result, safeOutputName(outputName, "repaired", ".pdf"))} shareFile={{ blob: result, name: safeOutputName(outputName, "repaired", ".pdf") }} onReset={() => { setResult(null); setFiles([]); setError(""); }} />
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           <BackendStatus />
-          <Drop files={files} onChange={setFiles} accept=".pdf,application/pdf" label="Select a damaged PDF" sub="Temporary server processing · maximum 50 MB" />
+          <Drop files={files} onChange={setFiles} accept=".pdf,application/pdf" label="Select a damaged PDF" sub="PDF files · maximum 50 MB" />
           <F label="Output filename"><input style={IS} value={outputName} onChange={event => setOutputName(event.target.value)} /></F>
           <Info>Recovery rebuilds readable PDF structures when possible. Severely damaged documents may not be recoverable.</Info>
           <Err msg={error} />

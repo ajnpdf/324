@@ -8,7 +8,7 @@ export default function SearchablePdf(){
   const run=async()=>{if(!files.length){setE("Upload a PDF.");return;}setE("");setL(true);
     try{setR(await repairPdf(files[0].file));}catch(e:any){setE(e.message);}setL(false);};
   return(<ToolWorkspace title="Searchable PDF" description="Ensure your PDF's text layer is accessible and searchable." icon="🔍" accent={T.purple}>
-    {result?<Done msg="PDF is now searchable!" onDownload={()=>dl(result,"searchable.pdf")} onReset={()=>{setR(null);setF([]);}}/>
+    {result?<Done msg="PDF is now searchable!" onDownload={()=>dl(result,"searchable.pdf")} shareFile={{blob:result,name:"searchable.pdf"}} onReset={()=>{setR(null);setF([]);}}/>
     :<div style={{display:"flex",flexDirection:"column",gap:16}}>
       <Drop files={files} onChange={setF} accept=".pdf"/>
       <Info bg="#F5F3FF" col="#5B21B6">🔍 Preserves and optimises the existing text layer. For scanned PDFs with <strong>no text layer</strong>, real OCR (Tesseract) is required — that needs a server.</Info>

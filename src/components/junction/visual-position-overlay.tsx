@@ -121,7 +121,7 @@ export function VisualPositionOverlay({
       onPointerUp={end}
       onPointerCancel={end}
     >
-      <span className="pointer-events-none absolute -left-3 -top-3 grid h-6 w-6 place-items-center rounded-full bg-blue-600 text-white shadow-md" aria-hidden="true">
+      <span className="pointer-events-none absolute -left-3 -top-3 grid h-6 w-6 place-items-center rounded-lg bg-blue-600 text-white shadow-md" aria-hidden="true">
         <Move className="h-3.5 w-3.5" />
       </span>
       {children}
@@ -130,7 +130,7 @@ export function VisualPositionOverlay({
           type="button"
           aria-label="Resize item"
           title="Resize"
-          className="absolute -right-3 -top-3 grid h-7 w-7 cursor-nwse-resize place-items-center rounded-full border border-white/80 bg-blue-600 text-white shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+          className="absolute -right-3 -top-3 grid h-7 w-7 cursor-nwse-resize place-items-center rounded-lg border border-white/80 bg-blue-600 text-white shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
           onPointerDown={(event) => begin(event, "resize")}
           onPointerMove={move}
           onPointerUp={end}

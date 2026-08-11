@@ -10,7 +10,7 @@ export default function RotateImage(){
   const run=async()=>{if(!files.length){setE("Upload an image.");return;}setE("");setL(true);
     try{setR(await rotateImage(files[0].file,final));}catch(e:any){setE(e.message);}setL(false);};
   return(<ToolWorkspace title="Rotate Image" description="Turn images left, right, or by any custom angle." icon="🔄" accent="#059669">
-    {result?<Done msg="Image rotated!" onDownload={()=>dl(result,"rotated_"+(files[0]?.name||"image.jpg"))} onReset={()=>{setR(null);setF([]);}}/>
+    {result?<Done msg="Image rotated!" onDownload={()=>dl(result,"rotated_"+(files[0]?.name||"image.jpg"))} shareFile={{blob:result,name:"rotated_"+(files[0]?.name||"image.jpg")}} onReset={()=>{setR(null);setF([]);}}/>
     :<div style={{display:"flex",flexDirection:"column",gap:16}}>
       <Drop files={files} onChange={setF} accept=".jpg,.jpeg,.png,.webp,.bmp"/>
       <F label="Rotation"><Pills opts={[{label:"Preset",value:"preset"},{label:"Custom",value:"custom"}]} val={mode} onChange={(v:any)=>setMode(v)}/></F>

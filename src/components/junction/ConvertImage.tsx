@@ -11,7 +11,7 @@ export default function ConvertImage(){
     try{setR(await convertImageFormat(files[0].file,fmt,q));}catch(e:any){setE(e.message);}setL(false);};
   const ext=fmt==="jpeg"?"jpg":fmt;const name=(files[0]?.name.replace(/\.[^.]+$/,"")||"converted")+"."+ext;
   return(<ToolWorkspace title="Convert Image" description="Convert images between JPEG, PNG, WebP and BMP formats." icon="🔀" accent={T.purple}>
-    {result?<Done msg={`Converted to ${fmt.toUpperCase()}!`} dlLabel={`Download .${ext}`} onDownload={()=>dl(result,name)} onReset={()=>{setR(null);setF([]);}}/>
+    {result?<Done msg={`Converted to ${fmt.toUpperCase()}!`} dlLabel={`Download .${ext}`} onDownload={()=>dl(result,name)} shareFile={{blob:result,name}} onReset={()=>{setR(null);setF([]);}}/>
     :<div style={{display:"flex",flexDirection:"column",gap:16}}>
       <Drop files={files} onChange={setF} accept=".jpg,.jpeg,.png,.webp,.bmp,.gif,.tiff" label="Drop image to convert" sub="JPG, PNG, WebP, BMP, GIF, TIFF accepted"/>
       <F label="Convert to"><Pills opts={FMTS} val={fmt} onChange={(v:any)=>setFmt(v)}/></F>

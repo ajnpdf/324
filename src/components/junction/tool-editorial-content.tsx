@@ -4,7 +4,6 @@ import type { ServiceTool } from '@/lib/tools-data';
 import { getToolEditorial } from '@/lib/tool-editorial';
 import { getToolPolicy } from '@/lib/tool-policy';
 import { getRelatedGuides, getRelatedTools } from '@/lib/internal-linking';
-import { getToolSeoProfile } from '@/lib/seo-strategy';
 import { ToolArtwork } from '@/components/ajn/tool-artwork';
 
 export function ToolEditorialContent({ tool }: { tool: ServiceTool }) {
@@ -14,13 +13,11 @@ export function ToolEditorialContent({ tool }: { tool: ServiceTool }) {
   const ModeIcon = isBrowser ? Monitor : Server;
   const relatedTools = getRelatedTools(tool.id, 6);
   const relatedGuides = getRelatedGuides(tool);
-  const seo = getToolSeoProfile(tool);
 
   return (
     <section className="relative z-10 mx-auto max-w-6xl px-4 pb-12 pt-10 md:px-8 md:pb-20">
       <div className="relative overflow-hidden rounded-[2rem] border border-border bg-card p-6 shadow-[0_30px_80px_rgba(15,23,42,.10)] md:rounded-[2.5rem] md:p-10">
-        <div className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full border-[48px] border-blue-500/7" />
-        <div className="pointer-events-none absolute -bottom-32 left-1/3 h-72 w-72 rounded-full border-[54px] border-emerald-500/6" />
+        <svg className="pointer-events-none absolute inset-x-0 top-0 h-24 w-full text-blue-500/8" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true"><path d="M-50 82C137 7 281 111 456 52C634-8 777 9 931 63C1062 109 1150 74 1260 23" fill="none" stroke="currentColor" strokeWidth="10" /></svg>
         <div className="relative grid gap-10 lg:grid-cols-[1.2fr_.8fr]">
           <article>
             <div className="ajn-section-kicker"><Sparkles className="h-3.5 w-3.5 text-red-500" /> Practical guide</div>
@@ -33,7 +30,7 @@ export function ToolEditorialContent({ tool }: { tool: ServiceTool }) {
               <ol className="mt-5 space-y-4">
                 {tool.instructions.map((step, index) => (
                   <li id={`step-${index + 1}`} key={step} className="flex gap-3 text-sm font-medium leading-6 text-muted-foreground">
-                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-600 text-[10px] font-black text-white shadow-sm">{index + 1}</span>
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-blue-600 text-[10px] font-black text-white shadow-sm">{index + 1}</span>
                     <span>{step}</span>
                   </li>
                 ))}
@@ -42,25 +39,23 @@ export function ToolEditorialContent({ tool }: { tool: ServiceTool }) {
           </article>
 
           <aside className="space-y-5">
-            <div className={`rounded-3xl border p-6 ${isBrowser ? 'border-blue-100 bg-blue-50/70' : 'border-red-100 bg-red-50/70'}`}>
-              <div className="flex items-center gap-3">
-                <span className={`flex h-11 w-11 items-center justify-center rounded-2xl ${isBrowser ? 'bg-blue-600 text-white' : 'bg-red-600 text-white'}`}><ModeIcon className="h-5 w-5" /></span>
-                <div>
-                  <p className="text-[10px] font-black uppercase tracking-[.16em] text-slate-500">Processing mode</p>
-                  <h3 className="mt-1 text-lg font-black text-slate-950">{isBrowser ? 'Browser processing' : 'Temporary server processing'}</h3>
-                </div>
-              </div>
-              <p className="mt-4 text-sm font-medium leading-7 text-slate-700">
+            <details className="group rounded-2xl border border-slate-200 bg-slate-50/75 p-5">
+              <summary className="flex cursor-pointer list-none items-center gap-3 text-sm font-black text-slate-950">
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-blue-600 shadow-sm"><ModeIcon className="h-[18px] w-[18px]" /></span>
+                <span className="flex-1">File handling details</span>
+                <span className="text-xs font-black text-blue-600 transition group-open:rotate-45">+</span>
+              </summary>
+              <p className="mt-4 text-sm font-medium leading-7 text-slate-600">
                 {isBrowser
-                  ? 'Supported files are designed to be processed in the current browser session. Keep the tab open until the result is downloaded.'
-                  : 'This tool requires the AJN PDF Python service. A request-specific temporary directory is removed after the response is delivered.'}
+                  ? 'This tool handles supported files within the active session. Keep this tab open until your result is ready.'
+                  : 'This operation sends the selected file only for the active request. Request workspace data is cleaned after the result is returned.'}
               </p>
-            </div>
+            </details>
 
             <div className="rounded-3xl border border-emerald-100 bg-emerald-50/70 p-6">
               <h3 className="flex items-center gap-2 text-sm font-black uppercase tracking-wider text-emerald-900"><CheckCircle2 className="h-4 w-4" /> Useful tips</h3>
               <ul className="mt-4 space-y-3 text-sm font-medium leading-6 text-emerald-950/75">
-                {content.tips.map((tip) => <li key={tip} className="flex gap-2"><span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-600" />{tip}</li>)}
+                {content.tips.map((tip) => <li key={tip} className="flex gap-2"><span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-sm bg-emerald-600" />{tip}</li>)}
               </ul>
             </div>
           </aside>
@@ -70,13 +65,13 @@ export function ToolEditorialContent({ tool }: { tool: ServiceTool }) {
           <div className="rounded-3xl border border-amber-100 bg-amber-50/70 p-6">
             <h3 className="flex items-center gap-2 text-lg font-black text-slate-950"><CircleAlert className="h-5 w-5 text-amber-600" /> Important limitations</h3>
             <ul className="mt-4 space-y-3 text-sm font-medium leading-6 text-muted-foreground">
-              {content.limitations.map((item) => <li key={item} className="flex gap-2"><span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />{item}</li>)}
+              {content.limitations.map((item) => <li key={item} className="flex gap-2"><span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-sm bg-amber-500" />{item}</li>)}
             </ul>
           </div>
           <div className="rounded-3xl border border-blue-100 bg-blue-50/60 p-6">
             <h3 className="text-lg font-black text-slate-950">Common uses</h3>
             <ul className="mt-4 space-y-3 text-sm font-medium leading-6 text-muted-foreground">
-              {[...tool.useCases, ...tool.benefits].map((item) => <li key={item} className="flex gap-2"><span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-600" />{item}</li>)}
+              {[...tool.useCases, ...tool.benefits].map((item) => <li key={item} className="flex gap-2"><span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-sm bg-blue-600" />{item}</li>)}
             </ul>
           </div>
         </div>
@@ -99,18 +94,18 @@ export function ToolEditorialContent({ tool }: { tool: ServiceTool }) {
             <p className="mt-2 text-sm font-medium leading-6 text-muted-foreground">Continue the workflow without returning to search results.</p>
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
               {relatedTools.map((related) => (
-                <Link key={related.id} href={`/tools/${related.id}`} className="group flex min-h-[72px] items-center gap-3 rounded-2xl border border-border bg-card p-2.5 text-sm font-black text-card-foreground transition hover:-translate-y-0.5 hover:border-blue-200 hover:text-blue-700 hover:shadow-md dark:hover:border-orange-400/25 dark:hover:text-orange-300">
+                <Link key={related.id} href={`/tools/${related.id}`} className="group flex min-h-[72px] items-center gap-3 rounded-2xl border border-border bg-card p-2.5 text-sm font-black text-card-foreground transition hover:-translate-y-0.5 hover:border-blue-200 hover:text-blue-700 hover:shadow-md">
                   <ToolArtwork toolId={related.id} toolName={related.name} className="h-10 w-10" />
                   <span className="min-w-0 flex-1 line-clamp-2">{related.name}</span><ArrowRight className="h-4 w-4 shrink-0 transition group-hover:translate-x-1" />
                 </Link>
               ))}
             </div>
           </section>
-          <aside className="rounded-3xl border border-blue-100 bg-blue-50/60 p-6">
-            <h3 className="text-lg font-black text-slate-950">Search intent covered</h3>
-            <p className="mt-3 text-sm font-medium leading-6 text-muted-foreground">Primary topic: <strong className="text-slate-900">{seo.primaryKeyword}</strong>. This page also answers practical how-to questions, file requirements and output limitations for {seo.audience.slice(0, 3).join(', ')}.</p>
+          <aside className="rounded-2xl border border-blue-100 bg-blue-50/60 p-6">
+            <h3 className="text-lg font-black text-slate-950">Helpful guides</h3>
+            <p className="mt-2 text-sm font-medium leading-6 text-muted-foreground">Read practical guidance for common document tasks and safer workflows.</p>
             <div className="mt-5 space-y-3">
-              {relatedGuides.map((guide) => <Link key={guide.href} href={guide.href} className="group flex items-center justify-between rounded-2xl bg-white px-4 py-3 text-sm font-black text-card-foreground shadow-sm transition hover:text-blue-700"><span>{guide.title}</span><ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" /></Link>)}
+              {relatedGuides.map((guide) => <Link key={guide.href} href={guide.href} className="group flex items-center justify-between rounded-xl bg-white px-4 py-3 text-sm font-black text-card-foreground shadow-sm transition hover:text-blue-700"><span>{guide.title}</span><ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" /></Link>)}
             </div>
           </aside>
         </div>

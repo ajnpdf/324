@@ -34,7 +34,7 @@ export default function PdfToJpg() {
   return (
     <ToolWorkspace title="PDF to Image" description="Export selected PDF pages as JPG or PNG" icon="🖼️" accent="#467AF2" badge="PDF TO IMAGE">
       {result ? (
-        <Done msg={`${result.pages} page${result.pages === 1 ? "" : "s"} converted`} dlLabel={result.pages === 1 ? "Download Image" : "Download ZIP"} onDownload={() => dl(result.blob, result.name)} onReset={() => { setResult(null); setFiles([]); setError(""); }} />
+        <Done msg={`${result.pages} page${result.pages === 1 ? "" : "s"} converted`} dlLabel={result.pages === 1 ? "Download Image" : "Download ZIP"} onDownload={() => dl(result.blob, result.name)} shareFile={{ blob: result.blob, name: result.name }} onReset={() => { setResult(null); setFiles([]); setError(""); }} />
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           <Drop files={files} onChange={setFiles} accept=".pdf,application/pdf" label="Select one PDF" sub="Maximum 50 MB · processed locally" />

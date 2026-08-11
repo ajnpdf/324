@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { ToolWorkspace, Drop, Range, ToolFile, dl } from "./_shared";
+import { ToolWorkspace, Drop, Range, ToolFile, dl, shareResult, beginToolProcessing, completeToolProcessing, failToolProcessing} from "./_shared";
 import { makeMeme } from "./_imageUtils";
-import { Smile, CheckCircle2, Download, Loader2, Activity, RefreshCcw, Zap, Settings2, Edit3, Type } from 'lucide-react';
+import { Smile, CheckCircle2, Download, Loader2, Activity, RefreshCcw, Zap, Settings2, Edit3, Type, Share2} from 'lucide-react';
 import { motion, AnimatePresence } from "framer-motion";
 
 import { Card } from '../ui/card';
@@ -78,6 +78,7 @@ export default function MemeMaker() {
 
   const run = async () => {
     if (!files.length) return;
+    beginToolProcessing("MemeMaker");
     setPhase('processing');
     setProgress(0);
     setStatus("Creating your meme…");
@@ -91,7 +92,9 @@ export default function MemeMaker() {
       const b = await makeMeme(files[0].file, top, bot, size);
       setResultBlob(b);
       setPhase('done');
+      completeToolProcessing();
     } catch {
+      failToolProcessing();
       setPhase('configure');
       toast({ title: "Process Error", variant: "destructive" });
     }
@@ -201,6 +204,9 @@ export default function MemeMaker() {
               <div className="w-full max-w-sm flex flex-col gap-4 mx-auto pt-4">
                 <Button onClick={() => dl(resultBlob, `${outputName}.jpg`)} className="h-16 bg-emerald-500 text-white font-black text-sm uppercase tracking-widest rounded-2xl shadow-xl hover:bg-emerald-600 transition-all gap-3 border-2 border-white/20 active:scale-95">
                   <Download className="w-4 h-4" /> Download Meme
+                </Button>
+                <Button variant="outline" onClick={() => void shareResult(resultBlob, `${outputName}.jpg`)} className="h-12 border-slate-200 bg-white text-slate-700 font-black text-xs rounded-xl shadow-sm hover:border-blue-200 hover:bg-blue-50/60 gap-2">
+                  <Share2 className="w-4 h-4" /> Share result
                 </Button>
                 <button onClick={reset} className="h-12 rounded-xl font-black text-[10px] uppercase text-slate-400 gap-2 flex items-center justify-center hover:bg-black/5 transition-all">
                   <RefreshCcw className="w-3.5 h-3.5" /> Process another file

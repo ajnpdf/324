@@ -5,13 +5,13 @@ export default function PrivacyPage() {
     <LegalPageShell
       eyebrow="Privacy"
       title="Privacy Policy"
-      summary="This policy explains what AJN PDF processes in the browser, when a file is sent to the optional secure processing service, how advertising consent works, and what information we do not retain."
+      summary="This policy explains how AJN PDF handles files during active workflows, when the processing service is used, how advertising consent works, and what information is not retained."
       sections={[
         {
-          title: 'Local and temporary processing',
+          title: 'Session and service-assisted processing',
           paragraphs: [
-            'Most AJN PDF tools process documents directly in your browser. For those tools, the selected file remains on your device and is not intentionally uploaded to AJN PDF.',
-            'Protect PDF, Unlock PDF, Repair PDF and other clearly labelled server tools may send a file to the configured AJN PDF processing service. Each request uses a temporary working directory. The service is designed to delete the temporary input and output after the response is delivered.',
+            'Many AJN PDF tools handle supported documents within the active session. For those workflows, the selected file is not intentionally sent to the AJN PDF processing service.',
+            'Protect PDF, Unlock PDF, Repair PDF and other service-assisted workflows may send a file to the configured AJN PDF processing service. Each request uses a dedicated working directory that is designed to be cleaned after the response is delivered.',
           ],
         },
         {
@@ -26,7 +26,7 @@ export default function PrivacyPage() {
           title: 'Passwords and document content',
           paragraphs: [
             'Passwords submitted to Protect PDF or Unlock PDF are used only for the active processing request. The application must not log, store or include passwords in analytics or error messages.',
-            'Do not upload confidential material unless you understand whether the selected tool is marked Browser processing or Temporary server processing.',
+            'Do not use confidential material until you understand the file-handling details shown for the selected workflow.',
           ],
         },
         {
@@ -40,7 +40,7 @@ export default function PrivacyPage() {
         {
           title: 'Retention and deletion',
           bullets: [
-            'Browser-processed files are cleared when the page state is reset, refreshed or closed, subject to normal browser behaviour.',
+            'Session-based working files are cleared when the page state is reset, refreshed or closed, subject to normal browser behaviour.',
             'Temporary backend files are scheduled for deletion after the response and abandoned temporary folders are cleaned by the processing service.',
             'Admin-published AJN Discover images and their captions remain in persistent media storage until edited or deleted by the administrator. A user may request removal of correspondence or public media by emailing the address below.',
           ],

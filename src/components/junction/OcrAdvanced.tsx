@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
-import { ToolWorkspace, Drop, ToolFile, dl, T } from "./_shared";
+import { ToolWorkspace, Drop, ToolFile, dl, T, beginToolProcessing, completeToolProcessing, failToolProcessing, shareResult } from "./_shared";
 import { applyPipeline, DEFAULT_CONFIG } from "@/lib/ocr/pipeline";
 import { ocrEngine } from "@/lib/ocr/engine";
 import { cleanText, computeStats } from "@/lib/ocr/nlp";
-import { BrainCircuit, CheckCircle2, Copy, Loader2, Activity, RefreshCcw, Zap, ShieldCheck } from 'lucide-react';
+import { BrainCircuit, CheckCircle2, Copy, Loader2, Activity, RefreshCcw, Zap, Share2 } from 'lucide-react';
 import { motion, AnimatePresence } from "framer-motion";
 
 import { Card } from '../ui/card';
@@ -26,7 +26,8 @@ export default function OcrAdvanced() {
 
   const runOcr = async () => {
     if (!files.length) return;
-    setE(""); setPhase('processing');
+    setE(""); beginToolProcessing("OcrAdvanced");
+    setPhase('processing');
     setProgress(5); setStatus("Loading the document…");
 
     try {
@@ -51,7 +52,9 @@ export default function OcrAdvanced() {
       setText(cleaned);
       setStats(computeStats(result));
       setPhase('done');
+      completeToolProcessing();
     } catch (e: any) {
+      failToolProcessing();
       setE(e.message || "Recognition interrupted.");
       setPhase('configure');
     }
@@ -65,7 +68,7 @@ export default function OcrAdvanced() {
         <AnimatePresence mode="wait">
           {phase === 'upload' && (
             <motion.div key="upload" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} className="w-full">
-              <Drop files={files} onChange={setF} accept=".pdf,.png,.jpg,.jpeg,.webp" label="Drop Scan to Process" sub="Processed locally in your browser" />
+              <Drop files={files} onChange={setF} accept=".pdf,.png,.jpg,.jpeg,.webp" label="Drop Scan to Process" sub="PDF or image scans · clearer text gives better recognition" />
             </motion.div>
           )}
 
@@ -123,7 +126,7 @@ export default function OcrAdvanced() {
                     <div className="relative z-10 space-y-8">
                       <div className="space-y-2">
                         <h4 className="text-2xl font-black uppercase italic tracking-tighter">Start OCR</h4>
-                        <p className="text-[10px] font-bold opacity-60 uppercase tracking-widest leading-relaxed">Processing occurs locally via Tesseract.js WASM core.</p>
+                        <p className="text-[10px] font-bold opacity-60 uppercase tracking-widest leading-relaxed">Review and export recognized text when the scan is complete.</p>
                       </div>
                       <Button onClick={runOcr} className="w-full h-16 bg-purple-600 text-white font-black text-xs uppercase tracking-widest rounded-2xl hover:bg-purple-700 transition-all shadow-xl active:scale-95 gap-3 border-2 border-white/10">
                         <Zap className="w-4 h-4" /> Run Advanced OCR
@@ -164,6 +167,9 @@ export default function OcrAdvanced() {
                     <Button variant="outline" onClick={() => navigator.clipboard.writeText(resultText)} className="h-12 px-8 rounded-xl font-black text-[10px] uppercase gap-2 border-black/5 bg-white hover:bg-black/5 shadow-sm">
                        <Copy className="w-4 h-4" /> Copy All
                     </Button>
+                    <Button variant="outline" onClick={() => void shareResult(new Blob([resultText], {type: 'text/plain'}), "ocr-result.txt")} className="h-12 px-8 rounded-xl font-black text-[10px] uppercase gap-2 border-black/5 bg-white hover:bg-black/5 shadow-sm">
+                       <Share2 className="w-3.5 h-3.5" /> Share result
+                    </Button>
                     <Button variant="outline" onClick={reset} className="h-12 px-8 rounded-xl font-black text-[10px] uppercase gap-2 border-black/5 bg-white hover:bg-black/5 shadow-sm">
                        <RefreshCcw className="w-4 h-4" /> Process another file
                     </Button>
@@ -201,10 +207,6 @@ export default function OcrAdvanced() {
                          </div>
                        ))}
                     </Card>
-                    <div className="p-6 bg-emerald-500/5 border border-emerald-500/10 rounded-[2rem] flex items-center gap-3">
-                       <ShieldCheck className="w-5 h-5 text-emerald-600" />
-                       <span className="text-[9px] font-black uppercase tracking-widest text-emerald-600">Runs in your browser</span>
-                    </div>
                  </aside>
               </div>
             </motion.div>

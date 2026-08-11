@@ -49,7 +49,6 @@ function LiquidWorkspaceCard({ tool, onClick }: { tool: any; onClick: () => void
         </div>
         <div className="space-y-1">
           <span className="block text-[11px] font-bold uppercase tracking-widest text-slate-900 leading-tight">{tool.name}</span>
-          <span className="block text-[8px] font-medium uppercase text-slate-400 opacity-60 italic">Runs in your browser</span>
         </div>
         <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
           <Zap className="w-3.5 h-3.5 text-primary animate-pulse" />
@@ -109,9 +108,6 @@ export function ToolWorkspace({ defaultCategory = 'Document' }: ToolWorkspacePro
       </div>
       
       <div className="p-4 border-t border-black/5 text-center bg-white/10 backdrop-blur-sm">
-        <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-slate-400">
-          Runs in your browser.
-        </p>
       </div>
     </div>
   );

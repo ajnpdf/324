@@ -3,7 +3,7 @@
 import { RuntimeImage } from '@/components/ui/runtime-image';
 import React, { useState, useRef, useEffect } from "react";
 import * as pdfjsLib from 'pdfjs-dist';
-import { PenTool, CheckCircle2, Download, Loader2, RefreshCcw, Zap, ShieldCheck, Upload, Eraser, Pen, Brush, Highlighter } from 'lucide-react';
+import { PenTool, CheckCircle2, Download, Loader2, RefreshCcw, Zap, Upload, Eraser, Pen, Brush, Highlighter, Share2} from 'lucide-react';
 import { motion, AnimatePresence } from "framer-motion";
 import { SignatureDrawingEngine, embedSignature, SignMode } from "@/lib/pdf-sign";
 
@@ -13,7 +13,7 @@ import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { useToast } from '../../hooks/use-toast';
 import { cn } from '../../lib/utils';
-import { ToolWorkspace, dl, getFilesFromEvent, safeOutputName } from './_shared';
+import { ToolWorkspace, dl, getFilesFromEvent, safeOutputName, shareResult, beginToolProcessing, completeToolProcessing, failToolProcessing} from './_shared';
 import { initPdfWorker } from "@/lib/pdfjs-worker";
 import { VisualPositionOverlay } from "./visual-position-overlay";
 
@@ -72,7 +72,8 @@ export default function SignPdf() {
         canvas.height = viewport.height; canvas.width = viewport.width;
         await page.render({ canvasContext: ctx, viewport }).promise;
         if (!cancelled) { setPageSize({ width: baseViewport.width, height: baseViewport.height }); setPreview(canvas.toDataURL('image/jpeg', 0.8)); }
-      } catch {}
+      } catch {
+      failToolProcessing();}
     };
     void renderSelectedPage();
     return () => { cancelled = true; };
@@ -134,6 +135,7 @@ export default function SignPdf() {
       await page.render({ canvasContext: ctx, viewport }).promise;
       setPreview(canvas.toDataURL('image/jpeg', 0.8));
     } catch {
+      failToolProcessing();
       toast({ title: "Analysis failed", variant: "destructive" });
       setPhase('upload');
     }
@@ -142,6 +144,7 @@ export default function SignPdf() {
   const executeSign = async () => {
     const drawingEngine = engineRef.current;
     if (!file || (signatureSource === 'draw' && !drawingEngine)) return;
+    beginToolProcessing("SignPdf");
     setPhase('processing');
     setStatus("Adding signature…");
 
@@ -155,7 +158,9 @@ export default function SignPdf() {
       const blob = await embedSignature(file, dataUrl, settings);
       setResultBlob(blob);
       setPhase('done');
+      completeToolProcessing();
     } catch {
+      failToolProcessing();
       setPhase('configure');
       toast({ title: "Processing Error", variant: "destructive" });
     }
@@ -195,7 +200,6 @@ export default function SignPdf() {
                 </div>
                 <div className="text-center space-y-1 px-8 relative z-10">
                   <h3 className="text-2xl font-black tracking-tighter uppercase text-slate-950">Choose a PDF</h3>
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">Runs in your browser</p>
                 </div>
               </div>
             </motion.div>
@@ -288,10 +292,6 @@ export default function SignPdf() {
                       </details>
                    </Card>
 
-                   <div className="p-6 bg-emerald-500/5 border border-emerald-500/10 rounded-[2rem] flex items-center gap-3 text-emerald-600">
-                     <ShieldCheck className="w-5 h-5" /><span className="text-[9px] font-black uppercase">Runs in your browser</span>
-                   </div>
-
                    <Button onClick={executeSign} className="w-full h-16 bg-primary text-white font-black text-xs uppercase tracking-widest rounded-2xl shadow-xl hover:scale-105 transition-all gap-3 border-2 border-white/20 active:scale-95">
                      <Zap className="w-4 h-4" /> Add signature
                    </Button>
@@ -305,7 +305,7 @@ export default function SignPdf() {
               <Loader2 className="w-16 h-16 text-primary animate-spin" />
               <div className="w-full max-w-sm space-y-3 mx-auto" role="status" aria-live="polite">
                 <p className="text-sm font-semibold text-primary">{status || "Adding signature…"}</p>
-                <div className="h-2 overflow-hidden rounded-full bg-primary/10"><div className="h-full w-1/2 animate-pulse rounded-full bg-primary" /></div>
+                <div className="h-2 overflow-hidden rounded-md bg-primary/10"><div className="h-full w-1/2 animate-pulse rounded-md bg-primary" /></div>
               </div>
             </div>
           )}
@@ -322,6 +322,9 @@ export default function SignPdf() {
               <div className="w-full max-w-sm flex flex-col gap-4 mx-auto pt-4 pb-32">
                 <Button onClick={() => dl(resultBlob, safeOutputName(outputName, "signed_pdf", ".pdf"))} className="h-16 bg-emerald-500 text-white font-black text-sm uppercase tracking-widest rounded-2xl shadow-xl hover:bg-emerald-600 transition-all gap-3 border-2 border-white/20 active:scale-95">
                   <Download className="w-4 h-4" /> Download PDF
+                </Button>
+                <Button variant="outline" onClick={() => void shareResult(resultBlob, safeOutputName(outputName, "signed_pdf", ".pdf"))} className="h-12 border-slate-200 bg-white text-slate-700 font-black text-xs rounded-xl shadow-sm hover:border-blue-200 hover:bg-blue-50/60 gap-2">
+                  <Share2 className="w-4 h-4" /> Share result
                 </Button>
                 <button onClick={reset} className="h-12 rounded-xl font-black text-[10px] uppercase text-slate-400 gap-2 flex items-center justify-center hover:bg-black/5 transition-all">
                   <RefreshCcw className="w-3.5 h-3.5" /> Process another file

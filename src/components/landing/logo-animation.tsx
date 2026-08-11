@@ -15,7 +15,7 @@ export function LogoAnimation({ className, showGlow = false }: { className?: str
       className={cn('relative flex select-none items-center gap-2', className)}
       aria-label="AJN PDF"
     >
-      {showGlow && <span className="absolute -inset-4 rounded-full bg-blue-500/8 blur-2xl" />}
+      {showGlow && <span className="absolute -inset-4 rounded-2xl bg-blue-500/8 blur-2xl" />}
       <span className="relative h-full aspect-square shrink-0">
         <Image
           src="/brand/ajn-logo-transparent.png"

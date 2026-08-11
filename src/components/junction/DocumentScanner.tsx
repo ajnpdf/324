@@ -2,8 +2,8 @@
 
 import { RuntimeImage } from '@/components/ui/runtime-image';
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { ToolWorkspace, T, dl } from "./_shared";
-import { Camera, X, Check, Loader2, Smartphone, Download, RefreshCcw, ShieldCheck, Activity } from "lucide-react";
+import { ToolWorkspace, T, dl, shareResult, beginToolProcessing, completeToolProcessing, failToolProcessing } from "./_shared";
+import { Camera, X, Check, Loader2, Smartphone, Download, RefreshCcw, Share2 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "../ui/button";
 import { cn } from "../../lib/utils";
@@ -116,6 +116,7 @@ export default function DocumentScanner() {
 
   const buildPdf = async () => {
     if (!captures.length) return;
+    beginToolProcessing("Document Scanner");
     setL(true);
     setCompileProgress(0);
     try {
@@ -136,7 +137,9 @@ export default function DocumentScanner() {
       const bytes = await doc.save();
       setR(new Blob([bytes.buffer as ArrayBuffer], { type: "application/pdf" }));
       stopCamera();
+      completeToolProcessing();
     } catch {
+      failToolProcessing();
       setE("The scanned pages could not be assembled.");
     }
     setL(false);
@@ -156,7 +159,7 @@ export default function DocumentScanner() {
           {result ? (
             <motion.div key="done" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}>
               <div className="text-center p-12 bg-white/40 rounded-[3rem] border border-black/5 shadow-2xl">
-                <div className="w-24 h-24 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto mb-8 border border-emerald-500/20">
+                <div className="w-24 h-24 bg-emerald-500/10 rounded-2xl flex items-center justify-center mx-auto mb-8 border border-emerald-500/20">
                   <Check className="w-12 h-12 text-emerald-600" />
                 </div>
                 <h3 className="text-3xl font-black uppercase tracking-tight text-slate-950 mb-2">Scan ready</h3>
@@ -164,6 +167,9 @@ export default function DocumentScanner() {
                 <div className="flex gap-4 justify-center">
                   <Button onClick={() => result && dl(result, "scanned_doc.pdf")} className="h-16 px-12 bg-emerald-500 hover:bg-emerald-600 text-white font-black text-xs uppercase tracking-widest rounded-2xl shadow-xl gap-3 active:scale-95 transition-all">
                     <Download className="w-4 h-4" /> Download PDF
+                  </Button>
+                  <Button variant="outline" onClick={() => { if (result) void shareResult(result, "scanned_doc.pdf"); }} className="h-12 border-slate-200 bg-white text-slate-700 font-black text-xs rounded-xl shadow-sm hover:border-blue-200 hover:bg-blue-50/60 gap-2">
+                    <Share2 className="w-4 h-4" /> Share result
                   </Button>
                   <Button variant="outline" onClick={reset} className="h-16 px-12 border-black/10 bg-white font-black text-xs uppercase tracking-widest rounded-2xl hover:bg-black/5 transition-all">
                     <RefreshCcw className="w-4 h-4" /> Scan another
@@ -205,12 +211,6 @@ export default function DocumentScanner() {
                 </div>
                 
                 {err && <p className="text-xs font-black uppercase text-red-500 tracking-widest">⚠️ {err}</p>}
-                
-                <div className="flex items-center gap-4 py-2 opacity-60">
-                   <div className="flex items-center gap-2"><ShieldCheck className="w-3.5 h-3.5 text-emerald-600" /><span className="text-[8px] font-black uppercase tracking-widest">Runs in your browser</span></div>
-                   <div className="w-1 h-1 rounded-full bg-slate-300" />
-                   <div className="flex items-center gap-2"><Activity className="w-3.5 h-3.5 text-primary" /><span className="text-[8px] font-black uppercase tracking-widest">Scanner ready</span></div>
-                </div>
               </div>
 
               <AnimatePresence>
@@ -223,7 +223,7 @@ export default function DocumentScanner() {
                       {captures.map((cap, i) => (
                         <motion.div key={cap.id} initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="relative group w-24 h-32 rounded-2xl overflow-hidden border-4 border-white shadow-xl bg-slate-100">
                           <RuntimeImage src={cap.dataUrl} alt="" className="w-full h-full object-cover" />
-                          <button onClick={() => setCaptures(prev => prev.filter(c => c.id !== cap.id))} className="absolute top-1.5 right-1.5 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"><X className="w-3.5 h-3.5" /></button>
+                          <button onClick={() => setCaptures(prev => prev.filter(c => c.id !== cap.id))} className="absolute top-1.5 right-1.5 w-6 h-6 bg-red-500 text-white rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"><X className="w-3.5 h-3.5" /></button>
                           <div className="absolute bottom-1.5 left-1.5 px-2 py-0.5 bg-black/60 backdrop-blur rounded text-[8px] font-black text-white">PAGE {i + 1}</div>
                         </motion.div>
                       ))}

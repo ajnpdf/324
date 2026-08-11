@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import { ToolWorkspace, Drop, Info, ToolFile, dl, T } from "./_shared";
+import { ToolWorkspace, Drop, Info, ToolFile, dl, T, beginToolProcessing, completeToolProcessing, failToolProcessing, shareResult } from "./_shared";
 import { extractText } from "./_pdfUtils";
-import { Brain, CheckCircle2, Copy, Loader2, RefreshCcw, Zap, ShieldCheck, Search } from 'lucide-react';
+import { Brain, CheckCircle2, Copy, Loader2, RefreshCcw, Zap, Search, Share2 } from 'lucide-react';
 import { motion, AnimatePresence } from "framer-motion";
 
 import { Card, CardContent } from '../ui/card';
@@ -30,7 +30,8 @@ export default function SmartRead() {
 
   const run = async () => {
     if (!files.length) return;
-    setE(""); setPhase('processing');
+    setE(""); beginToolProcessing("SmartRead");
+    setPhase('processing');
     setProgress(5); setStatus("Mapping document structure...");
 
     try {
@@ -46,7 +47,9 @@ export default function SmartRead() {
 
       setText(out.trim() || "(No text identified in document structure)");
       setPhase('done');
+      completeToolProcessing();
     } catch (e: any) {
+      failToolProcessing();
       setE(e.message || "Logic interrupt during extraction.");
       setPhase('configure');
     }
@@ -69,7 +72,7 @@ export default function SmartRead() {
         <AnimatePresence mode="wait">
           {phase === 'upload' && (
             <motion.div key="upload" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} className="w-full">
-              <Drop files={files} onChange={setF} accept=".pdf" label="Drop PDF to Extract Text" sub="Processing happens on your device" />
+              <Drop files={files} onChange={setF} accept=".pdf" label="Drop PDF to Extract Text" sub="PDF files · text-layer extraction" />
             </motion.div>
           )}
 
@@ -91,7 +94,7 @@ export default function SmartRead() {
                     </Button>
                  </CardContent>
               </Card>
-              <Info bg="#F5F3FF" col="#5B21B6">🤖 Text is extracted locally — nothing leaves your device.</Info>
+              <Info bg="#F5F3FF" col="#5B21B6">Review the extracted text before using it in a final document.</Info>
             </motion.div>
           )}
 
@@ -123,6 +126,9 @@ export default function SmartRead() {
                  <div className="flex items-center gap-4">
                     <Button variant="outline" onClick={copy} className="h-10 px-6 rounded-xl font-black text-[9px] uppercase gap-2 border-black/5 bg-white hover:bg-black/5 shadow-sm">
                        <Copy className="w-3.5 h-3.5" /> {copied ? "Copied!" : "Copy Text"}
+                    </Button>
+                    <Button variant="outline" onClick={() => void shareResult(new Blob([text], {type: 'text/plain'}), "extraction.txt")} className="h-10 px-6 rounded-xl font-black text-[9px] uppercase gap-2 border-black/5 bg-white hover:bg-black/5 shadow-sm">
+                       <Share2 className="w-3.5 h-3.5" /> Share result
                     </Button>
                     <Button variant="outline" onClick={reset} className="h-10 px-6 rounded-xl font-black text-[9px] uppercase gap-2 border-black/5 bg-white hover:bg-black/5 shadow-sm">
                        <RefreshCcw className="w-3.5 h-3.5" /> Process another file
@@ -161,10 +167,6 @@ export default function SmartRead() {
                          </div>
                        ))}
                     </Card>
-                    <div className="p-4 bg-emerald-500/5 border border-emerald-500/10 rounded-[1.5rem] flex items-center gap-3">
-                       <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                       <span className="text-[9px] font-black uppercase tracking-widest text-emerald-600">Runs in your browser</span>
-                    </div>
                  </aside>
               </div>
             </motion.div>

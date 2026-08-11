@@ -39,7 +39,7 @@ export default function UnlockPdf() {
   return (
     <ToolWorkspace title="Unlock PDF" description="Remove encryption using the current valid password" icon="🔓" accent="#059669" badge="AUTHORIZED UNLOCK" processingMode="temporary-server">
       {result ? (
-        <Done msg="PDF unlocked successfully" processingMode="temporary-server" onDownload={() => dl(result, safeOutputName(outputName, "unlocked", ".pdf"))} onReset={reset} />
+        <Done msg="PDF unlocked successfully" processingMode="temporary-server" onDownload={() => dl(result, safeOutputName(outputName, "unlocked", ".pdf"))} shareFile={{ blob: result, name: safeOutputName(outputName, "unlocked", ".pdf") }} onReset={reset} />
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           <BackendStatus />

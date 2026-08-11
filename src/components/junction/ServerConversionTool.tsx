@@ -1,11 +1,11 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { CheckCircle2, Download, FileOutput, Loader2, RefreshCcw, ShieldCheck } from 'lucide-react';
+import { Download, FileCheck2, FileOutput, Loader2, RefreshCcw, Share2 } from 'lucide-react';
 import { BUILD_PUBLIC_TOOLS } from '@/lib/build-public-tools';
 import { checkPdfBackendHealth, convertOnServer, getConversionToolManifest, type ConversionToolManifest } from '@/lib/pdf-backend';
 import { getToolPolicy } from '@/lib/tool-policy';
-import { Btn, Drop, Err, F, G2, Info, IS, Pills, Range, ToolWorkspace, type ToolFile, dl } from './_shared';
+import { Btn, Drop, Err, F, G2, Info, IS, Pills, Range, ToolWorkspace, type ToolFile, dl, shareResult } from './_shared';
 import { sendAjnAnalytics } from '@/components/analytics/site-analytics';
 import { useLanguage } from '@/lib/i18n/language-context';
 import { friendlyBackendError } from '@/lib/i18n/backend-errors';
@@ -162,12 +162,13 @@ export default function ServerConversionTool({ toolId }: { toolId: string }) {
             <Loader2 className="h-5 w-5 animate-spin text-blue-600" /> {t('processing.preparing')}
           </div>
         ) : status === 'done' && result ? (
-          <div className="rounded-3xl border border-emerald-200 bg-emerald-50 p-6 text-center dark:border-emerald-400/20 dark:bg-emerald-500/10">
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-600 text-white shadow-lg"><CheckCircle2 className="h-7 w-7" /></div>
+          <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-6 text-center">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-xl bg-emerald-600 text-white shadow-lg"><FileCheck2 className="h-7 w-7" /></div>
             <h2 className="mt-4 text-xl font-black text-foreground">{t('result.ready')}</h2>
             <p className="mt-2 text-sm font-semibold text-muted-foreground">{result.filename}</p>
             <div className="mt-5 flex flex-wrap justify-center gap-3">
               <Btn onClick={() => dl(result.blob, result.filename)}><Download size={15} /> {t('common.download')}</Btn>
+              <Btn variant="secondary" onClick={() => void shareResult(result.blob, result.filename)}><Share2 size={14} /> Share</Btn>
               <Btn variant="secondary" onClick={reset}><RefreshCcw size={14} /> {t('common.processAnother')}</Btn>
             </div>
           </div>
@@ -242,20 +243,12 @@ export default function ServerConversionTool({ toolId }: { toolId: string }) {
             {(manifest?.limitation || policy.limitation) && <Info bg="rgba(245,158,11,.09)" col="#92400E">{manifest?.limitation || policy.limitation}</Info>}
             <Err msg={error} />
 
-            {status === 'processing' && (
-              <div className="rounded-2xl border border-blue-100 bg-blue-50 p-4 dark:border-blue-400/20 dark:bg-blue-500/10" role="status" aria-live="polite">
-                <div className="flex items-center gap-3 text-sm font-extrabold text-blue-900 dark:text-blue-200"><Loader2 className="h-5 w-5 animate-spin" /><span>{t(processingStage)}</span></div>
-                <div className="mt-3 h-2 overflow-hidden rounded-full bg-blue-100 dark:bg-blue-950"><div className="h-full w-1/3 animate-[pulse_1.2s_ease-in-out_infinite] rounded-full bg-gradient-to-r from-blue-600 via-emerald-500 to-red-500" /></div>
-              </div>
-            )}
+            {status === 'processing' && <div className="sr-only" role="status" aria-live="polite">{t(processingStage)}</div>}
 
             <Btn full onClick={process} disabled={!canProcess || status === 'processing'} loading={status === 'processing'}>
               <FileOutput size={16} /> {t('processing.converting')}
             </Btn>
 
-            <div className="flex items-start gap-3 rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-xs font-semibold leading-5 text-emerald-900 dark:border-emerald-400/20 dark:bg-emerald-500/10 dark:text-emerald-200">
-              <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0" /> {t('conversion.temporaryPrivacy')}
-            </div>
           </>
         )}
       </div>

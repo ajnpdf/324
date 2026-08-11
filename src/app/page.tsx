@@ -16,7 +16,7 @@ import { PremiumBackground } from '@/components/premium/premium-background';
 import { MobileHomeHero } from '@/components/landing/mobile-home-hero';
 
 const FormatStrip = dynamic(() => import('../components/landing/format-strip').then((module) => module.FormatStrip));
-const ProcessingArchitecture = dynamic(() => import('../components/landing/live-demo').then((module) => module.LiveDemo));
+const FeatureShowcase = dynamic(() => import('../components/landing/feature-showcase').then((module) => module.FeatureShowcase));
 const ToolCategories = dynamic(() => import('../components/landing/tool-categories').then((module) => module.ToolCategories));
 const HowItWorks = dynamic(() => import('../components/landing/how-it-works').then((module) => module.HowItWorks));
 const TrustSecurity = dynamic(() => import('../components/landing/trust-security').then((module) => module.TrustSecurity));
@@ -95,7 +95,7 @@ export default function HomePage() {
                     key={category.id}
                     onClick={() => chooseCategory(category.id)}
                     aria-pressed={activeCategory === category.id}
-                    className={cn('rounded-xl px-4 py-2.5 text-[11px] font-black transition', activeCategory === category.id ? 'bg-blue-600 text-white shadow-md' : 'text-slate-600 hover:bg-slate-50 hover:text-blue-700 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-blue-300')}
+                    className={cn('rounded-xl px-4 py-2.5 text-[11px] font-black transition', activeCategory === category.id ? 'bg-blue-600 text-white shadow-md' : 'text-slate-600 hover:bg-slate-50 hover:text-blue-700')}
                   >
                     {t(category.key)}
                   </button>
@@ -125,7 +125,7 @@ export default function HomePage() {
                   key={category.id}
                   onClick={() => chooseCategory(category.id)}
                   aria-pressed={activeCategory === category.id}
-                  className={cn('shrink-0 rounded-xl border px-3.5 py-2 text-[10px] font-black transition', activeCategory === category.id ? 'border-blue-600 bg-blue-600 text-white shadow-sm' : 'border-slate-200 bg-white text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300')}
+                  className={cn('shrink-0 rounded-xl border px-3.5 py-2 text-[10px] font-black transition', activeCategory === category.id ? 'border-blue-600 bg-blue-600 text-white shadow-sm' : 'border-slate-200 bg-white text-slate-600')}
                 >
                   {t(category.key)}
                 </button>
@@ -136,7 +136,7 @@ export default function HomePage() {
           <div className="mt-3 md:mt-10"><ServicesGrid query={search} category={activeCategory} /></div>
         </section>
         <div className="ajn-ad-zone my-8 md:my-12"><AdSenseUnit slot={ADSENSE_SLOTS.homePrimary} width={400} height={80} className="min-h-[80px]" label="Homepage advertisement" /></div>
-        <ProcessingArchitecture />
+        <FeatureShowcase />
         <ToolCategories />
         <HowItWorks />
         <div className="ajn-ad-zone my-8 md:my-12"><AdSenseUnit slot={ADSENSE_SLOTS.homeSecondary} width={300} height={150} className="min-h-[150px]" label="Homepage content advertisement" /></div>

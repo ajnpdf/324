@@ -15,7 +15,7 @@ export default function ZipToPdf(){
       else throw new Error("ZIP contains no supported image or PDF files.");
       setR(blob);}catch(e:any){setE(e.message);}setL(false);};
   return(<ToolWorkspace title="ZIP to PDF" description="CREATE A PDF FROM IMAGES IN A ZIP ARCHIVE" icon="📦" accent="#6B7280" badge="ARCHIVE CONVERSION">
-    {result?<Done msg="ZIP converted to PDF!" onDownload={()=>dl(result,"from_zip.pdf")} onReset={()=>{setR(null);setF([]);}}/>
+    {result?<Done msg="ZIP converted to PDF!" onDownload={()=>dl(result,"from_zip.pdf")} shareFile={{blob:result,name:"from_zip.pdf"}} onReset={()=>{setR(null);setF([]);}}/>
     :<div style={{display:"flex",flexDirection:"column",gap:16}}>
       <Drop files={files} onChange={setF} accept=".zip" label="Drop ZIP file here" sub="ZIP should contain JPG, PNG, or PDF files"/>
       <Info>📦 Supported: <strong>JPG/PNG</strong> (each → page) · <strong>PDF</strong> files (merged). Mixed ZIPs supported.</Info>

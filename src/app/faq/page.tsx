@@ -8,16 +8,16 @@ const groups = [
     title: 'Processing and privacy',
     items: [
       {
-        q: 'Which tools process files in the browser?',
-        a: 'Most page-editing, conversion and image tools use browser processing. The tool page states the mode before processing begins.',
+        q: 'How does AJN PDF handle files?',
+        a: 'File handling depends on the workflow. Each tool provides practical handling details, limits and result steps before you begin.',
       },
       {
-        q: 'Which tools use the Python service?',
-        a: 'Protect PDF, Unlock PDF and Repair PDF use temporary server processing because they require a native PDF security or recovery engine.',
+        q: 'Which tools use the processing service?',
+        a: 'Advanced conversion, OCR, protection, unlocking and repair workflows can use the processing service when a native engine is required.',
       },
       {
         q: 'Are temporary files deleted?',
-        a: 'The Python service creates a unique temporary directory for each job and schedules cleanup after the processed response is delivered. Browser tools remain in the current browser session.',
+        a: 'Service-assisted jobs use a request-specific workspace that is cleaned after the result is delivered. Session-based tools keep their working state in the active page.',
       },
     ],
   },
@@ -81,14 +81,14 @@ export default function FAQPage() {
       <main className="relative z-10 mx-auto max-w-6xl px-4 pb-24 pt-32 md:px-8 md:pt-40">
         <div className="mx-auto max-w-4xl text-center">
           <span className="ajn-section-kicker"><CircleHelp className="h-3.5 w-3.5" /> Help centre</span>
-          <h1 className="mt-6 text-5xl font-black tracking-[-.05em] text-foreground md:text-7xl">Answers based on the current production release.</h1>
-          <p className="mx-auto mt-5 max-w-2xl text-base font-medium leading-7 text-muted-foreground">The FAQ avoids unlimited, perfect or fully-local claims that do not apply to every tool.</p>
+          <h1 className="mt-6 text-5xl font-black tracking-[-.05em] text-foreground md:text-7xl">Answers for common AJN PDF workflows.</h1>
+          <p className="mx-auto mt-5 max-w-2xl text-base font-medium leading-7 text-muted-foreground">Find clear guidance about file handling, limits, downloads, security and the current public toolset.</p>
         </div>
 
         <div className="mt-16 space-y-14">
           {groups.map((group) => (
             <section key={group.title}>
-              <div className="flex items-center gap-3 border-b border-border pb-4"><span className="h-2.5 w-2.5 rounded-full bg-blue-600" /><h2 className="text-xl font-black text-foreground">{group.title}</h2></div>
+              <div className="flex items-center gap-3 border-b border-border pb-4"><span className="h-2.5 w-1.5 rounded-sm bg-blue-600" /><h2 className="text-xl font-black text-foreground">{group.title}</h2></div>
               <div className="mt-6 grid gap-5 md:grid-cols-2">
                 {group.items.map((item) => <article key={item.q} className="ajn-glass-card rounded-3xl p-6"><h3 className="text-base font-black text-foreground">{item.q}</h3><p className="mt-3 text-sm font-medium leading-6 text-muted-foreground">{item.a}</p></article>)}
               </div>
@@ -96,9 +96,9 @@ export default function FAQPage() {
           ))}
         </div>
 
-        <section className="mt-16 flex flex-col items-start justify-between gap-6 rounded-[2rem] bg-slate-950 p-7 text-white md:flex-row md:items-center md:p-9">
-          <div className="flex gap-4"><span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-blue-500/15 text-blue-300"><Mail className="h-5 w-5" /></span><div><h2 className="text-xl font-black">Need help with a specific tool?</h2><p className="mt-2 text-sm font-medium leading-6 text-slate-300">Include the tool name, browser, file type, approximate size and the visible error. Do not send confidential files unless support explicitly requests a safe reproduction.</p></div></div>
-          <Link href="/contact" className="inline-flex h-11 shrink-0 items-center rounded-xl bg-white px-5 text-xs font-black text-slate-950 hover:bg-blue-50">Contact AJN PDF <ArrowRight className="ml-2 h-4 w-4" /></Link>
+        <section className="mt-16 flex flex-col items-start justify-between gap-6 rounded-[2rem] border border-blue-100 bg-gradient-to-br from-blue-50 via-white to-violet-50 p-7 text-slate-950 shadow-[0_22px_60px_rgba(37,62,113,.08)] md:flex-row md:items-center md:p-9">
+          <div className="flex gap-4"><span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-blue-100 text-blue-700"><Mail className="h-5 w-5" /></span><div><h2 className="text-xl font-black">Need help with a specific tool?</h2><p className="mt-2 text-sm font-medium leading-6 text-slate-600">Include the tool name, browser, file type, approximate size and the visible error. Do not send confidential files unless support explicitly requests a safe reproduction.</p></div></div>
+          <Link href="/contact" className="inline-flex h-11 shrink-0 items-center rounded-xl bg-blue-600 px-5 text-xs font-black text-white hover:bg-blue-700">Contact AJN PDF <ArrowRight className="ml-2 h-4 w-4" /></Link>
         </section>
       </main>
       <MainFooter />

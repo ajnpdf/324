@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from "react";
 import JSZip from 'jszip';
-import { FileArchive, CheckCircle2, Download, Loader2, Activity, FileText, RefreshCcw, ShieldCheck, FolderOpen, FileIcon, ImageIcon } from 'lucide-react';
+import { FileArchive, CheckCircle2, Download, Loader2, Activity, FileText, RefreshCcw, ShieldCheck, FolderOpen, FileIcon, ImageIcon, Share2 } from 'lucide-react';
 import { motion, AnimatePresence } from "framer-motion";
 
 import { Card } from '../ui/card';
@@ -12,7 +12,7 @@ import { Label } from '../ui/label';
 import { ScrollArea } from '../ui/scroll-area';
 import { useToast } from '../../hooks/use-toast';
 import { cn } from '../../lib/utils';
-import { ToolWorkspace, dl, fmtBytes } from './_shared';
+import { ToolWorkspace, dl, fmtBytes, beginToolProcessing, completeToolProcessing, failToolProcessing, shareResult } from './_shared';
 
 interface ArchiveItem {
   name: string;
@@ -43,6 +43,7 @@ export default function ZipExtractor() {
 
   const processArchive = async (f: File) => {
     setFile(f);
+    beginToolProcessing("ZipExtractor");
     setPhase('processing');
     setProgress(0);
     setStatus("Opening ZIP…");
@@ -83,7 +84,9 @@ export default function ZipExtractor() {
 
       setItems(newItems);
       setPhase('done');
+      completeToolProcessing();
     } catch (err) {
+      failToolProcessing();
       setPhase('upload');
       toast({ title: "Could not extract this ZIP", description: err instanceof Error ? err.message : "The ZIP is damaged or unsupported.", variant: "destructive" });
     }
@@ -119,7 +122,6 @@ export default function ZipExtractor() {
                 </div>
                 <div className="text-center space-y-1 px-8 relative z-10">
                   <h3 className="text-2xl font-black tracking-tighter uppercase text-slate-950">Choose a ZIP file</h3>
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">Runs in your browser</p>
                 </div>
               </div>
             </motion.div>
@@ -179,9 +181,14 @@ export default function ZipExtractor() {
                                 <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">{item.size} • {item.type}</p>
                               </div>
                             </div>
-                            <Button size="icon" variant="ghost" onClick={() => dl(item.blob, item.name)} className="h-9 w-9 bg-primary/5 hover:bg-primary text-primary hover:text-white rounded-xl transition-all">
-                               <Download className="w-4 h-4" />
-                            </Button>
+                            <div className="flex shrink-0 gap-1.5">
+                              <Button size="icon" variant="ghost" aria-label={`Download ${item.name}`} onClick={() => dl(item.blob, item.name)} className="h-9 w-9 bg-primary/5 hover:bg-primary text-primary hover:text-white rounded-xl transition-all">
+                                 <Download className="w-4 h-4" />
+                              </Button>
+                              <Button size="icon" variant="ghost" aria-label={`Share ${item.name}`} onClick={() => void shareResult(item.blob, item.name)} className="h-9 w-9 border border-slate-200 bg-white text-slate-600 hover:border-blue-200 hover:text-blue-700 rounded-xl transition-all">
+                                 <Share2 className="w-4 h-4" />
+                              </Button>
+                            </div>
                           </div>
                         ))}
                       </div>
@@ -190,10 +197,10 @@ export default function ZipExtractor() {
                 </div>
                 <aside className="lg:col-span-4 space-y-6">
                    <Card className="bg-white/60 border-black/5 rounded-[2.5rem] p-8 space-y-6 shadow-xl border-2">
-                      <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest text-center block">Browser processing</Label>
+                      <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest text-center block">Archive details</Label>
                       <div className="p-6 bg-primary/5 rounded-3xl border border-primary/10 space-y-3 text-center">
                         <ShieldCheck className="w-8 h-8 text-emerald-600 mx-auto" />
-                        <p className="text-[11px] font-bold text-slate-900 uppercase leading-relaxed">This archive is decompressed in browser memory. Reset the tool when finished to release the working data.</p>
+                        <p className="text-[11px] font-bold text-slate-900 uppercase leading-relaxed">Files are unpacked for this session. Reset the tool when finished to clear the working list.</p>
                       </div>
                    </Card>
                 </aside>

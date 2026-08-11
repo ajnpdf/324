@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import { Captions, CheckCircle2, Download, Loader2, X, RefreshCcw, Zap, ShieldCheck, Upload, Settings2, Edit3, RotateCcw } from 'lucide-react';
+import { Captions, CheckCircle2, Download, Loader2, X, RefreshCcw, Zap, Upload, Settings2, Edit3, RotateCcw, Share2 } from 'lucide-react';
 import { motion, AnimatePresence } from "framer-motion";
 
 import { Card } from '../ui/card';
@@ -15,7 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 
 import { useToast } from '../../hooks/use-toast';
 import { cn } from '../../lib/utils';
-import { ToolWorkspace, dl, getFilesFromEvent } from './_shared';
+import { ToolWorkspace, dl, getFilesFromEvent, beginToolProcessing, completeToolProcessing, failToolProcessing, shareResult } from './_shared';
 
 interface SubtitleSegment {
   id: string;
@@ -34,6 +34,8 @@ export default function SubtitleGenerator() {
   const [phase, setPhase] = useState<'upload' | 'configure' | 'processing' | 'done'>('upload');
   const [progress, setProgress] = useState(0);
   const [status, setStatus] = useState("");
+  const [resultBlob, setResultBlob] = useState<Blob | null>(null);
+  const [resultName, setResultName] = useState("");
   const [outputName, setOutputName] = useState("");
   const [exportFormat, setExportFormat] = useState<'SRT' | 'VTT'>('SRT');
   const [isDragging, setIsDragging] = useState(false);
@@ -94,6 +96,7 @@ export default function SubtitleGenerator() {
   };
 
   const executeExport = async () => {
+    beginToolProcessing("SubtitleGenerator");
     setPhase('processing');
     setProgress(0);
     setStatus("Creating the subtitle file…");
@@ -123,9 +126,13 @@ export default function SubtitleGenerator() {
       });
 
       const blob = new Blob([content], { type: 'text/plain' });
-      dl(blob, `${outputName}.${exportFormat.toLowerCase()}`);
+      const name = `${outputName}.${exportFormat.toLowerCase()}`;
+      setResultBlob(blob);
+      setResultName(name);
       setPhase('done');
+      completeToolProcessing();
     } catch {
+      failToolProcessing();
       toast({ title: "Export Error", variant: "destructive" });
       setPhase('configure');
     }
@@ -135,7 +142,7 @@ export default function SubtitleGenerator() {
     setSegments(prev => prev.map(s => s.id === id ? { ...s, [field]: val } : s));
   };
 
-  const reset = () => { setRawText(""); setSegments([]); setPhase('upload'); setProgress(0); };
+  const reset = () => { setRawText(""); setSegments([]); setResultBlob(null); setResultName(""); setPhase('upload'); setProgress(0); };
 
   return (
     <ToolWorkspace title="Subtitle Creator" description="GENERATE TIMED SRT OR VTT CAPTIONS LOCALLY" icon="💬" badge="SUBTITLE TOOL" accent="#4F46E5">
@@ -260,11 +267,6 @@ export default function SubtitleGenerator() {
                     </Card>
                   </section>
 
-                  <div className="p-6 bg-emerald-500/5 border border-emerald-500/10 rounded-[2rem] flex items-center justify-center gap-2 text-emerald-600 shadow-sm">
-                    <ShieldCheck className="w-4 h-4" />
-                    <span className="text-[9px] font-black uppercase tracking-widest">Runs in your browser</span>
-                  </div>
-
                   <Button onClick={executeExport} className="w-full h-16 bg-primary text-white font-black text-xs uppercase tracking-widest rounded-2xl shadow-xl hover:scale-105 transition-all gap-3 border-2 border-white/20 active:scale-95">
                     <Zap className="w-4 h-4" /> Generate subtitle file
                   </Button>
@@ -294,8 +296,11 @@ export default function SubtitleGenerator() {
               </div>
 
               <div className="w-full max-w-sm flex flex-col gap-4 mx-auto pt-4 pb-32">
-                <Button onClick={executeExport} className="h-16 bg-emerald-500 text-white font-black text-sm uppercase tracking-widest rounded-2xl shadow-xl hover:bg-emerald-600 transition-all gap-3 border-2 border-white/20 active:scale-95">
+                <Button onClick={() => resultBlob && dl(resultBlob, resultName || `${outputName}.${exportFormat.toLowerCase()}`)} disabled={!resultBlob} className="h-16 bg-emerald-500 text-white font-black text-sm uppercase tracking-widest rounded-2xl shadow-xl hover:bg-emerald-600 transition-all gap-3 border-2 border-white/20 active:scale-95">
                   <Download className="w-4 h-4" /> Download .{exportFormat}
+                </Button>
+                <Button variant="outline" onClick={() => { if (resultBlob) void shareResult(resultBlob, resultName || `${outputName}.${exportFormat.toLowerCase()}`); }} disabled={!resultBlob} className="h-12 border-slate-200 bg-white text-slate-700 font-black text-xs rounded-xl shadow-sm hover:border-blue-200 hover:bg-blue-50/60 gap-2">
+                  <Share2 className="w-4 h-4" /> Share result
                 </Button>
                 <button onClick={reset} className="h-12 rounded-xl font-black text-[10px] uppercase text-slate-400 gap-2 flex items-center justify-center hover:bg-black/5 transition-all">
                   <RefreshCcw className="w-3.5 h-3.5" /> Process another file

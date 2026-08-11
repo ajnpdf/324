@@ -1,15 +1,16 @@
 "use client";
 
 import Link from 'next/link';
-import { ChevronRight, Search, Server, ShieldCheck, TriangleAlert } from 'lucide-react';
-import { useMemo } from 'react';
+import { ChevronRight, Grid2X2, Grid3X3, Rows3, Search } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
 import { getPublicToolCategory } from '../../lib/tools-data';
 import { BUILD_PUBLIC_TOOLS } from '../../lib/build-public-tools';
-import { getToolPolicy } from '../../lib/tool-policy';
 import { useLanguage } from '@/lib/i18n/language-context';
 import { ToolArtwork } from '@/components/ajn/tool-artwork';
+import { cn } from '@/lib/utils';
 
 interface ServicesGridProps { query: string; category: string; }
+type ViewMode = 'list' | 'comfortable' | 'compact';
 
 function Highlight({ text, highlight }: { text: string; highlight: string }) {
   if (!highlight.trim()) return <>{text}</>;
@@ -18,13 +19,10 @@ function Highlight({ text, highlight }: { text: string; highlight: string }) {
   return <>{parts.map((part, index) => part.toLowerCase() === highlight.toLowerCase() ? <mark key={index} className="rounded-sm bg-blue-50 px-0.5 text-blue-700">{part}</mark> : <span key={index}>{part}</span>)}</>;
 }
 
-function ToolCard({ tool, query, priority = false }: { tool: (typeof BUILD_PUBLIC_TOOLS)[number]; query: string; priority?: boolean }) {
-  const { tool: localizeTool, t } = useLanguage();
-  const policy = getToolPolicy(tool.id);
+function ToolCard({ tool, query, priority = false, view }: { tool: (typeof BUILD_PUBLIC_TOOLS)[number]; query: string; priority?: boolean; view: ViewMode }) {
+  const { tool: localizeTool } = useLanguage();
   const localized = localizeTool(tool.id, tool.name, tool.desc, tool.keywords);
   const category = getPublicToolCategory(tool);
-  const mode = policy.processingMode === 'browser' ? t('processing.browser') : t('processing.server');
-  const ModeIcon = policy.processingMode === 'browser' ? ShieldCheck : Server;
 
   return (
     <Link
@@ -34,28 +32,22 @@ function ToolCard({ tool, query, priority = false }: { tool: (typeof BUILD_PUBLI
       data-analytics-id={`tool-card-${tool.id}`}
       data-analytics-category={category}
     >
-      <article className="ajn-tool-card ajn-horizontal-tool-card h-full">
-        <div className="relative z-10 flex min-h-[78px] items-center gap-3 px-3 py-2.5 sm:min-h-[82px] sm:px-3.5 sm:py-3">
+      <article className={cn('ajn-tool-card ajn-horizontal-tool-card h-full', view === 'compact' && 'ajn-tool-card-compact', view === 'list' && 'ajn-tool-card-list')}>
+        <div className="relative z-10 flex min-h-[76px] items-center gap-3 px-3 py-2.5 sm:min-h-[80px] sm:px-3.5 sm:py-3">
           <ToolArtwork
             toolId={tool.id}
             toolName={localized.name}
             priority={priority}
-            className="h-12 w-12 sm:h-[52px] sm:w-[52px]"
+            className="h-11 w-11 sm:h-12 sm:w-12"
           />
 
           <div className="min-w-0 flex flex-1 flex-col justify-center">
-            <div className="flex min-w-0 items-center gap-2">
-              <h3 className="min-w-0 flex-1 truncate text-[14px] font-extrabold leading-5 tracking-[-.01em] text-slate-950 sm:text-[15px]">
-                <Highlight text={localized.name} highlight={query} />
-              </h3>
-            </div>
-            <p className="mt-0.5 line-clamp-1 text-[11px] font-medium leading-4 text-slate-500 sm:text-[11.5px]">
+            <h3 className="min-w-0 truncate text-[14px] font-extrabold leading-5 tracking-[-.01em] text-slate-950 sm:text-[14.5px]">
+              <Highlight text={localized.name} highlight={query} />
+            </h3>
+            <p className={cn('mt-0.5 text-[11px] font-medium leading-4 text-slate-500 sm:text-[11.5px]', view === 'list' ? 'line-clamp-2' : 'line-clamp-1')}>
               <Highlight text={localized.desc} highlight={query} />
             </p>
-            <div className="mt-1 flex min-w-0 items-center gap-1.5 text-[9.5px] font-bold text-slate-500">
-              <ModeIcon className={`h-3 w-3 shrink-0 ${policy.processingMode === 'browser' ? 'text-emerald-600' : 'text-blue-600'}`} />
-              <span className="truncate">{mode}</span>
-            </div>
           </div>
 
           <span className="ajn-card-arrow flex h-8 w-8 shrink-0 items-center justify-center rounded-xl" aria-hidden="true">
@@ -69,6 +61,20 @@ function ToolCard({ tool, query, priority = false }: { tool: (typeof BUILD_PUBLI
 
 export function ServicesGrid({ query, category }: ServicesGridProps) {
   const { language, tool: localizeTool, t } = useLanguage();
+  const [view, setView] = useState<ViewMode>('compact');
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('ajn-tool-view');
+      if (saved === 'list' || saved === 'comfortable' || saved === 'compact') setView(saved);
+    } catch { /* storage can be unavailable */ }
+  }, []);
+
+  const chooseView = (next: ViewMode) => {
+    setView(next);
+    try { localStorage.setItem('ajn-tool-view', next); } catch { /* storage can be unavailable */ }
+  };
+
   const filteredTools = useMemo(() => {
     const normalized = query.toLocaleLowerCase(language).trim();
     return BUILD_PUBLIC_TOOLS.filter((tool) => {
@@ -80,11 +86,41 @@ export function ServicesGrid({ query, category }: ServicesGridProps) {
     });
   }, [query, category, language, localizeTool]);
 
+  const gridClass = view === 'list'
+    ? 'grid-cols-1 max-w-5xl mx-auto'
+    : view === 'comfortable'
+      ? 'grid-cols-1 md:grid-cols-2'
+      : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4';
+
+  const viewOptions: { id: ViewMode; label: string; icon: typeof Rows3 }[] = [
+    { id: 'comfortable', label: '2 columns', icon: Grid2X2 },
+    { id: 'compact', label: '4 columns', icon: Grid3X3 },
+    { id: 'list', label: 'List', icon: Rows3 },
+  ];
+
   return (
-    <div className="space-y-5 md:space-y-7">
-      <div className="grid grid-cols-1 gap-2.5 sm:gap-3 md:grid-cols-2 xl:grid-cols-3">
+    <div className="space-y-4 md:space-y-6">
+      <div className="hidden items-center justify-between gap-4 md:flex">
+        <p className="text-[11px] font-bold text-slate-500"><span className="font-black text-slate-900">{filteredTools.length}</span> tools shown</p>
+        <div className="flex items-center gap-1 rounded-xl border border-slate-200 bg-white p-1 shadow-sm" role="group" aria-label="Choose tool layout">
+          {viewOptions.map(({ id, label, icon: Icon }) => (
+            <button
+              key={id}
+              type="button"
+              onClick={() => chooseView(id)}
+              aria-pressed={view === id}
+              title={label}
+              className={cn('inline-flex min-h-9 items-center gap-1.5 rounded-lg px-2.5 text-[10px] font-black transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500', view === id ? 'bg-slate-950 text-white shadow-sm' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900')}
+            >
+              <Icon className="h-3.5 w-3.5" /> <span className="hidden xl:inline">{label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className={cn('grid gap-2.5 sm:gap-3', gridClass)}>
         {filteredTools.map((tool, index) => (
-          <ToolCard key={tool.id} tool={tool} query={query} priority={index < 6} />
+          <ToolCard key={tool.id} tool={tool} query={query} priority={index < 8} view={view} />
         ))}
       </div>
 
@@ -96,9 +132,6 @@ export function ServicesGrid({ query, category }: ServicesGridProps) {
         </div>
       )}
 
-      <div className="flex flex-col gap-3 rounded-2xl border border-amber-200/70 bg-amber-50/70 p-4 text-xs font-semibold text-amber-900 sm:flex-row sm:items-center">
-        <TriangleAlert className="h-4 w-4 shrink-0" />{t('home.limitNote')}
-      </div>
     </div>
   );
 }

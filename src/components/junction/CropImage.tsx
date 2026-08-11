@@ -9,7 +9,7 @@ export default function CropImage(){
   const run=async()=>{if(!files.length){setE("Upload an image.");return;}setE("");setL(true);
     try{setR(await cropImage(files[0].file,x,y,w,h));}catch(e:any){setE(e.message);}setL(false);};
   return(<ToolWorkspace title="Crop Image" description="Cut out a specific rectangular region of your image." icon="✂️" accent="#D97706">
-    {result?<Done msg="Image cropped!" onDownload={()=>dl(result,"cropped_"+(files[0]?.name||"image.jpg"))} onReset={()=>{setR(null);setF([]);}}/>
+    {result?<Done msg="Image cropped!" onDownload={()=>dl(result,"cropped_"+(files[0]?.name||"image.jpg"))} shareFile={{blob:result,name:"cropped_"+(files[0]?.name||"image.jpg")}} onReset={()=>{setR(null);setF([]);}}/>
     :<div style={{display:"flex",flexDirection:"column",gap:16}}>
       <Drop files={files} onChange={setF} accept=".jpg,.jpeg,.png,.webp,.bmp"/>
       <G2><F label="X — left offset (px)"><input style={IS} type="number" min={0} value={x} onChange={e=>setX(+e.target.value)}/></F>

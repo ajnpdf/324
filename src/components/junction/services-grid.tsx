@@ -96,7 +96,7 @@ function LiquidToolCard({ tool, query }: { tool: any; query: string }) {
 
           <div className="pt-4 border-t border-black/5 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse" />
+              <div className="w-1 h-2 rounded-sm bg-emerald-500 animate-pulse" />
               <span className="text-[8px] font-black text-slate-300 uppercase tracking-widest">Active</span>
             </div>
             <div className="flex items-center gap-1.5 text-primary font-black uppercase text-[9px] tracking-widest opacity-0 group-hover:opacity-100 transition-all">

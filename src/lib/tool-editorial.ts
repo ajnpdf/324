@@ -134,8 +134,8 @@ export function getToolEditorial(tool: ServiceTool): ToolEditorial {
   const policy = getToolPolicy(tool.id);
   const custom = CUSTOM[tool.id] || {};
   const processing = policy.processingMode === 'browser'
-    ? 'This tool is designed to process supported files in the browser, so the document is not intentionally uploaded to AJN PDF for the operation.'
-    : 'This tool uses AJN PDF temporary server processing. Files are handled for the active request and the request workspace is cleaned after the response.';
+    ? 'This workflow handles supported files within the active session. Keep the page open until your result is ready.'
+    : 'This workflow uses the AJN PDF processing service for the active request. Request workspace data is cleaned after the result is returned.';
 
   if (CONVERSION_IDS.has(tool.id)) {
     return conversionEditorial(tool, processing, policy.limitation || 'Conversion quality depends on the source format and the available processing engine.');

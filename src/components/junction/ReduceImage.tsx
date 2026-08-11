@@ -2,9 +2,9 @@
 
 import { RuntimeImage } from '@/components/ui/runtime-image';
 import React, { useState, useEffect } from "react";
-import { ToolWorkspace, Drop, Range, Pills, ToolFile, dl, fmtBytes } from "./_shared";
+import { ToolWorkspace, Drop, Range, Pills, ToolFile, dl, fmtBytes, shareResult, beginToolProcessing, completeToolProcessing, failToolProcessing} from "./_shared";
 import { compressImage } from "./_imageUtils";
-import { CheckCircle2, Download, Loader2, Activity, ImageIcon, RefreshCcw, Zap, ShieldCheck, Edit3, Settings2 } from 'lucide-react';
+import { CheckCircle2, Download, Loader2, Activity, ImageIcon, RefreshCcw, Zap, Edit3, Settings2, Share2} from 'lucide-react';
 import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from '../ui/badge';
 import { Card } from '../ui/card';
@@ -48,6 +48,7 @@ export default function ReduceImage() {
 
   const run = async () => {
     if (!files.length) return;
+    beginToolProcessing("ReduceImage");
     setPhase('processing');
     setProgress(0);
     setStatus("Optimizing pixel matrix...");
@@ -62,7 +63,9 @@ export default function ReduceImage() {
       setSaved(files[0].size - b.size);
       setResultBlob(b);
       setPhase('done');
+      completeToolProcessing();
     } catch (e: any) {
+      failToolProcessing();
       setPhase('configure');
       toast({ variant: "destructive", title: "Process Error", description: e.message || "Failed to process image." });
     }
@@ -134,11 +137,6 @@ export default function ReduceImage() {
                     </Card>
                   </section>
 
-                  <div className="p-6 bg-emerald-500/5 border border-emerald-500/10 rounded-[2rem] flex items-center justify-center gap-2 text-emerald-600 shadow-sm">
-                    <ShieldCheck className="w-4 h-4" />
-                    <span className="text-[9px] font-black uppercase tracking-widest">Runs in your browser</span>
-                  </div>
-
                   <Button onClick={run} className="w-full h-16 bg-primary text-white font-black text-xs uppercase tracking-widest rounded-2xl shadow-xl hover:scale-105 transition-all gap-3 border-2 border-white/20 active:scale-95">
                     <Zap className="w-4 h-4" /> Compress image
                   </Button>
@@ -184,6 +182,9 @@ export default function ReduceImage() {
               <div className="w-full max-w-sm flex flex-col gap-4 mx-auto pt-4 pb-32">
                 <Button onClick={() => dl(resultBlob, `${outputName}.${ext}`)} className="h-16 bg-emerald-500 text-white font-black text-sm uppercase tracking-widest rounded-2xl shadow-xl hover:bg-emerald-600 transition-all gap-3 border-2 border-white/20 active:scale-95">
                   <Download className="w-4 h-4" /> Download Image
+                </Button>
+                <Button variant="outline" onClick={() => void shareResult(resultBlob, `${outputName}.${ext}`)} className="h-12 border-slate-200 bg-white text-slate-700 font-black text-xs rounded-xl shadow-sm hover:border-blue-200 hover:bg-blue-50/60 gap-2">
+                  <Share2 className="w-4 h-4" /> Share result
                 </Button>
                 <button onClick={reset} className="h-12 rounded-xl font-black text-[10px] uppercase text-slate-400 gap-2 flex items-center justify-center hover:bg-black/5 transition-all">
                   <RefreshCcw className="w-3.5 h-3.5" /> Process another file

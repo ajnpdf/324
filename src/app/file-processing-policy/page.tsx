@@ -5,23 +5,23 @@ export default function FileProcessingPolicyPage() {
     <LegalPageShell
       eyebrow="File processing"
       title="File Processing Policy"
-      summary="AJN PDF labels production tools as browser processing or temporary server processing so users can understand the workflow before selecting a file."
+      summary="AJN PDF explains whether a workflow stays in the active session or uses the processing service, together with practical limits and cleanup behavior."
       sections={[
         {
-          title: 'Browser processing',
+          title: 'Session-based processing',
           bullets: [
             'The selected document is read by JavaScript or WebAssembly in the current browser tab.',
-            'AJN PDF does not intentionally send the file to its processing API for a browser-labelled tool.',
+            'AJN PDF does not intentionally send the file to its processing API for a session-based workflow.',
             'The browser may use memory, temporary cache or download storage according to browser and operating-system behaviour.',
           ],
         },
         {
-          title: 'Temporary server processing',
+          title: 'Service-assisted processing',
           bullets: [
             'The file and required options are transmitted over HTTPS to the configured AJN PDF processing service.',
             'The service creates a request-specific temporary directory, performs the requested operation and streams the result back.',
             'The application removes the request directory after the response and runs cleanup for abandoned temporary jobs.',
-            'Server-assisted tools include advanced OCR, office and eBook conversions, PDF security operations, repair and format workflows that cannot run reliably in the browser.',
+            'Service-assisted tools include advanced OCR, office and eBook conversions, PDF security operations, repair and format workflows that require the configured processing engine.',
           ],
         },
         {

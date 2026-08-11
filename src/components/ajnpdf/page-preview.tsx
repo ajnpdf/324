@@ -119,7 +119,7 @@ export function PagePreview({
                 
                 {selectable && isSelected && (
                   <div className="absolute inset-0 bg-primary/10 flex items-center justify-center">
-                    <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white shadow-lg">
+                    <div className="w-8 h-8 bg-primary rounded-xl flex items-center justify-center text-white shadow-lg">
                       <CheckCircle2 className="w-5 h-5" />
                     </div>
                   </div>

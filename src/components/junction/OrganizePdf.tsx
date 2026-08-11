@@ -4,7 +4,7 @@ import { RuntimeImage } from '@/components/ui/runtime-image';
 import React, { useState, useRef } from "react";
 import * as pdfjsLib from 'pdfjs-dist';
 
-import { LayoutGrid, CheckCircle2, Download, Loader2, Activity, RefreshCcw, Zap, ShieldCheck, Plus, Trash2, RotateCw, ArrowLeft, ArrowRight, Settings2, Edit3 } from 'lucide-react';
+import { LayoutGrid, CheckCircle2, Download, Loader2, Activity, RefreshCcw, Zap, Plus, Trash2, RotateCw, ArrowLeft, ArrowRight, Settings2, Edit3, Share2} from 'lucide-react';
 import { motion, AnimatePresence } from "framer-motion";
 
 import { Card } from '../ui/card';
@@ -16,7 +16,7 @@ import { Input } from '../ui/input';
 import { useToast } from '../../hooks/use-toast';
 import { engine } from '../../lib/engine';
 import { cn } from '../../lib/utils';
-import { ToolWorkspace, dl, fmtBytes, getFilesFromEvent } from './_shared';
+import { ToolWorkspace, dl, fmtBytes, getFilesFromEvent, shareResult} from './_shared';
 import { initPdfWorker } from "@/lib/pdfjs-worker";
 
 interface PageItem {
@@ -37,7 +37,6 @@ export default function OrganizePdf() {
   const [outputName, setOutputName] = useState("");
   const [resultBlob, setResultBlob] = useState<Blob | null>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [perfStats, setPerfStats] = useState({ time: "0.0s", quality: "High Fidelity" });
   
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -103,7 +102,6 @@ export default function OrganizePdf() {
     setPhase('processing');
     setProgress(0);
     setStatus("Building the new page order…");
-    const start = Date.now();
 
     try {
       const uniqueFilesMap = new Map<string, File>();
@@ -122,7 +120,6 @@ export default function OrganizePdf() {
 
       if (res.success && res.blob) {
         setResultBlob(res.blob);
-        setPerfStats({ time: `${((Date.now() - start) / 1000).toFixed(2)}s`, quality: "Safe Buffer" });
         setPhase('done');
       }
     } catch {
@@ -241,11 +238,6 @@ export default function OrganizePdf() {
                     </Card>
                   </section>
 
-                  <div className="p-6 bg-emerald-500/5 border border-emerald-500/10 rounded-[2rem] flex items-center justify-center gap-2 text-emerald-600 shadow-sm">
-                    <ShieldCheck className="w-4 h-4" />
-                    <span className="text-[9px] font-black uppercase tracking-widest">Runs in your browser</span>
-                  </div>
-
                   <Button onClick={executeAssembly} disabled={items.length === 0} className="w-full h-16 bg-primary text-white font-black text-xs uppercase tracking-widest rounded-2xl shadow-xl hover:scale-105 transition-all gap-3 border-2 border-white/20 active:scale-95">
                     <Zap className="w-4 h-4" /> Save PDF
                   </Button>
@@ -277,20 +269,17 @@ export default function OrganizePdf() {
                 <p className="text-sm font-bold text-slate-500 uppercase tracking-widest">Your file is ready</p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-xl mx-auto text-left">
-                <div className="p-6 bg-slate-900/5 rounded-3xl border border-black/5 text-center">
-                  <p className="text-[10px] font-black text-slate-400 uppercase mb-1">Processing time</p>
-                  <p className="text-2xl font-black text-slate-950">{perfStats.time}</p>
-                </div>
-                <div className="p-6 bg-slate-900/5 rounded-3xl border border-black/5 text-center shadow-inner">
-                  <p className="text-[10px] font-black text-slate-400 uppercase mb-1">Final Result</p>
-                  <p className="text-sm font-black text-emerald-600 uppercase tracking-widest">{fmtBytes(resultBlob.size)}</p>
-                </div>
+              <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-slate-50/80 p-5 text-center">
+                <p className="text-[10px] font-black uppercase tracking-[.16em] text-slate-400">Result ready</p>
+                <p className="mt-2 text-sm font-black text-emerald-700">{fmtBytes(resultBlob.size)}</p>
               </div>
 
               <div className="w-full max-w-sm flex flex-col gap-4 mx-auto pt-4 pb-32">
                 <Button onClick={() => dl(resultBlob, `${outputName}.pdf`)} className="h-16 bg-emerald-500 text-white font-black text-sm uppercase tracking-widest rounded-2xl shadow-xl hover:bg-emerald-600 transition-all gap-3 border-2 border-white/20 active:scale-95">
                   <Download className="w-4 h-4" /> Download PDF
+                </Button>
+                <Button variant="outline" onClick={() => void shareResult(resultBlob, `${outputName}.pdf`)} className="h-12 border-slate-200 bg-white text-slate-700 font-black text-xs rounded-xl shadow-sm hover:border-blue-200 hover:bg-blue-50/60 gap-2">
+                  <Share2 className="w-4 h-4" /> Share result
                 </Button>
                 <button onClick={reset} className="h-12 rounded-xl font-black text-[10px] uppercase text-slate-400 gap-2 flex items-center justify-center hover:bg-black/5 transition-all">
                   <RefreshCcw className="w-3.5 h-3.5" /> Process another file

@@ -4,7 +4,7 @@
 import React, { useState, useRef } from "react";
 import * as pdfjsLib from 'pdfjs-dist';
 
-import { RotateCw, RotateCcw, CheckCircle2, Download, Loader2, Activity, FileText, RefreshCcw, Zap, ShieldCheck } from 'lucide-react';
+import { RotateCw, RotateCcw, CheckCircle2, Download, Loader2, Activity, FileText, RefreshCcw, Zap, Share2} from 'lucide-react';
 import { motion, AnimatePresence } from "framer-motion";
 
 import { Card } from '../ui/card';
@@ -15,7 +15,7 @@ import { ScrollArea } from '../ui/scroll-area';
 import { useToast } from '../../hooks/use-toast';
 import { engine } from '../../lib/engine';
 import { cn } from '../../lib/utils';
-import { ToolWorkspace, dl, fmtBytes, getFilesFromEvent } from './_shared';
+import { ToolWorkspace, dl, fmtBytes, getFilesFromEvent, shareResult} from './_shared';
 import { initPdfWorker } from "@/lib/pdfjs-worker";
 
 interface PageItem {
@@ -205,13 +205,6 @@ export default function RotatePdf() {
                       </Button>
                     </div>
                   </div>
-
-                  <div className="p-6 bg-emerald-500/5 border border-emerald-500/10 rounded-[2rem] flex items-start gap-4">
-                    <ShieldCheck className="w-5 h-5 text-emerald-600 mt-0.5" />
-                    <p className="text-[9px] font-bold text-slate-500 uppercase leading-relaxed tracking-wide">
-                      Runs in your browser.
-                    </p>
-                  </div>
                 </aside>
               </div>
             </motion.div>
@@ -253,6 +246,9 @@ export default function RotatePdf() {
               <div className="w-full max-w-sm flex flex-col gap-4 mx-auto pt-4 pb-32">
                 <Button onClick={() => dl(resultBlob, `${outputName}.pdf`)} className="h-16 bg-emerald-500 text-white font-black text-sm uppercase tracking-widest rounded-2xl shadow-xl hover:bg-emerald-600 transition-all gap-3 border-2 border-white/20 active:scale-95">
                   <Download className="w-4 h-4" /> Download PDF
+                </Button>
+                <Button variant="outline" onClick={() => void shareResult(resultBlob, `${outputName}.pdf`)} className="h-12 border-slate-200 bg-white text-slate-700 font-black text-xs rounded-xl shadow-sm hover:border-blue-200 hover:bg-blue-50/60 gap-2">
+                  <Share2 className="w-4 h-4" /> Share result
                 </Button>
                 <button onClick={reset} className="h-12 rounded-xl font-black text-[10px] uppercase text-slate-400 gap-2 flex items-center justify-center hover:bg-black/5 transition-all">
                   <RefreshCcw className="w-3.5 h-3.5" /> Process another file

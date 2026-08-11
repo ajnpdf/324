@@ -6,17 +6,17 @@ import { MainFooter } from '@/components/landing/main-footer';
 const modes = [
   {
     icon: Monitor,
-    title: 'Browser processing',
-    tag: 'Local-first',
+    title: 'Session-based tools',
+    tag: 'Active workspace',
     accent: 'bg-blue-50 text-blue-600 border-blue-100',
-    body: 'Merge, split, rotate, page editing and many image tools run inside the browser. Those tools are designed not to upload the selected document to AJN PDF.',
+    body: 'Many everyday PDF and image actions work inside the active session. The tool page shows practical handling details and limits before you begin.',
   },
   {
     icon: Server,
-    title: 'Temporary server processing',
-    tag: 'Clearly labelled',
+    title: 'Service-assisted tools',
+    tag: 'When required',
     accent: 'bg-red-50 text-red-600 border-red-100',
-    body: 'OCR, office and eBook conversion, advanced image formats, Protect PDF, Unlock PDF and Repair PDF can use the Python service. The file is sent for the requested action, processed in a request-specific temporary directory and cleaned after the response or an error.',
+    body: 'Advanced conversion, OCR and security workflows can use the processing service for the requested action. Request workspace data is cleaned after delivery or an error.',
   },
 ];
 
@@ -25,17 +25,16 @@ export default function TransparencyPage() {
     <div className="min-h-screen overflow-x-hidden bg-background text-foreground">
       <Navbar />
       <main className="relative pt-28">
-        <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[38rem] overflow-hidden">
-          <div className="absolute -left-24 top-16 h-80 w-80 rounded-full bg-blue-100/70 blur-3xl" />
-          <div className="absolute left-[42%] top-4 h-80 w-80 rounded-full bg-emerald-100/60 blur-3xl" />
-          <div className="absolute -right-20 top-24 h-80 w-80 rounded-full bg-red-100/60 blur-3xl" />
+        <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[38rem] overflow-hidden">
+          <div className="absolute inset-x-0 top-0 h-80 bg-gradient-to-b from-blue-50/65 via-violet-50/35 to-transparent" />
+          <svg className="absolute inset-x-0 top-14 h-72 w-full opacity-60" viewBox="0 0 1440 320" preserveAspectRatio="none"><path d="M-100 210C170 55 410 292 720 154C1010 24 1190 86 1540 205" fill="none" stroke="url(#transparency-wave)" strokeWidth="30" strokeLinecap="round" opacity=".15"/><defs><linearGradient id="transparency-wave" x1="0" y1="0" x2="1440" y2="0"><stop stopColor="#2563EB"/><stop offset=".5" stopColor="#7C3AED"/><stop offset="1" stopColor="#10B981"/></linearGradient></defs></svg>
         </div>
 
         <section className="mx-auto max-w-6xl px-5 pb-20 pt-12 md:px-8 md:pt-20">
           <div className="mx-auto max-w-3xl text-center">
-            <span className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-[11px] font-extrabold text-blue-700"><Eye className="h-4 w-4" /> How files are processed</span>
-            <h1 className="mt-7 text-4xl font-black tracking-tight md:text-7xl">Know where your file is processed</h1>
-            <p className="mt-6 text-base font-medium leading-8 text-muted-foreground md:text-lg">Every public tool must state its processing mode, practical limits and known limitations before processing begins.</p>
+            <span className="inline-flex items-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-4 py-2 text-[11px] font-extrabold text-blue-700"><Eye className="h-4 w-4" /> Clear file handling</span>
+            <h1 className="mt-7 text-4xl font-black tracking-tight md:text-7xl">Clear file handling, from start to finish</h1>
+            <p className="mt-6 text-base font-medium leading-8 text-muted-foreground md:text-lg">AJN PDF explains practical file handling, limits and cleanup behavior so you can choose the right workflow with confidence.</p>
           </div>
 
           <div className="mt-14 grid gap-6 md:grid-cols-2">
@@ -43,7 +42,7 @@ export default function TransparencyPage() {
               <section key={mode.title} className="ajn-tool-card p-8 md:p-10">
                 <div className="flex items-start justify-between gap-4">
                   <span className={`flex h-14 w-14 items-center justify-center rounded-2xl border ${mode.accent}`}><mode.icon className="h-6 w-6" /></span>
-                  <span className="rounded-full border border-border bg-card px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider text-muted-foreground">{mode.tag}</span>
+                  <span className="rounded-lg border border-border bg-card px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider text-muted-foreground">{mode.tag}</span>
                 </div>
                 <h2 className="mt-7 text-2xl font-black tracking-tight">{mode.title}</h2>
                 <p className="mt-4 text-sm font-medium leading-7 text-muted-foreground">{mode.body}</p>
@@ -51,27 +50,27 @@ export default function TransparencyPage() {
             ))}
           </div>
 
-          <section className="mt-7 rounded-[2rem] bg-slate-950 p-8 text-white shadow-[0_30px_90px_rgba(15,23,42,.24)] md:p-12">
+          <section className="mt-7 rounded-[2rem] border border-slate-200 bg-white/90 p-8 text-slate-950 shadow-[0_24px_70px_rgba(37,62,113,.10)] backdrop-blur md:p-12">
             <div className="grid gap-8 md:grid-cols-3">
               <div>
-                <ShieldCheck className="h-7 w-7 text-blue-400" />
+                <ShieldCheck className="h-7 w-7 text-blue-600" />
                 <h2 className="mt-5 text-xl font-black">Verify the request</h2>
-                <p className="mt-3 text-sm leading-7 text-slate-300">Use the browser Network tab. Local tools should not send the selected document to the AJN backend.</p>
+                <p className="mt-3 text-sm leading-7 text-slate-600">Use the browser Network tab. Local tools should not send the selected document to the AJN backend.</p>
               </div>
               <div>
-                <Trash2 className="h-7 w-7 text-emerald-400" />
+                <Trash2 className="h-7 w-7 text-emerald-600" />
                 <h2 className="mt-5 text-xl font-black">Temporary cleanup</h2>
-                <p className="mt-3 text-sm leading-7 text-slate-300">Server jobs use request-specific temporary directories and schedule cleanup after delivery.</p>
+                <p className="mt-3 text-sm leading-7 text-slate-600">Server jobs use request-specific temporary directories and schedule cleanup after delivery.</p>
               </div>
               <div>
-                <Server className="h-7 w-7 text-red-400" />
+                <Server className="h-7 w-7 text-red-600" />
                 <h2 className="mt-5 text-xl font-black">Backend status</h2>
-                <p className="mt-3 text-sm leading-7 text-slate-300">Security tools check service availability and show an unavailable state instead of fake success.</p>
+                <p className="mt-3 text-sm leading-7 text-slate-600">Security tools check service availability and show an unavailable state instead of fake success.</p>
               </div>
             </div>
             <div className="mt-9 flex flex-wrap gap-3">
               <Link href="/file-processing-policy" className="inline-flex items-center gap-2 rounded-2xl bg-blue-600 px-5 py-3 text-sm font-extrabold transition hover:bg-blue-500">File processing policy <ArrowRight className="h-4 w-4" /></Link>
-              <Link href="/security" className="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-5 py-3 text-sm font-extrabold transition hover:bg-white/10">Security controls</Link>
+              <Link href="/security" className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-5 py-3 text-sm font-extrabold transition hover:bg-slate-100">Security controls</Link>
             </div>
           </section>
         </section>

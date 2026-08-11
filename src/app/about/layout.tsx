@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'About AJN PDF',
-  description: 'Learn how AJN PDF combines browser workflows with clearly labelled temporary server processing for PDF, OCR, image and document tools.',
+  description: 'Learn how AJN PDF brings PDF, OCR, image and document workflows together in a clear, focused web workspace.',
   alternates: { canonical: '/about' },
 };
 

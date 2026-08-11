@@ -11,7 +11,7 @@ export default function WatermarkImage(){
   const run=async()=>{if(!files.length){setE("Upload an image.");return;}if(!text.trim()){setE("Enter watermark text.");return;}
     setE("");setL(true);try{setR(await watermarkImage(files[0].file,text,opacity,size,color,pos));}catch(e:any){setE(e.message);}setL(false);};
   return(<ToolWorkspace title="Watermark Image" description="Add your brand or copyright text to any image." icon="💧" accent="#06B6D4">
-    {result?<Done msg="Watermark added!" onDownload={()=>dl(result,"watermarked_"+(files[0]?.name||"image.jpg"))} onReset={()=>{setR(null);setF([]);}}/>
+    {result?<Done msg="Watermark added!" onDownload={()=>dl(result,"watermarked_"+(files[0]?.name||"image.jpg"))} shareFile={{blob:result,name:"watermarked_"+(files[0]?.name||"image.jpg")}} onReset={()=>{setR(null);setF([]);}}/>
     :<div style={{display:"flex",flexDirection:"column",gap:16}}>
       <Drop files={files} onChange={setF} accept=".jpg,.jpeg,.png,.webp,.bmp"/>
       <F label="Watermark text"><input style={IS} value={text} onChange={e=>setT(e.target.value)} placeholder="© Your Brand"/></F>

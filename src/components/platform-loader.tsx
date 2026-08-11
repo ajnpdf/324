@@ -69,9 +69,9 @@ export function PlatformLoader({
             </div>
 
             <div className="w-full space-y-6 flex flex-col items-center">
-              <div className="w-full h-1.5 bg-black/5 rounded-full overflow-hidden shadow-inner border border-black/5 p-0.5">
+              <div className="w-full h-1.5 bg-black/5 rounded-lg overflow-hidden shadow-inner border border-black/5 p-0.5">
                 <motion.div 
-                  className="h-full bg-primary rounded-full shadow-[0_0_20px_rgba(30,58,138,0.4)]"
+                  className="h-full bg-primary rounded-md shadow-[0_0_20px_rgba(30,58,138,0.4)]"
                   animate={{ width: `${percent}%` }}
                   transition={{ type: "tween", ease: "linear" }}
                 />
@@ -87,7 +87,7 @@ export function PlatformLoader({
                     <ShieldCheck className="w-3 h-3 text-emerald-600" />
                     <span className="text-[8px] font-black uppercase tracking-widest">Private</span>
                   </div>
-                  <div className="w-1 h-1 rounded-full bg-slate-900" />
+                  <div className="w-1 h-1.5 rounded-sm bg-slate-900" />
                   <div className="flex items-center gap-1.5">
                     <Zap className="w-3 h-3 text-primary" />
                     <span className="text-[8px] font-black uppercase tracking-widest">Fast</span>

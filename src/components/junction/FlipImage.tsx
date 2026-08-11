@@ -9,7 +9,7 @@ export default function FlipImage(){
     setE("");setL(true);try{setR(await flipImage(files[0].file,h,v));}catch(e:any){setE(e.message);}setL(false);};
   const lbl=h&&v?"Horizontal + Vertical":h?"Horizontal (mirror)":"Vertical (upside down)";
   return(<ToolWorkspace title="Flip Image" description="Mirror your image horizontally, vertically, or both." icon="↔️" accent={T.teal}>
-    {result?<Done msg="Image flipped!" onDownload={()=>dl(result,"flipped_"+(files[0]?.name||"image.jpg"))} onReset={()=>{setR(null);setF([]);}}/>
+    {result?<Done msg="Image flipped!" onDownload={()=>dl(result,"flipped_"+(files[0]?.name||"image.jpg"))} shareFile={{blob:result,name:"flipped_"+(files[0]?.name||"image.jpg")}} onReset={()=>{setR(null);setF([]);}}/>
     :<div style={{display:"flex",flexDirection:"column",gap:16}}>
       <Drop files={files} onChange={setF} accept=".jpg,.jpeg,.png,.webp,.bmp"/>
       <F label="Flip direction">

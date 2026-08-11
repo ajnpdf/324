@@ -1651,3 +1651,46 @@ body {
     transform: none !important;
   }
 }
+
+/* ========================================================================== */
+/* AJN PDF R8 — PREMIUM PRO WORKSPACE / CLEAN GRID / WAVE BACKGROUND          */
+/* ========================================================================== */
+.ajn-r8-wave-bg { opacity: .96; }
+.ajn-r8-wave { position:absolute; left:-4%; width:108%; height:220px; fill:none; stroke-width:2.4; }
+.ajn-r8-wave-one { top:5%; stroke:rgba(111,87,255,.13); }
+.ajn-r8-wave-two { bottom:2%; stroke:rgba(38,120,255,.10); }
+.ajn-r8-wave-bg.is-compact .ajn-r8-wave { height:150px; opacity:.72; }
+.ajn-r8-wave-bg.is-compact .ajn-r8-wave-one { top:0; }
+.ajn-r8-wave-bg.is-compact .ajn-r8-wave-two { bottom:-8%; }
+
+.ajn-hero-value-chip,.ajn-mobile-value-chip { border-radius:.72rem; }
+.ajn-workflow-panel { border-radius:1.35rem; }
+
+.ajn-tool-card-compact .ajn-card-arrow { display:none; }
+.ajn-tool-card-compact h3 { font-size:.84rem; }
+.ajn-tool-card-list { max-width:100%; }
+.ajn-tool-card-list .ajn-card-arrow { background:#f8fafc; }
+
+.ajn-r8-hero-document { position:relative; height:160px; max-width:320px; margin-left:auto; margin-right:auto; }
+.ajn-r8-doc-sheet { position:absolute; left:50%; top:0; width:132px; height:152px; border:1px solid #e4e8f2; border-radius:16px; background:white; box-shadow:0 18px 40px rgba(37,62,113,.10); }
+.ajn-r8-doc-back { transform:translateX(-72%) rotate(-6deg); opacity:.62; }
+.ajn-r8-doc-mid { transform:translateX(-28%) rotate(5deg); opacity:.78; }
+.ajn-r8-doc-front { transform:translateX(-50%); display:flex; flex-direction:column; gap:9px; padding:22px 18px; }
+.ajn-r8-doc-label { display:inline-flex; width:max-content; border-radius:8px; background:#fef2f2; padding:5px 8px; color:#dc2626; font-size:10px; font-weight:900; letter-spacing:.08em; }
+.ajn-r8-doc-line { display:block; height:7px; border-radius:4px; background:#eef2f7; }
+
+.ajn-r8-showcase-wave { position:absolute; inset:0; background:linear-gradient(145deg,transparent 0 42%,rgba(111,87,255,.05) 42% 44%,transparent 44% 58%,rgba(37,99,235,.045) 58% 60%,transparent 60%); }
+.ajn-r8-file-preview { display:flex; min-height:74px; flex-direction:column; justify-content:center; gap:4px; border:1px solid #e8ebf2; border-radius:12px; background:#fbfcff; padding:12px; color:#0f172a; }
+.ajn-r8-file-preview span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:11px; font-weight:850; }
+.ajn-r8-file-preview b { color:#94a3b8; font-size:9px; font-weight:750; }
+
+@media (min-width:1280px){
+  .ajn-tool-card-compact .ajn-simple-tool-icon { width:2.65rem !important; height:2.65rem !important; border-radius:12px; }
+  .ajn-tool-card-compact > div { gap:.65rem; padding-left:.7rem; padding-right:.7rem; }
+}
+@media (max-width:767px){
+  .ajn-r8-wave { width:150%; left:-25%; height:170px; }
+  .ajn-r8-wave-one { top:8%; }.ajn-r8-wave-two { bottom:0; }
+  .ajn-horizontal-tool-card,.ajn-tool-card { min-height:74px; border-radius:13px; }
+}
+@media (prefers-reduced-motion:reduce){.ajn-r8-wave,.ajn-r8-doc-sheet{animation:none!important;transition:none!important}}

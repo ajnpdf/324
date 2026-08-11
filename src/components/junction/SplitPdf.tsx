@@ -41,7 +41,7 @@ export default function SplitPdf() {
   return (
     <ToolWorkspace title="Split PDF" description="Extract pages, custom ranges, or fixed-size groups" icon="✂️" badge="PDF SPLIT" accent="#8B5CF6">
       {result ? (
-        <Done msg={`${result.count} file${result.count === 1 ? "" : "s"} created`} dlLabel={result.count === 1 ? "Download PDF" : "Download ZIP"} onDownload={() => dl(result.blob, result.name)} onReset={() => { setResult(null); setFiles([]); setError(""); }} />
+        <Done msg={`${result.count} file${result.count === 1 ? "" : "s"} created`} dlLabel={result.count === 1 ? "Download PDF" : "Download ZIP"} onDownload={() => dl(result.blob, result.name)} shareFile={{ blob: result.blob, name: result.name }} onReset={() => { setResult(null); setFiles([]); setError(""); }} />
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           <Drop files={files} onChange={setFiles} accept=".pdf,application/pdf" label="Select one PDF" sub="Maximum 50 MB · processed locally" />

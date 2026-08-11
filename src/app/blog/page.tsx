@@ -6,7 +6,7 @@ import { MainFooter } from '@/components/landing/main-footer';
 
 export const metadata: Metadata = {
   title: 'Practical PDF Guides',
-  description: 'Original AJN PDF guides covering browser processing, safer PDF merging, document protection, OCR and choosing a free PDF editor.',
+  description: 'Practical AJN PDF guides for safer PDF workflows, document protection, OCR, editing and everyday file tasks.',
   alternates: { canonical: '/blog' },
 };
 
@@ -15,31 +15,31 @@ const articles = [
     href: '/blog/how-to-merge-pdfs-online-safely',
     title: 'How to merge PDFs online safely',
     desc: 'A practical workflow for checking page order, processing mode, downloaded output and document privacy.',
-    tag: 'Workflow', readTime: '5 min', icon: FileText, accent: 'bg-red-50 text-red-600 dark:bg-red-500/15 dark:text-red-300',
+    tag: 'Workflow', readTime: '5 min', icon: FileText, accent: 'bg-red-50 text-red-600',
   },
   {
     href: '/blog/browser-native-architecture',
     title: 'How browser-native PDF tools work',
     desc: 'Understand local-first processing, memory limits, browser compatibility and when a native server engine is necessary.',
-    tag: 'Architecture', readTime: '6 min', icon: BookOpen, accent: 'bg-blue-50 text-blue-600 dark:bg-blue-500/15 dark:text-blue-300',
+    tag: 'Architecture', readTime: '6 min', icon: BookOpen, accent: 'bg-blue-50 text-blue-600',
   },
   {
     href: '/blog/document-security-aes256',
     title: 'PDF passwords and AES-256 explained',
     desc: 'Learn the difference between open and owner passwords, document permissions and authorised password removal.',
-    tag: 'Security', readTime: '7 min', icon: ShieldCheck, accent: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-300',
+    tag: 'Security', readTime: '7 min', icon: ShieldCheck, accent: 'bg-emerald-50 text-emerald-600',
   },
   {
     href: '/blog/ocr-digital-archiving',
     title: 'OCR for scanned documents and archives',
     desc: 'Improve scan quality, choose a language and review extracted text before using OCR output in important workflows.',
-    tag: 'OCR', readTime: '6 min', icon: ScanText, accent: 'bg-blue-50 text-blue-600 dark:bg-blue-500/15 dark:text-blue-300',
+    tag: 'OCR', readTime: '6 min', icon: ScanText, accent: 'bg-blue-50 text-blue-600',
   },
   {
     href: '/blog/best-free-pdf-editor',
     title: 'How to evaluate a free PDF editor',
     desc: 'Compare real output, privacy labels, limitations, download quality and misleading claims before trusting a PDF tool.',
-    tag: 'Guide', readTime: '5 min', icon: Shrink, accent: 'bg-red-50 text-red-600 dark:bg-red-500/15 dark:text-red-300',
+    tag: 'Guide', readTime: '5 min', icon: Shrink, accent: 'bg-red-50 text-red-600',
   },
 ];
 
@@ -48,17 +48,16 @@ export default function BlogPage() {
     <div className="min-h-screen overflow-x-hidden bg-background text-foreground">
       <Navbar />
       <main className="relative pt-28">
-        <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[34rem] overflow-hidden">
-          <div className="absolute -left-20 top-8 h-80 w-80 rounded-full bg-red-100/60 blur-3xl" />
-          <div className="absolute left-1/3 top-0 h-96 w-96 rounded-full bg-blue-100/70 blur-3xl" />
-          <div className="absolute -right-16 top-16 h-80 w-80 rounded-full bg-emerald-100/50 blur-3xl" />
+        <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[34rem] overflow-hidden">
+          <div className="absolute inset-x-0 top-0 h-72 bg-gradient-to-b from-violet-50/60 via-blue-50/30 to-transparent" />
+          <svg className="absolute inset-x-0 top-12 h-72 w-full opacity-55" viewBox="0 0 1440 320" preserveAspectRatio="none"><path d="M-90 208C180 70 420 286 706 154C970 32 1220 82 1530 206" fill="none" stroke="url(#blog-wave)" strokeWidth="28" strokeLinecap="round" opacity=".15"/><defs><linearGradient id="blog-wave" x1="0" y1="0" x2="1440" y2="0"><stop stopColor="#E9233F"/><stop offset=".5" stopColor="#2563EB"/><stop offset="1" stopColor="#059669"/></linearGradient></defs></svg>
         </div>
 
         <section className="mx-auto max-w-6xl px-5 pb-24 pt-12 md:px-8 md:pt-20">
           <div className="mx-auto max-w-3xl text-center">
-            <span className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-[11px] font-extrabold text-blue-700"><BookOpen className="h-4 w-4" /> AJN PDF guides</span>
-            <h1 className="mt-7 text-4xl font-black tracking-tight md:text-7xl">Useful guidance before advertising</h1>
-            <p className="mt-6 text-base font-medium leading-8 text-muted-foreground md:text-lg">Five original guides based on the tools and processing models available in AJN PDF. No invented case studies or fake statistics.</p>
+            <span className="inline-flex items-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-4 py-2 text-[11px] font-extrabold text-blue-700"><BookOpen className="h-4 w-4" /> AJN PDF guides</span>
+            <h1 className="mt-7 text-4xl font-black tracking-tight md:text-7xl">Practical guides for better document workflows</h1>
+            <p className="mt-6 text-base font-medium leading-8 text-muted-foreground md:text-lg">Clear, practical guidance for PDF, OCR, document security and everyday file workflows.</p>
           </div>
 
           <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">

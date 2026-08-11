@@ -112,17 +112,17 @@ export function ProgressBar({ pct, color = "#3B82F6", label, phase }: { pct: num
     <div className="w-full font-sans animate-in fade-in duration-500">
       <div className="flex justify-between mb-3 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
         <span className="flex items-center gap-2">
-          <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: activeColor }} />
+          <div className="h-3 w-1 rounded-sm" style={{ backgroundColor: activeColor }} />
           {label || 'Processing progress'}
         </span>
         <span className="tabular-nums text-slate-900">{Math.round(pct)}%</span>
       </div>
-      <div className="h-2 bg-black/5 rounded-full overflow-hidden shadow-inner border border-black/5 p-0.5">
+      <div className="h-2 bg-black/5 rounded-md overflow-hidden shadow-inner border border-black/5 p-0.5">
         <motion.div 
           initial={{ width: 0 }}
           animate={{ width: `${pct}%` }}
           transition={{ duration: 0.4, ease: "easeOut" }}
-          className="h-full rounded-full shadow-[0_0_15px_rgba(0,0,0,0.1)]" 
+          className="h-full rounded-sm shadow-[0_0_15px_rgba(0,0,0,0.1)]" 
           style={{ backgroundColor: activeColor }} 
         />
       </div>
@@ -148,7 +148,6 @@ export function LogStream({ logs }: { logs: LogEntry[] }) {
       ) : (
         logs.map((log, i) => (
           <div key={i} className="mb-2 text-slate-400 flex gap-4 animate-in slide-in-from-left-2">
-            <span className="text-primary/40 shrink-0 select-none">[{((log.ts - (logs[0]?.ts || log.ts)) / 1000).toFixed(2)}s]</span>
             <span className={i === logs.length - 1 ? "text-white font-bold" : "text-slate-400"}>
               {log.stage}
               {log.detail && <span className="text-slate-600 ml-3">/ {log.detail}</span>}
@@ -156,7 +155,7 @@ export function LogStream({ logs }: { logs: LogEntry[] }) {
           </div>
         ))
       )}
-      {logs.length > 0 && <div className="text-primary animate-pulse inline-block ml-1">▋</div>}
+      {logs.length > 0 && <div className="mt-2 h-0.5 w-8 bg-primary/50" />}
     </div>
   );
 }

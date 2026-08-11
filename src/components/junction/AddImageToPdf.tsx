@@ -4,7 +4,7 @@ import { RuntimeImage } from '@/components/ui/runtime-image';
 import React, { useState, useRef, useEffect } from "react";
 import * as pdfjsLib from 'pdfjs-dist';
 import { PDFDocument, degrees } from 'pdf-lib';
-import { CheckCircle2, Download, Loader2, FileText, RefreshCcw, Zap, ShieldCheck, Settings2, ImageIcon } from 'lucide-react';
+import { CheckCircle2, Download, Loader2, FileText, RefreshCcw, Zap, Settings2, ImageIcon, Share2} from 'lucide-react';
 import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from '../ui/badge';
 import { Card } from '../ui/card';
@@ -13,7 +13,7 @@ import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { useToast } from '../../hooks/use-toast';
 import { cn } from '../../lib/utils';
-import { ToolWorkspace, dl, safeOutputName, getFilesFromEvent } from './_shared';
+import { ToolWorkspace, dl, safeOutputName, getFilesFromEvent, shareResult, beginToolProcessing, completeToolProcessing, failToolProcessing} from './_shared';
 import { initPdfWorker } from "@/lib/pdfjs-worker";
 import { VisualPositionOverlay } from "./visual-position-overlay";
 
@@ -67,6 +67,7 @@ export default function AddImageToPdf() {
       setPreview(canvas.toDataURL('image/jpeg', 0.8));
       if (imageFile) setPhase('configure');
     } catch {
+      failToolProcessing();
       toast({ title: "Analysis failed", variant: "destructive" });
     }
   };
@@ -102,7 +103,8 @@ export default function AddImageToPdf() {
         canvas.height = viewport.height; canvas.width = viewport.width;
         await page.render({ canvasContext: ctx, viewport }).promise;
         if (!cancelled) { setPageSize({ width: baseViewport.width, height: baseViewport.height }); setPreview(canvas.toDataURL('image/jpeg', 0.8)); }
-      } catch {}
+      } catch {
+      failToolProcessing();}
     };
     void renderSelectedPage();
     return () => { cancelled = true; };
@@ -110,6 +112,7 @@ export default function AddImageToPdf() {
 
   const executeAddImage = async () => {
     if (!pdfFile || !imageFile) return;
+    beginToolProcessing("AddImageToPdf");
     setPhase('processing');
     setStatus("Applying changes…");
 
@@ -140,7 +143,9 @@ export default function AddImageToPdf() {
       const finalBytes = await pdfDoc.save();
       setResultBlob(new Blob([finalBytes.buffer as ArrayBuffer], { type: 'application/pdf' }));
       setPhase('done');
+      completeToolProcessing();
     } catch {
+      failToolProcessing();
       setPhase('configure');
       toast({ title: "Processing Error", variant: "destructive" });
     }
@@ -268,10 +273,6 @@ export default function AddImageToPdf() {
                     </Card>
                   </section>
 
-                  <div className="p-6 bg-emerald-500/5 border border-emerald-500/10 rounded-[2rem] flex items-center justify-center gap-2 text-emerald-600 shadow-sm">
-                    <ShieldCheck className="w-4 h-4" /><span className="text-[9px] font-black uppercase">Runs in your browser</span>
-                  </div>
-
                   <Button onClick={executeAddImage} className="w-full h-16 bg-primary text-white font-black text-xs uppercase tracking-widest rounded-2xl shadow-xl hover:scale-105 transition-all gap-3 border-2 border-white/20 active:scale-95">
                     <Zap className="w-4 h-4" /> Add image
                   </Button>
@@ -285,7 +286,7 @@ export default function AddImageToPdf() {
               <Loader2 className="w-16 h-16 text-primary animate-spin" />
               <div className="w-full max-w-sm space-y-3 mx-auto" role="status" aria-live="polite">
                 <p className="text-sm font-semibold text-primary">{status || "Applying changes…"}</p>
-                <div className="h-2 overflow-hidden rounded-full bg-primary/10"><div className="h-full w-1/2 animate-pulse rounded-full bg-primary" /></div>
+                <div className="h-2 overflow-hidden rounded-md bg-primary/10"><div className="h-full w-1/2 animate-pulse rounded-md bg-primary" /></div>
               </div>
             </motion.div>
           )}
@@ -302,6 +303,9 @@ export default function AddImageToPdf() {
               <div className="w-full max-w-sm flex flex-col gap-4 mx-auto pt-4 pb-32">
                 <Button onClick={() => dl(resultBlob, safeOutputName(outputName, "pdf_with_image", ".pdf"))} className="h-16 bg-emerald-500 text-white font-black text-sm uppercase tracking-widest rounded-2xl shadow-xl hover:bg-emerald-600 transition-all gap-3 border-2 border-white/20 active:scale-95">
                   <Download className="w-4 h-4" /> Download PDF
+                </Button>
+                <Button variant="outline" onClick={() => void shareResult(resultBlob, safeOutputName(outputName, "pdf_with_image", ".pdf"))} className="h-12 border-slate-200 bg-white text-slate-700 font-black text-xs rounded-xl shadow-sm hover:border-blue-200 hover:bg-blue-50/60 gap-2">
+                  <Share2 className="w-4 h-4" /> Share result
                 </Button>
                 <button onClick={reset} className="h-12 rounded-xl font-black text-[10px] uppercase text-slate-400 gap-2 flex items-center justify-center hover:bg-black/5 transition-all">
                   <RefreshCcw className="w-3.5 h-3.5" /> Process another file

@@ -75,7 +75,7 @@ function SortableItem({ file, onRemove }: { file: FileItem; onRemove: (id: strin
           <span className="text-[10px] font-mono text-slate-400">{file.originalSize}</span>
           {file.pageCount !== undefined && (
             <>
-              <span className="w-1 h-1 rounded-full bg-slate-200" />
+              <span className="w-1 h-1.5 rounded-sm bg-slate-200" />
               <span className="text-[10px] font-mono text-slate-400">{file.pageCount} Pages</span>
             </>
           )}
@@ -92,7 +92,7 @@ function SortableItem({ file, onRemove }: { file: FileItem; onRemove: (id: strin
         variant="ghost"
         size="icon"
         onClick={() => onRemove(file.id)}
-        className="text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-full"
+        className="text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg"
       >
         <X className="w-4 h-4" />
       </Button>
