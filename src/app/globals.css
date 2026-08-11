@@ -1222,3 +1222,106 @@ html[data-language="kn"] body { font-family: var(--font-inter), "Nirmala UI", "N
   .ajn-mobile-nav-item,
   .ajn-primary-action { animation:none!important; transition:none!important; transform:none!important; }
 }
+
+/* ============================================================
+   AJN PDF R5 — branded horizontal tool cards
+   Professional compact directory with exact per-tool artwork.
+   ============================================================ */
+.ajn-horizontal-tool-card {
+  overflow: hidden;
+  min-height: 106px;
+  border-radius: 1.05rem;
+  background:
+    radial-gradient(circle at var(--ajn-card-x, 72%) var(--ajn-card-y, 20%), rgba(119,105,255,.09), transparent 30%),
+    linear-gradient(145deg, rgba(255,255,255,.99), rgba(247,248,255,.97));
+  box-shadow: 0 7px 24px rgba(37,54,112,.07), inset 0 1px 0 rgba(255,255,255,.95);
+}
+.ajn-horizontal-tool-card::after {
+  left: auto;
+  right: 1rem;
+  bottom: 0;
+  width: 2rem;
+  height: 2px;
+  border-radius: 999px 999px 0 0;
+  opacity: .45;
+}
+.ajn-horizontal-tool-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(92,82,235,.24);
+  box-shadow: 0 14px 34px rgba(42,61,128,.12), inset 0 1px 0 rgba(255,255,255,.96);
+}
+.dark .ajn-horizontal-tool-card {
+  border-color: rgba(255,138,0,.12);
+  background:
+    radial-gradient(circle at var(--ajn-card-x, 72%) var(--ajn-card-y, 20%), rgba(255,135,0,.08), transparent 32%),
+    linear-gradient(145deg, rgba(18,18,20,.985), rgba(8,8,10,.98));
+  box-shadow: 0 10px 28px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.03);
+}
+.dark .ajn-horizontal-tool-card:hover {
+  border-color: rgba(255,145,26,.28);
+  box-shadow: 0 16px 40px rgba(0,0,0,.5), 0 0 0 1px rgba(255,138,0,.04);
+}
+
+.ajn-tool-artwork {
+  border-radius: .88rem;
+  border: 1px solid rgba(82,87,190,.15);
+  background: #070b2a;
+  box-shadow: 0 7px 18px rgba(31,38,100,.14);
+  isolation: isolate;
+}
+.ajn-tool-artwork::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
+}
+.ajn-tool-artwork img {
+  transition: transform .22s cubic-bezier(.2,.8,.2,1), filter .22s ease;
+}
+.group:hover .ajn-tool-artwork img {
+  transform: scale(1.025);
+  filter: saturate(1.04) contrast(1.015);
+}
+.dark .ajn-tool-artwork {
+  border-color: rgba(255,138,0,.16);
+  box-shadow: 0 8px 22px rgba(0,0,0,.3);
+}
+
+.ajn-card-brand-badge {
+  display: inline-flex;
+  min-height: 18px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(91,81,232,.12);
+  border-radius: .42rem;
+  background: rgba(103,92,245,.07);
+  padding: .16rem .4rem;
+  color: #5f55df;
+  font-size: 8px;
+  font-weight: 950;
+  line-height: 1;
+  letter-spacing: .12em;
+}
+.dark .ajn-card-brand-badge {
+  border-color: rgba(255,138,0,.16);
+  background: rgba(255,138,0,.08);
+  color: #ff9b28;
+}
+
+@media (max-width: 640px) {
+  .ajn-horizontal-tool-card { min-height: 102px; border-radius: .98rem; }
+  .ajn-horizontal-tool-card:hover { transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ajn-horizontal-tool-card,
+  .ajn-horizontal-tool-card:hover,
+  .ajn-tool-artwork img,
+  .group:hover .ajn-tool-artwork img {
+    transform: none !important;
+    transition: none !important;
+  }
+}

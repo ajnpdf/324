@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ArrowRight, CheckCircle2, FileImage, FileText, RefreshCcw, Search } from 'lucide-react';
 import { MainFooter } from './main-footer';
+import { ToolArtwork } from '@/components/ajn/tool-artwork';
 import { Navbar } from './navbar';
 import { getPublicToolCategory, type PublicToolCategory } from '@/lib/tools-data';
 import { BUILD_PUBLIC_TOOLS } from '@/lib/build-public-tools';
@@ -70,14 +71,16 @@ export function CategoryDirectory({ category }: { category: PublicToolCategory }
             {intent.outcomes.map((outcome) => <div key={outcome} className="rounded-2xl border border-border bg-card p-5 shadow-sm"><CheckCircle2 className="h-5 w-5 text-emerald-600" /><p className="mt-3 text-sm font-black leading-6 text-card-foreground">{outcome}</p></div>)}
           </div>
 
-          <div className="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {tools.map((tool, index) => (
-              <Link key={tool.id} href={`/tools/${tool.id}`} className="ajn-tool-card group block min-h-[220px]">
-                <div className="relative z-10 flex h-full flex-col p-5 md:p-6">
-                  <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${index % 3 === 0 ? 'bg-red-50 text-red-600' : index % 3 === 1 ? 'bg-blue-50 text-blue-600' : 'bg-emerald-50 text-emerald-600'}`}><tool.icon className="h-5.5 w-5.5" /></div>
-                  <h2 className="mt-5 text-base font-black text-foreground">{tool.name}</h2>
-                  <p className="mt-2 flex-1 text-[12px] font-medium leading-5 text-muted-foreground">{tool.desc}</p>
-                  <div className="mt-5 flex items-center justify-between border-t border-border pt-4 text-[10px] font-black text-blue-600">Open tool <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" /></div>
+          <div className="mt-12 grid grid-cols-1 gap-3.5 md:grid-cols-2 xl:grid-cols-3">
+            {tools.map((tool) => (
+              <Link key={tool.id} href={`/tools/${tool.id}`} className="ajn-tool-card ajn-horizontal-tool-card group block">
+                <div className="relative z-10 flex min-h-[112px] items-center gap-3.5 p-3">
+                  <ToolArtwork toolId={tool.id} toolName={tool.name} className="h-[86px] w-[116px]" />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between gap-2"><span className="ajn-card-brand-badge">AJN</span><ArrowRight className="h-4 w-4 text-slate-300 transition group-hover:translate-x-1 group-hover:text-blue-600 dark:text-zinc-600 dark:group-hover:text-orange-400" /></div>
+                    <h2 className="mt-2 line-clamp-1 text-[15px] font-black tracking-tight text-foreground">{tool.name}</h2>
+                    <p className="mt-1 line-clamp-2 text-[11.5px] font-medium leading-[1.08rem] text-muted-foreground">{tool.desc}</p>
+                  </div>
                 </div>
               </Link>
             ))}

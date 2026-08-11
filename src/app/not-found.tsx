@@ -3,6 +3,7 @@ import { ArrowLeft, FileSearch, Home, Search } from 'lucide-react';
 import { Navbar } from '@/components/landing/navbar';
 import { MainFooter } from '@/components/landing/main-footer';
 import { BUILD_PUBLIC_TOOLS } from '@/lib/build-public-tools';
+import { ToolArtwork } from '@/components/ajn/tool-artwork';
 
 export default function NotFoundPage() {
   const suggestions = BUILD_PUBLIC_TOOLS.slice(0, 6);
@@ -24,10 +25,9 @@ export default function NotFoundPage() {
             <h2 className="text-xl font-black text-foreground">Available tools</h2>
             <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {suggestions.map((tool) => (
-                <Link key={tool.id} href={`/tools/${tool.id}`} className="rounded-2xl border border-border bg-card p-5 text-card-foreground shadow-sm transition hover:-translate-y-0.5 hover:border-blue-300 dark:hover:border-blue-500/50">
-                  <tool.icon className="h-5 w-5 text-blue-600 dark:text-blue-300" />
-                  <h3 className="mt-4 font-black">{tool.name}</h3>
-                  <p className="mt-2 line-clamp-2 text-xs font-medium leading-5 text-muted-foreground">{tool.desc}</p>
+                <Link key={tool.id} href={`/tools/${tool.id}`} className="ajn-tool-card ajn-horizontal-tool-card group flex min-h-[104px] items-center gap-3 p-3 text-card-foreground">
+                  <ToolArtwork toolId={tool.id} toolName={tool.name} className="h-[76px] w-[102px]" />
+                  <div className="min-w-0 flex-1"><span className="ajn-card-brand-badge">AJN</span><h3 className="mt-2 line-clamp-1 font-black">{tool.name}</h3><p className="mt-1 line-clamp-2 text-xs font-medium leading-5 text-muted-foreground">{tool.desc}</p></div>
                 </Link>
               ))}
             </div>

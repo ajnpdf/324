@@ -1,11 +1,11 @@
 {
-  "name": "AJN Studio — Free Online PDF Tools",
-  "short_name": "AJN Studio",
-  "description": "Professional document engineering. Stays private on your device.",
+  "name": "AJN PDF \u2014 Online PDF, OCR & Conversion Tools",
+  "short_name": "AJN PDF",
+  "description": "PDF, image, OCR and document conversion tools with browser and temporary server processing.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#c3d9fa",
-  "theme_color": "#1e3a8a",
+  "background_color": "#f7f7ff",
+  "theme_color": "#6559f4",
   "icons": [
     {
       "src": "/favicon.ico",

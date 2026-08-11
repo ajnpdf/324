@@ -5,6 +5,7 @@ import { getToolEditorial } from '@/lib/tool-editorial';
 import { getToolPolicy } from '@/lib/tool-policy';
 import { getRelatedGuides, getRelatedTools } from '@/lib/internal-linking';
 import { getToolSeoProfile } from '@/lib/seo-strategy';
+import { ToolArtwork } from '@/components/ajn/tool-artwork';
 
 export function ToolEditorialContent({ tool }: { tool: ServiceTool }) {
   const content = getToolEditorial(tool);
@@ -98,8 +99,9 @@ export function ToolEditorialContent({ tool }: { tool: ServiceTool }) {
             <p className="mt-2 text-sm font-medium leading-6 text-muted-foreground">Continue the workflow without returning to search results.</p>
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
               {relatedTools.map((related) => (
-                <Link key={related.id} href={`/tools/${related.id}`} className="group flex items-center justify-between rounded-2xl border border-border bg-card px-4 py-4 text-sm font-black text-card-foreground transition hover:-translate-y-0.5 hover:border-blue-200 hover:text-blue-700 hover:shadow-md">
-                  <span>{related.name}</span><ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+                <Link key={related.id} href={`/tools/${related.id}`} className="group flex min-h-[72px] items-center gap-3 rounded-2xl border border-border bg-card p-2.5 text-sm font-black text-card-foreground transition hover:-translate-y-0.5 hover:border-blue-200 hover:text-blue-700 hover:shadow-md dark:hover:border-orange-400/25 dark:hover:text-orange-300">
+                  <ToolArtwork toolId={related.id} toolName={related.name} className="h-[50px] w-[67px]" />
+                  <span className="min-w-0 flex-1 line-clamp-2">{related.name}</span><ArrowRight className="h-4 w-4 shrink-0 transition group-hover:translate-x-1" />
                 </Link>
               ))}
             </div>

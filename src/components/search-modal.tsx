@@ -8,6 +8,7 @@ import { BUILD_PUBLIC_TOOLS } from '../lib/build-public-tools';
 import Link from 'next/link';
 import { ScrollArea } from './ui/scroll-area';
 import { useLanguage } from '@/lib/i18n/language-context';
+import { ToolArtwork } from '@/components/ajn/tool-artwork';
 
 export function SearchModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const [query, setQuery] = useState('');
@@ -61,10 +62,10 @@ export function SearchModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
 
   const ToolRow = ({ item }: { item: ServiceTool }) => {
     const localized = localizeTool(item.id, item.name, item.desc, item.keywords);
-    return <Link href={`/tools/${item.id}`} onClick={() => handleSelect(item)} className="group flex min-h-16 items-center gap-3 rounded-2xl border border-slate-200 bg-white p-3 transition hover:border-blue-200 hover:shadow-lg dark:border-slate-800 dark:bg-slate-900 dark:hover:border-blue-500/30">
-      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-300"><item.icon className="h-5 w-5" /></div>
-      <div className="min-w-0 flex-1"><div className="truncate text-sm font-extrabold text-slate-900 dark:text-white">{localized.name}</div><p className="mt-0.5 line-clamp-1 text-xs font-medium text-slate-500 dark:text-slate-400">{localized.desc}</p></div>
-      <ArrowRight className="h-4 w-4 shrink-0 text-slate-300 transition group-hover:translate-x-1 group-hover:text-blue-600" />
+    return <Link href={`/tools/${item.id}`} onClick={() => handleSelect(item)} className="group flex min-h-[72px] items-center gap-3 rounded-2xl border border-slate-200/80 bg-white p-2.5 transition hover:-translate-y-0.5 hover:border-blue-200 hover:shadow-lg dark:border-white/10 dark:bg-zinc-950 dark:hover:border-orange-400/25">
+      <ToolArtwork toolId={item.id} toolName={localized.name} className="h-[54px] w-[72px]" />
+      <div className="min-w-0 flex-1"><div className="truncate text-sm font-extrabold text-slate-900 dark:text-white">{localized.name}</div><p className="mt-0.5 line-clamp-1 text-xs font-medium text-slate-500 dark:text-zinc-400">{localized.desc}</p></div>
+      <ArrowRight className="h-4 w-4 shrink-0 text-slate-300 transition group-hover:translate-x-1 group-hover:text-blue-600 dark:text-zinc-600 dark:group-hover:text-orange-400" />
     </Link>;
   };
 

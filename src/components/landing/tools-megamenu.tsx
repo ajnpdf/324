@@ -6,6 +6,7 @@ import { ChevronDown, Layout, Scissors, Trash2, LayoutGrid, ImageIcon, FileText,
 import Link from 'next/link';
 import { cn } from '../../lib/utils';
 import { BUILD_PUBLIC_TOOL_IDS, BUILD_PUBLIC_TOOLS } from '@/lib/build-public-tools';
+import { ToolArtwork } from '@/components/ajn/tool-artwork';
 import { ScrollArea } from '../ui/scroll-area';
 
 /**
@@ -95,9 +96,7 @@ export function PDFToolsDropdown() {
                           href={tool.href}
                           className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-black/5 transition-all group"
                         >
-                          <div className={cn("w-8 h-8 rounded-lg bg-white flex items-center justify-center shadow-sm border border-black/5 transition-transform group-hover:scale-110", tool.color)}>
-                            <tool.icon className="w-4 h-4" />
-                          </div>
+                          <ToolArtwork toolId={tool.href.split('/').pop() || ''} toolName={tool.name} className="h-9 w-12 transition-transform group-hover:scale-[1.03]" />
                           <span className="text-[11px] font-black text-slate-900 uppercase tracking-tight group-hover:text-primary transition-colors">
                             {tool.name}
                           </span>
@@ -150,9 +149,7 @@ export function IMGToolsDropdown() {
                         href={`/tools/${tool.id}`}
                         className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-black/5 transition-all group"
                       >
-                        <div className={cn("w-8 h-8 rounded-lg bg-white flex items-center justify-center shadow-sm border border-black/5 transition-transform group-hover:scale-110", tool.color)}>
-                          <tool.icon className="w-4 h-4" />
-                        </div>
+                        <ToolArtwork toolId={tool.id} toolName={tool.name} className="h-9 w-12 transition-transform group-hover:scale-[1.03]" />
                         <span className="text-[11px] font-black text-slate-900 uppercase tracking-tight group-hover:text-primary transition-colors">
                           {tool.name}
                         </span>
