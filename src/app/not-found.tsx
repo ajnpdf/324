@@ -26,7 +26,7 @@ export default function NotFoundPage() {
             <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {suggestions.map((tool) => (
                 <Link key={tool.id} href={`/tools/${tool.id}`} className="ajn-tool-card ajn-horizontal-tool-card group flex min-h-[84px] items-center gap-3 p-3 text-card-foreground">
-                  <ToolArtwork toolId={tool.id} toolName={tool.name} className="h-12 w-16" />
+                  <ToolArtwork toolId={tool.id} toolName={tool.name} className="h-11 w-11" />
                   <div className="min-w-0 flex-1"><span className="ajn-card-brand-badge">AJN</span><h3 className="mt-2 line-clamp-1 font-black">{tool.name}</h3><p className="mt-1 line-clamp-2 text-xs font-medium leading-5 text-muted-foreground">{tool.desc}</p></div>
                 </Link>
               ))}

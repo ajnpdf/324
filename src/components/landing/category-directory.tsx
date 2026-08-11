@@ -75,7 +75,7 @@ export function CategoryDirectory({ category }: { category: PublicToolCategory }
             {tools.map((tool) => (
               <Link key={tool.id} href={`/tools/${tool.id}`} className="ajn-tool-card ajn-horizontal-tool-card group block">
                 <div className="relative z-10 flex min-h-[86px] items-center gap-3 p-3">
-                  <ToolArtwork toolId={tool.id} toolName={tool.name} className="h-[54px] w-[72px]" />
+                  <ToolArtwork toolId={tool.id} toolName={tool.name} className="h-12 w-12" />
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between gap-2"><span className="ajn-card-brand-badge">AJN</span><ArrowRight className="h-4 w-4 text-slate-300 transition group-hover:translate-x-1 group-hover:text-blue-600 " /></div>
                     <h2 className="mt-2 line-clamp-1 text-[15px] font-black tracking-tight text-foreground">{tool.name}</h2>

@@ -63,7 +63,7 @@ export function SearchModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
   const ToolRow = ({ item }: { item: ServiceTool }) => {
     const localized = localizeTool(item.id, item.name, item.desc, item.keywords);
     return <Link href={`/tools/${item.id}`} onClick={() => handleSelect(item)} className="group flex min-h-[66px] items-center gap-3 rounded-xl border border-slate-200/80 bg-white p-2.5 transition hover:border-blue-200 hover:shadow-lg">
-      <ToolArtwork toolId={item.id} toolName={localized.name} className="h-12 w-16" />
+      <ToolArtwork toolId={item.id} toolName={localized.name} className="h-11 w-11" />
       <div className="min-w-0 flex-1"><div className="truncate text-sm font-extrabold text-slate-900">{localized.name}</div><p className="mt-0.5 line-clamp-1 text-xs font-medium text-slate-500">{localized.desc}</p></div>
       <ArrowRight className="h-4 w-4 shrink-0 text-slate-300 transition group-hover:translate-x-1 group-hover:text-blue-600" />
     </Link>;

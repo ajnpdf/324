@@ -1,7 +1,7 @@
 "use client";
 
 import Link from 'next/link';
-import { ArrowRight, Search, Server, ShieldCheck, TriangleAlert } from 'lucide-react';
+import { ChevronRight, Search, Server, ShieldCheck, TriangleAlert } from 'lucide-react';
 import { useMemo } from 'react';
 import { getPublicToolCategory } from '../../lib/tools-data';
 import { BUILD_PUBLIC_TOOLS } from '../../lib/build-public-tools';
@@ -35,12 +35,12 @@ function ToolCard({ tool, query, priority = false }: { tool: (typeof BUILD_PUBLI
       data-analytics-category={category}
     >
       <article className="ajn-tool-card ajn-horizontal-tool-card h-full">
-        <div className="relative z-10 flex min-h-[82px] items-center gap-3 px-3 py-2.5 sm:min-h-[88px] sm:px-3.5 sm:py-3">
+        <div className="relative z-10 flex min-h-[78px] items-center gap-3 px-3 py-2.5 sm:min-h-[82px] sm:px-3.5 sm:py-3">
           <ToolArtwork
             toolId={tool.id}
             toolName={localized.name}
             priority={priority}
-            className="h-12 w-16 sm:h-[54px] sm:w-[72px]"
+            className="h-12 w-12 sm:h-[52px] sm:w-[52px]"
           />
 
           <div className="min-w-0 flex flex-1 flex-col justify-center">
@@ -48,19 +48,18 @@ function ToolCard({ tool, query, priority = false }: { tool: (typeof BUILD_PUBLI
               <h3 className="min-w-0 flex-1 truncate text-[14px] font-extrabold leading-5 tracking-[-.01em] text-slate-950 sm:text-[15px]">
                 <Highlight text={localized.name} highlight={query} />
               </h3>
-              <span className="ajn-card-brand-badge">AJN</span>
             </div>
-            <p className="mt-1 line-clamp-1 text-[11px] font-medium leading-4 text-slate-500 sm:text-[11.5px]">
+            <p className="mt-0.5 line-clamp-1 text-[11px] font-medium leading-4 text-slate-500 sm:text-[11.5px]">
               <Highlight text={localized.desc} highlight={query} />
             </p>
-            <div className="mt-1.5 flex min-w-0 items-center gap-1.5 text-[9.5px] font-bold text-slate-500">
+            <div className="mt-1 flex min-w-0 items-center gap-1.5 text-[9.5px] font-bold text-slate-500">
               <ModeIcon className={`h-3 w-3 shrink-0 ${policy.processingMode === 'browser' ? 'text-emerald-600' : 'text-blue-600'}`} />
               <span className="truncate">{mode}</span>
             </div>
           </div>
 
           <span className="ajn-card-arrow flex h-8 w-8 shrink-0 items-center justify-center rounded-xl" aria-hidden="true">
-            <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+            <ChevronRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
           </span>
         </div>
       </article>

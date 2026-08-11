@@ -119,7 +119,7 @@ export function ToolWorkspace({ title, description, accent = T.red, processingMo
 
       <main className="relative z-10 mx-auto w-full max-w-5xl px-3 pb-12 pt-24 sm:px-5 sm:pt-28">
         <div className="mx-auto mb-5 flex max-w-3xl items-center gap-3.5 text-left sm:mb-7 sm:gap-5">
-          <ToolArtwork toolId={toolId} toolName={localized.name} priority className="h-[54px] w-[72px] sm:h-[60px] sm:w-20" />
+          <ToolArtwork toolId={toolId} toolName={localized.name} priority className="h-[52px] w-[52px] sm:h-14 sm:w-14" />
           <div className="min-w-0 flex-1">
             <span className="ajn-card-brand-badge">AJN</span>
             <h1 className="mt-2 text-balance text-2xl font-black tracking-[-0.035em] text-slate-950 dark:text-white sm:text-4xl">{localized.name}</h1>
