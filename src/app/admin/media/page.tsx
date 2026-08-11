@@ -19,7 +19,6 @@ import {
   Upload,
 } from 'lucide-react';
 import { Navbar } from '@/components/landing/navbar';
-import { ThemeToggle } from '@/components/theme/theme-toggle';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -243,7 +242,7 @@ export default function AdminMediaPage() {
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <Link href="/admin/analytics" className="ajn-secondary-button">Analytics</Link>
-              <ThemeToggle />
+              
               <Link href="/discover" target="_blank" rel="noreferrer" className="ajn-secondary-button">Open public feed <ExternalLink className="h-4 w-4" /></Link>
             </div>
           </div>

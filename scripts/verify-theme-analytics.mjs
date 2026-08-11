@@ -20,12 +20,12 @@ const backend = read('backend/app/main.py');
 const setup = read('SETUP_FULL_PRODUCTION.ps1');
 const installer = read('INSTALL_WINDOWS_CONVERTERS.ps1');
 
-expect('Theme bootstrap prevents first-paint flash', layout.includes('ajn-theme-bootstrap') && layout.includes('beforeInteractive'));
+expect('Light-only bootstrap prevents theme flash', layout.includes('ajn-theme-bootstrap') && layout.includes("classList.remove('dark')") && layout.includes("dataset.theme='light'"));
 expect('ThemeProvider wraps application', layout.includes('<ThemeProvider>'));
-expect('Theme preference persists locally', themeProvider.includes("localStorage.setItem(STORAGE_KEY"));
-expect('Accessible light and dark icon toggle exists', themeToggle.includes('Switch to light theme') && themeToggle.includes('Switch to dark theme'));
-expect('Theme toggle appears in navigation', navbar.includes('<ThemeToggle'));
-expect('Dark design tokens exist', css.includes('.dark {') && css.includes('--background: 222 47% 7%'));
+expect('ThemeProvider forces light mode', themeProvider.includes("root.classList.remove('dark')") && themeProvider.includes("theme: 'light'"));
+expect('Stored dark preference is removed', themeProvider.includes('localStorage.removeItem'));
+expect('Public theme toggle is removed', !navbar.includes('<ThemeToggle') && themeToggle.includes('return null'));
+expect('Light color scheme is explicit', css.includes('color-scheme: light !important'));
 expect('Reduced-motion support remains enabled', css.includes('@media (prefers-reduced-motion: reduce)'));
 expect('AJN RGB animation layer exists', css.includes('ajn-rgb-sweep') && css.includes('ajn-brand-breathe'));
 
@@ -52,7 +52,7 @@ expect('Converter installer avoids machine PATH writes', !installer.includes("Se
 expect('Setup checks backend version 3.1.0', setup.includes("version -eq '3.1.0'"));
 
 console.log(checks.join('\n'));
-console.log('Theme, animation, analytics, privacy and PowerShell compatibility verification completed successfully.');
+console.log('Light-only theme, animation, analytics, privacy and PowerShell compatibility verification completed successfully.');
 
 const conversionEngine = fs.readFileSync('backend/app/conversion_engine.py', 'utf8');
 expect('Tesseract searchable PDF uses stdout', conversionEngine.includes('\"stdout\"') && conversionEngine.includes('pdf_bytes.startswith(b\"%PDF-\")'));

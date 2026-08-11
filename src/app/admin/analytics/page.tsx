@@ -22,7 +22,6 @@ import {
 import { PDF_BACKEND_URL } from '@/lib/pdf-backend';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ThemeToggle } from '@/components/theme/theme-toggle';
 
 interface Row { [key: string]: string | number | null | undefined }
 interface AnalyticsData {
@@ -178,7 +177,7 @@ export default function AnalyticsPage() {
             </div>
 
             <div className="w-full max-w-xl">
-              <div className="flex flex-wrap items-center justify-end gap-2 pb-3"><Link href="/admin/media" className="inline-flex h-9 items-center rounded-lg border border-border bg-background px-3 text-xs font-black text-foreground hover:bg-muted">Media admin</Link><ThemeToggle /><Button type="button" variant="outline" size="sm" onClick={() => data && downloadJson(data)} disabled={!data} data-analytics-id="admin-export-json"><Upload className="h-4 w-4" />Export JSON</Button></div>
+              <div className="flex flex-wrap items-center justify-end gap-2 pb-3"><Link href="/admin/media" className="inline-flex h-9 items-center rounded-lg border border-border bg-background px-3 text-xs font-black text-foreground hover:bg-muted">Media admin</Link><Button type="button" variant="outline" size="sm" onClick={() => data && downloadJson(data)} disabled={!data} data-analytics-id="admin-export-json"><Upload className="h-4 w-4" />Export JSON</Button></div>
               <label htmlFor="admin-token" className="text-xs font-black text-slate-700 dark:text-slate-200">Admin token</label>
               <div className="mt-2 flex flex-col gap-2 sm:flex-row">
                 <div className="relative flex-1">

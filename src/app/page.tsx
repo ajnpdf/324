@@ -76,19 +76,19 @@ export default function HomePage() {
 
         <section className="relative mx-auto max-w-7xl scroll-mt-[72px] px-4 pb-10 pt-4 md:px-8 md:py-28" id="public-tools">
           <PremiumBackground compact />
-          <div className="border-b border-slate-200 pb-3 dark:border-slate-800 md:pb-8">
+          <div className="border-b border-slate-200 pb-3 md:pb-8">
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between md:gap-6">
               <div className="max-w-3xl">
                 <span className="ajn-section-kicker hidden md:inline-flex">{t('home.directoryKicker')}</span>
-                <h1 className="flex items-baseline justify-between gap-3 text-[1.65rem] font-black leading-tight tracking-[-.045em] text-slate-950 dark:text-slate-50 md:hidden">
+                <h1 className="flex items-baseline justify-between gap-3 text-[1.65rem] font-black leading-tight tracking-[-.045em] text-slate-950 md:hidden">
                   <span>{t('common.tools')}</span>
-                  <span className="text-[11px] font-black tracking-normal text-blue-600 dark:text-blue-300">{BUILD_PUBLIC_TOOLS.length} {t('common.available')}</span>
+                  <span className="text-[11px] font-black tracking-normal text-blue-600">{BUILD_PUBLIC_TOOLS.length} {t('common.available')}</span>
                 </h1>
-                <h2 className="mt-5 hidden text-6xl font-black tracking-[-.04em] text-slate-950 dark:text-slate-50 md:block">{t('home.chooseTool')}</h2>
-                <p className="mt-4 hidden text-sm font-medium leading-6 text-slate-600 dark:text-slate-300 md:block">{t('home.directoryDesc')}</p>
+                <h2 className="mt-5 hidden text-6xl font-black tracking-[-.04em] text-slate-950 md:block">{t('home.chooseTool')}</h2>
+                <p className="mt-4 hidden text-sm font-medium leading-6 text-slate-600 md:block">{t('home.directoryDesc')}</p>
               </div>
 
-              <div className="hidden w-auto rounded-2xl border border-slate-200 bg-white p-1 shadow-sm dark:border-slate-800 dark:bg-slate-900 md:flex">
+              <div className="hidden w-auto rounded-2xl border border-slate-200 bg-white p-1 shadow-sm md:flex">
                 {categories.map((category) => (
                   <button
                     type="button"
@@ -104,7 +104,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="sticky top-[72px] z-30 -mx-4 border-b border-slate-200/80 bg-white/[0.94] px-4 py-3 shadow-[0_10px_30px_rgba(15,23,42,.06)] backdrop-blur-xl dark:border-slate-800/90 dark:bg-slate-950/[0.94] md:hidden">
+          <div className="sticky top-[72px] z-30 -mx-4 border-b border-slate-200/80 bg-white/[0.96] px-4 py-3 shadow-[0_8px_24px_rgba(15,23,42,.05)] backdrop-blur-xl md:hidden">
             <label htmlFor="mobile-home-tool-search" className="sr-only">{t('nav.searchLabel')}</label>
             <div className="relative">
               <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-blue-600" />
@@ -115,7 +115,7 @@ export default function HomePage() {
                 placeholder={t('common.searchTools')}
                 enterKeyHint="search"
                 autoComplete="off"
-                className="h-11 rounded-xl border-slate-200 bg-white pl-10 pr-3 text-sm font-semibold text-slate-950 shadow-sm focus-visible:ring-blue-500/30 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-50"
+                className="h-11 rounded-xl border-slate-200 bg-white pl-10 pr-3 text-sm font-semibold text-slate-950 shadow-sm focus-visible:ring-blue-500/30"
               />
             </div>
             <div className="mt-2 flex gap-2 overflow-x-auto pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label="Filter tools by category">
@@ -125,7 +125,7 @@ export default function HomePage() {
                   key={category.id}
                   onClick={() => chooseCategory(category.id)}
                   aria-pressed={activeCategory === category.id}
-                  className={cn('shrink-0 rounded-full border px-3.5 py-2 text-[10px] font-black transition', activeCategory === category.id ? 'border-blue-600 bg-blue-600 text-white shadow-sm' : 'border-slate-200 bg-white text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300')}
+                  className={cn('shrink-0 rounded-xl border px-3.5 py-2 text-[10px] font-black transition', activeCategory === category.id ? 'border-blue-600 bg-blue-600 text-white shadow-sm' : 'border-slate-200 bg-white text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300')}
                 >
                   {t(category.key)}
                 </button>

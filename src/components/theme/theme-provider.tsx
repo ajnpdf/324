@@ -1,7 +1,6 @@
 'use client';
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { sendAjnAnalytics } from '@/components/analytics/site-analytics';
+import { createContext, useContext, useEffect, useMemo } from 'react';
 
 type Theme = 'light' | 'dark';
 
@@ -15,45 +14,26 @@ type ThemeContextValue = {
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 const STORAGE_KEY = 'ajn_theme';
 
-function applyTheme(theme: Theme) {
+function forceLightTheme() {
   const root = document.documentElement;
-  root.classList.toggle('dark', theme === 'dark');
-  root.dataset.theme = theme;
-  root.style.colorScheme = theme;
+  root.classList.remove('dark');
+  root.dataset.theme = 'light';
+  root.style.colorScheme = 'light';
 }
 
+/** R6 is intentionally light-only. Kept as a provider for API compatibility. */
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>('light');
-  const [mounted, setMounted] = useState(false);
-
   useEffect(() => {
-    const stored = window.localStorage.getItem(STORAGE_KEY);
-    const resolved: Theme = stored === 'dark' || stored === 'light'
-      ? stored
-      : window.matchMedia('(prefers-color-scheme: dark)').matches
-        ? 'dark'
-        : 'light';
-    applyTheme(resolved);
-    setThemeState(resolved);
-    setMounted(true);
+    forceLightTheme();
+    window.localStorage.removeItem(STORAGE_KEY);
   }, []);
 
-  const setTheme = useCallback((nextTheme: Theme) => {
-    applyTheme(nextTheme);
-    window.localStorage.setItem(STORAGE_KEY, nextTheme);
-    setThemeState(nextTheme);
-    sendAjnAnalytics({
-      event_name: 'theme_change',
-      path: window.location.pathname,
-      element_id: `theme-${nextTheme}`,
-    });
-  }, []);
-
-  const toggleTheme = useCallback(() => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
-  }, [setTheme, theme]);
-
-  const value = useMemo(() => ({ theme, mounted, setTheme, toggleTheme }), [theme, mounted, setTheme, toggleTheme]);
+  const value = useMemo<ThemeContextValue>(() => ({
+    theme: 'light',
+    mounted: true,
+    setTheme: () => forceLightTheme(),
+    toggleTheme: () => forceLightTheme(),
+  }), []);
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 }

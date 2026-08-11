@@ -74,10 +74,10 @@ export function CategoryDirectory({ category }: { category: PublicToolCategory }
           <div className="mt-12 grid grid-cols-1 gap-3.5 md:grid-cols-2 xl:grid-cols-3">
             {tools.map((tool) => (
               <Link key={tool.id} href={`/tools/${tool.id}`} className="ajn-tool-card ajn-horizontal-tool-card group block">
-                <div className="relative z-10 flex min-h-[112px] items-center gap-3.5 p-3">
-                  <ToolArtwork toolId={tool.id} toolName={tool.name} className="h-[86px] w-[116px]" />
+                <div className="relative z-10 flex min-h-[86px] items-center gap-3 p-3">
+                  <ToolArtwork toolId={tool.id} toolName={tool.name} className="h-[54px] w-[72px]" />
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-center justify-between gap-2"><span className="ajn-card-brand-badge">AJN</span><ArrowRight className="h-4 w-4 text-slate-300 transition group-hover:translate-x-1 group-hover:text-blue-600 dark:text-zinc-600 dark:group-hover:text-orange-400" /></div>
+                    <div className="flex items-center justify-between gap-2"><span className="ajn-card-brand-badge">AJN</span><ArrowRight className="h-4 w-4 text-slate-300 transition group-hover:translate-x-1 group-hover:text-blue-600 " /></div>
                     <h2 className="mt-2 line-clamp-1 text-[15px] font-black tracking-tight text-foreground">{tool.name}</h2>
                     <p className="mt-1 line-clamp-2 text-[11.5px] font-medium leading-[1.08rem] text-muted-foreground">{tool.desc}</p>
                   </div>
@@ -86,15 +86,15 @@ export function CategoryDirectory({ category }: { category: PublicToolCategory }
             ))}
           </div>
 
-          <section className="mt-16 rounded-[2rem] border border-border bg-card p-6 shadow-sm md:p-10">
+          <section className="mt-16 rounded-2xl border border-border bg-card p-6 shadow-sm md:p-10">
             <div className="grid gap-8 lg:grid-cols-[1.1fr_.9fr]">
               <div>
-                <div className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-2 text-[11px] font-black uppercase tracking-[.12em] text-blue-700 dark:bg-blue-500/15 dark:text-blue-300"><Search className="h-4 w-4" />Search intent guide</div>
+                <div className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-2 text-[11px] font-black uppercase tracking-[.12em] text-blue-700 "><Search className="h-4 w-4" />Search intent guide</div>
                 <h2 className="mt-5 text-3xl font-black tracking-tight text-foreground">Choose the right workflow, not just a file extension.</h2>
                 <p className="mt-4 text-sm font-medium leading-7 text-muted-foreground">This directory targets the practical search topic “{intent.primary}.” Each tool page explains supported input, processing mode, options, output format and known limitations before the advertisement section.</p>
                 <p className="mt-4 text-sm font-medium leading-7 text-muted-foreground">For important documents, open the downloaded result in its destination application and compare pages, text, tables, images and permissions with the source.</p>
               </div>
-              <div className="rounded-3xl border border-border bg-muted/45 p-6">
+              <div className="rounded-2xl border border-border bg-muted/45 p-6">
                 <h3 className="text-lg font-black text-foreground">Popular workflows</h3>
                 <div className="mt-4 space-y-3">
                   {intent.workflows.map((workflow) => <Link key={workflow.href} href={workflow.href} className="group flex items-center justify-between rounded-2xl bg-card px-4 py-3 text-sm font-black text-card-foreground shadow-sm transition hover:text-blue-700"><span>{workflow.label}</span><ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" /></Link>)}

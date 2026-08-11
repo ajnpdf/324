@@ -9,9 +9,9 @@ interface ToolArtworkProps {
 }
 
 /**
- * Branded artwork for every public AJN PDF tool.
- * The asset filename follows the canonical tool id, so routing, search,
- * category pages and related-tool cards always reference the same artwork.
+ * Lightweight artwork for each public AJN PDF tool.
+ * R6 keeps the 4:3 artwork fully visible, removes the old white logo plate,
+ * and uses a smaller footprint so horizontal cards stay compact and fast.
  */
 export function ToolArtwork({ toolId, toolName, className, priority = false }: ToolArtworkProps) {
   return (
@@ -25,8 +25,16 @@ export function ToolArtwork({ toolId, toolName, className, priority = false }: T
         alt=""
         fill
         priority={priority}
-        sizes="(max-width: 640px) 104px, 120px"
+        sizes="(max-width: 640px) 64px, 72px"
         className="object-cover"
+      />
+      <Image
+        src="/brand/ajn-logo-transparent.png"
+        alt=""
+        width={18}
+        height={18}
+        sizes="18px"
+        className="ajn-tool-corner-logo"
       />
     </span>
   );

@@ -100,7 +100,7 @@ export function ToolEditorialContent({ tool }: { tool: ServiceTool }) {
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
               {relatedTools.map((related) => (
                 <Link key={related.id} href={`/tools/${related.id}`} className="group flex min-h-[72px] items-center gap-3 rounded-2xl border border-border bg-card p-2.5 text-sm font-black text-card-foreground transition hover:-translate-y-0.5 hover:border-blue-200 hover:text-blue-700 hover:shadow-md dark:hover:border-orange-400/25 dark:hover:text-orange-300">
-                  <ToolArtwork toolId={related.id} toolName={related.name} className="h-[50px] w-[67px]" />
+                  <ToolArtwork toolId={related.id} toolName={related.name} className="h-11 w-[59px]" />
                   <span className="min-w-0 flex-1 line-clamp-2">{related.name}</span><ArrowRight className="h-4 w-4 shrink-0 transition group-hover:translate-x-1" />
                 </Link>
               ))}

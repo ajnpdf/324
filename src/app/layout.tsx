@@ -60,7 +60,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         name: AJN_BRAND.studioName,
         alternateName: AJN_STUDIO_ALTERNATE_NAMES,
         url: `${SITE_URL}/ajn-studio`,
-        logo: `${SITE_URL}/logo.jpeg`,
+        logo: `${SITE_URL}/brand/ajn-logo-transparent.png`,
         founder: { '@id': `${SITE_URL}/developer#anjan` },
       },
       {
@@ -80,7 +80,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         name: AJN_BRAND.productName,
         alternateName: AJN_PRODUCT_ALTERNATE_NAMES,
         url: SITE_URL,
-        logo: `${SITE_URL}/logo.jpeg`,
+        logo: `${SITE_URL}/brand/ajn-logo-transparent.png`,
       },
       {
         '@type': 'WebSite',
@@ -120,7 +120,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           id="ajn-theme-bootstrap"
           strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('ajn_theme');if(t!=='light'&&t!=='dark'){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}var d=document.documentElement;d.classList.toggle('dark',t==='dark');d.dataset.theme=t;d.style.colorScheme=t;}catch(e){}})();`,
+            __html: `(function(){try{localStorage.removeItem('ajn_theme');var d=document.documentElement;d.classList.remove('dark');d.dataset.theme='light';d.style.colorScheme='light';}catch(e){}})();`,
           }}
         />
         <Script id="json-ld" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} strategy="afterInteractive" />

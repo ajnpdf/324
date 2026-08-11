@@ -119,7 +119,7 @@ export function ToolWorkspace({ title, description, accent = T.red, processingMo
 
       <main className="relative z-10 mx-auto w-full max-w-5xl px-3 pb-12 pt-24 sm:px-5 sm:pt-28">
         <div className="mx-auto mb-5 flex max-w-3xl items-center gap-3.5 text-left sm:mb-7 sm:gap-5">
-          <ToolArtwork toolId={toolId} toolName={localized.name} priority className="h-[78px] w-[104px] sm:h-[96px] sm:w-[128px]" />
+          <ToolArtwork toolId={toolId} toolName={localized.name} priority className="h-[54px] w-[72px] sm:h-[60px] sm:w-20" />
           <div className="min-w-0 flex-1">
             <span className="ajn-card-brand-badge">AJN</span>
             <h1 className="mt-2 text-balance text-2xl font-black tracking-[-0.035em] text-slate-950 dark:text-white sm:text-4xl">{localized.name}</h1>
@@ -127,7 +127,7 @@ export function ToolWorkspace({ title, description, accent = T.red, processingMo
             <div className="mt-2 flex sm:hidden"><span className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-200 bg-emerald-50 px-2.5 py-1.5 text-[10px] font-bold text-emerald-700 dark:border-orange-400/15 dark:bg-orange-400/5 dark:text-orange-200"><ShieldCheck size={13}/>{processingMode === "browser" ? t("processing.browser") : t("processing.server")}</span></div>
           </div>
         </div>
-        <section className="jn-card ajn-product-canvas rounded-[24px] border border-white/70 bg-white/92 p-3 shadow-[0_24px_70px_rgba(30,62,130,.11)] backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/92 sm:rounded-[28px] sm:p-5">
+        <section className="jn-card ajn-product-canvas rounded-2xl border border-white/70 bg-white/92 p-3 shadow-[0_24px_70px_rgba(30,62,130,.11)] backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/92 sm:rounded-2xl sm:p-5">
           {children}
         </section>
       </main>

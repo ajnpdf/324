@@ -7,7 +7,6 @@ import { ArrowRight, Menu, Search, X } from 'lucide-react';
 import { LogoAnimation } from './logo-animation';
 import { Button } from '../ui/button';
 import { SearchModal } from '../search-modal';
-import { ThemeToggle } from '../theme/theme-toggle';
 import { LanguageSwitcher } from '../i18n/language-switcher';
 import { useLanguage } from '@/lib/i18n/language-context';
 import { cn } from '@/lib/utils';
@@ -48,17 +47,16 @@ export function Navbar() {
 
           <nav className="hidden min-w-0 items-center gap-[clamp(.65rem,1.1vw,1.25rem)] xl:flex" aria-label={t('nav.primary')}>
             {links.map((link) => (
-              <Link key={link.href} href={link.href} data-analytics-id={`nav-${link.key.replace(/\./g, '-')}`} className="whitespace-nowrap text-[11px] font-extrabold text-slate-600 transition-colors hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-300 xl:text-[12px]">
+              <Link key={link.href} href={link.href} data-analytics-id={`nav-${link.key.replace(/\./g, '-')}`} className="whitespace-nowrap text-[11px] font-extrabold text-slate-600 transition-colors hover:text-blue-600 xl:text-[12px]">
                 {t(link.key)}
               </Link>
             ))}
           </nav>
 
           <div className="flex items-center gap-1 sm:gap-1.5">
-            <Button type="button" variant="ghost" size="icon" aria-label={t('nav.searchLabel')} data-analytics-id="nav-search" onClick={() => setSearchOpen(true)} className="h-10 w-10 rounded-xl text-slate-600 hover:bg-blue-50 hover:text-blue-600 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-blue-300"><Search className="h-[18px] w-[18px]" /></Button>
+            <Button type="button" variant="ghost" size="icon" aria-label={t('nav.searchLabel')} data-analytics-id="nav-search" onClick={() => setSearchOpen(true)} className="h-10 w-10 rounded-xl text-slate-600 hover:bg-blue-50 hover:text-blue-600"><Search className="h-[18px] w-[18px]" /></Button>
             <LanguageSwitcher compact className="hidden sm:inline-flex" />
-            <ThemeToggle />
-            <Link href="/pdf-tools" className="hidden lg:block" data-analytics-id="nav-explore-tools"><Button className="ajn-primary-action h-10 rounded-2xl px-5 text-[11px] font-black">{t('home.explore')}</Button></Link>
+            <Link href="/pdf-tools" className="hidden lg:block" data-analytics-id="nav-explore-tools"><Button className="ajn-primary-action h-10 rounded-xl px-5 text-[11px] font-black">{t('home.explore')}</Button></Link>
             <Button type="button" variant="ghost" size="icon" aria-label={mobileOpen ? t('nav.closeMenu') : t('nav.menu')} aria-expanded={mobileOpen} onClick={() => setMobileOpen((value) => !value)} className="h-10 w-10 rounded-xl xl:hidden">
               {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
@@ -67,11 +65,11 @@ export function Navbar() {
 
         <AnimatePresence initial={false}>
           {mobileOpen && (
-            <motion.div initial={reduceMotion ? { opacity: 0 } : { opacity: 0, height: 0 }} animate={reduceMotion ? { opacity: 1 } : { opacity: 1, height: 'auto' }} exit={reduceMotion ? { opacity: 0 } : { opacity: 0, height: 0 }} className="overflow-hidden border-t border-slate-200/70 bg-white dark:border-slate-800 dark:bg-slate-950 xl:hidden">
+            <motion.div initial={reduceMotion ? { opacity: 0 } : { opacity: 0, height: 0 }} animate={reduceMotion ? { opacity: 1 } : { opacity: 1, height: 'auto' }} exit={reduceMotion ? { opacity: 0 } : { opacity: 0, height: 0 }} className="overflow-hidden border-t border-slate-200/70 bg-white xl:hidden">
               <nav className="mx-auto grid max-w-7xl gap-1.5 px-4 py-4" aria-label={t('nav.mobile')}>
-                <div className="mb-2 flex items-center justify-between rounded-2xl border border-slate-200/70 bg-slate-50/80 px-2 py-1 dark:border-slate-800 dark:bg-slate-900/80 sm:hidden"><span className="pl-2 text-xs font-black text-slate-500 dark:text-slate-400">{t('common.language')}</span><LanguageSwitcher /></div>
+                <div className="mb-2 flex items-center justify-between rounded-2xl border border-slate-200/70 bg-slate-50/80 px-2 py-1 sm:hidden"><span className="pl-2 text-xs font-black text-slate-500">{t('common.language')}</span><LanguageSwitcher /></div>
                 {links.map((link) => (
-                  <Link key={link.href} href={link.href} data-analytics-id={`mobile-nav-${link.key.replace(/\./g, '-')}`} onClick={() => setMobileOpen(false)} className="flex min-h-11 items-center justify-between rounded-2xl px-4 py-2.5 text-sm font-extrabold text-slate-800 hover:bg-blue-50 hover:text-blue-700 dark:text-slate-100 dark:hover:bg-slate-800 dark:hover:text-blue-300">
+                  <Link key={link.href} href={link.href} data-analytics-id={`mobile-nav-${link.key.replace(/\./g, '-')}`} onClick={() => setMobileOpen(false)} className="flex min-h-11 items-center justify-between rounded-2xl px-4 py-2.5 text-sm font-extrabold text-slate-800 hover:bg-blue-50 hover:text-blue-700">
                     {t(link.key)}<ArrowRight className="h-4 w-4" />
                   </Link>
                 ))}
