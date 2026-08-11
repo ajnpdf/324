@@ -19,6 +19,7 @@ const FormatStrip = dynamic(() => import('../components/landing/format-strip').t
 const FeatureShowcase = dynamic(() => import('../components/landing/feature-showcase').then((module) => module.FeatureShowcase));
 const ToolCategories = dynamic(() => import('../components/landing/tool-categories').then((module) => module.ToolCategories));
 const HowItWorks = dynamic(() => import('../components/landing/how-it-works').then((module) => module.HowItWorks));
+const VisualStories = dynamic(() => import('../components/landing/visual-stories').then((module) => module.VisualStories));
 const TrustSecurity = dynamic(() => import('../components/landing/trust-security').then((module) => module.TrustSecurity));
 const Workflows = dynamic(() => import('../components/landing/social-proof').then((module) => module.SocialProof));
 const FAQSection = dynamic(() => import('../components/landing/faq-section').then((module) => module.FAQSection));
@@ -138,6 +139,7 @@ export default function HomePage() {
         <div className="ajn-ad-zone my-8 md:my-12"><AdSenseUnit slot={ADSENSE_SLOTS.homePrimary} width={400} height={80} className="min-h-[80px]" label="Homepage advertisement" /></div>
         <FeatureShowcase />
         <ToolCategories />
+        <VisualStories />
         <HowItWorks />
         <div className="ajn-ad-zone my-8 md:my-12"><AdSenseUnit slot={ADSENSE_SLOTS.homeSecondary} width={300} height={150} className="min-h-[150px]" label="Homepage content advertisement" /></div>
         <TrustSecurity />

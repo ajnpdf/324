@@ -15,7 +15,7 @@ const checks = [
   ['mobile category state is accessible', home.includes('aria-pressed={activeCategory === category.id}')],
   ['phone tool grid uses one full-width horizontal card per row', grid.includes('grid-cols-1') && grid.includes('md:grid-cols-2')],
   ['phone cards use compact R8 vector content', grid.includes('min-h-[76px]') && grid.includes('h-11 w-11') && grid.includes('line-clamp-1')],
-  ['desktop tool directory exposes 2-column, 4-column and list controls', grid.includes("label: '2 columns'") && grid.includes("label: '4 columns'") && grid.includes("label: 'List'") && grid.includes("localStorage.setItem('ajn-tool-view'")],
+  ['desktop tool directory exposes 2x2, 4x4 and horizontal controls', grid.includes("label: '2 × 2'") && grid.includes("label: '4 × 4'") && grid.includes("label: 'Horizontal'") && grid.includes("localStorage.setItem('ajn-tool-view'")],
   ['phone cards expose keyboard focus styling', grid.includes('focus-visible:ring-2')],
   ['bottom navigation uses only real production routes', ['/','/pdf-tools','/conversion-tools','/image-tools','/pdf-utilities'].every((route) => bottomNav.includes(`href: "${route}"`))],
   ['bottom navigation respects mobile safe area', css.includes('env(safe-area-inset-bottom)')],
@@ -25,4 +25,4 @@ for (const [label, ok] of checks) {
   if (!ok) { console.error(`FAIL: ${label}`); process.exit(1); }
   console.log(`PASS: ${label}`);
 }
-console.log('AJN PDF R8 mobile-first adaptive-grid verification completed successfully.');
+console.log('AJN PDF R8.2 mobile-first adaptive-grid verification completed successfully.');

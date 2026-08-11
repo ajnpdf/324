@@ -65,15 +65,15 @@ if (!fs.existsSync(iconsDir)) fail('public/tool-icons must exist for mirror clea
 const raster = fs.readdirSync(iconsDir).filter((name) => /\.(webp|png|jpe?g)$/i.test(name));
 if (raster.length) fail('Legacy per-card raster icon sheets are still shipped.');
 
-// Adaptive tool directory: mobile horizontal by default, desktop can choose 2/4/list and the choice persists.
+// Adaptive tool directory: mobile horizontal by default, desktop can choose 2x2, 4x4 or horizontal and the choice persists.
 const grid = requireMarkers('src/components/landing/services-grid.tsx', [
-  "type ViewMode = 'list' | 'comfortable' | 'compact'",
-  "useState<ViewMode>('compact')",
+  "type ViewMode = 'horizontal' | 'comfortable' | 'compact'",
+  "useState<ViewMode>('comfortable')",
   "localStorage.getItem('ajn-tool-view')",
   "localStorage.setItem('ajn-tool-view', next)",
-  "label: '2 columns'",
-  "label: '4 columns'",
-  "label: 'List'",
+  "label: '2 × 2'",
+  "label: '4 × 4'",
+  "label: 'Horizontal'",
   "'grid-cols-1 md:grid-cols-2'",
   "'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'",
   'ajn-tool-card-compact',
@@ -89,18 +89,18 @@ const hero = requireMarkers('src/components/landing/hero.tsx', [
   'Explore 107 tools','Start with Merge PDF','ajn-r8-hero-document','Clean workflow','Choose','Adjust','Process','Finish',
 ]);
 for (const forbidden of ['processing.browser','processing.server','Runs in your browser','Temporary server processing']) if (hero.includes(forbidden)) fail(`Hero still exposes technical mode text: ${forbidden}.`);
-requireMarkers('src/components/landing/feature-showcase.tsx', ['A cleaner path from upload to result.','Download or share','ajn-r8-showcase-wave','Share2']);
-const home = requireMarkers('src/app/page.tsx', ['<FeatureShowcase />','<ServicesGrid query={search} category={activeCategory} />']);
+requireMarkers('src/components/landing/feature-showcase.tsx', ['Everything important, exactly where you expect it.','Finish with a clear next step','ajn-r8-showcase-wave','Share2']);
+const home = requireMarkers('src/app/page.tsx', ['<FeatureShowcase />','<VisualStories />','<ServicesGrid query={search} category={activeCategory} />']);
 if (home.includes('<LiveDemo />')) fail('Old technical live-demo block is still mounted on the homepage.');
 
 // Wave background replaces decorative circle blobs on the shared premium backdrop.
 const background = requireMarkers('src/components/premium/premium-background.tsx', ['<svg','ajn-r8-wave-one','ajn-r8-wave-two']);
 if (background.includes('rounded-full')) fail('PremiumBackground still contains circle blobs.');
-requireMarkers('src/app/globals.css', ['AJN PDF R8 — PREMIUM PRO WORKSPACE / CLEAN GRID / WAVE BACKGROUND','.ajn-r8-wave-bg','.ajn-tool-card-compact','.ajn-tool-card-list','.ajn-r8-showcase-wave']);
+requireMarkers('src/app/globals.css', ['AJN PDF R8 — PREMIUM PRO WORKSPACE / CLEAN GRID / WAVE BACKGROUND','AJN PDF R8.2 - PREMIUM CONTENT POLISH / ADAPTIVE TOOL VIEWS','.ajn-r8-wave-bg','.ajn-tool-card-compact','.ajn-tool-card-list','.ajn-r8-showcase-wave','.ajn-story-page']);
 
 // Full-page processing state: document scan visual and stages, no elapsed seconds/dot-only loader.
 const provider = requireMarkers('src/components/ajnpdf/processing-activity-provider.tsx', [
-  'Preparing your document','Working on your file','Checking the result','Result ready','styles.backdrop','styles.scanLine','styles.stages',
+  'Preparing your document','Preparing the next step','Working on your file','Checking the result','Result ready','styles.backdrop','styles.scanLine','styles.stages',
   'ajn:processing-start','ajn:processing-progress','ajn:processing-finish','ajn:processing-error',
 ]);
 for (const forbidden of ['formatElapsed','elapsed','stageDot','0.0s','0 sec']) if (provider.includes(forbidden)) fail(`Full-page processing UI still contains ${forbidden}.`);
@@ -148,12 +148,18 @@ if (text('src/components/landing/navbar.tsx').includes('ThemeToggle')) fail('Nav
 const logo = text('src/components/landing/logo-animation.tsx');
 if (!logo.includes('/brand/ajn-logo-transparent.png') || logo.includes('bg-white')) fail('Website logo still has an unwanted background plate.');
 
-console.log('AJN PDF R8 PREMIUM PRO WORKSPACE UI: PASS');
+requireMarkers('src/components/landing/visual-stories.tsx', ['Built around the document, not around extra UI.','See the change before you finish.','Conversion without the clutter.','ajn-story-page']);
+for (const relative of ['src/components/landing/how-it-works.tsx','src/components/landing/faq-section.tsx','src/components/landing/format-strip.tsx']) {
+  const body = text(relative);
+  for (const forbidden of ['fake timers','distracting dots','temporary Python service','current public release','Search intent','technical truth']) if (body.includes(forbidden)) fail(`${relative} still contains unpolished copy: ${forbidden}.`);
+}
+
+console.log('AJN PDF R8.2 PREMIUM UI/UX POLISH: PASS');
 console.log('- 107/107 tools retain unique simple professional vector icon coverage');
 console.log('- card processing-mode labels and visible processing seconds removed');
-console.log('- mobile defaults to horizontal cards; desktop offers persistent 2-column, 4-column and list views');
+console.log('- mobile defaults to horizontal cards; desktop defaults to 2x2 with persistent 2x2, 4x4 and horizontal views');
 console.log('- full-page document-processing animation wired for server requests and local engine jobs');
 console.log('- original wave background and focused workspace visuals added without circle blobs');
 console.log('- shared and server-conversion result flows expose download/share actions');
-console.log('- technical/SEO-style homepage wording reduced in favor of premium user-facing copy');
+console.log('- premium user-facing copy and selective visual story panels replace technical homepage wording');
 console.log('- light-only UI and transparent AJN website logo preserved');

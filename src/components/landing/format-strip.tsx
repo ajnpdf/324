@@ -15,15 +15,15 @@ const formats = [
 
 export function FormatStrip() {
   return (
-    <section className="border-y border-slate-200/70 bg-white/65 py-6 backdrop-blur-xl" aria-label="Supported formats">
+    <section className="border-y border-slate-200/70 bg-white/70 py-6 backdrop-blur-xl" aria-label="Popular formats">
       <div className="mx-auto flex max-w-7xl flex-col gap-5 px-4 md:px-8 lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <p className="text-xs font-black text-slate-900">Common formats across current public tools</p>
-          <p className="mt-1 text-[11px] font-medium text-slate-500">Availability depends on the selected tool and its documented limits.</p>
+          <p className="text-xs font-black text-slate-900">Popular formats, ready when you need them</p>
+          <p className="mt-1 text-[11px] font-medium text-slate-500">Each tool shows the formats and options available for that workflow.</p>
         </div>
         <div className="flex flex-wrap gap-2">
           {formats.map(({ label, icon: Icon, style }) => (
-            <div key={label} className="flex items-center gap-2 rounded-xl border border-border bg-card px-3 py-2 shadow-sm">
+            <div key={label} className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 shadow-sm">
               <span className={`flex h-7 w-7 items-center justify-center rounded-lg ${style}`}><Icon className="h-3.5 w-3.5" /></span>
               <span className="text-[10px] font-black text-slate-700">{label}</span>
             </div>
