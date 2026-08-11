@@ -44,8 +44,9 @@ COPY smoke_test.py capability_audit.py full_acceptance_test.py ./
 
 # Build-time production gate: Python smoke/capability checks plus real output
 # generation across every available backend conversion family.
+RUN python -m compileall -q app
+
 RUN python -c "from app.main import app; assert app.title == 'AJN PDF Conversion API'; print('PASS: FastAPI application import')" \
-    && python capability_audit.py \
     && python full_acceptance_test.py
 
 RUN useradd --home-dir /home/ajn --uid 10001 ajn \

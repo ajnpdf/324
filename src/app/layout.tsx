@@ -1,3 +1,4 @@
+import { ProcessingActivityProvider } from "@/components/ajnpdf/processing-activity-provider";
 import type { Metadata } from 'next';
 import './globals.css';
 import { Inter, JetBrains_Mono, Manrope } from 'next/font/google';
@@ -114,6 +115,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning className={`${manrope.variable} ${inter.variable} ${jetBrainsMono.variable}`}>
       <body className="font-sans antialiased">
+        <ProcessingActivityProvider />
         <Script
           id="ajn-theme-bootstrap"
           strategy="beforeInteractive"
