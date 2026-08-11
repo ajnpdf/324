@@ -61,3 +61,6 @@ firestore-debug.log
 /backend/HTTP_ACCEPTANCE_RESULTS.json
 
 .vercel
+CLOUD_RUN_BACKEND_URL.txt
+CLOUD_RUN_DEPLOYMENT_RESULT.json
+CLOUD_RUN_VERCEL_ENV.txt
