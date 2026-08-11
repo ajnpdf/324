@@ -221,17 +221,34 @@ def command_path(name: str) -> str | None:
         found = shutil.which(candidate)
         if found:
             return found
-    windows_candidates = {
-        "calibre": [Path(r"C:\Program Files\Calibre2\ebook-convert.exe")],
-        "tesseract": [Path(r"C:\Program Files\Tesseract-OCR\tesseract.exe")],
-        "mutool": [Path(r"C:\Program Files\MuPDF\mutool.exe")],
-    }.get(name, [])
-    if name == "mutool":
-        windows_candidates.extend(sorted(Path(r"C:\Program Files\gs").glob(r"gs*\bin\gswin64c.exe"), reverse=True))
-        windows_candidates.extend(sorted(Path(r"C:\Program Files\Artifex Software").glob(r"**\mutool.exe"), reverse=True))
-    for candidate in windows_candidates:
-        if candidate.exists():
-            return str(candidate)
+    # Windows-only fallback search. On Linux/Cloud Run, never interpret
+    # Windows drive paths or Windows glob patterns. If shutil.which() above
+    # did not find the dependency, return unavailable cleanly.
+    if os.name == "nt":
+        windows_candidates = {
+            "calibre": [Path(r"C:\Program Files\Calibre2\ebook-convert.exe")],
+            "tesseract": [Path(r"C:\Program Files\Tesseract-OCR\tesseract.exe")],
+            "mutool": [Path(r"C:\Program Files\MuPDF\mutool.exe")],
+        }.get(name, [])
+
+        if name == "mutool":
+            windows_candidates.extend(
+                sorted(
+                    Path(r"C:\Program Files\gs").glob("gs*/bin/gswin64c.exe"),
+                    reverse=True,
+                )
+            )
+            windows_candidates.extend(
+                sorted(
+                    Path(r"C:\Program Files\Artifex Software").rglob("mutool.exe"),
+                    reverse=True,
+                )
+            )
+
+        for candidate in windows_candidates:
+            if candidate.exists():
+                return str(candidate)
+
     return None
 
 
