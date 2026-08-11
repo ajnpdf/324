@@ -9,11 +9,11 @@ import { Button } from '../ui/button';
 const faqs = [
   {
     q: 'Where are my files processed?',
-    a: 'AJN PDF uses the processing method that fits each tool. Many everyday tools work in your current session, while some advanced workflows use temporary secure processing when required.',
+    a: 'AJN PDF uses the processing method that fits each tool. Many everyday tools work in your current session, while advanced workflows use secure processing when required.',
   },
   {
     q: 'Are my documents kept permanently?',
-    a: 'AJN PDF does not provide permanent document storage for these tools. Temporary processing files are removed after delivery according to the file-processing policy.',
+    a: 'AJN PDF does not provide permanent document storage for these tools. Files used for secure processing are removed after delivery according to the file-processing policy.',
   },
   {
     q: 'Can AJN PDF unlock a file without the password?',
@@ -53,7 +53,7 @@ export function FAQSection() {
         {faqs.map((faq, index) => (
           <motion.article key={faq.q} initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * .05 }} className="ajn-glass-card rounded-2xl p-6 md:p-7">
             <div className="flex gap-4">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600"><CircleHelp className="h-4.5 w-4.5" /></div>
+              <div className="ajn-white-icon-tile flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-blue-600"><CircleHelp className="h-4.5 w-4.5" /></div>
               <div><h3 className="text-base font-black text-slate-950">{faq.q}</h3><p className="mt-3 text-sm font-medium leading-6 text-slate-500">{faq.a}</p></div>
             </div>
           </motion.article>
@@ -61,7 +61,7 @@ export function FAQSection() {
       </div>
 
       <div className="mt-10 flex flex-col items-center justify-between gap-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:flex-row">
-        <div className="flex items-center gap-4"><span className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600"><MessageSquareText className="h-5 w-5" /></span><div><p className="text-sm font-black text-slate-950">Need help with a specific tool?</p><p className="mt-1 text-xs font-medium text-slate-500">Open the full FAQ or contact AJN PDF with the tool name and the issue you see.</p></div></div>
+        <div className="flex items-center gap-4"><span className="ajn-white-icon-tile flex h-11 w-11 items-center justify-center rounded-xl text-emerald-600"><MessageSquareText className="h-5 w-5" /></span><div><p className="text-sm font-black text-slate-950">Need help with a specific tool?</p><p className="mt-1 text-xs font-medium text-slate-500">Open the full FAQ or contact AJN PDF with the tool name and the issue you see.</p></div></div>
         <div className="flex gap-2"><Link href="/faq"><Button variant="outline" className="rounded-xl font-black">Full FAQ</Button></Link><Link href="/contact"><Button className="rounded-xl bg-blue-600 font-black text-white">Contact <ArrowRight className="ml-2 h-4 w-4" /></Button></Link></div>
       </div>
     </section>

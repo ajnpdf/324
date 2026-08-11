@@ -48,7 +48,7 @@ file('public/brand/ajn-logo-transparent.png', 10_000);
 
 // R7/R8 source-driven vector icon coverage stays intact: 34 dedicated action glyphs + 73 unique conversion pairs.
 const artwork = text('src/components/ajn/tool-artwork.tsx');
-for (const marker of ['AJN PDF R7 simple icon system','specialIcons','getConversion','ajn-format-tile','data-tool-icon={toolId}','toneClasses']) {
+for (const marker of ['AJN PDF R8.3 plain-white professional icon system.','specialIcons','getConversion','ajn-format-tile','data-tool-icon={toolId}','toneClasses']) {
   if (!artwork.includes(marker)) fail(`ToolArtwork is missing ${marker}.`);
 }
 const specialEntries = [...artwork.matchAll(/\n\s*'([^']+)':\s*([A-Za-z0-9_]+),/g)].filter((match) => ids.includes(match[1]));
@@ -64,6 +64,28 @@ const iconsDir = path.join(root, 'public', 'tool-icons');
 if (!fs.existsSync(iconsDir)) fail('public/tool-icons must exist for mirror cleanup.');
 const raster = fs.readdirSync(iconsDir).filter((name) => /\.(webp|png|jpe?g)$/i.test(name));
 if (raster.length) fail('Legacy per-card raster icon sheets are still shipped.');
+
+// R8.3 keeps icon surfaces plain white while preserving distinct glyph colors.
+for (const forbidden of ['bg-violet-50/80','bg-blue-50/80','bg-emerald-50/80','bg-orange-50/80','bg-rose-50/80','bg-cyan-50/80']) {
+  if (artwork.includes(forbidden)) fail(`Tool icon shell still contains tinted background ${forbidden}.`);
+}
+if ((artwork.match(/shell: 'border-slate-200 bg-white'/g) || []).length !== 6) fail('All six tool icon tones must use the same plain-white shell.');
+if ((artwork.match(/badge: 'border-slate-200 bg-white text-slate-700'/g) || []).length !== 6) fail('Conversion format badges must use the plain-white treatment.');
+const globalCss = requireMarkers('src/app/globals.css', ['AJN PDF R8.3 - PLAIN WHITE ICON SURFACES / QUIETER PREMIUM DETAIL','.ajn-white-icon-tile','.ajn-simple-tool-icon','.ajn-format-tile']);
+for (const marker of ['background: #fff !important;','border: 1px solid rgba(148,163,184,.28) !important;']) if (!globalCss.includes(marker)) fail(`Plain-white icon CSS is missing ${marker}.`);
+for (const relative of ['src/components/landing/format-strip.tsx','src/components/landing/tool-categories.tsx','src/components/landing/how-it-works.tsx','src/components/landing/trust-security.tsx','src/components/landing/hero.tsx','src/components/landing/faq-section.tsx','src/components/landing/social-proof.tsx']) {
+  if (!text(relative).includes('ajn-white-icon-tile')) fail(`${relative} is not using the shared plain-white icon surface.`);
+}
+
+// Keep old technical labels out of the visible translation values while preserving the 5-language key structure.
+const oldPublicPhrases = ['Runs in your browser','Browser processing','Uses temporary processing','Search intent guide','Easy to use without hiding the technical truth.','Designed around real tasks, not fabricated testimonials.','Clear controls instead of unverified badges.'];
+for (const lang of ['en','hi','te','ta','kn']) {
+  const locale = JSON.parse(text(`src/i18n/locales/${lang}.json`));
+  for (const key of ['legacy.localBuffer','legacy.privateBrowser','legacy.safeLocal','processing.browser','processing.server','landing.searchIntent','landing.easyTruth','landing.serverMode','landing.realTasks','landing.clearControls','home.trustServerTemporary']) {
+    if (!locale[key] || !String(locale[key]).trim()) fail(`${lang}.json has an empty polished-copy value for ${key}.`);
+    if (oldPublicPhrases.includes(locale[key])) fail(`${lang}.json still exposes old public wording at ${key}.`);
+  }
+}
 
 // Adaptive tool directory: mobile horizontal by default, desktop can choose 2x2, 4x4 or horizontal and the choice persists.
 const grid = requireMarkers('src/components/landing/services-grid.tsx', [
@@ -96,7 +118,7 @@ if (home.includes('<LiveDemo />')) fail('Old technical live-demo block is still 
 // Wave background replaces decorative circle blobs on the shared premium backdrop.
 const background = requireMarkers('src/components/premium/premium-background.tsx', ['<svg','ajn-r8-wave-one','ajn-r8-wave-two']);
 if (background.includes('rounded-full')) fail('PremiumBackground still contains circle blobs.');
-requireMarkers('src/app/globals.css', ['AJN PDF R8 — PREMIUM PRO WORKSPACE / CLEAN GRID / WAVE BACKGROUND','AJN PDF R8.2 - PREMIUM CONTENT POLISH / ADAPTIVE TOOL VIEWS','.ajn-r8-wave-bg','.ajn-tool-card-compact','.ajn-tool-card-list','.ajn-r8-showcase-wave','.ajn-story-page']);
+requireMarkers('src/app/globals.css', ['AJN PDF R8 — PREMIUM PRO WORKSPACE / CLEAN GRID / WAVE BACKGROUND','AJN PDF R8.2 - PREMIUM CONTENT POLISH / ADAPTIVE TOOL VIEWS','AJN PDF R8.3 - PLAIN WHITE ICON SURFACES / QUIETER PREMIUM DETAIL','.ajn-r8-wave-bg','.ajn-tool-card-compact','.ajn-tool-card-list','.ajn-r8-showcase-wave','.ajn-story-page']);
 
 // Full-page processing state: document scan visual and stages, no elapsed seconds/dot-only loader.
 const provider = requireMarkers('src/components/ajnpdf/processing-activity-provider.tsx', [
@@ -154,12 +176,12 @@ for (const relative of ['src/components/landing/how-it-works.tsx','src/component
   for (const forbidden of ['fake timers','distracting dots','temporary Python service','current public release','Search intent','technical truth']) if (body.includes(forbidden)) fail(`${relative} still contains unpolished copy: ${forbidden}.`);
 }
 
-console.log('AJN PDF R8.2 PREMIUM UI/UX POLISH: PASS');
-console.log('- 107/107 tools retain unique simple professional vector icon coverage');
+console.log('AJN PDF R8.3 PLAIN WHITE ICON / PREMIUM POLISH: PASS');
+console.log('- 107/107 tools retain unique professional vector icon coverage on plain-white icon surfaces');
 console.log('- card processing-mode labels and visible processing seconds removed');
 console.log('- mobile defaults to horizontal cards; desktop defaults to 2x2 with persistent 2x2, 4x4 and horizontal views');
 console.log('- full-page document-processing animation wired for server requests and local engine jobs');
 console.log('- original wave background and focused workspace visuals added without circle blobs');
 console.log('- shared and server-conversion result flows expose download/share actions');
-console.log('- premium user-facing copy and selective visual story panels replace technical homepage wording');
-console.log('- light-only UI and transparent AJN website logo preserved');
+console.log('- old technical public labels are replaced with cleaner premium wording across all five locale files');
+console.log('- light-only UI, subtle wave design and transparent AJN website logo preserved');

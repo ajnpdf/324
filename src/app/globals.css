@@ -1805,3 +1805,30 @@ body {
   .ajn-visual-story-card { transition:none !important; }
   .ajn-visual-story-card:hover { transform:none !important; }
 }
+
+/* ========================================================================== */
+/* AJN PDF R8.3 - PLAIN WHITE ICON SURFACES / QUIETER PREMIUM DETAIL          */
+/* ========================================================================== */
+.ajn-simple-tool-icon,
+.ajn-white-icon-tile {
+  background: #fff !important;
+  border: 1px solid rgba(148,163,184,.28) !important;
+  box-shadow: 0 4px 12px rgba(15,23,42,.045) !important;
+}
+.ajn-simple-tool-icon {
+  border-radius: 12px;
+}
+.ajn-format-tile {
+  background: #fff !important;
+  border-color: rgba(148,163,184,.32) !important;
+  color: #475569 !important;
+  box-shadow: none !important;
+}
+.group:hover .ajn-simple-tool-icon,
+.ajn-white-icon-tile:hover {
+  background: #fff !important;
+  border-color: rgba(100,116,139,.38) !important;
+}
+@media (max-width:767px) {
+  .ajn-simple-tool-icon { box-shadow: 0 3px 9px rgba(15,23,42,.04) !important; }
+}

@@ -50,39 +50,39 @@ type Tone = 'violet' | 'blue' | 'emerald' | 'orange' | 'rose' | 'cyan';
 
 const toneClasses: Record<Tone, { shell: string; icon: string; badge: string; arrow: string }> = {
   violet: {
-    shell: 'border-violet-100 bg-violet-50/80',
+    shell: 'border-slate-200 bg-white',
     icon: 'text-violet-600',
-    badge: 'border-violet-100 bg-white text-violet-700',
+    badge: 'border-slate-200 bg-white text-slate-700',
     arrow: 'text-violet-400',
   },
   blue: {
-    shell: 'border-blue-100 bg-blue-50/80',
+    shell: 'border-slate-200 bg-white',
     icon: 'text-blue-600',
-    badge: 'border-blue-100 bg-white text-blue-700',
+    badge: 'border-slate-200 bg-white text-slate-700',
     arrow: 'text-blue-400',
   },
   emerald: {
-    shell: 'border-emerald-100 bg-emerald-50/80',
+    shell: 'border-slate-200 bg-white',
     icon: 'text-emerald-600',
-    badge: 'border-emerald-100 bg-white text-emerald-700',
+    badge: 'border-slate-200 bg-white text-slate-700',
     arrow: 'text-emerald-400',
   },
   orange: {
-    shell: 'border-orange-100 bg-orange-50/80',
+    shell: 'border-slate-200 bg-white',
     icon: 'text-orange-600',
-    badge: 'border-orange-100 bg-white text-orange-700',
+    badge: 'border-slate-200 bg-white text-slate-700',
     arrow: 'text-orange-400',
   },
   rose: {
-    shell: 'border-rose-100 bg-rose-50/80',
+    shell: 'border-slate-200 bg-white',
     icon: 'text-rose-600',
-    badge: 'border-rose-100 bg-white text-rose-700',
+    badge: 'border-slate-200 bg-white text-slate-700',
     arrow: 'text-rose-400',
   },
   cyan: {
-    shell: 'border-cyan-100 bg-cyan-50/80',
+    shell: 'border-slate-200 bg-white',
     icon: 'text-cyan-600',
-    badge: 'border-cyan-100 bg-white text-cyan-700',
+    badge: 'border-slate-200 bg-white text-slate-700',
     arrow: 'text-cyan-400',
   },
 };
@@ -201,7 +201,7 @@ function ConversionGlyph({ from, to, tone }: { from: string; to: string; tone: T
 }
 
 /**
- * AJN PDF R7 simple icon system.
+ * AJN PDF R8.3 plain-white professional icon system.
  * Every public tool receives either a dedicated action glyph or a source→target
  * format pair. It replaces the 107 raster card artworks with lightweight vector UI.
  */

@@ -51,7 +51,7 @@ export default function Hero({ searchValue = '', onSearchChange }: HeroProps) {
             <div className="ajn-r8-doc-sheet ajn-r8-doc-front"><span className="ajn-r8-doc-label">PDF</span><span className="ajn-r8-doc-line w-3/4"/><span className="ajn-r8-doc-line w-5/6"/><span className="ajn-r8-doc-line w-2/3"/></div>
           </div>
           <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
-            {workflow.map(({ icon: Icon, title, text }, index) => <div key={title} className="relative rounded-xl border border-white bg-white/92 p-3 shadow-[0_8px_24px_rgba(37,62,113,.05)]"><span className="mb-3 flex h-8 w-8 items-center justify-center rounded-lg bg-slate-50 text-blue-600 ring-1 ring-slate-100"><Icon className="h-4 w-4" strokeWidth={1.9}/></span><span className="absolute right-3 top-3 text-[10px] font-black text-slate-300">0{index+1}</span><p className="text-[11px] font-black text-slate-900">{title}</p><p className="mt-1 line-clamp-2 text-[9.5px] font-medium leading-4 text-slate-500">{text}</p></div>)}
+            {workflow.map(({ icon: Icon, title, text }, index) => <div key={title} className="relative rounded-xl border border-white bg-white/92 p-3 shadow-[0_8px_24px_rgba(37,62,113,.05)]"><span className="ajn-white-icon-tile mb-3 flex h-8 w-8 items-center justify-center rounded-lg text-blue-600"><Icon className="h-4 w-4" strokeWidth={1.9}/></span><span className="absolute right-3 top-3 text-[10px] font-black text-slate-300">0{index+1}</span><p className="text-[11px] font-black text-slate-900">{title}</p><p className="mt-1 line-clamp-2 text-[9.5px] font-medium leading-4 text-slate-500">{text}</p></div>)}
           </div>
         </div>
       </div>
