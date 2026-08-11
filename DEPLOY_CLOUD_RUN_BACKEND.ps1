@@ -9,11 +9,27 @@ param(
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
+$GCloudCommand = Get-Command gcloud.cmd -ErrorAction SilentlyContinue
+if (-not $GCloudCommand) {
+    $GCloudCommand = Get-Command gcloud -ErrorAction SilentlyContinue
+}
+if (-not $GCloudCommand) {
+    throw "Google Cloud CLI (gcloud) is not installed."
+}
+$GCloudExe = $GCloudCommand.Source
+
 function Run-GCloud {
     param([Parameter(ValueFromRemainingArguments=$true)][string[]]$Args)
-    & gcloud @Args
-    if ($LASTEXITCODE -ne 0) {
-        throw "gcloud failed: gcloud $($Args -join ' ')"
+    $OldPreference = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    try {
+        & $script:GCloudExe @Args
+        $Code = $LASTEXITCODE
+    } finally {
+        $ErrorActionPreference = $OldPreference
+    }
+    if ($Code -ne 0) {
+        throw "gcloud failed ($Code): gcloud $($Args -join ' ')"
     }
 }
 
@@ -30,20 +46,20 @@ $Root = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location -LiteralPath $Root
 
 Write-Host "==================================================" -ForegroundColor DarkCyan
-Write-Host " AJN PDF CLOUD RUN BACKEND - PRODUCTION R2" -ForegroundColor Cyan
+Write-Host " AJN PDF CLOUD RUN BACKEND - PRODUCTION R2.1" -ForegroundColor Cyan
 Write-Host " Free-first / scale-to-zero / max instances $MaxInstances" -ForegroundColor Cyan
 Write-Host "==================================================" -ForegroundColor DarkCyan
 
-if (-not (Get-Command gcloud -ErrorAction SilentlyContinue)) {
+if (-not (Get-Command gcloud.cmd -ErrorAction SilentlyContinue)) {
     throw "Google Cloud CLI (gcloud) is not installed. Install it, reopen PowerShell, run 'gcloud auth login', select a project, then run this script again."
 }
 
-$Account = (& gcloud auth list --filter="status:ACTIVE" --format="value(account)" 2>$null).Trim()
+$Account = (& $GCloudExe auth list --filter="status:ACTIVE" --format="value(account)" 2>$null).Trim()
 if (-not $Account) {
     throw "No active Google Cloud login was found. Run: gcloud auth login"
 }
 
-$Project = (& gcloud config get-value project 2>$null).Trim()
+$Project = (& $GCloudExe config get-value project 2>$null).Trim()
 if (-not $Project -or $Project -eq "(unset)") {
     throw "No Google Cloud project is selected. Run: gcloud config set project YOUR_PROJECT_ID"
 }
@@ -66,16 +82,30 @@ Run-GCloud services enable `
     --quiet
 
 Write-Host "`n==> Preparing Artifact Registry" -ForegroundColor Cyan
-& gcloud artifacts repositories describe $ArtifactRepository `
-    --location $Region `
-    --project $Project *> $null
-if ($LASTEXITCODE -ne 0) {
+$OldPreference = $ErrorActionPreference
+$ErrorActionPreference = "Continue"
+try {
+    $RepoList = & $GCloudExe artifacts repositories list `
+        --location $Region `
+        --project $Project `
+        --format="value(name)" 2>$null
+    $RepoListCode = $LASTEXITCODE
+} finally {
+    $ErrorActionPreference = $OldPreference
+}
+if ($RepoListCode -ne 0) {
+    throw "Unable to list Artifact Registry repositories."
+}
+$RepoExists = @($RepoList | ForEach-Object { "$_" }) | Where-Object { $_ -match "(^|/)$([regex]::Escape($ArtifactRepository))$" }
+if (-not $RepoExists) {
     Run-GCloud artifacts repositories create $ArtifactRepository `
         --repository-format=docker `
         --location=$Region `
         --description="AJN PDF production backend images" `
         --project=$Project `
         --quiet
+} else {
+    Write-Host "Artifact Registry '$ArtifactRepository' already exists." -ForegroundColor Green
 }
 
 $Tag = Get-Date -Format "yyyyMMdd-HHmmss"
@@ -151,7 +181,7 @@ try {
         --liveness-probe $LivenessProbe `
         --deploy-health-check `
         --env-vars-file $EnvFile `
-        --labels "app=ajn-pdf,component=backend,release=cloudrun-r2" `
+        --labels "app=ajn-pdf,component=backend,release=cloudrun-r21" `
         --project $Project `
         --quiet
 }
@@ -159,7 +189,7 @@ finally {
     Remove-Item -LiteralPath $EnvFile -Force -ErrorAction SilentlyContinue
 }
 
-$Url = (& gcloud run services describe $Service `
+$Url = (& $GCloudExe run services describe $Service `
     --region $Region `
     --project $Project `
     --format="value(status.url)").Trim()
