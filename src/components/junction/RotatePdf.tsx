@@ -108,7 +108,7 @@ export default function RotatePdf() {
   const reset = () => { setFile(null); setPages([]); setPhase('upload'); setResultBlob(null); };
 
   return (
-    <ToolWorkspace title="Rotate PDF" description="ROTATE ALL OR SELECTED PDF PAGES" icon="🔄" badge="PDF ROTATION" accent="#F59E0B">
+    <ToolWorkspace title="Rotate PDF" description="Rotate all or selected PDF pages" accent="#F59E0B">
       <div className="w-full">
         <AnimatePresence mode="wait">
           {phase === 'upload' && (
@@ -119,7 +119,7 @@ export default function RotatePdf() {
                 onDragLeave={() => setIsDragging(false)}
                 onDrop={e => { e.preventDefault(); setIsDragging(false); handleFileUpload(e); }}
                 className={cn(
-                  "group relative h-[340px] w-full rounded-[4rem] border-4 border-dashed transition-all duration-700 shadow-2xl overflow-hidden flex flex-col items-center justify-center cursor-pointer",
+                  "group relative min-h-[210px] w-full rounded-2xl border border-dashed transition-all duration-700 shadow-md overflow-hidden flex flex-col items-center justify-center cursor-pointer",
                   isDragging ? "border-amber-500 bg-amber-500/10" : "border-black/5 bg-white/20 backdrop-blur-md hover:border-amber-500/40"
                 )}
               >
@@ -137,7 +137,7 @@ export default function RotatePdf() {
 
           {phase === 'configure' && file && (
             <motion.div key="configure" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col gap-8">
-              <div className="p-6 bg-white/40 rounded-[2.5rem] border border-black/5 flex items-center justify-between shadow-sm">
+              <div className="p-6 bg-white/40 rounded-2xl border border-black/5 flex items-center justify-between shadow-sm">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-amber-500/10 rounded-2xl flex items-center justify-center">
                     <FileText className="w-6 h-6 text-amber-500" />
@@ -158,7 +158,7 @@ export default function RotatePdf() {
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 <div className="lg:col-span-7 space-y-3">
                   <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Rotate pages</Label>
-                  <Card className="bg-white border-black/5 rounded-[2.5rem] shadow-inner overflow-hidden min-h-[600px]">
+                  <Card className="bg-white border-black/5 rounded-2xl shadow-inner overflow-hidden min-h-[420px]">
                     <ScrollArea className="h-[600px] p-8">
                       <div className="grid grid-cols-2 sm:grid-cols-3 gap-8">
                         {pages.map((page) => (
@@ -188,7 +188,7 @@ export default function RotatePdf() {
                 </div>
 
                 <aside className="lg:col-span-5 space-y-8">
-                  <div className="p-8 bg-slate-900 text-white rounded-[3rem] shadow-2xl relative overflow-hidden group">
+                  <div className="p-8 bg-slate-900 text-white rounded-2xl shadow-md relative overflow-hidden group">
                     <div className="absolute top-0 right-0 p-12 opacity-10 rotate-12 group-hover:rotate-0 transition-transform duration-1000">
                       <Zap className="w-32 h-32 text-amber-500" />
                     </div>
@@ -225,7 +225,7 @@ export default function RotatePdf() {
 
           {phase === 'done' && resultBlob && (
             <motion.div key="done" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} className="py-12 flex flex-col items-center space-y-10 text-center">
-              <div className="w-24 h-24 bg-emerald-500/10 rounded-[2.5rem] flex items-center justify-center border border-emerald-500/20 shadow-inner">
+              <div className="w-24 h-24 bg-emerald-500/10 rounded-2xl flex items-center justify-center border border-emerald-500/20 shadow-inner">
                 <CheckCircle2 className="w-12 h-12 text-emerald-600" />
               </div>
               <div className="space-y-2">
@@ -233,7 +233,7 @@ export default function RotatePdf() {
                 <p className="text-sm font-bold text-slate-500 uppercase tracking-widest">Your PDF is ready</p>
               </div>
 
-              <div className="p-8 bg-white border-2 border-black/5 rounded-[3rem] w-full max-w-sm flex items-center justify-center gap-4 shadow-xl mx-auto">
+              <div className="p-8 bg-white border-2 border-black/5 rounded-2xl w-full max-w-sm flex items-center justify-center gap-4 shadow-xl mx-auto">
                 <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center shrink-0">
                   <Download className="w-5 h-5 text-primary" />
                 </div>

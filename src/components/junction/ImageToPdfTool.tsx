@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { ArrowDown, ArrowUp, Trash2 } from "lucide-react";
-import { ToolWorkspace, Drop, Btn, Done, Err, F, G2, IS, Pills, Range, ToolFile, dl, fmtBytes, Info } from "./_shared";
+import { ToolWorkspace, Drop, Btn, Done, Err, F, G2, IS, Pills, Range, ToolFile, dl, fmtBytes, Info, withProcessingActivity } from "./_shared";
 import { imagesToPdfWithOptions, type ImageFit, type ImagePageSize } from "./_pdfUtils";
 import { safeOutputName, validateFiles } from "@/lib/file-validation";
 
@@ -12,10 +12,9 @@ interface Props {
   accept: string;
   extensions: string[];
   accent: string;
-  badge: string;
 }
 
-export default function ImageToPdfTool({ title, description, accept, extensions, accent, badge }: Props) {
+export default function ImageToPdfTool({ title, description, accept, extensions, accent }: Props) {
   const [files, setFiles] = useState<ToolFile[]>([]);
   const [pageSize, setPageSize] = useState<ImagePageSize>("a4");
   const [orientation, setOrientation] = useState<"auto" | "portrait" | "landscape">("auto");
@@ -40,18 +39,18 @@ export default function ImageToPdfTool({ title, description, accept, extensions,
     if (validation) { setError(validation); return; }
     setError(""); setLoading(true);
     try {
-      setResult(await imagesToPdfWithOptions(files.map(item => item.file), { pageSize, orientation, fit, margin, background }));
+      setResult(await withProcessingActivity(title, () => imagesToPdfWithOptions(files.map(item => item.file), { pageSize, orientation, fit, margin, background })));
     } catch (e: any) { setError(e.message || "The images could not be converted."); }
     finally { setLoading(false); }
   };
 
   return (
-    <ToolWorkspace title={title} description={description} icon="🖼️" accent={accent} badge={badge}>
+    <ToolWorkspace title={title} description={description} accent={accent}>
       {result ? (
         <Done msg="PDF created successfully" onDownload={() => dl(result, safeOutputName(outputName, "images", ".pdf"))} shareFile={{ blob: result, name: safeOutputName(outputName, "images", ".pdf") }} onReset={() => { setResult(null); setFiles([]); setError(""); }} />
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-          <Drop files={files} onChange={setFiles} accept={accept} multiple label="Select images" sub="Up to 30 images · 25 MB each · processed locally" />
+          <Drop files={files} onChange={setFiles} accept={accept} multiple label="Select images" sub="Up to 30 images · 25 MB each" />
           {files.length > 1 && (
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               {files.map((item, index) => (

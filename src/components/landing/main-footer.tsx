@@ -30,7 +30,7 @@ export function MainFooter() {
     { icon: Youtube, href: AJN_BRAND.social.youtube, label: 'YouTube' },
     { icon: Mail, href: `mailto:${AJN_BRAND.contactEmail}`, label: t('common.contact') },
   ];
-  const trustItems = ['107 focused tools','Clear file limits','No public account required','Download-ready results'];
+  const trustItems = [t('footer.trustTools'),t('footer.trustLimits'),t('footer.trustNoAccount'),t('footer.trustDownloads')];
   return <footer className="relative mt-20 overflow-hidden border-t border-slate-800 bg-slate-950 text-white">
     <div className="relative mx-auto max-w-7xl px-4 py-14 md:px-8 md:py-20">
       <div className="grid gap-10 lg:grid-cols-[1.2fr_.8fr_.8fr_.9fr]">

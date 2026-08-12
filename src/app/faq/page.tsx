@@ -30,7 +30,7 @@ const groups = [
       },
       {
         q: 'What file-size limits apply?',
-        a: 'Limits depend on the tool. Backend PDF tools default to 50 MB. Browser tools also have documented limits designed to avoid unstable memory usage.',
+        a: 'Limits depend on the tool and file type. AJN PDF shows relevant limits in the workflow so you can choose files that can be processed reliably.',
       },
       {
         q: 'Do public tools require an account?',

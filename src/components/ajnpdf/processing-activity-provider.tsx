@@ -1,43 +1,187 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { FileText, ShieldCheck } from "lucide-react";
+import { engine } from "@/lib/engine";
 import styles from "./processing-activity-provider.module.css";
+import { useLanguage } from "@/lib/i18n/language-context";
 
-type Phase = "idle" | "preparing" | "starting" | "processing" | "validating" | "downloading" | "error";
-type ActivityState = { active:boolean; phase:Phase; startedAt:number; canCancel:boolean; requestLabel:string };
-const INITIAL_STATE: ActivityState = { active:false, phase:"idle", startedAt:0, canCancel:false, requestLabel:"document" };
-const SERVER_PATH_PATTERN=/\/api\/(?:convert\/|pdf\/(?:protect|unlock|repair|compress)(?:\/|$))/i;
+type Phase = "idle" | "preparing" | "processing" | "ready" | "error";
+type ActivityState = {
+  active: boolean;
+  phase: Phase;
+  canCancel: boolean;
+  requestLabel: string;
+  jobId?: string;
+  stageLabel?: string;
+  progressPct?: number;
+};
 
-function getRequestUrl(input:RequestInfo|URL){if(typeof input==="string")return input;if(input instanceof URL)return input.toString();return input.url}
-function getMethod(input:RequestInfo|URL,init?:RequestInit){if(init?.method)return init.method.toUpperCase();if(typeof Request!=="undefined"&&input instanceof Request)return input.method.toUpperCase();return "GET"}
-function isServerProcessingRequest(input:RequestInfo|URL,init?:RequestInit){if(getMethod(input,init)!=="POST")return false;try{return SERVER_PATH_PATTERN.test(new URL(getRequestUrl(input),window.location.href).pathname)}catch{return false}}
-function requestLabelFromUrl(input:RequestInfo|URL){try{const path=new URL(getRequestUrl(input),window.location.href).pathname;const tool=path.split("/").filter(Boolean).at(-1)??"document";return tool.replace(/-/g," ")}catch{return "document"}}
-function phaseForElapsed(seconds:number):Phase{if(seconds<1)return "preparing";if(seconds<6)return "starting";if(seconds<22)return "processing";return "validating"}
-function phaseTitle(phase:Phase){switch(phase){case"preparing":return"Preparing your document";case"starting":return"Preparing the next step";case"processing":return"Working on your file";case"validating":return"Checking the result";case"downloading":return"Result ready";case"error":return"Processing could not finish";default:return"Processing"}}
-function phaseDescription(phase:Phase){switch(phase){case"preparing":return"Checking the request and getting everything ready.";case"starting":return"Everything is being prepared for your selected task. Keep this tab open.";case"processing":return"Your file is being processed now. We will bring you back as soon as the result is ready.";case"validating":return"We are checking the finished file before it is handed back to you.";case"downloading":return"Finished. Your result is ready to download, share or continue working with.";case"error":return"The request ended before a valid result was returned. The tool page will keep the specific error and your settings for retry.";default:return""}}
+const INITIAL_STATE: ActivityState = { active: false, phase: "idle", canCancel: false, requestLabel: "document" };
+const SERVER_PATH_PATTERN = /\/api\/(?:convert\/|pdf\/(?:protect|unlock|repair|compress)(?:\/|$))/i;
 
-export function ProcessingActivityProvider(){
- const[activity,setActivity]=useState<ActivityState>(INITIAL_STATE);const activeCount=useRef(0);const abortController=useRef<AbortController|null>(null);const revealTimer=useRef<ReturnType<typeof setTimeout>|null>(null);const hideTimer=useRef<ReturnType<typeof setTimeout>|null>(null);
- const finish=useCallback((phase:"downloading"|"error")=>{if(revealTimer.current){clearTimeout(revealTimer.current);revealTimer.current=null}setActivity(current=>current.active?{...current,phase}:current);if(hideTimer.current)clearTimeout(hideTimer.current);hideTimer.current=setTimeout(()=>setActivity(INITIAL_STATE),phase==="downloading"?900:1500)},[]);
- useEffect(()=>{if(!activity.active||activity.phase==="downloading"||activity.phase==="error")return;const tick=()=>setActivity(current=>{if(!current.active)return current;const seconds=Math.max(0,Math.floor((Date.now()-current.startedAt)/1000));return{...current,phase:phaseForElapsed(seconds)}});tick();const timer=window.setInterval(tick,document.hidden?2000:1000);return()=>window.clearInterval(timer)},[activity.active,activity.phase]);
- useEffect(()=>{const backend=process.env.NEXT_PUBLIC_PDF_BACKEND_URL?.trim();if(!backend)return;try{const origin=new URL(backend,window.location.href).origin;const existing=document.head.querySelector(`link[data-ajn-backend-preconnect="${origin}"]`);if(existing)return;const link=document.createElement("link");link.rel="preconnect";link.href=origin;link.crossOrigin="anonymous";link.dataset.ajnBackendPreconnect=origin;document.head.appendChild(link);return()=>link.remove()}catch{return}},[]);
- useEffect(()=>{const nativeFetch=window.fetch.bind(window);window.fetch=async(input:RequestInfo|URL,init?:RequestInit)=>{if(!isServerProcessingRequest(input,init))return nativeFetch(input,init);activeCount.current+=1;const startedAt=Date.now();const requestLabel=requestLabelFromUrl(input);let nextInit=init;let controller:AbortController|null=null;const suppliedSignal=init?.signal??(typeof Request!=="undefined"&&input instanceof Request?input.signal:undefined);if(!suppliedSignal){controller=new AbortController();abortController.current=controller;nextInit={...init,signal:controller.signal}}if(revealTimer.current)clearTimeout(revealTimer.current);revealTimer.current=setTimeout(()=>setActivity({active:true,phase:"preparing",startedAt,canCancel:Boolean(controller),requestLabel}),100);try{const response=await nativeFetch(input,nextInit);if(activeCount.current===1)finish(response.ok?"downloading":"error");return response}catch(error){if(activeCount.current===1)finish("error");throw error}finally{activeCount.current=Math.max(0,activeCount.current-1);if(activeCount.current===0)abortController.current=null}};return()=>{window.fetch=nativeFetch;if(revealTimer.current)clearTimeout(revealTimer.current);if(hideTimer.current)clearTimeout(hideTimer.current)}},[finish]);
- useEffect(()=>{const start=(event:Event)=>{const detail=(event as CustomEvent<{label?:string}>).detail;if(revealTimer.current)clearTimeout(revealTimer.current);const startedAt=Date.now();revealTimer.current=setTimeout(()=>setActivity({active:true,phase:"preparing",startedAt,canCancel:false,requestLabel:(detail?.label||"document").replace(/-/g," ")}),80)};const progress=(event:Event)=>{const detail=(event as CustomEvent<{pct?:number;stage?:string}>).detail;const pct=Math.max(0,Math.min(100,Number(detail?.pct??0)));const phase:Phase=pct<10?"preparing":pct<25?"starting":pct<88?"processing":"validating";setActivity(current=>current.active?{...current,phase}:current)};const done=()=>finish("downloading");const error=()=>finish("error");window.addEventListener("ajn:processing-start",start as EventListener);window.addEventListener("ajn:processing-progress",progress as EventListener);window.addEventListener("ajn:processing-finish",done as EventListener);window.addEventListener("ajn:processing-error",error as EventListener);return()=>{window.removeEventListener("ajn:processing-start",start as EventListener);window.removeEventListener("ajn:processing-progress",progress as EventListener);window.removeEventListener("ajn:processing-finish",done as EventListener);window.removeEventListener("ajn:processing-error",error as EventListener)}},[finish]);
- const cancel=useCallback(()=>abortController.current?.abort(),[]);
- const stage=useMemo(()=>Math.max(0,["preparing","starting","processing","validating","downloading"].indexOf(activity.phase)),[activity.phase]);
- if(!activity.active)return null;
- const labels=["Prepare","Set up","Process","Review","Ready"];
- return <div className={styles.backdrop}>
-   <svg className={`${styles.wave} ${styles.waveTop}`} viewBox="0 0 1200 240" preserveAspectRatio="none" aria-hidden="true"><path d="M-50 151C128 52 284 207 461 119C641 30 754 48 892 106C1040 168 1138 117 1260 43"/></svg>
-   <svg className={`${styles.wave} ${styles.waveBottom}`} viewBox="0 0 1200 240" preserveAspectRatio="none" aria-hidden="true"><path d="M-50 82C117 176 267 35 442 105C613 174 736 195 881 109C1014 30 1120 69 1260 160"/></svg>
-   <section className={styles.panel} role="status" aria-live="polite" aria-busy={activity.phase!=="error"}>
-     <div className={styles.brandRow}><span className={styles.brand}>AJN PDF</span><span className={styles.secureBadge}><ShieldCheck/>Secure file workflow</span></div>
-     <div className={styles.visual} aria-hidden="true"><div className={`${styles.sheet} ${styles.sheetBack}`}/><div className={`${styles.sheet} ${styles.sheetMiddle}`}/><div className={`${styles.sheet} ${styles.sheetFront}`}><FileText/><span className={styles.scanLine}/></div></div>
-     <div className={styles.copy}><span className={styles.eyebrow}>AJN PDF workspace</span><h2 className={styles.title}>{phaseTitle(activity.phase)}</h2><p className={styles.description}>{phaseDescription(activity.phase)}</p></div>
-     <div className={styles.progressTrack} aria-hidden="true"><div className={activity.phase==="error"?styles.progressError:styles.progressBar}/></div>
-     <div className={styles.stages} aria-hidden="true">{labels.map((label,index)=><div key={label} className={`${styles.stage} ${index<=stage?styles.stageActive:""}`}><span className={styles.stageMark}>{String(index+1).padStart(2,"0")}</span><span>{label}</span></div>)}</div>
-     <div className={styles.meta}><span className={styles.jobLabel}>{activity.requestLabel}</span>{activity.canCancel&&activity.phase!=="downloading"&&activity.phase!=="error"&&<button className={styles.cancel} type="button" onClick={cancel}>Cancel</button>}</div>
-   </section>
- </div>
+function getRequestUrl(input: RequestInfo | URL) {
+  if (typeof input === "string") return input;
+  if (input instanceof URL) return input.toString();
+  return input.url;
+}
+function getMethod(input: RequestInfo | URL, init?: RequestInit) {
+  if (init?.method) return init.method.toUpperCase();
+  if (typeof Request !== "undefined" && input instanceof Request) return input.method.toUpperCase();
+  return "GET";
+}
+function isServerProcessingRequest(input: RequestInfo | URL, init?: RequestInit) {
+  if (getMethod(input, init) !== "POST") return false;
+  try { return SERVER_PATH_PATTERN.test(new URL(getRequestUrl(input), window.location.href).pathname); } catch { return false; }
+}
+function requestLabelFromUrl(input: RequestInfo | URL) {
+  try {
+    const path = new URL(getRequestUrl(input), window.location.href).pathname;
+    return (path.split("/").filter(Boolean).at(-1) ?? "document").replace(/-/g, " ");
+  } catch { return "document"; }
+}
+export function ProcessingActivityProvider() {
+  const { t, text } = useLanguage();
+  const [activity, setActivity] = useState<ActivityState>(INITIAL_STATE);
+  const activeCount = useRef(0);
+  const abortController = useRef<AbortController | null>(null);
+  const revealTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const finish = useCallback((phase: "ready" | "error") => {
+    if (revealTimer.current) { clearTimeout(revealTimer.current); revealTimer.current = null; }
+    setActivity(current => current.active ? { ...current, phase, canCancel: false } : current);
+    if (hideTimer.current) clearTimeout(hideTimer.current);
+    hideTimer.current = setTimeout(() => setActivity(INITIAL_STATE), phase === "ready" ? 700 : 1300);
+  }, []);
+
+  useEffect(() => {
+    const backend = process.env.NEXT_PUBLIC_PDF_BACKEND_URL?.trim();
+    if (!backend) return;
+    try {
+      const origin = new URL(backend, window.location.href).origin;
+      const existing = document.head.querySelector(`link[data-ajn-backend-preconnect="${origin}"]`);
+      if (existing) return;
+      const link = document.createElement("link");
+      link.rel = "preconnect";
+      link.href = origin;
+      link.crossOrigin = "anonymous";
+      link.dataset.ajnBackendPreconnect = origin;
+      document.head.appendChild(link);
+      return () => link.remove();
+    } catch { return; }
+  }, []);
+
+  useEffect(() => {
+    const nativeFetch = window.fetch.bind(window);
+    window.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
+      if (!isServerProcessingRequest(input, init)) return nativeFetch(input, init);
+      activeCount.current += 1;
+      const requestLabel = requestLabelFromUrl(input);
+      let nextInit = init;
+      const controller = new AbortController();
+      const suppliedSignal = init?.signal ?? (typeof Request !== "undefined" && input instanceof Request ? input.signal : undefined);
+      const forwardAbort = () => controller.abort(suppliedSignal?.reason);
+      if (suppliedSignal?.aborted) forwardAbort();
+      else suppliedSignal?.addEventListener("abort", forwardAbort, { once: true });
+      abortController.current = controller;
+      nextInit = { ...init, signal: controller.signal };
+      if (revealTimer.current) clearTimeout(revealTimer.current);
+      revealTimer.current = setTimeout(() => setActivity({ active: true, phase: "processing", canCancel: true, requestLabel }), 100);
+      try {
+        const response = await nativeFetch(input, nextInit);
+        if (activeCount.current === 1) finish(response.ok ? "ready" : "error");
+        return response;
+      } catch (error) {
+        if (activeCount.current === 1) {
+          if (error instanceof DOMException && error.name === "AbortError") setActivity(INITIAL_STATE);
+          else finish("error");
+        }
+        throw error;
+      } finally {
+        suppliedSignal?.removeEventListener("abort", forwardAbort);
+        activeCount.current = Math.max(0, activeCount.current - 1);
+        if (activeCount.current === 0) abortController.current = null;
+      }
+    };
+    return () => {
+      window.fetch = nativeFetch;
+      if (revealTimer.current) clearTimeout(revealTimer.current);
+      if (hideTimer.current) clearTimeout(hideTimer.current);
+    };
+  }, [finish]);
+
+  useEffect(() => {
+    const start = (event: Event) => {
+      const detail = (event as CustomEvent<{ label?: string; jobId?: string }>).detail;
+      if (revealTimer.current) { clearTimeout(revealTimer.current); revealTimer.current = null; }
+      setActivity({
+        active: true,
+        phase: "preparing",
+        canCancel: Boolean(detail?.jobId),
+        requestLabel: (detail?.label || "document").replace(/-/g, " "),
+        jobId: detail?.jobId,
+      });
+    };
+    const progress = (event: Event) => {
+      const detail = (event as CustomEvent<{ pct?: number; stage?: string; jobId?: string }>).detail;
+      setActivity(current => current.active ? {
+        ...current,
+        phase: "processing",
+        canCancel: Boolean(detail?.jobId || current.jobId),
+        jobId: detail?.jobId || current.jobId,
+        stageLabel: detail?.stage ? String(detail.stage) : current.stageLabel,
+        progressPct: typeof detail?.pct === "number" ? Math.max(0, Math.min(100, detail.pct)) : current.progressPct,
+      } : current);
+    };
+    const done = () => finish("ready");
+    const error = () => finish("error");
+    const cancelled = () => setActivity(INITIAL_STATE);
+    window.addEventListener("ajn:processing-start", start as EventListener);
+    window.addEventListener("ajn:processing-progress", progress as EventListener);
+    window.addEventListener("ajn:processing-finish", done as EventListener);
+    window.addEventListener("ajn:processing-error", error as EventListener);
+    window.addEventListener("ajn:processing-cancelled", cancelled as EventListener);
+    return () => {
+      window.removeEventListener("ajn:processing-start", start as EventListener);
+      window.removeEventListener("ajn:processing-progress", progress as EventListener);
+      window.removeEventListener("ajn:processing-finish", done as EventListener);
+      window.removeEventListener("ajn:processing-error", error as EventListener);
+      window.removeEventListener("ajn:processing-cancelled", cancelled as EventListener);
+    };
+  }, [finish]);
+
+  const cancel = useCallback(() => {
+    if (activity.jobId && engine.cancelJob(activity.jobId)) return;
+    abortController.current?.abort();
+  }, [activity.jobId]);
+
+  if (!activity.active) return null;
+  const stage = activity.phase === "preparing" ? 0 : activity.phase === "processing" ? 1 : 2;
+  const labels = [t("processing.fullStagePrepare"), t("processing.fullStageProcess"), t("processing.fullStageReady")];
+  const title = activity.phase === "preparing"
+    ? t("processing.fullPreparingTitle")
+    : activity.phase === "processing"
+      ? t("processing.fullProcessingTitle")
+      : activity.phase === "ready"
+        ? t("processing.fullReadyTitle")
+        : t("processing.fullErrorTitle");
+  const description = activity.phase === "preparing"
+    ? t("processing.fullPreparingDescription")
+    : activity.phase === "processing"
+      ? (activity.stageLabel ? text(activity.stageLabel) : t("processing.fullProcessingDescription"))
+      : activity.phase === "ready"
+        ? t("processing.fullReadyDescription")
+        : t("processing.fullErrorDescription");
+
+  return <div className={styles.backdrop}>
+    <section className={styles.panel} role="status" aria-live="polite" aria-busy={activity.phase !== "error" && activity.phase !== "ready"}>
+      <div className={styles.brandRow}><span className={styles.brand}>AJN PDF</span><span className={styles.secureBadge}><ShieldCheck />{t("processing.fullWorkflow")}</span></div>
+      <div className={styles.visual} aria-hidden="true"><div className={`${styles.sheet} ${styles.sheetBack}`} /><div className={`${styles.sheet} ${styles.sheetMiddle}`} /><div className={`${styles.sheet} ${styles.sheetFront}`}><FileText /><span className={styles.scanLine} /></div></div>
+      <div className={styles.copy}><span className={styles.eyebrow}>{t("processing.fullWorkspace")}</span><h2 className={styles.title}>{title}</h2><p className={styles.description}>{description}</p></div>
+      <div className={styles.progressTrack} role="progressbar" aria-label="Processing progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={typeof activity.progressPct === "number" ? Math.round(activity.progressPct) : undefined}><div className={activity.phase === "error" ? styles.progressError : activity.phase === "ready" ? styles.progressReady : typeof activity.progressPct === "number" ? styles.progressKnown : styles.progressBar} style={typeof activity.progressPct === "number" && activity.phase !== "ready" && activity.phase !== "error" ? { width: `${activity.progressPct}%` } : undefined} /></div>
+      <div className={styles.stages} aria-hidden="true">{labels.map((label, index) => <div key={label} className={`${styles.stage} ${index <= stage ? styles.stageActive : ""}`}><span className={styles.stageMark}>{String(index + 1).padStart(2, "0")}</span><span>{label}</span></div>)}</div>
+      <div className={styles.meta}><span className={styles.jobLabel}>{activity.requestLabel}{typeof activity.progressPct === "number" && activity.phase === "processing" ? ` · ${Math.round(activity.progressPct)}%` : ""}</span>{activity.canCancel && activity.phase !== "ready" && activity.phase !== "error" && <button className={styles.cancel} type="button" onClick={cancel}>{t("common.cancel")}</button>}</div>
+    </section>
+  </div>;
 }

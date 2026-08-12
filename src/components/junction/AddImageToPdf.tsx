@@ -161,7 +161,7 @@ export default function AddImageToPdf() {
   };
 
   return (
-    <ToolWorkspace title="Add Image to PDF" description="PLACE A LOGO OR PHOTO ON A PDF PAGE" icon="🖼️" badge="PDF EDITING" accent="#7C3AED">
+    <ToolWorkspace title="Add Image to PDF" description="Place an image or logo on a PDF page" accent="#7C3AED">
       <div className="w-full">
         <AnimatePresence mode="wait">
           {phase === 'upload' && (
@@ -175,7 +175,7 @@ export default function AddImageToPdf() {
                   onDragLeave={() => setIsDragging(false)}
                   onDrop={(e) => { e.preventDefault(); setIsDragging(false); const f = getFilesFromEvent(e)?.[0]; if (f && (f.type === 'application/pdf' || /\.pdf$/i.test(f.name))) void processPdf(f); }}
                   className={cn(
-                    "group relative h-[300px] rounded-[3rem] border-4 border-dashed transition-all duration-500 shadow-xl flex flex-col items-center justify-center cursor-pointer",
+                    "group relative min-h-[200px] rounded-2xl border border-dashed transition-all duration-500 shadow-xl flex flex-col items-center justify-center cursor-pointer",
                     pdfFile ? "border-emerald-500 bg-emerald-500/5" : "border-black/5 bg-white/20 backdrop-blur-md hover:border-primary/40"
                   )}
                 >
@@ -200,7 +200,7 @@ export default function AddImageToPdf() {
                   onDrop={(e) => { e.preventDefault(); if (!pdfFile) return; const f = getFilesFromEvent(e)?.[0]; if (f) selectImage(f); }}
                   onClick={() => { if(!pdfFile) { toast({title: "Choose the PDF first"}); return; } const i = document.createElement('input'); i.type='file'; i.accept='.png,.jpg,.jpeg,image/png,image/jpeg'; i.onchange=(e:any)=> { const f=e.target.files?.[0]; if(f) selectImage(f); }; i.click(); }}
                   className={cn(
-                    "group relative h-[300px] rounded-[3rem] border-4 border-dashed transition-all duration-500 shadow-xl flex flex-col items-center justify-center cursor-pointer",
+                    "group relative min-h-[200px] rounded-2xl border border-dashed transition-all duration-500 shadow-xl flex flex-col items-center justify-center cursor-pointer",
                     !pdfFile ? "opacity-20 cursor-not-allowed" : imageFile ? "border-emerald-500 bg-emerald-500/5" : "border-black/5 bg-white/20 backdrop-blur-md hover:border-primary/40"
                   )}
                 >
@@ -222,11 +222,11 @@ export default function AddImageToPdf() {
 
           {phase === 'configure' && pdfFile && imageFile && (
             <motion.div key="configure" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col gap-8">
-              <div className="p-6 bg-white/40 rounded-[2.5rem] border border-black/5 flex items-center justify-between shadow-sm">
+              <div className="p-6 bg-white/40 rounded-2xl border border-black/5 flex items-center justify-between shadow-sm">
                 <div className="flex items-center gap-4">
                   <div className="flex items-center gap-2">
-                    <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600 border-none font-black text-[8px] uppercase h-5">PDF READY</Badge>
-                    <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600 border-none font-black text-[8px] uppercase h-5">IMAGE READY</Badge>
+                    <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600 border-none font-black text-[8px] uppercase h-5">PDF ready</Badge>
+                    <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600 border-none font-black text-[8px] uppercase h-5">Image ready</Badge>
                   </div>
                 </div>
                 <button onClick={reset} className="text-[10px] font-black uppercase text-red-500 hover:underline">Clear files</button>
@@ -235,8 +235,8 @@ export default function AddImageToPdf() {
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 <div className="lg:col-span-7 space-y-3">
                   <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Preview</Label>
-                  <Card className="bg-white border-black/5 rounded-[2.5rem] shadow-inner overflow-hidden min-h-[550px] flex items-center justify-center p-12">
-                    <div className="relative inline-block leading-none shadow-2xl">
+                  <Card className="bg-white border-black/5 rounded-2xl shadow-inner overflow-hidden min-h-[420px] flex items-center justify-center p-12">
+                    <div className="relative inline-block leading-none shadow-md">
                       <RuntimeImage src={preview} className="block max-h-[450px] w-auto rounded-sm border border-black/5" alt="PDF page preview" />
                       <VisualPositionOverlay
                         x={settings.x} y={settings.y} width={settings.width} height={settings.height}
@@ -257,7 +257,7 @@ export default function AddImageToPdf() {
                     </div>
                     
                     <Card className="bg-white/60 backdrop-blur-xl border-black/5 rounded-3xl p-8 space-y-6 shadow-xl border-2">
-                      <div className="rounded-2xl border border-blue-500/10 bg-blue-500/5 p-4 text-sm text-slate-600 dark:text-slate-300">Drag the image on the preview. Use the corner handle to resize it.</div>
+                      <div className="rounded-2xl border border-blue-500/10 bg-blue-500/5 p-4 text-sm text-slate-600">Drag the image on the preview. Use the corner handle to resize it.</div>
                       <div className="space-y-2"><Label htmlFor="add-image-page">Page</Label><Input id="add-image-page" type="number" min={1} max={pageCount} value={settings.page} onChange={e => setSettings({...settings, page: +e.target.value})} /></div>
                       <div className="space-y-2"><Label htmlFor="add-image-opacity">Opacity</Label><input id="add-image-opacity" type="range" min="0.1" max="1" step="0.05" value={settings.opacity} onChange={e => setSettings({...settings, opacity: +e.target.value})} className="w-full accent-blue-600" /></div>
                       <div className="space-y-2"><Label htmlFor="add-image-rotation">Rotation</Label><Input id="add-image-rotation" type="number" min={-180} max={180} value={settings.rotation} onChange={e => setSettings({...settings, rotation: +e.target.value})} /></div>
@@ -293,7 +293,7 @@ export default function AddImageToPdf() {
 
           {phase === 'done' && resultBlob && (
             <motion.div key="done" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} className="py-12 flex flex-col items-center space-y-10 text-center">
-              <div className="w-24 h-24 bg-emerald-500/10 rounded-[2.5rem] flex items-center justify-center border border-emerald-500/20 shadow-inner">
+              <div className="w-24 h-24 bg-emerald-500/10 rounded-2xl flex items-center justify-center border border-emerald-500/20 shadow-inner">
                 <CheckCircle2 className="w-12 h-12 text-emerald-600" />
               </div>
               <div className="space-y-2">

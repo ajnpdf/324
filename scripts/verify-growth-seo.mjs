@@ -36,7 +36,7 @@ const env = read('.env.example');
 
 strategy.includes('ICP_SEGMENTS') && strategy.includes('SEARCH_INTENT_CLUSTERS') ? pass('ICP and search intent mapping configured') : fail('ICP/search intent mapping missing');
 seo.includes('getToolSeoProfile') && seo.includes('canonicalPath') ? pass('Generated tool metadata uses intent profiles and canonicals') : fail('Tool intent metadata missing');
-toolPage.includes("'@type': 'HowTo'") && toolPage.includes("offers: { '@type': 'Offer', price: '0'") ? pass('Tool schema includes HowTo and free SoftwareApplication offer') : fail('Tool structured data incomplete');
+toolPage.includes("'@type': 'WebApplication'") && toolPage.includes("'@type': 'BreadcrumbList'") && !toolPage.includes("totalTime: 'PT5M'") ? pass('Tool schema uses accurate WebApplication and Breadcrumb markup without invented completion time') : fail('Tool structured data incomplete or contains synthetic timing');
 editorial.includes('getRelatedTools') && editorial.includes('getRelatedGuides') ? pass('Contextual tool and guide internal linking enabled') : fail('Contextual internal linking missing');
 links.includes('score:') || links.includes('categoryScore') ? pass('Related tool scoring configured') : fail('Related tool scoring missing');
 layout.includes('NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION') && layout.includes('<SiteAnalytics />') && layout.includes('<GoogleAnalytics />') ? pass('Search verification and optional analytics are connected') : fail('Search/analytics integration incomplete');

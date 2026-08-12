@@ -60,7 +60,7 @@ export default function TxtToPdf() {
     beginToolProcessing("TxtToPdf");
     setPhase('processing');
     setProgress(0);
-    setStatus("Synthesizing vector pages...");
+    setStatus("Creating PDF pages…");
 
     try {
       const pdfDoc = await PDFDocument.create();
@@ -99,7 +99,7 @@ export default function TxtToPdf() {
   const reset = () => { setFile(null); setRawText(""); setPhase('upload'); setResultBlob(null); };
 
   return (
-    <ToolWorkspace title="TXT to PDF" description="CONVERT PLAIN TEXT INTO A PDF DOCUMENT" icon="📝" badge="TEXT TO PDF" accent="#2563EB">
+    <ToolWorkspace title="TXT to PDF" description="Turn plain text into a PDF document" accent="#2563EB">
       <div className="w-full">
         <AnimatePresence mode="wait">
           {phase === 'upload' && (
@@ -108,7 +108,7 @@ export default function TxtToPdf() {
                 <Pills 
                   opts={[
                     { label: "📁 Upload File", value: "upload" },
-                    { label: "✏️ Paste Text", value: "paste" }
+                    { label: "Paste text", value: "paste" }
                   ]}
                   val={inputMode}
                   onChange={(v: any) => setInputMode(v)}
@@ -122,7 +122,7 @@ export default function TxtToPdf() {
                   onDragLeave={() => setIsDragging(false)}
                   onDrop={e => { e.preventDefault(); setIsDragging(false); handleFileUpload(e); }}
                   className={cn(
-                    "group relative h-[340px] w-full rounded-[4rem] border-4 border-dashed transition-all duration-700 shadow-2xl overflow-hidden flex flex-col items-center justify-center cursor-pointer",
+                    "group relative min-h-[210px] w-full rounded-2xl border border-dashed transition-all duration-700 shadow-md overflow-hidden flex flex-col items-center justify-center cursor-pointer",
                     isDragging ? "border-primary bg-primary/10 shadow-primary/20 scale-[0.98]" : "border-black/5 bg-white/20 backdrop-blur-md hover:border-primary/40"
                   )}
                 >
@@ -136,13 +136,13 @@ export default function TxtToPdf() {
                 </div>
               ) : (
                 <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="space-y-6">
-                  <div className="bg-white border-2 border-black/5 rounded-[3rem] shadow-2xl overflow-hidden p-8">
+                  <div className="bg-white border-2 border-black/5 rounded-2xl shadow-md overflow-hidden p-8">
                     <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1 mb-3 block">Document Content</Label>
                     <Textarea 
                       placeholder="Paste your text or prompt here..." 
                       value={rawText}
                       onChange={(e) => setRawText(e.target.value)}
-                      className="min-h-[300px] bg-slate-50 border-none rounded-2xl p-6 font-medium text-slate-700 focus:ring-primary/20 shadow-inner resize-none"
+                      className="min-min-h-[200px] bg-slate-50 border-none rounded-2xl p-6 font-medium text-slate-700 focus:ring-primary/20 shadow-inner resize-none"
                     />
                   </div>
                   <Button 
@@ -159,7 +159,7 @@ export default function TxtToPdf() {
 
           {phase === 'configure' && (
             <motion.div key="configure" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col gap-8">
-              <div className="p-6 bg-white/40 rounded-[2.5rem] border border-black/5 flex items-center justify-between shadow-sm">
+              <div className="p-6 bg-white/40 rounded-2xl border border-black/5 flex items-center justify-between shadow-sm">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center">
                     <FileText className="w-6 h-6 text-primary" />
@@ -175,7 +175,7 @@ export default function TxtToPdf() {
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 <div className="lg:col-span-7 space-y-3">
                   <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Preview</Label>
-                  <Card className="bg-white border-black/5 rounded-[2.5rem] shadow-inner overflow-hidden min-h-[600px] p-12">
+                  <Card className="bg-white border-black/5 rounded-2xl shadow-inner overflow-hidden min-h-[420px] p-12">
                     <ScrollArea className="h-[500px]">
                       <div className="text-sm font-medium text-slate-600 leading-relaxed whitespace-pre-wrap">
                         {rawText.slice(0, 2000)}{rawText.length > 2000 ? "..." : ""}
@@ -227,7 +227,7 @@ export default function TxtToPdf() {
 
           {phase === 'done' && resultBlob && (
             <motion.div key="done" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} className="py-12 flex flex-col items-center space-y-10 text-center">
-              <div className="w-24 h-24 bg-emerald-500/10 rounded-[2.5rem] flex items-center justify-center border border-emerald-500/20 shadow-inner">
+              <div className="w-24 h-24 bg-emerald-500/10 rounded-2xl flex items-center justify-center border border-emerald-500/20 shadow-inner">
                 <CheckCircle2 className="w-12 h-12 text-emerald-600" />
               </div>
               <div className="space-y-2">
@@ -235,7 +235,7 @@ export default function TxtToPdf() {
                 <p className="text-sm font-bold text-slate-500 uppercase tracking-widest">Your file is ready</p>
               </div>
 
-              <div className="p-8 bg-white border-2 border-black/5 rounded-[3rem] w-full max-w-sm flex items-center justify-center gap-4 shadow-xl mx-auto">
+              <div className="p-8 bg-white border-2 border-black/5 rounded-2xl w-full max-w-sm flex items-center justify-center gap-4 shadow-xl mx-auto">
                 <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center shrink-0">
                   <Download className="w-5 h-5 text-primary" />
                 </div>

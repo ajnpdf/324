@@ -1,5 +1,5 @@
-AJN PDF R8.3 frontend-only session baseline
-Generated from the CURRENT Git checkout before any R8.3 frontend files are copied.
+AJN PDF R9 frontend-only session baseline
+Generated from the CURRENT Git checkout before any R9 frontend files are copied.
 Existing backend changes are preserved; this manifest proves the updater does not alter tracked backend files during this run.
 
 908d309b6afe84110cd559ba6869b38c1dd5eb9a71e269a958179aac3e45da9d  backend/.dockerignore

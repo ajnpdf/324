@@ -12,7 +12,7 @@ const categories = [
     id: 'pdf',
     title: 'PDF Tools',
     count: '14 Tools',
-    desc: 'Merge, split, compress, and edit PDFs directly in your browser.',
+    desc: 'Merge, split, compress and edit PDFs with clear, focused tools.',
     icon: FileText,
     color: 'text-blue-400',
     bg: 'bg-blue-400/10'
@@ -102,8 +102,6 @@ export function ServicesCatalog() {
         ))}
       </div>
 
-      {/* AMBIENT DECOR */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-[radial-gradient(circle,rgba(59,130,246,0.03)_0%,transparent_70%)] pointer-events-none -z-10" />
     </div>
   );
 }

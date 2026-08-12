@@ -1,199 +1,25 @@
 "use client";
 
-import { RuntimeImage } from '@/components/ui/runtime-image';
-import React, { useState, useEffect } from "react";
-import { ToolWorkspace, Drop, Range, Pills, ToolFile, dl, fmtBytes, shareResult, beginToolProcessing, completeToolProcessing, failToolProcessing} from "./_shared";
+import React, { useEffect, useState } from "react";
+import { RuntimeImage } from "@/components/ui/runtime-image";
+import { ToolWorkspace, Drop, Btn, Done, Err, F, G2, IS, Info, Pills, Range, ToolFile, dl, fmtBytes, withProcessingActivity } from "./_shared";
 import { compressImage } from "./_imageUtils";
-import { CheckCircle2, Download, Loader2, Activity, ImageIcon, RefreshCcw, Zap, Edit3, Settings2, Share2} from 'lucide-react';
-import { motion, AnimatePresence } from "framer-motion";
-import { Badge } from '../ui/badge';
-import { Card } from '../ui/card';
-import { Progress } from '../ui/progress';
-import { Label } from '../ui/label';
-import { Input } from '../ui/input';
-import { Button } from '../ui/button';
+import { safeOutputName } from "@/lib/file-validation";
 
-import { useToast } from '../../hooks/use-toast';
-
-/**
- * AJN Professional Image Compression Unit - Real-time Node
- */
 export default function ReduceImage() {
-  const { toast } = useToast();
-  const [files, setF] = useState<ToolFile[]>([]);
-  const [phase, setPhase] = useState<'upload' | 'configure' | 'processing' | 'done'>('upload');
-  const [progress, setProgress] = useState(0);
-  const [status, setStatus] = useState("");
-  const [outputName, setOutputName] = useState("");
-  const [resultBlob, setResultBlob] = useState<Blob | null>(null);
-  const [savedBytes, setSaved] = useState(0);
-  
-  const [q, setQ] = useState(70);
-  const [fmt, setFmt] = useState("jpeg");
-  const [preview, setPrev] = useState("");
-  useEffect(() => {
-    if (!files.length) { setPrev(""); return; }
-    const u = URL.createObjectURL(files[0].file);
-    const img = new Image();
-    img.onload = () => {
-      setPrev(u);
-      setPhase('configure');
-      setOutputName(files[0].name.replace(/\.[^/.]+$/, "") + "_Compressed");
-    };
-    img.src = u;
-    return () => URL.revokeObjectURL(u);
-  }, [files]);
-
-  const lvl = q >= 80 ? "High quality" : q >= 50 ? "Balanced" : "Max compression";
-
-  const run = async () => {
-    if (!files.length) return;
-    beginToolProcessing("ReduceImage");
-    setPhase('processing');
-    setProgress(0);
-    setStatus("Optimizing pixel matrix...");
-
-    try {
-      for(let i=0; i<=100; i+=25) {
-        setProgress(i);
-        await new Promise(r => setTimeout(r, 150));
-      }
-      
-      const b = await compressImage(files[0].file, q, fmt);
-      setSaved(files[0].size - b.size);
-      setResultBlob(b);
-      setPhase('done');
-      completeToolProcessing();
-    } catch (e: any) {
-      failToolProcessing();
-      setPhase('configure');
-      toast({ variant: "destructive", title: "Process Error", description: e.message || "Failed to process image." });
-    }
-  };
-
-  const reset = () => { setF([]); setPhase('upload'); setResultBlob(null); setSaved(0); setPrev(""); };
-
-  const ext = fmt === "png" ? "png" : "jpg";
-
-  return (
-    <ToolWorkspace title="Reduce Image" description="INTELLIGENT RASTER COMPRESSION" icon="🗜️" badge="IMAGE OPTIMIZER" accent="#E8380D">
-      <div className="w-full">
-        <AnimatePresence mode="wait">
-          {phase === 'upload' && (
-            <motion.div key="upload" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} className="w-full">
-              <Drop files={files} onChange={setF} accept=".jpg,.jpeg,.png,.webp,.bmp" label="Drop Image to Compress" sub="Safe local processing buffer active" />
-            </motion.div>
-          )}
-
-          {phase === 'configure' && files[0] && (
-            <motion.div key="configure" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col gap-8">
-              <div className="p-6 bg-white/40 rounded-[2.5rem] border border-black/5 flex items-center justify-between shadow-sm">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center">
-                    <ImageIcon className="w-6 h-6 text-primary" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-black text-slate-900 uppercase truncate max-w-[240px]">{files[0].name}</p>
-                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">{fmtBytes(files[0].size)} • File ready</p>
-                  </div>
-                </div>
-                <button onClick={reset} className="text-[10px] font-black uppercase text-red-500 hover:underline">Change File</button>
-              </div>
-
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                <div className="lg:col-span-7 space-y-3">
-                  <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Preview</Label>
-                  <Card className="bg-slate-900/5 border-black/5 rounded-[2.5rem] shadow-inner overflow-hidden min-h-[500px] flex items-center justify-center p-12">
-                    <div className="relative group shadow-2xl">
-                      <RuntimeImage src={preview} className="max-h-[400px] w-auto rounded-sm border border-black/5 transition-all" style={{ opacity: q/100 }} alt="" />
-                    </div>
-                  </Card>
-                </div>
-
-                <aside className="lg:col-span-5 space-y-6">
-                  <section className="space-y-4">
-                    <div className="flex items-center gap-2 px-1">
-                      <Settings2 className="w-3.5 h-3.5 text-primary" />
-                      <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Settings</Label>
-                    </div>
-                    
-                    <Card className="bg-white/60 backdrop-blur-xl border-black/5 rounded-3xl p-8 space-y-10 shadow-xl border-2">
-                      <div className="space-y-6">
-                        <Range label="Quality Level" value={Math.round(q)} min={10} max={100} step={5} onChange={v => setQ(v)} fmt={v => `${v}% — ${lvl}`} />
-                      </div>
-
-                      <div className="space-y-4">
-                        <Label className="text-[9px] font-black uppercase text-slate-400 tracking-widest ml-1">Output Format</Label>
-                        <Pills opts={[{label:"JPEG",value:"jpeg"},{label:"PNG",value:"png"}]} val={fmt} onChange={(v:any)=>setFmt(v)}/>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label className="text-[9px] font-black uppercase text-slate-400 tracking-widest ml-1">Output Name</Label>
-                        <div className="relative">
-                          <Edit3 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                          <Input placeholder="compressed" value={outputName} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setOutputName(e.target.value)} className="h-12 pl-12 bg-white/5 border-black/5 rounded-xl font-bold shadow-sm" />
-                        </div>
-                      </div>
-                    </Card>
-                  </section>
-
-                  <Button onClick={run} className="w-full h-16 bg-primary text-white font-black text-xs uppercase tracking-widest rounded-2xl shadow-xl hover:scale-105 transition-all gap-3 border-2 border-white/20 active:scale-95">
-                    <Zap className="w-4 h-4" /> Compress image
-                  </Button>
-                </aside>
-              </div>
-            </motion.div>
-          )}
-
-          {phase === 'processing' && (
-            <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="py-24 flex flex-col items-center space-y-10 text-center">
-              <div className="relative">
-                <Loader2 className="w-16 h-16 text-primary animate-spin" />
-                <Activity className="absolute inset-0 m-auto w-8 h-8 text-primary animate-pulse" />
-              </div>
-              <div className="w-full max-w-sm space-y-4 mx-auto">
-                <div className="flex justify-between items-center px-2"><span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">{status}</span><span className="text-xl font-black text-primary tracking-tighter">{progress}%</span></div>
-                <Progress value={progress} className="h-1.5 bg-black/5" />
-              </div>
-            </motion.div>
-          )}
-
-          {phase === 'done' && resultBlob && (
-            <motion.div key="done" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} className="py-12 flex flex-col items-center space-y-10 text-center">
-              <div className="w-24 h-24 bg-emerald-500/10 rounded-[2.5rem] flex items-center justify-center border border-emerald-500/20 shadow-inner">
-                <CheckCircle2 className="w-12 h-12 text-emerald-600" />
-              </div>
-              <div className="space-y-2">
-                <h3 className="text-3xl md:text-5xl font-black tracking-tighter uppercase text-slate-950">Success 🎉</h3>
-                <p className="text-sm font-bold text-slate-500 uppercase tracking-widest">Your image is ready</p>
-              </div>
-
-              <div className="p-8 bg-white border-2 border-black/5 rounded-[2.5rem] w-full max-w-xl flex items-center justify-between shadow-xl mx-auto">
-                <div className="text-left"><p className="text-[9px] font-black text-slate-400 uppercase mb-1">Original</p><p className="text-xl font-black text-slate-900">{fmtBytes(files[0].size)}</p></div>
-                <div className="h-10 w-px bg-black/5" />
-                <div className="text-center"><p className="text-[9px] font-black text-slate-400 uppercase mb-1">New size</p><p className="text-2xl font-black text-emerald-600">{fmtBytes(resultBlob.size)}</p></div>
-                <div className="h-10 w-px bg-black/5" />
-                <div className="text-right">
-                  <p className="text-[9px] font-black text-slate-400 uppercase mb-1">Efficiency</p>
-                  <Badge className="bg-emerald-500 text-white border-none font-black text-xs h-7">-{Math.round((savedBytes / files[0].size) * 100)}%</Badge>
-                </div>
-              </div>
-
-              <div className="w-full max-w-sm flex flex-col gap-4 mx-auto pt-4 pb-32">
-                <Button onClick={() => dl(resultBlob, `${outputName}.${ext}`)} className="h-16 bg-emerald-500 text-white font-black text-sm uppercase tracking-widest rounded-2xl shadow-xl hover:bg-emerald-600 transition-all gap-3 border-2 border-white/20 active:scale-95">
-                  <Download className="w-4 h-4" /> Download Image
-                </Button>
-                <Button variant="outline" onClick={() => void shareResult(resultBlob, `${outputName}.${ext}`)} className="h-12 border-slate-200 bg-white text-slate-700 font-black text-xs rounded-xl shadow-sm hover:border-blue-200 hover:bg-blue-50/60 gap-2">
-                  <Share2 className="w-4 h-4" /> Share result
-                </Button>
-                <button onClick={reset} className="h-12 rounded-xl font-black text-[10px] uppercase text-slate-400 gap-2 flex items-center justify-center hover:bg-black/5 transition-all">
-                  <RefreshCcw className="w-3.5 h-3.5" /> Process another file
-                </button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </ToolWorkspace>
-  );
+  const [files,setFiles]=useState<ToolFile[]>([]); const [quality,setQuality]=useState(70); const [format,setFormat]=useState<"jpeg"|"png"|"webp">("jpeg");
+  const [preview,setPreview]=useState(""); const [outputName,setOutputName]=useState("compressed.jpg"); const [result,setResult]=useState<Blob|null>(null);
+  const [loading,setLoading]=useState(false); const [error,setError]=useState("");
+  useEffect(()=>{if(!files.length){setPreview("");return;}const url=URL.createObjectURL(files[0].file);setPreview(url);setOutputName(`${files[0].name.replace(/\.[^/.]+$/,"")}-compressed.${format==="jpeg"?"jpg":format}`);return()=>URL.revokeObjectURL(url);},[files,format]);
+  const run=async()=>{if(!files.length)return;setError("");setLoading(true);try{setResult(await withProcessingActivity("Reduce image size",()=>compressImage(files[0].file,quality,format)));}catch(e:any){setError(e.message||"The image could not be compressed.");}finally{setLoading(false);}};
+  const ext=format==="jpeg"?".jpg":`.${format}`; const name=safeOutputName(outputName,"compressed-image",ext); const saved=result&&files[0]?files[0].size-result.size:0;
+  return <ToolWorkspace title="Reduce Image" description="Reduce image file size with adjustable quality" accent="#E8380D">
+    {result?<div className="space-y-3">{files[0]&&<Info><strong>{fmtBytes(files[0].size)}</strong> → <strong>{fmtBytes(result.size)}</strong>{saved>0?` · ${fmtBytes(saved)} saved`:""}</Info>}<Done msg="Image optimized" onDownload={()=>dl(result,name)} shareFile={{blob:result,name}} onReset={()=>{setResult(null);setFiles([]);setError("");}}/></div>:<div className="space-y-4">
+      <Drop files={files} onChange={setFiles} accept=".jpg,.jpeg,.png,.webp,.bmp" label="Choose an image" sub="JPG, PNG, WEBP or BMP" />
+      {preview&&<div className="flex min-h-[220px] items-center justify-center rounded-xl border border-slate-200 bg-slate-50 p-4"><RuntimeImage src={preview} alt="Selected image preview" className="max-min-h-[210px] max-w-full rounded-lg object-contain" /></div>}
+      <Range label="Quality" value={quality} min={10} max={100} step={5} onChange={setQuality} fmt={v=>`${v}%`}/>
+      <G2><F label="Output format"><Pills opts={[{label:"JPG",value:"jpeg"},{label:"PNG",value:"png"},{label:"WEBP",value:"webp"}]} val={format} onChange={setFormat}/></F><F label="Output filename"><input style={IS} value={outputName} onChange={e=>setOutputName(e.target.value)}/></F></G2>
+      <Err msg={error}/><Btn onClick={run} loading={loading} disabled={!files.length} full style={{background:"#E8380D"}}>Reduce image size</Btn>
+    </div>}
+  </ToolWorkspace>;
 }

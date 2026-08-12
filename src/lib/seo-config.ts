@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import type { ServiceTool } from './tools-data';
-import { getToolPolicy, isToolPublic } from './tool-policy';
+import { isToolPublic } from './tool-policy';
 import { getToolSeoProfile } from './seo-strategy';
 import { isBuildToolAvailable } from './tool-capabilities';
 
@@ -27,13 +27,8 @@ export const TOOL_CANONICAL_OVERRIDES: Record<string, string> = {
 export function buildToolMetadata(tool: ServiceTool): Metadata {
   const pathname = `/tools/${tool.id}`;
   const canonicalPath = TOOL_CANONICAL_OVERRIDES[tool.id] || pathname;
-  const policy = getToolPolicy(tool.id);
   const seo = getToolSeoProfile(tool);
-  const processing = policy.processingMode === 'browser'
-    ? 'Designed for supported browser processing.'
-    : 'Uses the AJN PDF conversion service with request-file cleanup after delivery.';
-  const limitation = policy.limitation ? ` ${policy.limitation}` : '';
-  const description = `${seo.description} ${processing}${limitation}`.slice(0, 158);
+  const description = seo.description;
   const shouldIndex = isToolPublic(tool.id) && isBuildToolAvailable(tool.id) && !SEO_EXCLUDED_TOOL_IDS.has(tool.id);
 
   return {

@@ -49,13 +49,13 @@ export default function ProtectPdf() {
   const reset = () => { setFiles([]); setPassword(""); setConfirm(""); setOwnerPassword(""); setResult(null); setError(""); };
 
   return (
-    <ToolWorkspace title="Protect PDF" description="Apply real AES-256 password encryption" icon="🔒" badge="SECURE PROCESSING" accent="#2563EB" processingMode="temporary-server">
+    <ToolWorkspace title="Protect PDF" description="Apply real AES-256 password encryption" accent="#2563EB">
       {result ? (
-        <Done msg="PDF protected successfully" processingMode="temporary-server" onDownload={() => dl(result, safeOutputName(outputName, "protected", ".pdf"))} shareFile={{ blob: result, name: safeOutputName(outputName, "protected", ".pdf") }} onReset={reset} />
+        <Done msg="PDF protected successfully" onDownload={() => dl(result, safeOutputName(outputName, "protected", ".pdf"))} shareFile={{ blob: result, name: safeOutputName(outputName, "protected", ".pdf") }} onReset={reset} />
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           <BackendStatus />
-          <Drop files={files} onChange={setFiles} accept=".pdf,application/pdf" label="Select one PDF" sub="Temporary encrypted processing · maximum 50 MB" />
+          <Drop files={files} onChange={setFiles} accept=".pdf,application/pdf" label="Select one PDF" sub="PDF · maximum 50 MB" />
           <G2><F label="Open password" hint="Minimum 8 characters recommended"><input style={IS} type="password" autoComplete="new-password" value={password} onChange={event => setPassword(event.target.value)} /></F><F label="Confirm password"><input style={IS} type="password" autoComplete="new-password" value={confirm} onChange={event => setConfirm(event.target.value)} /></F></G2>
           <G2><F label="Owner password" hint="Optional and not shown again"><input style={IS} type="password" autoComplete="new-password" value={ownerPassword} onChange={event => setOwnerPassword(event.target.value)} /></F><F label="Output filename"><input style={IS} value={outputName} onChange={event => setOutputName(event.target.value)} /></F></G2>
           <F label="Document permissions">

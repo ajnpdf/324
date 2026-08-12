@@ -28,9 +28,9 @@ export default function RepairPdf() {
   };
 
   return (
-    <ToolWorkspace title="Repair PDF" description="Attempt safe recovery of minor PDF structure damage" icon="🔧" badge="PDF REPAIR" accent="#DC2626" processingMode="temporary-server">
+    <ToolWorkspace title="Repair PDF" description="Attempt safe recovery of minor PDF structure damage" accent="#DC2626">
       {result ? (
-        <Done msg="Repair completed" processingMode="temporary-server" onDownload={() => dl(result, safeOutputName(outputName, "repaired", ".pdf"))} shareFile={{ blob: result, name: safeOutputName(outputName, "repaired", ".pdf") }} onReset={() => { setResult(null); setFiles([]); setError(""); }} />
+        <Done msg="Repair completed" onDownload={() => dl(result, safeOutputName(outputName, "repaired", ".pdf"))} shareFile={{ blob: result, name: safeOutputName(outputName, "repaired", ".pdf") }} onReset={() => { setResult(null); setFiles([]); setError(""); }} />
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           <BackendStatus />

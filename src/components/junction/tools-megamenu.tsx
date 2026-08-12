@@ -81,7 +81,7 @@ export function PDFToolsDropdown() {
             exit={{ opacity: 0, y: 10 }}
             className="absolute top-full left-0 pt-2 w-[90vw] max-w-6xl z-[200]"
           >
-            <div className="bg-white/95 backdrop-blur-2xl border border-black/5 rounded-[2.5rem] shadow-[0_40px_100px_rgba(0,0,0,0.15)] overflow-hidden p-10">
+            <div className="bg-white/95 backdrop-blur-2xl border border-black/5 rounded-2xl shadow-[0_40px_100px_rgba(0,0,0,0.15)] overflow-hidden p-10">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10">
                 {pdfCategories.map((cat, idx) => (
                   <div key={idx} className="space-y-6">

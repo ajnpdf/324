@@ -45,7 +45,7 @@ export default function OcrAdvanced() {
       setProgress(20); setStatus("Recognizing text…");
       const workCanvas = await applyPipeline(canvas, config);
 
-      setProgress(50); setStatus("Neural character recognition...");
+      setProgress(50); setStatus("Recognizing text…");
       const result = await ocrEngine.recognize(workCanvas, { lang: 'eng' });
       
       const cleaned = cleanText(result.text);
@@ -63,7 +63,7 @@ export default function OcrAdvanced() {
   const reset = () => { setF([]); setPhase('upload'); setText(""); setStats(null); };
 
   return (
-    <ToolWorkspace title="Advanced OCR" description="DOCUMENT TEXT RECOGNITION WITH REVIEW CONTROLS" icon="🧠" badge="OCR WORKSPACE" accent={T.purple}>
+    <ToolWorkspace title="OCR Text Extraction" description="Extract text from document images and review the result" accent={T.purple}>
       <div className="w-full">
         <AnimatePresence mode="wait">
           {phase === 'upload' && (
@@ -74,14 +74,14 @@ export default function OcrAdvanced() {
 
           {phase === 'configure' && (
             <motion.div key="configure" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col gap-10">
-              <div className="p-6 bg-white/40 rounded-[2.5rem] border border-black/5 flex items-center justify-between shadow-sm">
+              <div className="p-6 bg-white/40 rounded-2xl border border-black/5 flex items-center justify-between shadow-sm">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-purple-500/10 rounded-2xl flex items-center justify-center">
                     <Activity className="w-6 h-6 text-purple-500" />
                   </div>
                   <div>
                     <p className="text-xs font-black text-slate-900 uppercase truncate max-w-[240px]">{files[0]?.name}</p>
-                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">OCR workspace ready</p>
+                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Ready to recognize text</p>
                   </div>
                 </div>
                 <button onClick={reset} className="text-[10px] font-black uppercase text-red-500 hover:underline">Change Source</button>
@@ -89,7 +89,7 @@ export default function OcrAdvanced() {
 
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div className="lg:col-span-2 space-y-6">
-                   <Card className="bg-white/60 backdrop-blur-xl border-black/5 rounded-[2.5rem] p-10 space-y-10 shadow-xl border-2">
+                   <Card className="bg-white/60 backdrop-blur-xl border-black/5 rounded-2xl p-10 space-y-10 shadow-xl border-2">
                       <div className="grid grid-cols-2 gap-10">
                         <div className="space-y-4">
                           <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">OCR settings</Label>
@@ -119,7 +119,7 @@ export default function OcrAdvanced() {
                 </div>
 
                 <div className="space-y-6">
-                   <div className="p-8 bg-slate-900 text-white rounded-[3rem] shadow-2xl relative overflow-hidden group h-full flex flex-col justify-center">
+                   <div className="p-8 bg-slate-900 text-white rounded-2xl shadow-md relative overflow-hidden group h-full flex flex-col justify-center">
                     <div className="absolute top-0 right-0 p-12 opacity-10 rotate-12 group-hover:rotate-0 transition-transform duration-1000">
                       <BrainCircuit className="w-32 h-32 text-purple-500" />
                     </div>
@@ -129,7 +129,7 @@ export default function OcrAdvanced() {
                         <p className="text-[10px] font-bold opacity-60 uppercase tracking-widest leading-relaxed">Review and export recognized text when the scan is complete.</p>
                       </div>
                       <Button onClick={runOcr} className="w-full h-16 bg-purple-600 text-white font-black text-xs uppercase tracking-widest rounded-2xl hover:bg-purple-700 transition-all shadow-xl active:scale-95 gap-3 border-2 border-white/10">
-                        <Zap className="w-4 h-4" /> Run Advanced OCR
+                        <Zap className="w-4 h-4" /> Recognize text
                       </Button>
                     </div>
                   </div>
@@ -153,19 +153,19 @@ export default function OcrAdvanced() {
 
           {phase === 'done' && (
             <motion.div key="done" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="space-y-10 pb-32">
-              <div className="p-8 bg-white border-2 border-black/5 rounded-[3rem] shadow-xl flex flex-col md:flex-row items-center justify-between gap-8">
+              <div className="p-8 bg-white border-2 border-black/5 rounded-2xl shadow-xl flex flex-col md:flex-row items-center justify-between gap-8">
                  <div className="flex items-center gap-6">
                     <div className="w-14 h-14 bg-emerald-500/10 rounded-2xl flex items-center justify-center border border-emerald-500/10">
                        <CheckCircle2 className="w-8 h-8 text-emerald-600" />
                     </div>
                     <div>
                        <h3 className="text-2xl font-black uppercase tracking-tighter">Your files are ready</h3>
-                       <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{stats?.wordCount} Text ready</p>
+                       <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{stats?.wordCount} words</p>
                     </div>
                  </div>
                  <div className="flex items-center gap-4">
                     <Button variant="outline" onClick={() => navigator.clipboard.writeText(resultText)} className="h-12 px-8 rounded-xl font-black text-[10px] uppercase gap-2 border-black/5 bg-white hover:bg-black/5 shadow-sm">
-                       <Copy className="w-4 h-4" /> Copy All
+                       <Copy className="w-4 h-4" /> Copy text
                     </Button>
                     <Button variant="outline" onClick={() => void shareResult(new Blob([resultText], {type: 'text/plain'}), "ocr-result.txt")} className="h-12 px-8 rounded-xl font-black text-[10px] uppercase gap-2 border-black/5 bg-white hover:bg-black/5 shadow-sm">
                        <Share2 className="w-3.5 h-3.5" /> Share result
@@ -178,7 +178,7 @@ export default function OcrAdvanced() {
 
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                  <div className="lg:col-span-8">
-                    <Card className="bg-white/40 backdrop-blur-xl border-black/5 rounded-[2.5rem] shadow-2xl overflow-hidden min-h-[600px] flex flex-col border-2">
+                    <Card className="bg-white/40 backdrop-blur-xl border-black/5 rounded-2xl shadow-md overflow-hidden min-h-[420px] flex flex-col border-2">
                        <div className="p-6 bg-slate-50 border-b border-black/5 flex items-center justify-between">
                           <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Result</span>
                           <button onClick={() => dl(new Blob([resultText], {type: 'text/plain'}), "extraction.txt")} className="text-[10px] font-black uppercase text-primary hover:underline">Download .txt</button>
@@ -192,11 +192,11 @@ export default function OcrAdvanced() {
                  </div>
                  <aside className="lg:col-span-4 space-y-6">
                     <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Text details</Label>
-                    <Card className="bg-white/60 border-black/5 rounded-[2.5rem] p-8 space-y-8 shadow-xl border-2">
+                    <Card className="bg-white/60 border-black/5 rounded-2xl p-8 space-y-8 shadow-xl border-2">
                        {[
-                         { label: "Confidence", value: `${Math.round(stats?.avgConfidence || 0)}%`, status: "High Fidelity" },
+                         { label: "Confidence", value: `${Math.round(stats?.avgConfidence || 0)}%`, status: "Recognition score" },
                          { label: "Characters", value: resultText.length, status: "Text recognized" },
-                         { label: "Logic Map", value: "Neural Layer 4", status: "WASM Engine" }
+                         { label: "Language", value: "English", status: "OCR engine" }
                        ].map((s, i) => (
                          <div key={i} className="space-y-1">
                             <div className="flex justify-between text-[9px] font-black uppercase tracking-widest text-slate-400">

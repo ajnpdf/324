@@ -27,7 +27,6 @@ export default function TransparencyPage() {
       <main className="relative pt-28">
         <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[38rem] overflow-hidden">
           <div className="absolute inset-x-0 top-0 h-80 bg-gradient-to-b from-blue-50/65 via-violet-50/35 to-transparent" />
-          <svg className="absolute inset-x-0 top-14 h-72 w-full opacity-60" viewBox="0 0 1440 320" preserveAspectRatio="none"><path d="M-100 210C170 55 410 292 720 154C1010 24 1190 86 1540 205" fill="none" stroke="url(#transparency-wave)" strokeWidth="30" strokeLinecap="round" opacity=".15"/><defs><linearGradient id="transparency-wave" x1="0" y1="0" x2="1440" y2="0"><stop stopColor="#2563EB"/><stop offset=".5" stopColor="#7C3AED"/><stop offset="1" stopColor="#10B981"/></linearGradient></defs></svg>
         </div>
 
         <section className="mx-auto max-w-6xl px-5 pb-20 pt-12 md:px-8 md:pt-20">
@@ -55,7 +54,7 @@ export default function TransparencyPage() {
               <div>
                 <ShieldCheck className="h-7 w-7 text-blue-600" />
                 <h2 className="mt-5 text-xl font-black">Verify the request</h2>
-                <p className="mt-3 text-sm leading-7 text-slate-600">Use the browser Network tab. Local tools should not send the selected document to the AJN backend.</p>
+                <p className="mt-3 text-sm leading-7 text-slate-600">When you want to verify a session-based workflow, the browser Network panel can show whether the selected document is transferred during that action.</p>
               </div>
               <div>
                 <Trash2 className="h-7 w-7 text-emerald-600" />

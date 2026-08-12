@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useRef } from "react";
-import { ToolWorkspace, Drop, Btn, F, Pills, Info, Err, ToolFile, T } from "./_shared";
+import { ToolWorkspace, Drop, Btn, F, Pills, Info, Err, ToolFile, T, beginToolProcessing, completeToolProcessing, failToolProcessing } from "./_shared";
 
 async function scanImage(file: File | HTMLCanvasElement): Promise<string> {
   const Tesseract = (await import("tesseract.js")).default;
@@ -49,10 +49,13 @@ export default function OcrScanner() {
     c.getContext("2d")!.drawImage(v, 0, 0);
     stopCamera();
     setL(true); setText(""); setE("");
+    beginToolProcessing("OCR scan");
     try {
       const out = await scanImage(c);
       setText(out.trim() || "(No text detected)");
+      completeToolProcessing();
     } catch (e: any) {
+      failToolProcessing();
       setE(e.message || "Scan failed.");
     }
     setL(false);
@@ -61,10 +64,13 @@ export default function OcrScanner() {
   const runUpload = async () => {
     if (!files.length) { setE("Upload an image to scan."); return; }
     setE(""); setL(true); setText("");
+    beginToolProcessing("OCR scan");
     try {
       const out = await scanImage(files[0].file);
       setText(out.trim() || "(No text detected)");
+      completeToolProcessing();
     } catch (e: any) {
+      failToolProcessing();
       setE(e.message || "Scan failed.");
     }
     setL(false);
@@ -83,10 +89,8 @@ export default function OcrScanner() {
   return (
     <ToolWorkspace
       title="Scan to Text"
-      description="Turn supported document photos into selectable text in the current browser session."
-      icon="📸"
+      description="Turn supported document photos into selectable text with OCR."
       accent={T.teal}
-      badge="LIVE OCR"
     >
       <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         {!text && (
@@ -136,7 +140,7 @@ export default function OcrScanner() {
             )}
 
             <Info bg="#F0FDFA" col="#0F766E">
-              📷 <strong>Privacy</strong> All frames are processed in-memory via Tesseract.js. No images are sent to any server.
+              <strong>Privacy</strong> Camera frames stay in this workspace while text recognition runs.
             </Info>
 
             <Err msg={err} />
@@ -163,9 +167,9 @@ export default function OcrScanner() {
               </p>
               <div style={{ display: "flex", gap: 8 }}>
                 <Btn variant="secondary" onClick={copy} style={{ padding: "5px 12px", fontSize: 12 }}>
-                  {copied ? "✅ Copied!" : "📋 Copy"}
+                  {copied ? "Copied" : "Copy"}
                 </Btn>
-                <Btn variant="secondary" onClick={reset} style={{ padding: "5px 12px", fontSize: 12 }}>↺ Scan another</Btn>
+                <Btn variant="secondary" onClick={reset} style={{ padding: "5px 12px", fontSize: 12 }}>Scan another</Btn>
               </div>
             </div>
             <textarea
@@ -175,8 +179,8 @@ export default function OcrScanner() {
               style={{ width: "100%", border: "1.5px solid var(--jn-border)", borderRadius: 16, padding: "16px", fontSize: 13, fontFamily: "monospace", outline: "none", resize: "vertical", lineHeight: 1.7, boxSizing: "border-box", background: "var(--jn-input-bg)", color: "var(--jn-text-primary)" }}
             />
             <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
-              <Btn onClick={copy} style={{ background: T.teal }}>📋 {copied ? "Copied!" : "Copy All"}</Btn>
-              <Btn variant="secondary" onClick={reset}>↺ Scan Another</Btn>
+              <Btn onClick={copy} style={{ background: T.teal }}>{copied ? "Copied" : "Copy all"}</Btn>
+              <Btn variant="secondary" onClick={reset}>Scan another</Btn>
             </div>
           </div>
         )}

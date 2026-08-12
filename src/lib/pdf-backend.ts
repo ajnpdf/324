@@ -89,7 +89,8 @@ async function postPdf(path: string, form: FormData): Promise<Blob> {
     return await response.blob();
   } catch (error) {
     if (error instanceof DOMException && error.name === 'AbortError') {
-      throw new PdfBackendError('Processing timed out.', 'TIMEOUT');
+      if (controller.signal.aborted) throw new PdfBackendError('Processing timed out.', 'TIMEOUT');
+      throw new PdfBackendError('Processing was cancelled.', 'CANCELLED');
     }
     if (error instanceof TypeError) {
       throw new PdfBackendError('Processing service is temporarily unavailable.', 'SERVICE_UNAVAILABLE');
@@ -205,7 +206,8 @@ export async function convertOnServer(args: {
     return { blob: await response.blob(), filename };
   } catch (error) {
     if (error instanceof DOMException && error.name === 'AbortError') {
-      throw new PdfBackendError('The conversion timed out.', 'TIMEOUT');
+      if (controller.signal.aborted) throw new PdfBackendError('The conversion timed out.', 'TIMEOUT');
+      throw new PdfBackendError('The conversion was cancelled.', 'CANCELLED');
     }
     if (error instanceof TypeError) {
       throw new PdfBackendError('The conversion service is temporarily unavailable.', 'SERVICE_UNAVAILABLE');

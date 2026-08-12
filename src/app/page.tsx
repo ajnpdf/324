@@ -12,16 +12,11 @@ import { ADSENSE_SLOTS } from '../lib/ad-slots';
 import { BUILD_PUBLIC_TOOLS } from '@/lib/build-public-tools';
 import { sendAjnAnalytics } from '../components/analytics/site-analytics';
 import { useLanguage } from '@/lib/i18n/language-context';
-import { PremiumBackground } from '@/components/premium/premium-background';
 import { MobileHomeHero } from '@/components/landing/mobile-home-hero';
 
-const FormatStrip = dynamic(() => import('../components/landing/format-strip').then((module) => module.FormatStrip));
 const FeatureShowcase = dynamic(() => import('../components/landing/feature-showcase').then((module) => module.FeatureShowcase));
-const ToolCategories = dynamic(() => import('../components/landing/tool-categories').then((module) => module.ToolCategories));
 const HowItWorks = dynamic(() => import('../components/landing/how-it-works').then((module) => module.HowItWorks));
-const VisualStories = dynamic(() => import('../components/landing/visual-stories').then((module) => module.VisualStories));
 const TrustSecurity = dynamic(() => import('../components/landing/trust-security').then((module) => module.TrustSecurity));
-const Workflows = dynamic(() => import('../components/landing/social-proof').then((module) => module.SocialProof));
 const FAQSection = dynamic(() => import('../components/landing/faq-section').then((module) => module.FAQSection));
 const MainFooter = dynamic(() => import('../components/landing/main-footer').then((module) => module.MainFooter));
 const AdSenseUnit = dynamic(() => import('../components/adsense-unit').then((module) => module.AdSenseUnit), { ssr: false });
@@ -31,6 +26,10 @@ const categories = [
   { id: 'conversion', key: 'filters.conversion' },
   { id: 'image', key: 'filters.image' },
   { id: 'pdf', key: 'filters.pdf' },
+  { id: 'ocr', key: 'filters.ocr' },
+  { id: 'edit', key: 'filters.edit' },
+  { id: 'organize', key: 'filters.organize' },
+  { id: 'security', key: 'filters.security' },
 ];
 
 export default function HomePage() {
@@ -72,24 +71,22 @@ export default function HomePage() {
         <MobileHomeHero />
         <div className="hidden md:block">
           <Hero searchValue={search} onSearchChange={setSearch} />
-          <FormatStrip />
         </div>
 
         <section className="relative mx-auto max-w-7xl scroll-mt-[72px] px-4 pb-10 pt-4 md:px-8 md:py-28" id="public-tools">
-          <PremiumBackground compact />
           <div className="border-b border-slate-200 pb-3 md:pb-8">
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between md:gap-6">
               <div className="max-w-3xl">
                 <span className="ajn-section-kicker hidden md:inline-flex">{t('home.directoryKicker')}</span>
-                <h1 className="flex items-baseline justify-between gap-3 text-[1.65rem] font-black leading-tight tracking-[-.045em] text-slate-950 md:hidden">
+                <h2 className="flex items-baseline justify-between gap-3 text-[1.65rem] font-black leading-tight tracking-[-.045em] text-slate-950 md:hidden">
                   <span>{t('common.tools')}</span>
                   <span className="text-[11px] font-black tracking-normal text-blue-600">{BUILD_PUBLIC_TOOLS.length} {t('common.available')}</span>
-                </h1>
+                </h2>
                 <h2 className="mt-5 hidden text-6xl font-black tracking-[-.04em] text-slate-950 md:block">{t('home.chooseTool')}</h2>
                 <p className="mt-4 hidden text-sm font-medium leading-6 text-slate-600 md:block">{t('home.directoryDesc')}</p>
               </div>
 
-              <div className="hidden w-auto rounded-2xl border border-slate-200 bg-white p-1 shadow-sm md:flex">
+              <div className="hidden max-w-[620px] gap-1 overflow-x-auto rounded-2xl border border-slate-200 bg-white p-1 shadow-sm md:flex [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 {categories.map((category) => (
                   <button
                     type="button"
@@ -119,7 +116,7 @@ export default function HomePage() {
                 className="h-11 rounded-xl border-slate-200 bg-white pl-10 pr-3 text-sm font-semibold text-slate-950 shadow-sm focus-visible:ring-blue-500/30"
               />
             </div>
-            <div className="mt-2 flex gap-2 overflow-x-auto pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label="Filter tools by category">
+            <div className="mt-2 flex gap-2 overflow-x-auto pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label={t('home.filterAria')}>
               {categories.map((category) => (
                 <button
                   type="button"
@@ -136,14 +133,11 @@ export default function HomePage() {
 
           <div className="mt-3 md:mt-10"><ServicesGrid query={search} category={activeCategory} /></div>
         </section>
-        <div className="ajn-ad-zone my-8 md:my-12"><AdSenseUnit slot={ADSENSE_SLOTS.homePrimary} width={400} height={80} className="min-h-[80px]" label="Homepage advertisement" /></div>
-        <FeatureShowcase />
-        <ToolCategories />
-        <VisualStories />
+        <AdSenseUnit slot={ADSENSE_SLOTS.homePrimary} width={400} height={80} className="ajn-ad-zone my-8 min-h-[80px] md:my-12" label={t('common.advertisement')} />
         <HowItWorks />
-        <div className="ajn-ad-zone my-8 md:my-12"><AdSenseUnit slot={ADSENSE_SLOTS.homeSecondary} width={300} height={150} className="min-h-[150px]" label="Homepage content advertisement" /></div>
+        <FeatureShowcase />
+        <AdSenseUnit slot={ADSENSE_SLOTS.homeSecondary} width={300} height={150} className="ajn-ad-zone my-8 min-h-[150px] md:my-12" label={t('common.advertisement')} />
         <TrustSecurity />
-        <Workflows />
         <FAQSection />
         <MainFooter />
       </main>

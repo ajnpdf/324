@@ -12,7 +12,7 @@ export function LanguageSwitcher({ compact = false, className }: { compact?: boo
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button type="button" variant="ghost" className={cn('h-10 rounded-xl px-2.5 text-slate-600 hover:bg-blue-50 hover:text-blue-700 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-blue-300', className)} aria-label={`${t('common.language')}: ${current.native}`}>
+        <Button type="button" variant="ghost" className={cn('h-10 rounded-xl px-2.5 text-slate-600 hover:bg-blue-50 hover:text-blue-700', className)} aria-label={`${t('common.language')}: ${current.native}`}>
           <Languages className="h-[18px] w-[18px]" />
           {!compact && <span className="ml-2 hidden text-xs font-extrabold sm:inline">{current.native}</span>}
         </Button>

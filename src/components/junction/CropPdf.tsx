@@ -1,253 +1,95 @@
 "use client";
 
-import { RuntimeImage } from '@/components/ui/runtime-image';
-
-import React, { useState, useRef } from "react";
-import * as pdfjsLib from 'pdfjs-dist';
-import { PDFDocument } from 'pdf-lib';
-import { Crop, CheckCircle2, Download, Loader2, Activity, FileText, RefreshCcw, Zap, Settings2, Maximize2, Edit3, Share2} from 'lucide-react';
-import { motion, AnimatePresence } from "framer-motion";
-
-import { Card } from '../ui/card';
-import { Button } from '../ui/button';
-import { Progress } from '../ui/progress';
-import { Label } from '../ui/label';
-
-import { Input } from '../ui/input';
-import { useToast } from '../../hooks/use-toast';
-import { engine } from '../../lib/engine';
-import { cn } from '../../lib/utils';
-import { ToolWorkspace, dl, fmtBytes, getFilesFromEvent, shareResult} from './_shared';
+import React, { useEffect, useState } from "react";
+import * as pdfjsLib from "pdfjs-dist";
+import { PDFDocument } from "pdf-lib";
+import { RuntimeImage } from "@/components/ui/runtime-image";
+import { ToolWorkspace, Drop, Btn, Done, Err, F, G2, IS, Info, ToolFile, dl, fmtBytes, withProcessingActivity, updateToolProcessing } from "./_shared";
 import { initPdfWorker } from "@/lib/pdfjs-worker";
+import { hasPdfHeader, safeOutputName, validateFiles } from "@/lib/file-validation";
+
+type Margins = { top:number; bottom:number; left:number; right:number };
 
 export default function CropPdf() {
-  const { toast } = useToast();
-  const [file, setFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string>("");
-  const [phase, setPhase] = useState<'upload' | 'configure' | 'processing' | 'done'>('upload');
-  const [progress, setProgress] = useState(0);
-  const [status, setStatus] = useState("");
-  const [outputName, setOutputName] = useState("");
-  const [resultBlob, setResultBlob] = useState<Blob | null>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [margins, setMargins] = useState({ top: 0, bottom: 0, left: 0, right: 0 });
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [files,setFiles]=useState<ToolFile[]>([]);
+  const [preview,setPreview]=useState("");
+  const [pageSize,setPageSize]=useState({width:595,height:842});
+  const [margins,setMargins]=useState<Margins>({top:0,bottom:0,left:0,right:0});
+  const [outputName,setOutputName]=useState("cropped.pdf");
+  const [result,setResult]=useState<Blob|null>(null);
+  const [loading,setLoading]=useState(false);
+  const [error,setError]=useState("");
 
-  const processFile = async (f: File) => {
-    setFile(f);
-    setPhase('configure');
-    setStatus("Synthesizing preview...");
-    setOutputName(f.name.replace('.pdf', '') + "_Cropped");
+  useEffect(()=>{
+    let cancelled=false;
+    if(!files.length){setPreview("");return;}
+    const file=files[0].file;
+    setOutputName(`${file.name.replace(/\.pdf$/i,"")}-cropped.pdf`);
+    void (async()=>{
+      try{
+        initPdfWorker();
+        const pdf=await pdfjsLib.getDocument({data:new Uint8Array(await file.arrayBuffer())}).promise;
+        const page=await pdf.getPage(1);
+        const logical=page.getViewport({scale:1});
+        const display=page.getViewport({scale:Math.min(1.15,760/Math.max(logical.width,1))});
+        const canvas=document.createElement("canvas");
+        const ctx=canvas.getContext("2d");
+        if(!ctx) throw new Error("Preview is unavailable on this device.");
+        canvas.width=Math.max(1,Math.ceil(display.width));canvas.height=Math.max(1,Math.ceil(display.height));
+        await page.render({canvasContext:ctx,viewport:display}).promise;
+        if(!cancelled){setPageSize({width:logical.width,height:logical.height});setPreview(canvas.toDataURL("image/jpeg",.86));setError("");}
+      }catch(e:any){if(!cancelled)setError(e.message||"A preview could not be created for this PDF.");}
+    })();
+    return()=>{cancelled=true;};
+  },[files]);
 
-    try {
-      initPdfWorker();
-      const buffer = await f.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(buffer) }).promise;
-      const page = await pdf.getPage(1);
-      const viewport = page.getViewport({ scale: 0.8 });
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d')!;
-      canvas.height = viewport.height;
-      canvas.width = viewport.width;
-      await page.render({ canvasContext: ctx, viewport: viewport }).promise;
-      setPreview(canvas.toDataURL('image/jpeg', 0.8));
-    } catch {
-      toast({ title: "Preview failed", variant: "destructive" });
-      setPhase('upload');
-    }
-  };
-
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement> | React.DragEvent<HTMLElement>) => {
-    const f = getFilesFromEvent(e)?.[0];
-    if (f && f.type === 'application/pdf') processFile(f);
-  };
-
-  const executeCrop = async () => {
-    setPhase('processing');
-    setProgress(0);
-    setStatus("Applying crop margins…");
-    try {
-      await engine.runTool('split-pdf', [file!], { 
-        indices: [0], // For junction we handle 1 page crop or simple ranges
-        outputName,
-        crop: margins
-      }, (p: any) => {
-        setProgress(p.pct);
+  const setMargin=(key:keyof Margins,value:number)=>setMargins(current=>({...current,[key]:Math.max(0,Number.isFinite(value)?value:0)}));
+  const run=async()=>{
+    const validation=validateFiles(files.map(x=>x.file),{extensions:[".pdf"],minFiles:1,maxFiles:1,maxSizeMb:50});
+    if(validation){setError(validation);return;}
+    if(!(await hasPdfHeader(files[0].file))){setError("Choose a valid PDF file.");return;}
+    setError("");setLoading(true);
+    try{
+      const blob=await withProcessingActivity("Crop PDF",async()=>{
+        const doc=await PDFDocument.load(await files[0].file.arrayBuffer(),{ignoreEncryption:true});
+        const pages=doc.getPages();
+        pages.forEach((page,index)=>{
+          const {width,height}=page.getSize();
+          const left=Math.min(margins.left,Math.max(0,width-1));
+          const right=Math.min(margins.right,Math.max(0,width-left-1));
+          const bottom=Math.min(margins.bottom,Math.max(0,height-1));
+          const top=Math.min(margins.top,Math.max(0,height-bottom-1));
+          const cropWidth=width-left-right; const cropHeight=height-top-bottom;
+          if(cropWidth<=0||cropHeight<=0) throw new Error(`Crop margins are too large for page ${index+1}.`);
+          page.setCropBox(left,bottom,cropWidth,cropHeight);
+          updateToolProcessing(Math.round(((index+1)/pages.length)*100),`Cropping page ${index+1} of ${pages.length}`);
+        });
+        const bytes=await doc.save();
+        const outputBuffer = new ArrayBuffer(bytes.byteLength);
+        new Uint8Array(outputBuffer).set(bytes);
+        return new Blob([outputBuffer],{type:"application/pdf"});
       });
-
-      // Special handling for junction: using existing manipulator
-      const bytes = await file!.arrayBuffer();
-      const pdfDoc = await PDFDocument.load(bytes, { ignoreEncryption: true });
-      const pages = pdfDoc.getPages();
-      pages.forEach(p => {
-        const { height: pH, width: pW } = p.getSize();
-        p.setCropBox(margins.left, margins.bottom, pW - margins.left - margins.right, pH - margins.top - margins.bottom);
-      });
-      const finalBytes = await pdfDoc.save();
-      setResultBlob(new Blob([finalBytes.buffer as ArrayBuffer], { type: 'application/pdf' }));
-      setPhase('done');
-    } catch {
-      setPhase('configure');
-      toast({ title: "Process Error", variant: "destructive" });
-    }
+      setResult(blob);
+    }catch(e:any){setError(e.message||"The PDF could not be cropped.");}
+    finally{setLoading(false);}
+  };
+  const name=safeOutputName(outputName,"cropped",".pdf");
+  const overlay={
+    top:`${Math.min(49,(margins.top/pageSize.height)*100)}%`,
+    bottom:`${Math.min(49,(margins.bottom/pageSize.height)*100)}%`,
+    left:`${Math.min(49,(margins.left/pageSize.width)*100)}%`,
+    right:`${Math.min(49,(margins.right/pageSize.width)*100)}%`,
   };
 
-  const reset = () => { setFile(null); setPreview(""); setPhase('upload'); setResultBlob(null); setMargins({top:0,bottom:0,left:0,right:0}); };
-
-  return (
-    <ToolWorkspace title="Crop PDF" description="TRIM PDF PAGE MARGINS WITH A LIVE PREVIEW" icon="🔲" badge="PDF CROP" accent="#F59E0B">
-      <div className="w-full">
-        <AnimatePresence mode="wait">
-          {phase === 'upload' && (
-            <motion.div key="upload" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} className="w-full">
-              <div 
-                onClick={() => fileInputRef.current?.click()}
-                onDragOver={e => { e.preventDefault(); setIsDragging(true); }}
-                onDragLeave={() => setIsDragging(false)}
-                onDrop={e => { e.preventDefault(); setIsDragging(false); handleFileUpload(e); }}
-                className={cn(
-                  "group relative h-[340px] w-full rounded-[4rem] border-4 border-dashed transition-all duration-700 shadow-2xl overflow-hidden flex flex-col items-center justify-center cursor-pointer",
-                  isDragging ? "border-amber-500 bg-amber-500/10" : "border-black/5 bg-white/20 backdrop-blur-md hover:border-amber-500/40"
-                )}
-              >
-                <input type="file" accept=".pdf" ref={fileInputRef} className="hidden" onChange={handleFileUpload} />
-                <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-lg mb-6 group-hover:scale-110 transition-transform duration-500 border border-black/5">
-                  <Crop className="w-8 h-8 text-amber-500" />
-                </div>
-                <div className="text-center space-y-1 px-8 relative z-10">
-                  <h3 className="text-2xl font-black tracking-tighter uppercase text-slate-950">Drop PDF to Reframe</h3>
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">Adjust crop margins</p>
-                </div>
-              </div>
-            </motion.div>
-          )}
-
-          {phase === 'configure' && file && (
-            <motion.div key="configure" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col gap-8">
-              <div className="p-6 bg-white/40 rounded-[2.5rem] border border-black/5 flex items-center justify-between shadow-sm">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-amber-500/10 rounded-2xl flex items-center justify-center">
-                    <FileText className="w-6 h-6 text-amber-500" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-black text-slate-900 uppercase truncate max-w-[240px]">{file.name}</p>
-                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">{fmtBytes(file.size)} • File ready</p>
-                  </div>
-                </div>
-                <button onClick={reset} className="text-[10px] font-black uppercase text-slate-400 hover:text-slate-900">Change File</button>
-              </div>
-
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                <div className="lg:col-span-7 space-y-3">
-                  <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Preview</Label>
-                  <Card className="bg-white border-black/5 rounded-[2.5rem] shadow-inner overflow-hidden min-h-[600px] flex items-center justify-center p-12">
-                    <div className="relative group shadow-2xl">
-                      <RuntimeImage src={preview} className="max-h-[500px] w-auto rounded-sm border border-black/5" alt="" />
-                      
-                      {/* CROP OVERLAY VISUALIZATION */}
-                      <div className="absolute inset-0 border-primary/40 border-2 pointer-events-none" 
-                        style={{ 
-                          top: (margins.top / 8.42) + "%", 
-                          bottom: (margins.bottom / 8.42) + "%",
-                          left: (margins.left / 5.95) + "%",
-                          right: (margins.right / 5.95) + "%"
-                        }}
-                      >
-                        <div className="absolute inset-0 bg-primary/5 animate-pulse" />
-                        <Maximize2 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 text-primary/20" />
-                      </div>
-                    </div>
-                  </Card>
-                </div>
-
-                <aside className="lg:col-span-5 space-y-6">
-                  <section className="space-y-4">
-                    <div className="flex items-center gap-2 px-1">
-                      <Settings2 className="w-3.5 h-3.5 text-primary" />
-                      <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Settings</Label>
-                    </div>
-                    
-                    <Card className="bg-white/60 backdrop-blur-xl border-black/5 rounded-3xl p-8 space-y-8 shadow-xl">
-                      <div className="grid grid-cols-2 gap-6">
-                        {['top', 'bottom', 'left', 'right'].map((dir) => (
-                          <div key={dir} className="space-y-2">
-                            <Label className="text-[9px] font-black uppercase text-slate-400 tracking-widest ml-1">{dir} Margin (pt)</Label>
-                            <Input 
-                              type="number" 
-                              value={margins[dir as keyof typeof margins]} 
-                              onChange={(e) => setMargins({...margins, [dir]: parseInt(e.target.value) || 0})}
-                              className="h-12 bg-white/5 border-black/5 rounded-xl font-bold shadow-inner" 
-                            />
-                          </div>
-                        ))}
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label className="text-[9px] font-black uppercase text-slate-400 tracking-widest ml-1">Output Name</Label>
-                        <div className="relative">
-                          <Edit3 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                          <Input placeholder="cropped" value={outputName} onChange={(e) => setOutputName(e.target.value)} className="h-12 pl-12 bg-white/5 border-black/5 rounded-xl font-bold shadow-sm" />
-                        </div>
-                      </div>
-                    </Card>
-                  </section>
-
-                  <Button onClick={executeCrop} className="w-full h-16 bg-primary text-white font-black text-xs uppercase tracking-widest rounded-2xl shadow-xl hover:scale-105 transition-all gap-3 border-2 border-white/20 active:scale-95">
-                    <Zap className="w-4 h-4" /> Crop PDF
-                  </Button>
-                </aside>
-              </div>
-            </motion.div>
-          )}
-
-          {phase === 'processing' && (
-            <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="py-24 flex flex-col items-center space-y-10 text-center">
-              <div className="relative">
-                <Loader2 className="w-16 h-16 text-primary animate-spin" />
-                <Activity className="absolute inset-0 m-auto w-8 h-8 text-primary animate-pulse" />
-              </div>
-              <div className="w-full max-w-sm space-y-4 mx-auto">
-                <div className="flex justify-between items-center px-2"><span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">{status}</span><span className="text-xl font-black text-primary tracking-tighter">{progress}%</span></div>
-                <Progress value={progress} className="h-1.5 bg-black/5" />
-              </div>
-            </motion.div>
-          )}
-
-          {phase === 'done' && resultBlob && (
-            <motion.div key="done" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} className="py-12 flex flex-col items-center space-y-10 text-center">
-              <div className="w-24 h-24 bg-emerald-500/10 rounded-[2.5rem] flex items-center justify-center border border-emerald-500/20 shadow-inner">
-                <CheckCircle2 className="w-12 h-12 text-emerald-600" />
-              </div>
-              <div className="space-y-2">
-                <h3 className="text-3xl md:text-5xl font-black tracking-tighter uppercase text-slate-950">Success 🎉</h3>
-                <p className="text-sm font-bold text-slate-500 uppercase tracking-widest">Your PDF is ready</p>
-              </div>
-
-              <div className="p-8 bg-white border-2 border-black/5 rounded-[3rem] w-full max-w-sm flex items-center justify-center gap-4 shadow-xl mx-auto">
-                <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center shrink-0">
-                  <Download className="w-5 h-5 text-primary" />
-                </div>
-                <div className="text-left overflow-hidden">
-                  <p className="text-[9px] font-black text-slate-400 uppercase mb-0.5">Output file</p>
-                  <p className="text-sm font-black text-slate-950 truncate">{fmtBytes(resultBlob.size)}</p>
-                </div>
-              </div>
-
-              <div className="w-full max-w-sm flex flex-col gap-4 mx-auto pt-4 pb-32">
-                <Button onClick={() => dl(resultBlob, `${outputName}.pdf`)} className="h-16 bg-emerald-500 text-white font-black text-sm uppercase tracking-widest rounded-2xl shadow-xl hover:bg-emerald-600 transition-all gap-3 border-2 border-white/20 active:scale-95">
-                  <Download className="w-4 h-4" /> Download PDF
-                </Button>
-                <Button variant="outline" onClick={() => void shareResult(resultBlob, `${outputName}.pdf`)} className="h-12 border-slate-200 bg-white text-slate-700 font-black text-xs rounded-xl shadow-sm hover:border-blue-200 hover:bg-blue-50/60 gap-2">
-                  <Share2 className="w-4 h-4" /> Share result
-                </Button>
-                <button onClick={reset} className="h-12 rounded-xl font-black text-[10px] uppercase text-slate-400 gap-2 flex items-center justify-center hover:bg-black/5 transition-all">
-                  <RefreshCcw className="w-3.5 h-3.5" /> Process another file
-                </button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </ToolWorkspace>
-  );
+  return <ToolWorkspace title="Crop PDF" description="Trim PDF page margins with a clear preview" accent="#F59E0B">
+    {result?<Done msg="PDF cropped" onDownload={()=>dl(result,name)} shareFile={{blob:result,name}} onReset={()=>{setResult(null);setFiles([]);setMargins({top:0,bottom:0,left:0,right:0});setError("");}}/>:<div className="space-y-4">
+      <Drop files={files} onChange={setFiles} accept=".pdf,application/pdf" label="Choose a PDF" sub="One PDF · maximum 50 MB" />
+      {files[0]&&<Info><strong>{files[0].name}</strong> · {fmtBytes(files[0].size)}. Margins are applied to every page and automatically clamped to each page size.</Info>}
+      {preview&&<div className="grid gap-4 lg:grid-cols-[1fr_320px]">
+        <div className="flex min-h-[360px] items-center justify-center rounded-xl border border-slate-200 bg-slate-50 p-4"><div className="relative max-w-full overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><RuntimeImage src={preview} alt="First PDF page crop preview" className="max-h-[560px] max-w-full object-contain"/><div className="pointer-events-none absolute border-2 border-amber-500/80 bg-amber-500/[.04]" style={overlay}/></div></div>
+        <div className="space-y-4 rounded-xl border border-slate-200 bg-white p-4"><div><p className="text-sm font-black text-slate-950">Crop margins</p><p className="mt-1 text-xs font-medium leading-5 text-slate-500">Enter points to trim from each edge. The preview uses the real first-page dimensions.</p></div><G2><F label="Top (pt)"><input style={IS} type="number" min={0} value={margins.top} onChange={e=>setMargin("top",+e.target.value)}/></F><F label="Bottom (pt)"><input style={IS} type="number" min={0} value={margins.bottom} onChange={e=>setMargin("bottom",+e.target.value)}/></F><F label="Left (pt)"><input style={IS} type="number" min={0} value={margins.left} onChange={e=>setMargin("left",+e.target.value)}/></F><F label="Right (pt)"><input style={IS} type="number" min={0} value={margins.right} onChange={e=>setMargin("right",+e.target.value)}/></F></G2><F label="Output filename"><input style={IS} value={outputName} onChange={e=>setOutputName(e.target.value)}/></F></div>
+      </div>}
+      <Err msg={error}/><Btn onClick={run} loading={loading} disabled={!files.length} full style={{background:"#F59E0B"}}>Crop PDF</Btn>
+    </div>}
+  </ToolWorkspace>;
 }

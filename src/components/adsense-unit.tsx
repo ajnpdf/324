@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ADSENSE_PUBLISHER } from '@/lib/ad-slots';
 import { isAdEligiblePath } from '@/components/adsense-script-loader';
+import { useLanguage } from '@/lib/i18n/language-context';
 
 declare global {
   interface Window { adsbygoogle?: unknown[]; }
@@ -26,11 +27,14 @@ export function AdSenseUnit({
   width,
   height,
   responsive = false,
-  label = 'Advertisement',
+  label,
 }: AdSenseUnitProps) {
+  const { t } = useLanguage();
+  const accessibleLabel = label || t('common.advertisement');
   const adRef = useRef<HTMLModElement | null>(null);
   const initialized = useRef(false);
   const [allowed, setAllowed] = useState(false);
+  const [adStatus, setAdStatus] = useState<'pending' | 'filled' | 'unfilled'>('pending');
 
   useEffect(() => {
     const syncConsent = () => {
@@ -65,17 +69,32 @@ export function AdSenseUnit({
     return () => window.removeEventListener(READY_EVENT, requestAd);
   }, [allowed, slot]);
 
+
+  useEffect(() => {
+    const node = adRef.current;
+    if (!allowed || !slot || !node || typeof MutationObserver === 'undefined') return;
+    const syncStatus = () => {
+      const value = node.getAttribute('data-ad-status');
+      if (value === 'unfilled') setAdStatus('unfilled');
+      else if (value === 'filled') setAdStatus('filled');
+    };
+    const observer = new MutationObserver(syncStatus);
+    observer.observe(node, { attributes: true, attributeFilter: ['data-ad-status'] });
+    syncStatus();
+    return () => observer.disconnect();
+  }, [allowed, slot]);
+
   // Keep verification independent through the AdSense meta tag and /ads.txt.
   // Ads themselves load only after advertising consent and only in production.
-  if (!slot || process.env.NODE_ENV !== 'production' || !allowed) return null;
+  if (!slot || process.env.NODE_ENV !== 'production' || !allowed || adStatus === 'unfilled') return null;
 
   const adStyle: React.CSSProperties = responsive
     ? { display: 'block', width: '100%' }
     : { display: 'inline-block', width: width || 300, height: height || 250, maxWidth: '100%' };
 
   return (
-    <aside aria-label={label} className={`w-full overflow-hidden flex flex-col items-center justify-center ${className}`}>
-      <span className="mb-2 text-[8px] font-black uppercase tracking-[0.18em] text-slate-400">Advertisement</span>
+    <aside aria-label={accessibleLabel} className={`w-full overflow-hidden flex flex-col items-center justify-center ${className}`}>
+      <span className="mb-2 text-[8px] font-black uppercase tracking-[0.18em] text-slate-400">{t('common.advertisement')}</span>
       <ins
         ref={adRef}
         className="adsbygoogle"

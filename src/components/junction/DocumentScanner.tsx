@@ -153,12 +153,12 @@ export default function DocumentScanner() {
   };
 
   return (
-    <ToolWorkspace title="Document Scanner" description="CAPTURE AND STRAIGHTEN DOCUMENT PAGES" icon="📄" accent={T.teal} badge="DOCUMENT SCANNER">
+    <ToolWorkspace title="Document Scanner" description="Scan and straighten document pages" accent={T.teal}>
       <div className="w-full max-w-4xl mx-auto space-y-10">
         <AnimatePresence mode="wait">
           {result ? (
             <motion.div key="done" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}>
-              <div className="text-center p-12 bg-white/40 rounded-[3rem] border border-black/5 shadow-2xl">
+              <div className="text-center p-12 bg-white/40 rounded-2xl border border-black/5 shadow-md">
                 <div className="w-24 h-24 bg-emerald-500/10 rounded-2xl flex items-center justify-center mx-auto mb-8 border border-emerald-500/20">
                   <Check className="w-12 h-12 text-emerald-600" />
                 </div>
@@ -179,13 +179,13 @@ export default function DocumentScanner() {
             </motion.div>
           ) : (
             <motion.div key="scanner" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8">
-              <div className="relative aspect-video bg-slate-950 rounded-[3rem] overflow-hidden shadow-2xl border-4 border-black/5">
+              <div className="relative aspect-video bg-slate-950 rounded-2xl overflow-hidden shadow-md border-4 border-black/5">
                 <video ref={videoRef} playsInline className="absolute inset-0 w-full h-full object-cover opacity-0" />
                 <canvas ref={canvasRef} className={cn("absolute inset-0 w-full h-full object-cover transition-opacity duration-700", cameraActive ? "opacity-100" : "opacity-0")} />
                 <AnimatePresence>
                   {!cameraActive && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 flex flex-col items-center justify-center text-slate-500 space-y-4">
-                      <div className="w-20 h-20 bg-white/5 rounded-[2.5rem] flex items-center justify-center border border-white/10"><Smartphone className="w-10 h-10" /></div>
+                      <div className="w-20 h-20 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10"><Smartphone className="w-10 h-10" /></div>
                       <p className="text-[10px] font-black uppercase tracking-[0.4em]">Ready</p>
                     </motion.div>
                   )}
@@ -210,7 +210,7 @@ export default function DocumentScanner() {
                   )}
                 </div>
                 
-                {err && <p className="text-xs font-black uppercase text-red-500 tracking-widest">⚠️ {err}</p>}
+                {err && <p className="text-xs font-black uppercase text-red-500 tracking-widest">{err}</p>}
               </div>
 
               <AnimatePresence>
@@ -235,7 +235,7 @@ export default function DocumentScanner() {
                            <Progress value={compileProgress} />
                         </div>
                       )}
-                      <Button onClick={buildPdf} disabled={loading} className="w-full h-16 bg-slate-900 text-white font-black text-xs uppercase tracking-[0.2em] rounded-[2rem] shadow-2xl hover:scale-[1.02] transition-all gap-3 border-2 border-white/10">
+                      <Button onClick={buildPdf} disabled={loading} className="w-full h-16 bg-slate-900 text-white font-black text-xs uppercase tracking-[0.2em] rounded-[2rem] shadow-md hover:scale-[1.02] transition-all gap-3 border-2 border-white/10">
                         {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Download className="w-5 h-5" /> Create PDF</>}
                       </Button>
                     </div>

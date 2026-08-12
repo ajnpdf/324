@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Contact AJN PDF',
+  title: { absolute: 'Contact AJN PDF' },
   description: 'Contact the AJN PDF team for support, feedback, business enquiries and website assistance.',
   alternates: { canonical: '/contact' },
 };

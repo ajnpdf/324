@@ -1,6 +1,6 @@
 "use client";
 import React,{useState} from "react";
-import {ToolWorkspace,Drop,Btn,Done,Range,F,G2,Err,IS,SS,ToolFile,dl,T} from "./_shared";
+import {ToolWorkspace,Drop,Btn,Done,Range,F,G2,Err,IS,SS,ToolFile,dl,T,beginToolProcessing,completeToolProcessing,failToolProcessing} from "./_shared";
 import {watermarkImage} from "./_imageUtils";
 const POSITIONS=["top-left","top-center","top-right","center","bottom-left","bottom-center","bottom-right"];
 export default function WatermarkImage(){
@@ -9,8 +9,8 @@ export default function WatermarkImage(){
   const [pos,setPos]=useState("bottom-center");const [loading,setL]=useState(false);
   const [result,setR]=useState<Blob|null>(null);const [err,setE]=useState("");
   const run=async()=>{if(!files.length){setE("Upload an image.");return;}if(!text.trim()){setE("Enter watermark text.");return;}
-    setE("");setL(true);try{setR(await watermarkImage(files[0].file,text,opacity,size,color,pos));}catch(e:any){setE(e.message);}setL(false);};
-  return(<ToolWorkspace title="Watermark Image" description="Add your brand or copyright text to any image." icon="💧" accent="#06B6D4">
+    setE("");setL(true);beginToolProcessing("Watermark image");try{setR(await watermarkImage(files[0].file,text,opacity,size,color,pos));completeToolProcessing();}catch(e:any){failToolProcessing();setE(e.message || "The task could not be completed.");}setL(false);};
+  return(<ToolWorkspace title="Watermark Image" description="Add your brand or copyright text to any image." accent="#06B6D4">
     {result?<Done msg="Watermark added!" onDownload={()=>dl(result,"watermarked_"+(files[0]?.name||"image.jpg"))} shareFile={{blob:result,name:"watermarked_"+(files[0]?.name||"image.jpg")}} onReset={()=>{setR(null);setF([]);}}/>
     :<div style={{display:"flex",flexDirection:"column",gap:16}}>
       <Drop files={files} onChange={setF} accept=".jpg,.jpeg,.png,.webp,.bmp"/>

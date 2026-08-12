@@ -50,7 +50,6 @@ export default function BlogPage() {
       <main className="relative pt-28">
         <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[34rem] overflow-hidden">
           <div className="absolute inset-x-0 top-0 h-72 bg-gradient-to-b from-violet-50/60 via-blue-50/30 to-transparent" />
-          <svg className="absolute inset-x-0 top-12 h-72 w-full opacity-55" viewBox="0 0 1440 320" preserveAspectRatio="none"><path d="M-90 208C180 70 420 286 706 154C970 32 1220 82 1530 206" fill="none" stroke="url(#blog-wave)" strokeWidth="28" strokeLinecap="round" opacity=".15"/><defs><linearGradient id="blog-wave" x1="0" y1="0" x2="1440" y2="0"><stop stopColor="#E9233F"/><stop offset=".5" stopColor="#2563EB"/><stop offset="1" stopColor="#059669"/></linearGradient></defs></svg>
         </div>
 
         <section className="mx-auto max-w-6xl px-5 pb-24 pt-12 md:px-8 md:pt-20">

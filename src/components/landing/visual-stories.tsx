@@ -15,8 +15,7 @@ export function VisualStories() {
 
       <div className="mt-12 grid gap-5 lg:grid-cols-2">
         <article className="ajn-visual-story-card overflow-hidden rounded-[1.6rem] border border-slate-200 bg-white shadow-[0_22px_60px_rgba(37,62,113,.08)]">
-          <div className="relative min-h-[310px] overflow-hidden bg-gradient-to-br from-violet-50/80 via-white to-blue-50/80 p-6 md:p-8">
-            <div className="ajn-story-wave" aria-hidden="true" />
+          <div className="relative min-h-[310px] overflow-hidden bg-slate-50 p-6 md:p-8">
             <div className="relative z-10 mx-auto max-w-md">
               <div className="flex items-center justify-between"><div className="flex items-center gap-3"><ToolArtwork toolId="organize-pdf" toolName="Organize PDF" className="h-11 w-11"/><div><p className="text-sm font-black text-slate-950">Organize PDF</p><p className="text-[10px] font-semibold text-slate-500">Arrange pages visually</p></div></div><Layers3 className="h-5 w-5 text-violet-500"/></div>
               <div className="mt-6 grid grid-cols-3 gap-3">
@@ -28,8 +27,7 @@ export function VisualStories() {
         </article>
 
         <article className="ajn-visual-story-card overflow-hidden rounded-[1.6rem] border border-slate-200 bg-white shadow-[0_22px_60px_rgba(37,62,113,.08)]">
-          <div className="relative min-h-[310px] overflow-hidden bg-gradient-to-br from-blue-50/80 via-white to-emerald-50/70 p-6 md:p-8">
-            <div className="ajn-story-wave ajn-story-wave-alt" aria-hidden="true" />
+          <div className="relative min-h-[310px] overflow-hidden bg-slate-50 p-6 md:p-8">
             <div className="relative z-10 mx-auto max-w-md rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_18px_42px_rgba(37,62,113,.09)]">
               <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
                 <div className="ajn-story-format"><ImageIcon className="h-6 w-6 text-emerald-600"/><b>Image</b><span>Source file</span></div>

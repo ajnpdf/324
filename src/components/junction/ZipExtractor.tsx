@@ -101,7 +101,7 @@ export default function ZipExtractor() {
   const reset = () => { setFile(null); setItems([]); setPhase('upload'); setProgress(0); };
 
   return (
-    <ToolWorkspace title="ZIP Extractor" description="EXTRACT ZIP FILES IN YOUR BROWSER" icon="📦" badge="ZIP EXTRACTION" accent="#7C3AED">
+    <ToolWorkspace title="ZIP Extractor" description="Open a ZIP archive and download selected files" accent="#7C3AED">
       <div className="w-full">
         <AnimatePresence mode="wait">
           {phase === 'upload' && (
@@ -112,7 +112,7 @@ export default function ZipExtractor() {
                 onDragLeave={() => setIsDragging(false)}
                 onDrop={e => { e.preventDefault(); setIsDragging(false); const f = e.dataTransfer.files[0]; if(f) processArchive(f); }}
                 className={cn(
-                  "group relative h-[340px] w-full rounded-[4rem] border-4 border-dashed transition-all duration-700 shadow-2xl overflow-hidden flex flex-col items-center justify-center cursor-pointer",
+                  "group relative min-h-[210px] w-full rounded-2xl border border-dashed transition-all duration-700 shadow-md overflow-hidden flex flex-col items-center justify-center cursor-pointer",
                   isDragging ? "border-primary bg-primary/10" : "border-black/5 bg-white/20 backdrop-blur-md hover:border-primary/40"
                 )}
               >
@@ -142,7 +142,7 @@ export default function ZipExtractor() {
 
           {phase === 'done' && (
             <motion.div key="done" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} className="space-y-10 pb-32">
-              <div className="p-8 bg-white border-2 border-black/5 rounded-[3rem] shadow-xl flex flex-col md:flex-row items-center justify-between gap-8">
+              <div className="p-8 bg-white border-2 border-black/5 rounded-2xl shadow-xl flex flex-col md:flex-row items-center justify-between gap-8">
                  <div className="flex items-center gap-6">
                     <div className="w-14 h-14 bg-emerald-500/10 rounded-2xl flex items-center justify-center border border-emerald-500/10">
                        <CheckCircle2 className="w-8 h-8 text-emerald-600" />
@@ -161,7 +161,7 @@ export default function ZipExtractor() {
 
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 <div className="lg:col-span-8">
-                  <Card className="bg-white/40 backdrop-blur-xl border-black/5 rounded-[2.5rem] shadow-2xl overflow-hidden border-2 min-h-[400px]">
+                  <Card className="bg-white/40 backdrop-blur-xl border-black/5 rounded-2xl shadow-md overflow-hidden border-2 min-h-[400px]">
                     <div className="p-5 border-b border-black/5 bg-slate-50 flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <FolderOpen className="w-4 h-4 text-primary" />
@@ -196,7 +196,7 @@ export default function ZipExtractor() {
                   </Card>
                 </div>
                 <aside className="lg:col-span-4 space-y-6">
-                   <Card className="bg-white/60 border-black/5 rounded-[2.5rem] p-8 space-y-6 shadow-xl border-2">
+                   <Card className="bg-white/60 border-black/5 rounded-2xl p-8 space-y-6 shadow-xl border-2">
                       <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest text-center block">Archive details</Label>
                       <div className="p-6 bg-primary/5 rounded-3xl border border-primary/10 space-y-3 text-center">
                         <ShieldCheck className="w-8 h-8 text-emerald-600 mx-auto" />

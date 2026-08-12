@@ -74,7 +74,7 @@ export function GuideArticle({ slug, eyebrow, title, summary, readTime, sections
             <div className="mt-7 flex flex-wrap items-center justify-center gap-3 text-xs font-bold text-muted-foreground">
               <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-2"><Clock className="h-3.5 w-3.5" /> {readTime}</span>
               <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-2"><CalendarDays className="h-3.5 w-3.5" /> Reviewed 6 August 2026</span>
-              <Link href="/developer" className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-2 text-blue-600 hover:bg-muted dark:text-blue-300">By {AJN_BRAND.developerName}</Link>
+              <Link href="/developer" className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-2 text-blue-600 hover:bg-muted">By {AJN_BRAND.developerName}</Link>
             </div>
           </header>
 
@@ -90,10 +90,10 @@ export function GuideArticle({ slug, eyebrow, title, summary, readTime, sections
                     </div>
                     {section.bullets && section.bullets.length > 0 && (
                       <ul className="mt-6 grid gap-3 sm:grid-cols-2">
-                        {section.bullets.map((item) => <li key={item} className="flex items-start gap-3 rounded-xl border border-border bg-muted/35 p-4 text-sm font-semibold leading-6 text-foreground"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-300" />{item}</li>)}
+                        {section.bullets.map((item) => <li key={item} className="flex items-start gap-3 rounded-xl border border-border bg-muted/35 p-4 text-sm font-semibold leading-6 text-foreground"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />{item}</li>)}
                       </ul>
                     )}
-                    {section.note && <div className="mt-6 flex items-start gap-3 rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm font-semibold leading-6 text-blue-950 dark:border-blue-400/20 dark:bg-blue-500/10 dark:text-blue-100"><Info className="mt-0.5 h-4 w-4 shrink-0" />{section.note}</div>}
+                    {section.note && <div className="mt-6 flex items-start gap-3 rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm font-semibold leading-6 text-blue-950"><Info className="mt-0.5 h-4 w-4 shrink-0" />{section.note}</div>}
                   </div>
                 </div>
               </section>
@@ -116,14 +116,14 @@ export function GuideArticle({ slug, eyebrow, title, summary, readTime, sections
           <section className="mt-10">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
               <div><span className="ajn-section-kicker">Continue with a tool</span><h2 className="mt-4 text-3xl font-black tracking-[-.04em] text-foreground md:text-4xl">Apply the guide to a real workflow.</h2></div>
-              <Link href="/pdf-tools" className="text-sm font-black text-blue-600 hover:underline dark:text-blue-300">View all tools</Link>
+              <Link href="/pdf-tools" className="text-sm font-black text-blue-600 hover:underline">View all tools</Link>
             </div>
             <div className="mt-7 grid gap-4 md:grid-cols-3">
               {relatedTools.map((tool) => (
                 <Link key={tool.href} href={tool.href} className="ajn-tool-card group block p-6">
                   <h3 className="text-lg font-black text-foreground">{tool.title}</h3>
                   <p className="mt-3 text-sm font-medium leading-6 text-muted-foreground">{tool.description}</p>
-                  <span className="mt-5 inline-flex items-center gap-2 text-xs font-black text-blue-600 dark:text-blue-300">Open tool <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" /></span>
+                  <span className="mt-5 inline-flex items-center gap-2 text-xs font-black text-blue-600">Open tool <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" /></span>
                 </Link>
               ))}
             </div>

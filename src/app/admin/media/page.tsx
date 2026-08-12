@@ -260,8 +260,8 @@ export default function AdminMediaPage() {
             <div className="rounded-2xl border border-border bg-card p-4"><p className="text-xs font-bold text-muted-foreground">Scheduled</p><p className="mt-1 text-2xl font-black text-foreground">{counts.scheduled}</p></div>
             <div className="rounded-2xl border border-border bg-card p-4"><p className="text-xs font-bold text-muted-foreground">Drafts</p><p className="mt-1 text-2xl font-black text-foreground">{counts.draft}</p></div>
           </div>
-          {error && <p role="alert" className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-800 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-200">{error}</p>}
-          {message && <p role="status" className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-bold text-emerald-800 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-200">{message}</p>}
+          {error && <p role="alert" className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-800">{error}</p>}
+          {message && <p role="status" className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-bold text-emerald-800">{message}</p>}
         </section>
 
         <section className="mt-6 grid gap-6 xl:grid-cols-[.85fr_1.15fr]">
@@ -290,9 +290,9 @@ export default function AdminMediaPage() {
                   <article key={post.id} className="grid gap-4 rounded-2xl border border-border bg-muted/35 p-4 sm:grid-cols-[96px_1fr_auto] sm:items-center">
                     <RuntimeImage src={post.thumbnail_url || post.image_url} alt={post.alt_text} width={96} height={96} className="h-24 w-24 rounded-xl bg-card object-cover" />
                     <div className="min-w-0">
-                      <div className="flex flex-wrap items-center gap-2"><h3 className="truncate font-black text-foreground">{post.title}</h3><span className={`rounded-full px-2 py-1 text-[9px] font-black uppercase tracking-wide ${status === 'published' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-200' : status === 'scheduled' ? 'bg-blue-100 text-blue-800 dark:bg-blue-500/15 dark:text-blue-200' : 'bg-amber-100 text-amber-800 dark:bg-amber-500/15 dark:text-amber-200'}`}>{status}</span></div>
+                      <div className="flex flex-wrap items-center gap-2"><h3 className="truncate font-black text-foreground">{post.title}</h3><span className={`rounded-full px-2 py-1 text-[9px] font-black uppercase tracking-wide ${status === 'published' ? 'bg-emerald-100 text-emerald-800' : status === 'scheduled' ? 'bg-blue-100 text-blue-800' : 'bg-amber-100 text-amber-800'}`}>{status}</span></div>
                       <p className="mt-1 line-clamp-2 text-xs leading-5 text-muted-foreground">{post.caption}</p>
-                      <div className="mt-2 flex flex-wrap gap-3 text-[11px] font-black"><button type="button" onClick={() => startEdit(post)} className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-300"><Edit3 className="h-3.5 w-3.5" />Edit</button>{status === 'published' && <Link href={`/discover/${post.slug}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-emerald-700 dark:text-emerald-300"><ExternalLink className="h-3.5 w-3.5" />Public page</Link>}</div>
+                      <div className="mt-2 flex flex-wrap gap-3 text-[11px] font-black"><button type="button" onClick={() => startEdit(post)} className="inline-flex items-center gap-1 text-blue-600"><Edit3 className="h-3.5 w-3.5" />Edit</button>{status === 'published' && <Link href={`/discover/${post.slug}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-emerald-700"><ExternalLink className="h-3.5 w-3.5" />Public page</Link>}</div>
                     </div>
                     <Button type="button" variant="outline" size="icon" onClick={() => void removePost(post)} aria-label={`Delete ${post.title}`}><Trash2 className="h-4 w-4 text-red-600" /></Button>
                   </article>
@@ -319,7 +319,7 @@ export default function AdminMediaPage() {
           </section>
         )}
 
-        <section className="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50/70 p-5 text-sm text-emerald-950 dark:border-emerald-500/25 dark:bg-emerald-500/10 dark:text-emerald-100">
+        <section className="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50/70 p-5 text-sm text-emerald-950">
           <div className="flex items-start gap-3"><CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0" /><p className="font-semibold leading-6">Published images are converted to optimized WebP files, thumbnails are generated, EXIF metadata is removed by re-encoding, and titles, captions, alt text and tags remain editable.</p></div>
         </section>
       </main>

@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { jsPDF } from "jspdf";
-import { ToolWorkspace, Drop, Btn, Done, Err, F, G2, IS, Info, Pills, ToolFile, dl, fmtBytes } from "./_shared";
+import { ToolWorkspace, Drop, Btn, Done, Err, F, G2, IS, Info, Pills, ToolFile, dl, fmtBytes, withProcessingActivity, updateToolProcessing } from "./_shared";
 import { initPdfWorker } from "@/lib/pdfjs-worker";
 import { safeOutputName, validateFiles } from "@/lib/file-validation";
 
@@ -18,7 +18,7 @@ export default function CompressPdf() {
   const [level, setLevel] = useState<Level>("balanced");
   const [grayscale, setGrayscale] = useState(false);
   const [outputName, setOutputName] = useState("compressed.pdf");
-  const [progress, setProgress] = useState(0);
+  const [, setProgress] = useState(0);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<{ blob: Blob; original: number; output: number } | null>(null);
   const [error, setError] = useState("");
@@ -28,6 +28,7 @@ export default function CompressPdf() {
     if (validation) { setError(validation); return; }
     setError(""); setLoading(true); setProgress(0);
     try {
+      const nextResult = await withProcessingActivity("Compress PDF", async () => {
       initPdfWorker();
       const pdfjs = await import("pdfjs-dist");
       const source = files[0].file;
@@ -54,10 +55,14 @@ export default function CompressPdf() {
         const dataUrl = canvas.toDataURL("image/jpeg", preset.quality);
         if (pageNumber > 1) out.addPage([viewport.width, viewport.height], viewport.width > viewport.height ? "landscape" : "portrait");
         out.addImage(dataUrl, "JPEG", 0, 0, viewport.width, viewport.height, undefined, "FAST");
-        setProgress(Math.round((pageNumber / pdf.numPages) * 100));
+        const pct = Math.round((pageNumber / pdf.numPages) * 100);
+        setProgress(pct);
+        updateToolProcessing(pct, `Compressing page ${pageNumber} of ${pdf.numPages}`);
       }
       const blob = out.output("blob");
-      setResult({ blob, original: source.size, output: blob.size });
+      return { blob, original: source.size, output: blob.size };
+      });
+      setResult(nextResult);
     } catch (e: any) { setError(e.message || "The PDF could not be compressed."); }
     finally { setLoading(false); }
   };
@@ -65,7 +70,7 @@ export default function CompressPdf() {
   const reduction = result ? Math.round(((result.original - result.output) / result.original) * 100) : 0;
 
   return (
-    <ToolWorkspace title="Compress PDF" description="Reduce PDF size with selectable quality settings" icon="⚡" badge="PDF COMPRESSION" accent="#10B981">
+    <ToolWorkspace title="Compress PDF" description="Reduce PDF size with selectable quality settings" accent="#10B981">
       {result ? (
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           <Info><strong>{fmtBytes(result.original)}</strong> → <strong>{fmtBytes(result.output)}</strong> · {reduction >= 0 ? `${reduction}% smaller` : `${Math.abs(reduction)}% larger`}</Info>
@@ -74,10 +79,10 @@ export default function CompressPdf() {
         </div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-          <Drop files={files} onChange={setFiles} accept=".pdf,application/pdf" label="Select one PDF" sub="Maximum 40 MB · processed locally" />
+          <Drop files={files} onChange={setFiles} accept=".pdf,application/pdf" label="Select one PDF" sub="Maximum 40 MB" />
           <F label="Compression level"><Pills opts={[{ label: "Higher quality", value: "quality" }, { label: "Balanced", value: "balanced" }, { label: "Strong", value: "strong" }]} val={level} onChange={setLevel} /></F>
           <G2><F label="Output filename"><input style={IS} value={outputName} onChange={event => setOutputName(event.target.value)} /></F><F label="Colour mode"><label className="jn-file-pill" style={{ height: 42, justifyContent: "flex-start" }}><input type="checkbox" checked={grayscale} onChange={event => setGrayscale(event.target.checked)} /><span style={{ fontSize: 10, fontWeight: 800 }}>Convert pages to grayscale</span></label></F></G2>
-          {loading && <Info>Processing page images: <strong>{progress}%</strong></Info>}
+          
           <Info bg="rgba(245,158,11,.08)" col="#92400E">This compression mode rasterizes pages. Searchable text, links, forms, and accessibility can be reduced. Use Higher quality for important documents.</Info>
           <Err msg={error} />
           <Btn onClick={run} loading={loading} disabled={!files.length} full style={{ background: "#10B981" }}>Compress PDF</Btn>

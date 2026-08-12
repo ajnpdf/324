@@ -10,7 +10,7 @@ export default function SecurityPage() {
         {
           title: 'Processing separation',
           bullets: [
-            'Browser tools process files in the user’s browser and do not intentionally send the selected document to AJN PDF.',
+            'Some workflows can process files on your device. When a secure processing service is required, AJN PDF identifies that workflow in its file-processing information.',
             'Protect, Unlock and Repair use a clearly labelled temporary server workflow when the secure processing service is online.',
             'Tool pages display their processing mode and backend availability before processing begins.',
           ],

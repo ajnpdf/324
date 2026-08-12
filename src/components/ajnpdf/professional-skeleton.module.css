@@ -210,21 +210,8 @@
   }
 }
 
-/* AJN PDF 3.2 premium loading surfaces */
+/* AJN PDF light loading surfaces */
 .brand,.heroTitle,.titleLine,.icon,.uploadIcon,.uploadTitle { background:linear-gradient(110deg,#efedff,#e7efff,#efedff); background-size:220% 100%; }
 .line,.secondaryButton { background:#f0eff8; }
 .button { background:linear-gradient(110deg,#ddd8ff,#cfe0ff); }
 .card,.uploadPanel,.steps { border-color:rgba(115,103,255,.12); border-radius:22px; box-shadow:0 12px 34px rgba(47,43,91,.05); }
-:global(.dark) .shell { color:#fff8ef; }
-:global(.dark) .brand,
-:global(.dark) .heroTitle,
-:global(.dark) .titleLine,
-:global(.dark) .icon,
-:global(.dark) .uploadIcon,
-:global(.dark) .uploadTitle { background:linear-gradient(110deg,#21170e,#2f2115,#21170e); }
-:global(.dark) .line,
-:global(.dark) .secondaryButton { background:#1a1816; }
-:global(.dark) .button { background:linear-gradient(110deg,#5d3510,#8c4a09); }
-:global(.dark) .card,
-:global(.dark) .uploadPanel,
-:global(.dark) .steps { border-color:rgba(255,138,0,.12); background:#101010; box-shadow:0 16px 42px rgba(0,0,0,.34); }

@@ -2,7 +2,7 @@
 
 import React, { useRef, useState } from "react";
 import { ArrowDown, ArrowUp, Plus, Trash2 } from "lucide-react";
-import { ToolWorkspace, Btn, Done, Err, F, IS, ToolFile, dl, fmtBytes, Info, T } from "./_shared";
+import { ToolWorkspace, Btn, Done, Err, F, IS, ToolFile, dl, fmtBytes, Info, T, withProcessingActivity } from "./_shared";
 import { mergePdfs } from "./_pdfUtils";
 import { hasPdfHeader, safeOutputName, validateFiles } from "@/lib/file-validation";
 
@@ -38,7 +38,7 @@ export default function MergePdf() {
     const validation = validateFiles(files.map(item => item.file), { extensions: [".pdf"], minFiles: 2, maxFiles: 30, maxSizeMb: 50 });
     if (validation) { setError(validation); return; }
     setError(""); setLoading(true);
-    try { setResult(await mergePdfs(files.map(item => item.file))); }
+    try { setResult(await withProcessingActivity("Merge PDF", () => mergePdfs(files.map(item => item.file)))); }
     catch (e: any) { setError(e.message || "The PDFs could not be merged."); }
     finally { setLoading(false); }
   };
@@ -46,7 +46,7 @@ export default function MergePdf() {
   const reset = () => { setResult(null); setFiles([]); setError(""); setOutputName("merged.pdf"); };
 
   return (
-    <ToolWorkspace title="Merge PDF" description="Combine PDF files in your chosen order" icon="🔗" badge="PDF MERGE" accent={T.blue}>
+    <ToolWorkspace title="Merge PDF" description="Combine PDF files in your chosen order" accent={T.blue}>
       {result ? (
         <Done msg="PDFs merged successfully" onDownload={() => dl(result, safeOutputName(outputName, "merged", ".pdf"))} shareFile={{ blob: result, name: safeOutputName(outputName, "merged", ".pdf") }} onReset={reset} />
       ) : (
@@ -54,8 +54,8 @@ export default function MergePdf() {
           <div className="jn-drop" onClick={() => inputRef.current?.click()}>
             <input ref={inputRef} type="file" accept=".pdf,application/pdf" multiple hidden onChange={event => void addFiles(event.target.files)} />
             <div style={{ width: 42, height: 42, borderRadius: 14, background: "white", display: "grid", placeItems: "center", margin: "0 auto 8px", boxShadow: "0 8px 24px rgba(0,0,0,.06)" }}><Plus size={18} /></div>
-            <p style={{ margin: 0, fontSize: 13, fontWeight: 900, textTransform: "uppercase" }}>Select PDF files</p>
-            <p style={{ margin: "3px 0 0", fontSize: 9, color: T.gray, fontWeight: 800, textTransform: "uppercase" }}>2–30 PDFs · maximum 50 MB each · processed locally</p>
+            <p style={{ margin: 0, fontSize: 13, fontWeight: 900 }}>Select PDF files</p>
+            <p style={{ margin: "3px 0 0", fontSize: 9, color: T.gray, fontWeight: 700 }}>2–30 PDFs · maximum 50 MB each</p>
           </div>
 
           {files.length > 0 && (

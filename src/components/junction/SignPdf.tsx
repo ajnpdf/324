@@ -179,7 +179,7 @@ export default function SignPdf() {
   };
 
   return (
-    <ToolWorkspace title="Sign PDF" description="ADD A VISUAL ELECTRONIC SIGNATURE" icon="✍️" badge="VISUAL SIGNATURE" accent="#7C3AED">
+    <ToolWorkspace title="Sign PDF" description="Add and position a visual signature on your PDF" accent="#7C3AED">
       <div className="w-full">
         <AnimatePresence mode="wait">
           {phase === 'upload' && (
@@ -190,7 +190,7 @@ export default function SignPdf() {
                 onDragLeave={() => setIsDragging(false)}
                 onDrop={e => { e.preventDefault(); setIsDragging(false); handleFileUpload(e); }}
                 className={cn(
-                  "group relative h-[340px] w-full rounded-[4rem] border-4 border-dashed transition-all duration-700 shadow-2xl overflow-hidden flex flex-col items-center justify-center cursor-pointer",
+                  "group relative min-h-[210px] w-full rounded-2xl border border-dashed transition-all duration-700 shadow-md overflow-hidden flex flex-col items-center justify-center cursor-pointer",
                   isDragging ? "border-primary bg-primary/10" : "border-black/5 bg-white/20 backdrop-blur-md hover:border-primary/40"
                 )}
               >
@@ -216,7 +216,7 @@ export default function SignPdf() {
                   </div>
 
                   <div className="flex items-center justify-between px-2">
-                    <Label className="text-sm font-semibold text-slate-700 dark:text-slate-200">{signatureSource === 'draw' ? 'Draw your signature' : signatureSource === 'type' ? 'Type your signature' : 'Upload signature image'}</Label>
+                    <Label className="text-sm font-semibold text-slate-700">{signatureSource === 'draw' ? 'Draw your signature' : signatureSource === 'type' ? 'Type your signature' : 'Upload signature image'}</Label>
                     <div className={cn("flex gap-2", signatureSource !== 'draw' && "hidden")}>
                       {[
                         { id: 'pen', icon: Pen, label: 'Fine' },
@@ -231,7 +231,7 @@ export default function SignPdf() {
                   </div>
                   
                   {signatureSource === 'draw' && (
-                    <div className="relative overflow-hidden rounded-3xl border-2 border-dashed border-black/10 bg-slate-50 shadow-inner">
+                    <div className="relative overflow-hidden rounded-3xl border border-dashed border-black/10 bg-slate-50 shadow-inner">
                       <canvas
                         ref={canvasRef}
                         width={800}
@@ -256,14 +256,14 @@ export default function SignPdf() {
                     </div>
                   )}
                   {signatureSource === 'upload' && (
-                    <button type="button" onClick={chooseSignatureImage} className="min-h-36 w-full rounded-3xl border-2 border-dashed border-black/10 bg-white/70 p-6 text-center transition hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+                    <button type="button" onClick={chooseSignatureImage} className="min-h-36 w-full rounded-3xl border border-dashed border-black/10 bg-white/70 p-6 text-center transition hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
                       {signaturePreview ? <RuntimeImage src={signaturePreview} alt="Uploaded signature preview" className="mx-auto max-h-24" /> : <><Upload className="mx-auto mb-3 h-7 w-7 text-primary" /><span className="font-semibold">Choose PNG or JPG signature</span></>}
                     </button>
                   )}
 
                   <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Preview</Label>
-                  <Card className="bg-white border-black/5 rounded-[2.5rem] shadow-inner overflow-hidden min-h-[500px] flex items-center justify-center p-12">
-                    <div className="relative inline-block leading-none shadow-2xl">
+                  <Card className="bg-white border-black/5 rounded-2xl shadow-inner overflow-hidden min-h-[400px] flex items-center justify-center p-12">
+                    <div className="relative inline-block leading-none shadow-md">
                       <RuntimeImage src={preview} className="block max-h-[400px] w-auto rounded-sm border border-black/5" alt="PDF page preview" />
                       <VisualPositionOverlay
                         x={settings.x} y={settings.y} width={settings.width} height={settings.height}
@@ -277,9 +277,9 @@ export default function SignPdf() {
                 </div>
 
                 <aside className="lg:col-span-4 space-y-6">
-                   <Card className="bg-white border-black/5 rounded-[2.5rem] p-8 space-y-8 shadow-xl border-2">
-                      <Label className="text-sm font-semibold text-slate-700 dark:text-slate-200">Placement</Label>
-                      <div className="rounded-2xl border border-blue-500/10 bg-blue-500/5 p-4 text-sm text-slate-600 dark:text-slate-300">Drag the signature on the PDF preview. Use the corner handle to resize it.</div>
+                   <Card className="bg-white border-black/5 rounded-2xl p-8 space-y-8 shadow-xl border-2">
+                      <Label className="text-sm font-semibold text-slate-700">Placement</Label>
+                      <div className="rounded-2xl border border-blue-500/10 bg-blue-500/5 p-4 text-sm text-slate-600">Drag the signature on the PDF preview. Use the corner handle to resize it.</div>
                       <div className="space-y-2"><Label htmlFor="sign-page">Page</Label><Input id="sign-page" type="number" min={1} max={pageCount} value={settings.page} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSettings({...settings, page: +e.target.value})} /></div>
                       <details className="rounded-2xl border border-black/5 bg-black/[0.02] p-4">
                         <summary className="cursor-pointer text-sm font-semibold">Advanced position</summary>
@@ -312,7 +312,7 @@ export default function SignPdf() {
 
           {phase === 'done' && resultBlob && (
             <motion.div key="done" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} className="py-12 flex flex-col items-center space-y-10 text-center">
-              <div className="w-24 h-24 bg-emerald-500/10 rounded-[2.5rem] flex items-center justify-center border border-emerald-500/20 shadow-inner">
+              <div className="w-24 h-24 bg-emerald-500/10 rounded-2xl flex items-center justify-center border border-emerald-500/20 shadow-inner">
                 <CheckCircle2 className="w-12 h-12 text-emerald-600" />
               </div>
               <div className="space-y-2">

@@ -114,7 +114,7 @@ export default function HeicToPdf() {
   };
 
   return (
-    <ToolWorkspace title="HEIC to PDF" description="CONVERT HEIC PHOTOS TO A PDF DOCUMENT" icon="📱" badge="HEIC CONVERTER" accent="#06B6D4">
+    <ToolWorkspace title="HEIC to PDF" description="Turn HEIC photos into a PDF" accent="#06B6D4">
       <div className="w-full">
         <AnimatePresence mode="wait">
           {phase === 'upload' && (
@@ -125,7 +125,7 @@ export default function HeicToPdf() {
                 onDragLeave={() => setIsDragging(false)}
                 onDrop={e => { e.preventDefault(); setIsDragging(false); handleFileUpload(e); }}
                 className={cn(
-                  "group relative h-[340px] w-full rounded-[4rem] border-4 border-dashed transition-all duration-700 shadow-2xl overflow-hidden flex flex-col items-center justify-center cursor-pointer",
+                  "group relative min-h-[210px] w-full rounded-2xl border border-dashed transition-all duration-700 shadow-md overflow-hidden flex flex-col items-center justify-center cursor-pointer",
                   isDragging ? "border-cyan-500 bg-cyan-500/10" : "border-black/5 bg-white/20 backdrop-blur-md hover:border-cyan-500/40"
                 )}
               >
@@ -143,7 +143,7 @@ export default function HeicToPdf() {
 
           {phase === 'configure' && files.length > 0 && (
             <motion.div key="configure" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col gap-8">
-              <div className="p-6 bg-white/40 rounded-[2.5rem] border border-black/5 flex items-center justify-between shadow-sm">
+              <div className="p-6 bg-white/40 rounded-2xl border border-black/5 flex items-center justify-between shadow-sm">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-cyan-500/10 rounded-2xl flex items-center justify-center">
                     <Smartphone className="w-6 h-6 text-cyan-500" />
@@ -159,9 +159,9 @@ export default function HeicToPdf() {
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 <div className="lg:col-span-7 space-y-3">
                   <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Preview</Label>
-                  <Card className="bg-white border-black/5 rounded-[2.5rem] shadow-inner overflow-hidden min-h-[600px] flex items-center justify-center p-12">
+                  <Card className="bg-white border-black/5 rounded-2xl shadow-inner overflow-hidden min-h-[420px] flex items-center justify-center p-12">
                     {previews[0] ? (
-                      <div className="relative group shadow-2xl">
+                      <div className="relative group shadow-md">
                         <RuntimeImage src={previews[0]} className="max-h-[500px] w-auto rounded-sm border border-black/5" alt="" />
                       </div>
                     ) : (
@@ -189,7 +189,7 @@ export default function HeicToPdf() {
                       </div>
                       <div className="p-4 bg-cyan-500/5 border border-cyan-500/10 rounded-2xl">
                         <p className="text-[9px] font-bold text-cyan-700 uppercase leading-relaxed text-center">
-                          This browser workspace processes the selected HEIC file in memory. Reset the tool when finished to release the working data.
+                          The selected HEIC file stays in this workspace while the PDF is created. Reset the tool when finished to clear the working data.
                         </p>
                       </div>
                     </Card>
@@ -220,7 +220,7 @@ export default function HeicToPdf() {
 
           {phase === 'done' && resultBlob && (
             <motion.div key="done" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} className="py-12 flex flex-col items-center space-y-10 text-center pb-32">
-              <div className="w-24 h-24 bg-emerald-500/10 rounded-[2.5rem] flex items-center justify-center border border-emerald-500/20 shadow-inner">
+              <div className="w-24 h-24 bg-emerald-500/10 rounded-2xl flex items-center justify-center border border-emerald-500/20 shadow-inner">
                 <CheckCircle2 className="w-12 h-12 text-emerald-600" />
               </div>
               <div className="space-y-2">

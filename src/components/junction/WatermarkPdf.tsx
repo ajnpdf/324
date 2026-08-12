@@ -115,7 +115,7 @@ export default function WatermarkPdf() {
   const reset = () => { setFile(null); setPreview(""); setPhase('upload'); setResultBlob(null); };
 
   return (
-    <ToolWorkspace title="Watermark PDF" description="ADD A TEXT WATERMARK WITH A LIVE PREVIEW" icon="💧" badge="PDF WATERMARK" accent="#06B6D4">
+    <ToolWorkspace title="Watermark PDF" description="Add a text watermark with a live preview" accent="#06B6D4">
       <div className="w-full">
         <AnimatePresence mode="wait">
           {phase === 'upload' && (
@@ -126,7 +126,7 @@ export default function WatermarkPdf() {
                 onDragLeave={() => setIsDragging(false)}
                 onDrop={e => { e.preventDefault(); setIsDragging(false); handleFileUpload(e); }}
                 className={cn(
-                  "group relative h-[340px] w-full rounded-[4rem] border-4 border-dashed transition-all duration-700 shadow-2xl overflow-hidden flex flex-col items-center justify-center cursor-pointer",
+                  "group relative min-h-[210px] w-full rounded-2xl border border-dashed transition-all duration-700 shadow-md overflow-hidden flex flex-col items-center justify-center cursor-pointer",
                   isDragging ? "border-cyan-500 bg-cyan-500/10" : "border-black/5 bg-white/20 backdrop-blur-md hover:border-cyan-500/40"
                 )}
               >
@@ -143,7 +143,7 @@ export default function WatermarkPdf() {
 
           {phase === 'configure' && file && (
             <motion.div key="configure" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col gap-8">
-              <div className="p-6 bg-white/40 rounded-[2.5rem] border border-black/5 flex items-center justify-between shadow-sm">
+              <div className="p-6 bg-white/40 rounded-2xl border border-black/5 flex items-center justify-between shadow-sm">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-cyan-500/10 rounded-2xl flex items-center justify-center">
                     <FileText className="w-6 h-6 text-cyan-500" />
@@ -159,8 +159,8 @@ export default function WatermarkPdf() {
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 <div className="lg:col-span-7 space-y-3">
                   <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Preview</Label>
-                  <Card className="bg-white border-black/5 rounded-[2.5rem] shadow-inner overflow-hidden min-h-[600px] flex items-center justify-center p-12">
-                    <div className="relative group shadow-2xl">
+                  <Card className="bg-white border-black/5 rounded-2xl shadow-inner overflow-hidden min-h-[420px] flex items-center justify-center p-12">
+                    <div className="relative group shadow-md">
                       <RuntimeImage src={preview} className="max-h-[500px] w-auto rounded-sm border border-black/5" alt="" />
                       <div 
                         className="absolute inset-0 flex items-center justify-center pointer-events-none"
@@ -258,14 +258,14 @@ export default function WatermarkPdf() {
                 <Activity className="absolute inset-0 m-auto w-8 h-8 text-primary animate-pulse" />
               </div>
               <div className="w-full max-w-sm space-y-4 mx-auto">
-                <div className="rounded-2xl border border-blue-100 bg-blue-50/70 px-4 py-3 text-sm font-bold text-blue-700 dark:border-blue-400/20 dark:bg-blue-500/10 dark:text-blue-200" role="status" aria-live="polite">{status || "Applying changes…"}</div>
+                <div className="rounded-2xl border border-blue-100 bg-blue-50/70 px-4 py-3 text-sm font-bold text-blue-700" role="status" aria-live="polite">{status || "Applying changes…"}</div>
               </div>
             </motion.div>
           )}
 
           {phase === 'done' && resultBlob && (
             <motion.div key="done" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} className="py-12 flex flex-col items-center space-y-10 text-center">
-              <div className="w-24 h-24 bg-emerald-500/10 rounded-[2.5rem] flex items-center justify-center border border-emerald-500/20 shadow-inner">
+              <div className="w-24 h-24 bg-emerald-500/10 rounded-2xl flex items-center justify-center border border-emerald-500/20 shadow-inner">
                 <CheckCircle2 className="w-12 h-12 text-emerald-600" />
               </div>
               <div className="space-y-2">
@@ -273,7 +273,7 @@ export default function WatermarkPdf() {
                 <p className="text-sm font-bold text-slate-500 uppercase tracking-widest">Your PDF is ready</p>
               </div>
 
-              <div className="p-8 bg-white border-2 border-black/5 rounded-[3rem] w-full max-w-sm flex items-center justify-center gap-4 shadow-xl mx-auto">
+              <div className="p-8 bg-white border-2 border-black/5 rounded-2xl w-full max-w-sm flex items-center justify-center gap-4 shadow-xl mx-auto">
                 <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center shrink-0">
                   <Download className="w-5 h-5 text-primary" />
                 </div>

@@ -20,7 +20,7 @@ if (!process.exitCode) pass('Every registered tool maps to an existing component
 
 const route = read('src/app/tools/[id]/page.tsx');
 route.includes('generateMetadata') ? pass('Dynamic tool metadata enabled') : fail('Dynamic tool metadata is missing.');
-route.includes('BreadcrumbList') && route.includes('FAQPage') ? pass('Breadcrumb and FAQ structured data enabled') : fail('Tool structured data is incomplete.');
+route.includes('BreadcrumbList') && route.includes('WebApplication') && !route.includes('FAQPage') && !route.includes('HowTo') ? pass('Breadcrumb and accurate WebApplication structured data enabled') : fail('Tool structured data is incomplete or contains legacy rich-result markup.');
 route.includes('ToolEditorialContent') ? pass('Detailed tool guidance is rendered before ads') : fail('Useful server-rendered tool guidance is missing.');
 
 if (fs.existsSync(path.join(root, 'public/robots.txt')) || fs.existsSync(path.join(root, 'public/sitemap.xml'))) fail('Duplicate static robots/sitemap files remain in public/.');

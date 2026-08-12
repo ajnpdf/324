@@ -3,7 +3,6 @@ import Link from 'next/link';
 import { ArrowRight, Download, FileCheck2, Gauge, LayoutGrid, Search, Sparkles, UploadCloud, WandSparkles, Zap } from 'lucide-react';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
-import { PremiumBackground } from '../premium/premium-background';
 import { useLanguage } from '@/lib/i18n/language-context';
 
 interface HeroProps { searchValue?: string; onSearchChange?: (value: string) => void; }
@@ -12,14 +11,13 @@ export default function Hero({ searchValue = '', onSearchChange }: HeroProps) {
   const { t } = useLanguage();
   const valueWords = t('home.kicker').split('•').map((part) => part.trim());
   const workflow = [
-    { icon: UploadCloud, title: 'Choose', text: 'Pick a tool and add your file.' },
-    { icon: WandSparkles, title: 'Adjust', text: 'Set only the options you need.' },
-    { icon: FileCheck2, title: 'Process', text: 'Follow a clear full-page status.' },
-    { icon: Download, title: 'Finish', text: 'Download or share the result.' },
+    { icon: UploadCloud, title: t('home.heroChoose'), text: t('home.heroChooseDesc') },
+    { icon: WandSparkles, title: t('home.heroAdjust'), text: t('home.heroAdjustDesc') },
+    { icon: FileCheck2, title: t('home.heroProcess'), text: t('home.heroProcessDesc') },
+    { icon: Download, title: t('home.heroFinish'), text: t('home.heroFinishDesc') },
   ];
   return (
     <section className="relative overflow-hidden px-4 pb-10 pt-28 md:px-6 md:pb-14 md:pt-32 xl:px-8">
-      <PremiumBackground />
       <div className="relative mx-auto grid w-full max-w-7xl items-center gap-9 rounded-[1.7rem] border border-slate-200/80 bg-white/94 p-6 shadow-[0_24px_70px_rgba(37,62,113,.08)] backdrop-blur-xl md:p-9 lg:grid-cols-[1.04fr_.96fr] lg:gap-12 xl:p-11">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2.5 text-[11px] font-black text-slate-700">
@@ -39,13 +37,13 @@ export default function Hero({ searchValue = '', onSearchChange }: HeroProps) {
             </div>
           </div>
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-            <Button asChild className="ajn-primary-action h-12 rounded-xl px-6 text-[12px] font-black"><Link href="#public-tools">Explore 107 tools <ArrowRight className="ml-2 h-4 w-4" /></Link></Button>
-            <Button asChild variant="outline" className="ajn-secondary-action h-12 rounded-xl px-6 text-[12px] font-black"><Link href="/tools/merge-pdf"><LayoutGrid className="mr-2 h-4 w-4" />Start with Merge PDF</Link></Button>
+            <Button asChild className="ajn-primary-action h-12 rounded-xl px-6 text-[12px] font-black"><Link href="#public-tools">{t('home.explore100')} <ArrowRight className="ml-2 h-4 w-4" /></Link></Button>
+            <Button asChild variant="outline" className="ajn-secondary-action h-12 rounded-xl px-6 text-[12px] font-black"><Link href="/tools/merge-pdf"><LayoutGrid className="mr-2 h-4 w-4" />{t('home.startMerge')}</Link></Button>
           </div>
         </div>
 
         <div className="ajn-workflow-panel relative overflow-hidden rounded-[1.45rem] border border-violet-100 bg-gradient-to-br from-violet-50/70 via-white to-blue-50/70 p-5 sm:p-6">
-          <div className="flex items-start justify-between gap-4"><div><p className="text-[11px] font-black uppercase tracking-[.14em] text-violet-600">AJN PDF workspace</p><h2 className="mt-1 text-xl font-black tracking-[-.03em] text-slate-950">From file to finished result</h2></div><span className="rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-1.5 text-[10px] font-black text-emerald-700">Clean workflow</span></div>
+          <div className="flex items-start justify-between gap-4"><div><p className="text-[11px] font-black uppercase tracking-[.14em] text-violet-600">{t('home.heroWorkspaceKicker')}</p><h2 className="mt-1 text-xl font-black tracking-[-.03em] text-slate-950">{t('home.heroWorkspaceTitle')}</h2></div><span className="rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-1.5 text-[10px] font-black text-emerald-700">{t('home.heroWorkspaceBadge')}</span></div>
           <div className="ajn-r8-hero-document mt-6">
             <div className="ajn-r8-doc-sheet ajn-r8-doc-back" /><div className="ajn-r8-doc-sheet ajn-r8-doc-mid" />
             <div className="ajn-r8-doc-sheet ajn-r8-doc-front"><span className="ajn-r8-doc-label">PDF</span><span className="ajn-r8-doc-line w-3/4"/><span className="ajn-r8-doc-line w-5/6"/><span className="ajn-r8-doc-line w-2/3"/></div>

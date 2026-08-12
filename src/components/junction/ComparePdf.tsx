@@ -148,7 +148,7 @@ export default function ComparePdf() {
   };
 
   return (
-    <ToolWorkspace title="Compare PDF" description="See the differences between two versions of a PDF." icon="⚖️" badge="PDF COMPARISON" accent="#4F46E5">
+    <ToolWorkspace title="Compare PDF" description="See the differences between two versions of a PDF." accent="#4F46E5">
       <div className="w-full">
         <AnimatePresence mode="wait">
           {phase === 'upload' && (
@@ -160,7 +160,7 @@ export default function ComparePdf() {
                   onDragLeave={() => setIsDragging({ ...isDragging, a: false })}
                   onDrop={e => { e.preventDefault(); setIsDragging({ ...isDragging, a: false }); handleFileUpload(e, 'a'); }}
                   className={cn(
-                    "group relative h-[280px] rounded-[3rem] border-4 border-dashed transition-all duration-500 shadow-xl overflow-hidden flex flex-col items-center justify-center cursor-pointer",
+                    "group relative h-[280px] rounded-2xl border border-dashed transition-all duration-500 shadow-xl overflow-hidden flex flex-col items-center justify-center cursor-pointer",
                     isDragging.a ? "border-primary bg-primary/5" : fileA ? "border-emerald-500 bg-emerald-500/5" : "border-black/5 bg-white/20 backdrop-blur-md hover:border-primary/40"
                   )}
                 >
@@ -187,7 +187,7 @@ export default function ComparePdf() {
                   onDragLeave={() => setIsDragging({ ...isDragging, b: false })}
                   onDrop={e => { e.preventDefault(); setIsDragging({ ...isDragging, b: false }); handleFileUpload(e, 'b'); }}
                   className={cn(
-                    "group relative h-[280px] rounded-[3rem] border-4 border-dashed transition-all duration-500 shadow-xl overflow-hidden flex flex-col items-center justify-center cursor-pointer",
+                    "group relative h-[280px] rounded-2xl border border-dashed transition-all duration-500 shadow-xl overflow-hidden flex flex-col items-center justify-center cursor-pointer",
                     isDragging.b ? "border-primary bg-primary/5" : fileB ? "border-emerald-500 bg-emerald-500/5" : "border-black/5 bg-white/20 backdrop-blur-md hover:border-primary/40"
                   )}
                 >
@@ -239,7 +239,7 @@ export default function ComparePdf() {
 
           {phase === 'done' && (
             <motion.div key="done" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-10 pb-32">
-              <div className="flex flex-col md:flex-row items-center justify-between gap-8 p-8 bg-white border-2 border-black/5 rounded-[3rem] shadow-xl">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-8 p-8 bg-white border-2 border-black/5 rounded-2xl shadow-xl">
                 <div className="flex items-center gap-6">
                   <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center">
                     <Search className="w-7 h-7 text-primary" />
@@ -284,12 +284,12 @@ export default function ComparePdf() {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                      <Card className="bg-white border-black/5 shadow-2xl rounded-[2.5rem] overflow-hidden relative">
+                      <Card className="bg-white border-black/5 shadow-md rounded-2xl overflow-hidden relative">
                         <div className="p-4 bg-slate-50 border-b border-black/5 flex justify-between">
                           <span className="text-[9px] font-black uppercase text-slate-400 tracking-widest">A: Original</span>
                         </div>
                         <div className="p-10 flex justify-center bg-slate-100/30">
-                          <div className="relative shadow-2xl border border-black/5 bg-white">
+                          <div className="relative shadow-md border border-black/5 bg-white">
                             {page.previewA ? <RuntimeImage src={page.previewA} className="w-full h-auto" alt="" /> : <div className="aspect-[1/1.4] w-[400px] bg-slate-50 flex items-center justify-center"><FileWarning className="w-8 h-8 text-slate-200" /></div>}
                             {page.marks.filter(m => m.type === 'removed').map((mark, mi) => (
                               <div key={mi} className="absolute left-0 right-0 bg-red-500/20 border-y border-red-500/40" style={{ top: (mark.y / 10) + "%", height: '3%' }} />
@@ -298,12 +298,12 @@ export default function ComparePdf() {
                         </div>
                       </Card>
 
-                      <Card className="bg-white border-black/5 shadow-2xl rounded-[2.5rem] overflow-hidden relative">
+                      <Card className="bg-white border-black/5 shadow-md rounded-2xl overflow-hidden relative">
                         <div className="p-4 bg-slate-50 border-b border-black/5 flex justify-between">
                           <span className="text-[9px] font-black uppercase text-slate-400 tracking-widest">B: Modified</span>
                         </div>
                         <div className="p-10 flex justify-center bg-slate-100/30">
-                          <div className="relative shadow-2xl border border-black/5 bg-white">
+                          <div className="relative shadow-md border border-black/5 bg-white">
                             {page.previewB ? <RuntimeImage src={page.previewB} className="w-full h-auto" alt="" /> : <div className="aspect-[1/1.4] w-[400px] bg-slate-50 flex items-center justify-center"><FileWarning className="w-8 h-8 text-slate-200" /></div>}
                             {page.marks.filter(m => m.type !== 'removed').map((mark, mi) => (
                               <div key={mi} className="absolute left-0 right-0 bg-emerald-500/20 border-y border-emerald-500/40" style={{ top: (mark.y / 10) + "%", height: '3%' }} />

@@ -16,8 +16,7 @@ export function ToolEditorialContent({ tool }: { tool: ServiceTool }) {
 
   return (
     <section className="relative z-10 mx-auto max-w-6xl px-4 pb-12 pt-10 md:px-8 md:pb-20">
-      <div className="relative overflow-hidden rounded-[2rem] border border-border bg-card p-6 shadow-[0_30px_80px_rgba(15,23,42,.10)] md:rounded-[2.5rem] md:p-10">
-        <svg className="pointer-events-none absolute inset-x-0 top-0 h-24 w-full text-blue-500/8" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true"><path d="M-50 82C137 7 281 111 456 52C634-8 777 9 931 63C1062 109 1150 74 1260 23" fill="none" stroke="currentColor" strokeWidth="10" /></svg>
+      <div className="relative overflow-hidden rounded-[2rem] border border-border bg-card p-6 shadow-[0_30px_80px_rgba(15,23,42,.10)] md:rounded-2xl md:p-10">
         <div className="relative grid gap-10 lg:grid-cols-[1.2fr_.8fr]">
           <article>
             <div className="ajn-section-kicker"><Sparkles className="h-3.5 w-3.5 text-red-500" /> Practical guide</div>

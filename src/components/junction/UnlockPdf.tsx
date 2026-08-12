@@ -37,13 +37,13 @@ export default function UnlockPdf() {
   const reset = () => { setFiles([]); setPassword(""); setAuthorized(false); setResult(null); setError(""); };
 
   return (
-    <ToolWorkspace title="Unlock PDF" description="Remove encryption using the current valid password" icon="🔓" accent="#059669" badge="AUTHORIZED UNLOCK" processingMode="temporary-server">
+    <ToolWorkspace title="Unlock PDF" description="Remove encryption using the current valid password" accent="#059669">
       {result ? (
-        <Done msg="PDF unlocked successfully" processingMode="temporary-server" onDownload={() => dl(result, safeOutputName(outputName, "unlocked", ".pdf"))} shareFile={{ blob: result, name: safeOutputName(outputName, "unlocked", ".pdf") }} onReset={reset} />
+        <Done msg="PDF unlocked successfully" onDownload={() => dl(result, safeOutputName(outputName, "unlocked", ".pdf"))} shareFile={{ blob: result, name: safeOutputName(outputName, "unlocked", ".pdf") }} onReset={reset} />
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           <BackendStatus />
-          <Drop files={files} onChange={setFiles} accept=".pdf,application/pdf" label="Select an encrypted PDF" sub="Temporary secure processing · maximum 50 MB" />
+          <Drop files={files} onChange={setFiles} accept=".pdf,application/pdf" label="Select an encrypted PDF" sub="Encrypted PDF · maximum 50 MB" />
           <F label="Current PDF password"><input style={IS} type="password" autoComplete="current-password" value={password} onChange={event => setPassword(event.target.value)} placeholder="Enter the existing password" /></F>
           <F label="Output filename"><input style={IS} value={outputName} onChange={event => setOutputName(event.target.value)} /></F>
           <label className="jn-file-pill" style={{ justifyContent: "flex-start", alignItems: "flex-start" }}><input type="checkbox" checked={authorized} onChange={event => setAuthorized(event.target.checked)} /><span style={{ fontSize: 10, fontWeight: 800, lineHeight: 1.5 }}>I own this document or have permission to remove its password.</span></label>

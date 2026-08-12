@@ -40,7 +40,7 @@ export default function AjnStudioPage() {
               <span className={`flex h-12 w-12 items-center justify-center rounded-2xl text-white ${index === 0 ? 'bg-blue-600' : index === 1 ? 'bg-emerald-600' : 'bg-red-600'}`}><Icon className="h-5 w-5" /></span>
               <h2 className="mt-6 text-2xl font-black text-foreground">{title}</h2>
               <p className="mt-3 text-sm font-medium leading-7 text-muted-foreground">{text}</p>
-              <span className="mt-6 inline-flex items-center gap-2 text-xs font-black text-blue-600 dark:text-blue-300">Open <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" /></span>
+              <span className="mt-6 inline-flex items-center gap-2 text-xs font-black text-blue-600">Open <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" /></span>
             </Link>
           ))}
         </section>

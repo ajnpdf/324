@@ -101,7 +101,7 @@ export default function FlattenPdf() {
   const reset = () => { setFile(null); setPreview(""); setPhase('upload'); setResultBlob(null); setProgress(0); };
 
   return (
-    <ToolWorkspace title="Flatten PDF" description="MAKE FORM FIELDS NON-EDITABLE" icon="📄" badge="PDF UTILITY" accent="#6B7280">
+    <ToolWorkspace title="Flatten PDF" description="Flatten form fields into a fixed PDF" accent="#6B7280">
       <div className="w-full">
         <AnimatePresence mode="wait">
           {phase === 'upload' && (
@@ -112,7 +112,7 @@ export default function FlattenPdf() {
                 onDragLeave={() => setIsDragging(false)}
                 onDrop={e => { e.preventDefault(); setIsDragging(false); handleFileUpload(e); }}
                 className={cn(
-                  "group relative h-[340px] w-full rounded-[4rem] border-4 border-dashed transition-all duration-700 shadow-2xl overflow-hidden flex flex-col items-center justify-center cursor-pointer",
+                  "group relative min-h-[210px] w-full rounded-2xl border border-dashed transition-all duration-700 shadow-md overflow-hidden flex flex-col items-center justify-center cursor-pointer",
                   isDragging ? "border-slate-500 bg-slate-500/10" : "border-black/5 bg-white/20 backdrop-blur-md hover:border-slate-500/40"
                 )}
               >
@@ -129,7 +129,7 @@ export default function FlattenPdf() {
 
           {phase === 'configure' && file && (
             <motion.div key="configure" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col gap-8">
-              <div className="p-6 bg-white/40 rounded-[2.5rem] border border-black/5 flex items-center justify-between shadow-sm">
+              <div className="p-6 bg-white/40 rounded-2xl border border-black/5 flex items-center justify-between shadow-sm">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-slate-500/10 rounded-2xl flex items-center justify-center">
                     <FileText className="w-6 h-6 text-slate-500" />
@@ -145,8 +145,8 @@ export default function FlattenPdf() {
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 <div className="lg:col-span-7 space-y-3">
                   <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Preview</Label>
-                  <Card className="bg-white border-black/5 rounded-[2.5rem] shadow-inner overflow-hidden min-h-[600px] flex items-center justify-center p-12">
-                    <div className="relative group shadow-2xl">
+                  <Card className="bg-white border-black/5 rounded-2xl shadow-inner overflow-hidden min-h-[420px] flex items-center justify-center p-12">
+                    <div className="relative group shadow-md">
                       <RuntimeImage src={preview} className="max-h-[500px] w-auto rounded-sm border border-black/5" alt="" />
                     </div>
                   </Card>
@@ -198,7 +198,7 @@ export default function FlattenPdf() {
 
           {phase === 'done' && resultBlob && (
             <motion.div key="done" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} className="py-12 flex flex-col items-center space-y-10 text-center">
-              <div className="w-24 h-24 bg-emerald-500/10 rounded-[2.5rem] flex items-center justify-center border border-emerald-500/20 shadow-inner">
+              <div className="w-24 h-24 bg-emerald-500/10 rounded-2xl flex items-center justify-center border border-emerald-500/20 shadow-inner">
                 <CheckCircle2 className="w-12 h-12 text-emerald-600" />
               </div>
               <div className="space-y-2">
@@ -206,7 +206,7 @@ export default function FlattenPdf() {
                 <p className="text-sm font-bold text-slate-500 uppercase tracking-widest">Your PDF is ready</p>
               </div>
 
-              <div className="p-8 bg-white border-2 border-black/5 rounded-[3rem] w-full max-w-sm flex items-center justify-center gap-4 shadow-xl mx-auto">
+              <div className="p-8 bg-white border-2 border-black/5 rounded-2xl w-full max-w-sm flex items-center justify-center gap-4 shadow-xl mx-auto">
                 <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center shrink-0">
                   <Download className="w-5 h-5 text-primary" />
                 </div>

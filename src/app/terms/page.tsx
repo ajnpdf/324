@@ -33,7 +33,7 @@ export default function TermsPage() {
         {
           title: 'Availability',
           paragraphs: [
-            'Browser tools may depend on the device, memory, browser and file complexity. Server tools depend on the secure processing service being configured and reachable. We may temporarily disable a tool when its output, security or infrastructure is not reliable.',
+            'Tool availability and limits can depend on the device, file complexity, format and required processing service. We may temporarily disable a workflow when its output, security or infrastructure is not reliable.',
           ],
         },
         {

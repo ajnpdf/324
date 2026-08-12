@@ -145,7 +145,7 @@ export default function SubtitleGenerator() {
   const reset = () => { setRawText(""); setSegments([]); setResultBlob(null); setResultName(""); setPhase('upload'); setProgress(0); };
 
   return (
-    <ToolWorkspace title="Subtitle Creator" description="GENERATE TIMED SRT OR VTT CAPTIONS LOCALLY" icon="💬" badge="SUBTITLE TOOL" accent="#4F46E5">
+    <ToolWorkspace title="Subtitle Creator" description="Create timed SRT or VTT subtitle files" accent="#4F46E5">
       <div className="w-full">
         <AnimatePresence mode="wait">
           {phase === 'upload' && (
@@ -156,7 +156,7 @@ export default function SubtitleGenerator() {
                 onDragLeave={() => setIsDragging(false)}
                 onDrop={e => { e.preventDefault(); setIsDragging(false); handleFileUpload(e); }}
                 className={cn(
-                  "group relative h-[300px] w-full rounded-[4rem] border-4 border-dashed transition-all duration-700 shadow-2xl overflow-hidden flex flex-col items-center justify-center cursor-pointer",
+                  "group relative min-h-[200px] w-full rounded-2xl border border-dashed transition-all duration-700 shadow-md overflow-hidden flex flex-col items-center justify-center cursor-pointer",
                   isDragging ? "border-primary bg-primary/10" : "border-black/5 bg-white/20 backdrop-blur-md hover:border-primary/40"
                 )}
               >
@@ -170,7 +170,7 @@ export default function SubtitleGenerator() {
                 </div>
               </div>
 
-              <div className="bg-white/40 border-2 border-black/5 rounded-[3rem] p-10 space-y-6 shadow-2xl backdrop-blur-xl">
+              <div className="bg-white/40 border-2 border-black/5 rounded-2xl p-10 space-y-6 shadow-md backdrop-blur-xl">
                 <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Text</Label>
                 <Textarea 
                   placeholder="Paste script text here to auto-segment..." 
@@ -187,7 +187,7 @@ export default function SubtitleGenerator() {
 
           {phase === 'configure' && (
             <motion.div key="configure" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col gap-8">
-              <div className="p-6 bg-white/40 rounded-[2.5rem] border border-black/5 flex items-center justify-between shadow-sm">
+              <div className="p-6 bg-white/40 rounded-2xl border border-black/5 flex items-center justify-between shadow-sm">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center">
                     <Captions className="w-6 h-6 text-primary" />
@@ -203,7 +203,7 @@ export default function SubtitleGenerator() {
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 <div className="lg:col-span-8 space-y-3">
                   <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Timeline Settings</Label>
-                  <Card className="bg-white border-black/5 rounded-[2.5rem] shadow-inner overflow-hidden min-h-[600px]">
+                  <Card className="bg-white border-black/5 rounded-2xl shadow-inner overflow-hidden min-h-[420px]">
                     <ScrollArea className="h-[600px]">
                       <div className="divide-y divide-black/5">
                         {segments.map((seg, idx) => (
@@ -287,7 +287,7 @@ export default function SubtitleGenerator() {
 
           {phase === 'done' && (
             <motion.div key="done" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} className="py-12 flex flex-col items-center space-y-10 text-center">
-              <div className="w-24 h-24 bg-emerald-500/10 rounded-[2.5rem] flex items-center justify-center border border-emerald-500/20 shadow-inner">
+              <div className="w-24 h-24 bg-emerald-500/10 rounded-2xl flex items-center justify-center border border-emerald-500/20 shadow-inner">
                 <CheckCircle2 className="w-12 h-12 text-emerald-600" />
               </div>
               <div className="space-y-2">

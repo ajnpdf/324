@@ -154,7 +154,7 @@ export function ServicesGrid({ query, category }: ServicesGridProps) {
 
       {filteredTools.length === 0 && (
         <div className="py-24 text-center space-y-4 opacity-40 animate-in fade-in duration-700">
-          <div className="w-16 h-16 bg-black/5 rounded-[2rem] flex items-center justify-center mx-auto border-2 border-dashed border-black/5">
+          <div className="w-16 h-16 bg-black/5 rounded-[2rem] flex items-center justify-center mx-auto border border-dashed border-black/5">
             <Search className="w-6 h-6 text-slate-400" />
           </div>
           <p className="text-sm font-bold uppercase tracking-widest text-slate-900">No tools matched your search</p>

@@ -65,7 +65,7 @@ export interface EngineResponse {
 
 type ToolFunction = (files: File[], options: any, onProgress: (p: JobProgress) => void, signal?: AbortSignal) => Promise<Blob | any>;
 
-type ProcessingUiEvent = 'ajn:processing-start' | 'ajn:processing-progress' | 'ajn:processing-finish' | 'ajn:processing-error';
+type ProcessingUiEvent = 'ajn:processing-start' | 'ajn:processing-progress' | 'ajn:processing-finish' | 'ajn:processing-error' | 'ajn:processing-cancelled';
 function emitProcessingUiEvent(type: ProcessingUiEvent, detail: Record<string, unknown>) {
   if (typeof window === 'undefined') return;
   window.dispatchEvent(new CustomEvent(type, { detail }));
@@ -325,10 +325,11 @@ class AJNStudioSystem {
         stats: { time: `${((Date.now() - start) / 1000).toFixed(2)}s`, quality: "Standard output" }
       };
     } catch (err: any) {
+      const cancelled = controller.signal.aborted || err?.name === 'AbortError' || err?.message === 'ABORTED';
       this.activeJobs.delete(jobId);
-      emitProcessingUiEvent('ajn:processing-error', { label: toolId, jobId });
-      if (err.message === 'ABORTED') return { success: false, message: "Cancelled", error: 'ABORTED' };
-      return { success: false, message: err.message || "An error occurred.", error: err.toString() };
+      emitProcessingUiEvent(cancelled ? 'ajn:processing-cancelled' : 'ajn:processing-error', { label: toolId, jobId });
+      if (cancelled) return { success: false, message: "Cancelled", error: 'ABORTED' };
+      return { success: false, message: err?.message || "An error occurred.", error: String(err) };
     }
   }
 }

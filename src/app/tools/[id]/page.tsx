@@ -7,7 +7,6 @@ import { BUILD_PUBLIC_TOOLS } from '@/lib/build-public-tools';
 import { isBuildToolAvailable } from '@/lib/tool-capabilities';
 import { buildToolMetadata, SITE_NAME, SITE_URL } from '@/lib/seo-config';
 import { ToolEditorialContent } from '@/components/junction/tool-editorial-content';
-import { getToolEditorial } from '@/lib/tool-editorial';
 import { AdSenseUnit } from '@/components/adsense-unit';
 import { ADSENSE_SLOTS } from '@/lib/ad-slots';
 import { MainFooter } from '@/components/landing/main-footer';
@@ -26,7 +25,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: ToolPageProps): Promise<Metadata> {
   const { id } = await params;
   const tool = ALL_TOOLS.find((item) => item.id === id);
-  if (!tool || !isBuildToolAvailable(id)) return { title: 'Tool Not Found | AJN PDF', robots: { index: false, follow: false } };
+  if (!tool || !isBuildToolAvailable(id)) return { title: 'Tool Not Found', robots: { index: false, follow: false } };
   return buildToolMetadata(tool);
 }
 
@@ -35,7 +34,6 @@ export default async function ToolPage({ params }: ToolPageProps) {
   const tool = BUILD_PUBLIC_TOOLS.find((item) => item.id === id);
   if (!tool) notFound();
 
-  const editorial = getToolEditorial(tool);
   const category = getPublicToolCategory(tool);
   const categoryPath = category === 'conversion' ? '/conversion-tools' : category === 'image' ? '/image-tools' : '/pdf-utilities';
   const categoryLabel = category === 'conversion' ? 'Conversion Tools' : category === 'image' ? 'Image Tools' : 'PDF Tools';
@@ -50,33 +48,12 @@ export default async function ToolPage({ params }: ToolPageProps) {
         description: seo.description,
         url: `${SITE_URL}/tools/${tool.id}`,
         applicationCategory: 'UtilitiesApplication',
-        operatingSystem: 'Web Browser',
+        operatingSystem: 'Web',
         isAccessibleForFree: true,
         offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
         featureList: [...tool.benefits, ...tool.useCases],
         publisher: { '@type': 'Organization', name: SITE_NAME, url: SITE_URL },
         isPartOf: { '@type': 'WebSite', name: SITE_NAME, url: SITE_URL },
-      },
-      {
-        '@type': 'FAQPage',
-        mainEntity: editorial.faqs.map((faq) => ({
-          '@type': 'Question',
-          name: faq.question,
-          acceptedAnswer: { '@type': 'Answer', text: faq.answer },
-        })),
-      },
-      {
-        '@type': 'HowTo',
-        name: `How to use ${tool.name} online`,
-        description: seo.description,
-        totalTime: 'PT5M',
-        step: tool.instructions.map((instruction, index) => ({
-          '@type': 'HowToStep',
-          position: index + 1,
-          name: instruction,
-          text: instruction,
-          url: `${SITE_URL}/tools/${tool.id}#step-${index + 1}`,
-        })),
       },
       {
         '@type': 'BreadcrumbList',

@@ -18,7 +18,6 @@ export type AnalyticsEventName =
   | 'interaction'
   | 'search'
   | 'category_filter'
-  | 'theme_change'
   | 'consent_update'
   | 'outbound_click'
   | 'tool_reset'

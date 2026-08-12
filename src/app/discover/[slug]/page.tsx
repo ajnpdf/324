@@ -61,8 +61,8 @@ export default async function DiscoverPostPage({ params }: Props) {
       <MediaAnalytics eventName="media_open" slug={post.slug} />
       <main className="mx-auto max-w-6xl px-4 pb-24 pt-28 md:px-8 md:pt-36">
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-        <Link href="/discover" className="inline-flex items-center gap-2 text-xs font-black text-blue-600 dark:text-blue-300"><ArrowLeft className="h-4 w-4" />Back to AJN Discover</Link>
-        <article className="mt-7 overflow-hidden rounded-[2rem] border border-border bg-card shadow-[0_28px_80px_rgba(15,23,42,.10)] dark:shadow-[0_28px_80px_rgba(0,0,0,.32)]">
+        <Link href="/discover" className="inline-flex items-center gap-2 text-xs font-black text-blue-600"><ArrowLeft className="h-4 w-4" />Back to AJN Discover</Link>
+        <article className="mt-7 overflow-hidden rounded-[2rem] border border-border bg-card shadow-[0_28px_80px_rgba(15,23,42,.10)]">
           <RuntimeImage src={post.image_url} alt={post.alt_text} width={post.width || 1200} height={post.height || 1200} className="max-h-[78vh] w-full bg-muted object-contain" />
           <div className="p-6 md:p-10">
             <h1 className="text-3xl font-black tracking-[-.035em] text-foreground md:text-5xl">{post.title}</h1>

@@ -34,7 +34,6 @@ export default function StatusPage() {
       <main className="relative pt-28">
         <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[34rem] overflow-hidden">
           <div className="absolute inset-x-0 top-0 h-72 bg-gradient-to-b from-violet-50/70 via-blue-50/35 to-transparent" />
-          <svg className="absolute inset-x-0 top-16 h-64 w-full opacity-55" viewBox="0 0 1440 300" preserveAspectRatio="none"><path d="M-80 190C180 46 390 274 705 140C970 28 1200 76 1520 188" fill="none" stroke="url(#status-wave)" strokeWidth="28" strokeLinecap="round" opacity=".16"/><defs><linearGradient id="status-wave" x1="0" y1="0" x2="1440" y2="0"><stop stopColor="#7C3AED"/><stop offset=".5" stopColor="#2563EB"/><stop offset="1" stopColor="#059669"/></linearGradient></defs></svg>
         </div>
 
         <section className="mx-auto max-w-6xl px-5 pb-20 pt-12 md:px-8 md:pt-20">

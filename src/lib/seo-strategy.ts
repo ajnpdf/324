@@ -38,7 +38,7 @@ function buildTitle(tool: ServiceTool): string {
       ? 'File Converter'
       : 'PDF Tool';
   const candidate = `${base} – Free ${suffix}`;
-  return candidate.length <= 60 ? candidate : `${base} | AJN PDF`;
+  return candidate.length <= 60 ? candidate : base;
 }
 
 export function getToolSeoProfile(tool: ServiceTool): ToolSeoProfile {
@@ -69,7 +69,7 @@ export function getToolSeoProfile(tool: ServiceTool): ToolSeoProfile {
     : category === 'image'
       ? ['creators', 'students', 'marketing teams', 'small businesses']
       : ['students', 'professionals', 'business teams', 'legal and finance users'];
-  const description = `${tool.desc} Use AJN PDF with clear file requirements, practical controls, honest limitations and a downloadable result.`.slice(0, 158);
+  const description = `${tool.desc} Use AJN PDF with simple controls, clear steps and a downloadable result.`.slice(0, 158);
 
   return {
     primaryKeyword,
@@ -116,5 +116,5 @@ export const SEARCH_INTENT_CLUSTERS = [
   { cluster: 'OCR and scanned documents', intent: 'transactional', examples: ['scanned pdf to text', 'image to text', 'searchable pdf'] },
   { cluster: 'Document security', intent: 'transactional', examples: ['protect pdf', 'unlock pdf', 'repair pdf'] },
   { cluster: 'How-to guidance', intent: 'informational', examples: ['how to merge pdf safely', 'how OCR works', 'how to reduce pdf size'] },
-  { cluster: 'Tool evaluation', intent: 'comparison', examples: ['best free pdf tools', 'online pdf converter comparison', 'browser vs server pdf tools'] },
+  { cluster: 'Tool evaluation', intent: 'comparison', examples: ['best free pdf tools', 'online pdf converter comparison', 'PDF tool comparison'] },
 ] as const;

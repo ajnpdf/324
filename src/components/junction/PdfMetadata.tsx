@@ -83,7 +83,7 @@ export default function PdfMetadata() {
   const reset = () => { setFile(null); setPhase('upload'); setResultBlob(null); setProgress(0); };
 
   return (
-    <ToolWorkspace title="Edit Metadata" description="EDIT TITLE, AUTHOR, SUBJECT, AND KEYWORDS" icon="🏷️" badge="PDF METADATA" accent="#475569">
+    <ToolWorkspace title="Edit Metadata" description="Edit PDF title, author, subject and keywords" accent="#475569">
       <div className="w-full">
         <AnimatePresence mode="wait">
           {phase === 'upload' && (
@@ -94,7 +94,7 @@ export default function PdfMetadata() {
                 onDragLeave={() => setIsDragging(false)}
                 onDrop={e => { e.preventDefault(); setIsDragging(false); handleFileUpload(e); }}
                 className={cn(
-                  "group relative h-[340px] w-full rounded-[4rem] border-4 border-dashed transition-all duration-700 shadow-2xl overflow-hidden flex flex-col items-center justify-center cursor-pointer",
+                  "group relative min-h-[210px] w-full rounded-2xl border border-dashed transition-all duration-700 shadow-md overflow-hidden flex flex-col items-center justify-center cursor-pointer",
                   isDragging ? "border-slate-400 bg-slate-500/10" : "border-black/5 bg-white/20 backdrop-blur-md hover:border-slate-400"
                 )}
               >
@@ -111,7 +111,7 @@ export default function PdfMetadata() {
 
           {phase === 'configure' && file && (
             <motion.div key="configure" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col gap-8">
-              <div className="p-6 bg-white/40 rounded-[2.5rem] border border-black/5 flex items-center justify-between shadow-sm">
+              <div className="p-6 bg-white/40 rounded-2xl border border-black/5 flex items-center justify-between shadow-sm">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center border border-black/5">
                     <FileText className="w-6 h-6 text-slate-400" />
@@ -131,7 +131,7 @@ export default function PdfMetadata() {
                     <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Document Properties</Label>
                   </div>
                   
-                  <Card className="bg-white/60 backdrop-blur-xl border-black/5 rounded-[3rem] p-10 space-y-8 shadow-xl border-2">
+                  <Card className="bg-white/60 backdrop-blur-xl border-black/5 rounded-2xl p-10 space-y-8 shadow-xl border-2">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       <div className="space-y-2">
                         <Label className="text-[9px] font-black uppercase text-slate-400 tracking-widest ml-1 flex items-center gap-1.5"><Type className="w-3 h-3"/> Title</Label>
@@ -175,7 +175,7 @@ export default function PdfMetadata() {
 
           {phase === 'done' && resultBlob && (
             <motion.div key="done" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} className="py-12 flex flex-col items-center space-y-10 text-center">
-              <div className="w-24 h-24 bg-emerald-500/10 rounded-[2.5rem] flex items-center justify-center border border-emerald-500/20 shadow-inner">
+              <div className="w-24 h-24 bg-emerald-500/10 rounded-2xl flex items-center justify-center border border-emerald-500/20 shadow-inner">
                 <CheckCircle2 className="w-12 h-12 text-emerald-600" />
               </div>
               <div className="space-y-2">
@@ -183,7 +183,7 @@ export default function PdfMetadata() {
                 <p className="text-sm font-bold text-slate-500 uppercase tracking-widest">Metadata updated</p>
               </div>
 
-              <div className="p-8 bg-white border-2 border-black/5 rounded-[3rem] w-full max-w-sm flex items-center justify-center gap-4 shadow-xl mx-auto">
+              <div className="p-8 bg-white border-2 border-black/5 rounded-2xl w-full max-w-sm flex items-center justify-center gap-4 shadow-xl mx-auto">
                 <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center shrink-0">
                   <Download className="w-5 h-5 text-primary" />
                 </div>

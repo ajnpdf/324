@@ -13,7 +13,7 @@ const layout = read('src/app/layout.tsx');
 const css = read('src/app/globals.css');
 const navbar = read('src/components/landing/navbar.tsx');
 const themeProvider = read('src/components/theme/theme-provider.tsx');
-const themeToggle = read('src/components/theme/theme-toggle.tsx');
+const professionalSkeleton = read('src/components/ajnpdf/professional-skeleton.module.css');
 const analytics = read('src/components/analytics/site-analytics.tsx');
 const admin = read('src/app/admin/analytics/page.tsx');
 const backend = read('backend/app/main.py');
@@ -24,12 +24,13 @@ expect('Light-only bootstrap prevents theme flash', layout.includes('ajn-theme-b
 expect('ThemeProvider wraps application', layout.includes('<ThemeProvider>'));
 expect('ThemeProvider forces light mode', themeProvider.includes("root.classList.remove('dark')") && themeProvider.includes("theme: 'light'"));
 expect('Stored dark preference is removed', themeProvider.includes('localStorage.removeItem'));
-expect('Public theme toggle is removed', !navbar.includes('<ThemeToggle') && themeToggle.includes('return null'));
+expect('Public theme toggle code is removed', !navbar.includes('<ThemeToggle') && !fs.existsSync(path.join(root, 'src/components/theme/theme-toggle.tsx')));
 expect('Light color scheme is explicit', css.includes('color-scheme: light !important'));
+expect('Legacy dark-mode style branches are removed', !css.includes('.dark') && !professionalSkeleton.includes(':global(.dark)'));
 expect('Reduced-motion support remains enabled', css.includes('@media (prefers-reduced-motion: reduce)'));
 expect('AJN RGB animation layer exists', css.includes('ajn-rgb-sweep') && css.includes('ajn-brand-breathe'));
 
-for (const eventName of ['page_view','interaction','search','category_filter','theme_change','tool_start','tool_complete','tool_error','download','web_vital']) {
+for (const eventName of ['page_view','interaction','search','category_filter','tool_start','tool_complete','tool_error','download','web_vital']) {
   expect(`Analytics event ${eventName} is wired`, analytics.includes(`'${eventName}'`));
 }
 expect('Analytics strips query strings from stored paths', analytics.includes("split('?')[0].split('#')[0]"));

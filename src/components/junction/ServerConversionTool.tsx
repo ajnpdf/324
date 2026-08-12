@@ -1,11 +1,11 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Download, FileCheck2, FileOutput, Loader2, RefreshCcw, Share2 } from 'lucide-react';
+import { FileOutput, Loader2 } from 'lucide-react';
 import { BUILD_PUBLIC_TOOLS } from '@/lib/build-public-tools';
-import { checkPdfBackendHealth, convertOnServer, getConversionToolManifest, type ConversionToolManifest } from '@/lib/pdf-backend';
+import { checkPdfBackendHealth, convertOnServer, getConversionToolManifest, getPdfBackendErrorCode, type ConversionToolManifest } from '@/lib/pdf-backend';
 import { getToolPolicy } from '@/lib/tool-policy';
-import { Btn, Drop, Err, F, G2, Info, IS, Pills, Range, ToolWorkspace, type ToolFile, dl, shareResult } from './_shared';
+import { Btn, Done, Drop, Err, F, G2, Info, IS, Pills, Range, ToolWorkspace, type ToolFile, dl } from './_shared';
 import { sendAjnAnalytics } from '@/components/analytics/site-analytics';
 import { useLanguage } from '@/lib/i18n/language-context';
 import { friendlyBackendError } from '@/lib/i18n/backend-errors';
@@ -113,9 +113,8 @@ export default function ServerConversionTool({ toolId }: { toolId: string }) {
       return;
     }
     setStatus('processing');
-    setProcessingStage('processing.uploading');
+    setProcessingStage('processing.converting');
     sendAjnAnalytics({ event_name: 'tool_start', path: window.location.pathname, tool_id: toolId });
-    window.setTimeout(() => setProcessingStage('processing.converting'), 150);
     try {
       const converted = await convertOnServer({
         toolId,
@@ -131,6 +130,11 @@ export default function ServerConversionTool({ toolId }: { toolId: string }) {
     } catch (cause) {
       setStatus('idle');
       setProcessingStage('processing.preparing');
+      if (getPdfBackendErrorCode(cause) === 'CANCELLED') {
+        setError('');
+        sendAjnAnalytics({ event_name: 'interaction', path: window.location.pathname, tool_id: toolId, element_id: 'processing-cancelled' });
+        return;
+      }
       setError(friendlyBackendError(t, cause));
       sendAjnAnalytics({ event_name: 'tool_error', path: window.location.pathname, tool_id: toolId });
     } finally {
@@ -151,10 +155,7 @@ export default function ServerConversionTool({ toolId }: { toolId: string }) {
     <ToolWorkspace
       title={tool.name}
       description={tool.desc}
-      icon="⇄"
       accent={tool.cat === 'img' ? '#10B981' : '#2563EB'}
-      badge={tool.cat === 'img' ? t('conversion.imageConversion') : OCR_IDS.has(toolId) ? t('conversion.ocrConversion') : t('conversion.documentConversion')}
-      processingMode="temporary-server"
     >
       <div className="space-y-4">
         {status === 'checking' ? (
@@ -162,16 +163,13 @@ export default function ServerConversionTool({ toolId }: { toolId: string }) {
             <Loader2 className="h-5 w-5 animate-spin text-blue-600" /> {t('processing.preparing')}
           </div>
         ) : status === 'done' && result ? (
-          <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-6 text-center">
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-xl bg-emerald-600 text-white shadow-lg"><FileCheck2 className="h-7 w-7" /></div>
-            <h2 className="mt-4 text-xl font-black text-foreground">{t('result.ready')}</h2>
-            <p className="mt-2 text-sm font-semibold text-muted-foreground">{result.filename}</p>
-            <div className="mt-5 flex flex-wrap justify-center gap-3">
-              <Btn onClick={() => dl(result.blob, result.filename)}><Download size={15} /> {t('common.download')}</Btn>
-              <Btn variant="secondary" onClick={() => void shareResult(result.blob, result.filename)}><Share2 size={14} /> Share</Btn>
-              <Btn variant="secondary" onClick={reset}><RefreshCcw size={14} /> {t('common.processAnother')}</Btn>
-            </div>
-          </div>
+          <Done
+            msg={t('result.ready')}
+            onDownload={() => dl(result.blob, result.filename)}
+            dlLabel={t('common.download')}
+            onReset={reset}
+            shareFile={{ blob: result.blob, name: result.filename }}
+          />
         ) : (
           <>
             {manifest?.available === false && (
@@ -179,11 +177,11 @@ export default function ServerConversionTool({ toolId }: { toolId: string }) {
             )}
 
             {availabilityIssue && (
-              <div className="rounded-2xl border border-red-200 bg-red-50 p-4 dark:border-red-400/20 dark:bg-red-500/10">
-                <div className="text-sm font-bold text-red-900 dark:text-red-200">
+              <div className="rounded-2xl border border-red-200 bg-red-50 p-4">
+                <div className="text-sm font-bold text-red-900">
                   {availabilityIssue === 'service' ? t('errors.SERVICE_UNAVAILABLE') : t('conversion.dependencyMissing')}
                 </div>
-                <button type="button" onClick={() => void refreshAvailability()} className="mt-3 rounded-xl border border-red-200 bg-white px-3 py-2 text-xs font-black text-red-800 dark:border-red-400/20 dark:bg-red-950/40 dark:text-red-200">
+                <button type="button" onClick={() => void refreshAvailability()} className="mt-3 rounded-xl border border-red-200 bg-white px-3 py-2 text-xs font-black text-red-800">
                   {t('common.tryAgain')}
                 </button>
               </div>

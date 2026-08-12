@@ -54,7 +54,7 @@ export function LegalPageShell({
             {summary}
           </p>
           <p className="mt-6 text-[10px] font-black uppercase tracking-[0.22em] text-slate-400">
-            Effective {effectiveDate} · AJN Studio
+            Effective {effectiveDate} · AJN PDF
           </p>
         </section>
 

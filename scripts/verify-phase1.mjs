@@ -15,12 +15,12 @@ const policy = read('src/lib/tool-policy.ts');
 const workspace = read('src/components/junction/tool-workspace-client.tsx');
 const ids = [...toolData.matchAll(/\bid:\s*'([^']+)'/g)].map(match => match[1]);
 const mapped = new Set([...workspace.matchAll(/'([^']+)':\s*dynamic/g)].map(match => match[1]));
-if (ids.length === new Set(ids).size) pass(`${ids.length} unique registered tools`); else fail('Duplicate tool IDs found');
+if (ids.length === new Set(ids).size) pass(`${ids.length} unique registered base tools`); else fail('Duplicate tool IDs found');
 for (const id of ids) if (!mapped.has(id)) fail(`${id} has no dynamic component mapping`);
-if (!failed) pass('Every registered tool has a component mapping');
+if (!failed) pass('Every registered base tool has a component mapping');
 
 for (const id of ['pdf-ppt', 'ocr-searchable', 'pdf-a', 'pdf-ua', 'smart-read', 'upscale-image', 'remove-bg', 'blur-face']) {
-  policy.includes(`'${id}'`) ? pass(`${id} is governed by the Phase 1 policy`) : fail(`${id} missing from hidden policy`);
+  policy.includes(`'${id}'`) ? pass(`${id} is governed by production policy`) : fail(`${id} missing from production policy`);
 }
 if (toolData.includes('PUBLIC_TOOLS') && toolData.includes('isToolPublic')) pass('Public directories are filtered by production policy');
 else fail('PUBLIC_TOOLS policy filter is missing');
@@ -34,9 +34,9 @@ const jobWorker = read('backend/app/job_worker.py');
 for (const endpoint of ['/health', '/api/pdf/protect', '/api/pdf/unlock', '/api/pdf/repair', '/api/pdf/compress']) {
   backend.includes(endpoint) ? pass(`Python endpoint ${endpoint}`) : fail(`Missing Python endpoint ${endpoint}`);
 }
-if (backend.includes('TemporaryDirectory') && backend.includes('BackgroundTask(tmp.cleanup)')) pass('Temporary server files are cleaned after delivery');
+if (backend.includes('TemporaryDirectory') && backend.includes('BackgroundTask(tmp.cleanup)')) pass('Temporary service files are cleaned after delivery');
 else fail('Temporary-file cleanup is not implemented');
-if (jobWorker.includes('pikepdf.Encryption') && jobWorker.includes('R=6') && jobWorker.includes('aes=True')) pass('AES-256 PDF encryption engine configured');
+if (jobWorker.includes('pikepdf.Encryption') && jobWorker.includes('R=6') && jobWorker.includes('aes=True')) pass('AES PDF encryption engine configured');
 else fail('Real PDF encryption is missing');
 
 const protect = read('src/components/junction/ProtectPdf.tsx');
@@ -53,16 +53,22 @@ else fail('Tool advertisement placement is too close to processing controls');
 
 const adsLoader = read('src/components/adsense-script-loader.tsx');
 const adUnit = read('src/components/adsense-unit.tsx');
-if (adsLoader.includes("ajn_cookie_consent") && adsLoader.includes("ajnpdf.com") && adUnit.includes("ajn_cookie_consent")) pass('AdSense loading and ad requests are production-domain and consent aware');
+if (adsLoader.includes('ajn_cookie_consent') && adsLoader.includes('ajnpdf.com') && adUnit.includes('ajn_cookie_consent')) pass('AdSense loading and ad requests are production-domain and consent aware');
 else fail('AdSense production/consent guard is incomplete');
+if (adUnit.includes("data-ad-status") && adUnit.includes("unfilled")) pass('Unfilled ad slots can collapse cleanly');
+else fail('Unfilled ad-slot collapse is missing');
 
-const counter = read('src/components/landing/processed-counter.tsx');
-if (counter.includes('sessionStorage') && !counter.includes('Math.random') && !counter.includes('firebase')) pass('Processing counter uses real browser-session completions');
-else fail('Processing counter still uses fake or remote increments');
+const analytics = read('src/components/analytics/site-analytics.tsx');
+if (analytics.includes("'tool_complete'") && !analytics.includes('Math.random')) pass('Processing analytics uses real workflow completion events rather than a fake public counter');
+else fail('Completion analytics/fake-counter guard is incomplete');
+
+const processing = read('src/components/ajnpdf/processing-activity-provider.tsx');
+if (processing.includes('progressPct') && processing.includes('cancelJob') && !processing.includes('elapsedSeconds')) pass('Shared processing lifecycle uses truthful progress/cancellation state');
+else fail('Shared processing lifecycle is incomplete');
 
 for (const file of ['MergePdf.tsx', 'SplitPdf.tsx', 'CompressPdf.tsx', 'ImageToPdfTool.tsx', 'PdfToJpg.tsx', 'ProtectPdf.tsx', 'UnlockPdf.tsx', 'RepairPdf.tsx']) {
   fs.existsSync(path.join(root, 'src/components/junction', file)) ? pass(`Strong tool component ${file}`) : fail(`Missing ${file}`);
 }
 
 if (failed) process.exit(1);
-console.log('Phase 1 strong-tools verification completed successfully.');
+console.log('AJN PDF production-tool verification completed successfully.');

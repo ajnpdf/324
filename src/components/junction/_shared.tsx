@@ -5,7 +5,6 @@ import { usePathname, useRouter } from "next/navigation";
 import { ArrowLeft, Download, FileCheck2, Home, RefreshCcw, Share2, UploadCloud, X } from "lucide-react";
 import { LogoAnimation } from "../landing/logo-animation";
 import { LanguageSwitcher } from "../i18n/language-switcher";
-import { PremiumBackground } from "../premium/premium-background";
 import { cn } from "../../lib/utils";
 import { sendAjnAnalytics } from "../analytics/site-analytics";
 import { useLanguage } from "@/lib/i18n/language-context";
@@ -51,6 +50,7 @@ export function dl(blob: Blob, name: string) {
 export function beginToolProcessing(label: string) {
   if (typeof window === "undefined") return;
   window.dispatchEvent(new CustomEvent("ajn:processing-start", { detail: { label } }));
+  window.dispatchEvent(new CustomEvent("ajn:processing-progress", { detail: {} }));
 }
 export function completeToolProcessing() {
   if (typeof window === "undefined") return;
@@ -59,6 +59,23 @@ export function completeToolProcessing() {
 export function failToolProcessing() {
   if (typeof window === "undefined") return;
   window.dispatchEvent(new CustomEvent("ajn:processing-error"));
+}
+
+export function updateToolProcessing(pct?: number, stage?: string) {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(new CustomEvent("ajn:processing-progress", { detail: { pct, stage } }));
+}
+
+export async function withProcessingActivity<T>(label: string, work: () => Promise<T>): Promise<T> {
+  beginToolProcessing(label);
+  try {
+    const result = await work();
+    completeToolProcessing();
+    return result;
+  } catch (error) {
+    failToolProcessing();
+    throw error;
+  }
 }
 
 export async function shareResult(blob: Blob, name: string) {
@@ -70,20 +87,16 @@ export async function shareResult(blob: Blob, name: string) {
       await nav.share({ title: "AJN PDF result", text: "Processed with AJN PDF", files: [file] });
       return "shared" as const;
     }
-    if (nav.share) {
-      await nav.share({ title: "AJN PDF", text: "AJN PDF document tool", url: window.location.href });
-      return "shared" as const;
-    }
     await navigator.clipboard.writeText(window.location.href);
-    return "copied" as const;
+    return "copied-link" as const;
   } catch (error) {
     if (error instanceof DOMException && error.name === "AbortError") return "cancelled" as const;
-    try { await navigator.clipboard.writeText(window.location.href); return "copied" as const; } catch { return "unavailable" as const; }
+    try { await navigator.clipboard.writeText(window.location.href); return "copied-link" as const; } catch { return "unavailable" as const; }
   }
 }
 
 export const T = {
-  red: "#EF233C", redL: "#FF5C72", dark: "var(--jn-text-primary)", gray: "var(--jn-text-muted)",
+  red: "#EF233C", redL: "#FF5C72", gray: "var(--jn-text-muted)",
   border: "var(--jn-border)", bg: "transparent", green: "#10B981", blue: "#2563EB",
   purple: "#7C3AED", amber: "#D97706", cyan: "#06B6D4", pink: "#EC4899", teal: "#0891B2",
 };
@@ -133,18 +146,17 @@ export function ToolWorkspace({ title, description, accent = T.red, children }: 
   const localized = localizeTool(toolId, title, description, []);
   return (
     <div className="jn-workspace relative min-h-screen overflow-hidden" style={{ "--jn-accent": accent, background: "transparent", WebkitFontSmoothing: "antialiased" } as React.CSSProperties}>
-      <PremiumBackground compact />
-      <header className="fixed inset-x-0 top-0 z-[100] flex h-16 items-center justify-between border-b border-slate-200/70 bg-white/88 px-3 backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/85 sm:px-5">
+      <header className="fixed inset-x-0 top-0 z-[100] flex h-16 items-center justify-between border-b border-slate-200/70 bg-white/88 px-3 backdrop-blur-xl sm:px-5">
         <div className="flex min-w-0 items-center gap-2 sm:gap-3">
           <Link href="/" className="shrink-0" aria-label="AJN PDF"><LogoAnimation className="h-9 w-28 sm:w-32" showGlow={false} /></Link>
-          <span className="hidden h-5 w-px bg-slate-200 dark:bg-slate-700 sm:block" />
-          <button onClick={() => router.back()} className="inline-flex min-h-11 items-center gap-1.5 rounded-xl px-2 text-sm font-bold text-slate-600 transition hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800" aria-label={t("tool.back")}>
+          <span className="hidden h-5 w-px bg-slate-200 sm:block" />
+          <button onClick={() => router.back()} className="inline-flex min-h-11 items-center gap-1.5 rounded-xl px-2 text-sm font-bold text-slate-600 transition hover:bg-slate-100" aria-label={t("tool.back")}>
             <ArrowLeft size={16} /> <span className="hidden sm:inline">{t("common.back")}</span>
           </button>
         </div>
         <div className="flex items-center gap-2">
           <LanguageSwitcher compact />
-          <Link href="/" className="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:border-blue-200 hover:text-blue-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300" aria-label={t("common.home")}><Home size={17} /></Link>
+          <Link href="/" className="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:border-blue-200 hover:text-blue-600" aria-label={t("common.home")}><Home size={17} /></Link>
         </div>
       </header>
 
@@ -152,11 +164,11 @@ export function ToolWorkspace({ title, description, accent = T.red, children }: 
         <div className="mx-auto mb-5 flex max-w-3xl items-center gap-3.5 text-left sm:mb-7 sm:gap-5">
           <ToolArtwork toolId={toolId} toolName={localized.name} priority className="h-[52px] w-[52px] sm:h-14 sm:w-14" />
           <div className="min-w-0 flex-1">
-            <h1 className="text-balance text-2xl font-black tracking-[-0.035em] text-slate-950 dark:text-white sm:text-4xl">{localized.name}</h1>
-            <p className="mt-1.5 max-w-2xl text-sm font-medium leading-6 text-slate-600 dark:text-zinc-300 sm:text-[15px]">{localized.desc}</p>
+            <h1 className="text-balance text-2xl font-black tracking-[-0.035em] text-slate-950 sm:text-4xl">{localized.name}</h1>
+            <p className="mt-1.5 max-w-2xl text-sm font-medium leading-6 text-slate-600 sm:text-[15px]">{localized.desc}</p>
           </div>
         </div>
-        <section className="jn-card ajn-product-canvas rounded-2xl border border-white/70 bg-white/92 p-3 shadow-[0_24px_70px_rgba(30,62,130,.11)] backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/92 sm:rounded-2xl sm:p-5">
+        <section className="jn-card ajn-product-canvas rounded-2xl border border-white/70 bg-white/92 p-3 shadow-[0_24px_70px_rgba(30,62,130,.11)] backdrop-blur-xl sm:rounded-2xl sm:p-5">
           {children}
         </section>
       </main>
@@ -199,32 +211,38 @@ export function Drop({ files, onChange, accept="*", multiple=false, label, sub }
       onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openPicker(); } }}
       onClick={openPicker} onDragOver={e=>{e.preventDefault();setDrag(true)}} onDragLeave={()=>setDrag(false)} onDrop={e=>{e.preventDefault();setDrag(false);add(e.dataTransfer.files)}}>
       <input id={inputId} ref={ref} type="file" accept={accept} multiple={multiple} className="sr-only" onChange={e=>add(e.target.files)} />
-      <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 shadow-sm dark:bg-blue-500/10 dark:text-blue-300"><UploadCloud size={23}/></div>
-      <p className="m-0 text-sm font-extrabold text-slate-900 dark:text-white">{drag ? t("upload.dropNow") : (label || (multiple ? t("common.chooseFiles") : t("common.chooseFile")))}</p>
-      <p className="mt-1 text-xs font-medium text-slate-500 dark:text-slate-400">{sub || t("upload.drop")}</p>
+      <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 shadow-sm"><UploadCloud size={23}/></div>
+      <p className="m-0 text-sm font-extrabold text-slate-900">{drag ? t("upload.dropNow") : (label || (multiple ? t("common.chooseFiles") : t("common.chooseFile")))}</p>
+      <p className="mt-1 text-xs font-medium text-slate-500">{sub || t("upload.drop")}</p>
     </div>
     {files.length > 0 && <div className="mt-3 space-y-2" aria-live="polite">{files.map((f,i)=><div key={`${f.name}-${i}`} className="jn-file-pill">
-      <div className="flex min-w-0 items-center gap-3"><div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-base dark:bg-blue-500/10">📄</div><div className="min-w-0"><p className="truncate text-sm font-bold text-slate-900 dark:text-white">{f.name}</p><p className="text-xs font-medium text-slate-500 dark:text-slate-400">{fmtBytes(f.size)}</p></div></div>
-      <button type="button" aria-label={`${t("common.remove")} ${f.name}`} onClick={()=>onChange(files.filter((_,j)=>j!==i))} className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-slate-500 transition hover:bg-red-50 hover:text-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500 dark:hover:bg-red-500/10"><X size={17}/></button>
+      <div className="flex min-w-0 items-center gap-3"><div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-blue-600"><FileCheck2 size={16}/></div><div className="min-w-0"><p className="truncate text-sm font-bold text-slate-900">{f.name}</p><p className="text-xs font-medium text-slate-500">{fmtBytes(f.size)}</p></div></div>
+      <button type="button" aria-label={`${t("common.remove")} ${f.name}`} onClick={()=>onChange(files.filter((_,j)=>j!==i))} className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-slate-500 transition hover:bg-red-50 hover:text-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"><X size={17}/></button>
     </div>)}</div>}
   </div>;
 }
 
-export function Done({ msg, onDownload, dlLabel, onReset, shareFile }: { msg?:string; onDownload?:()=>void; dlLabel?:string; onReset:()=>void; processingMode?:"browser"|"temporary-server"; shareFile?:{blob:Blob;name:string} }) {
+export function Done({ msg, onDownload, dlLabel, onReset, shareFile }: { msg?:string; onDownload?:()=>void; dlLabel?:string; onReset:()=>void; shareFile?:{blob:Blob;name:string} }) {
   const { t } = useLanguage();
-  const [shareState, setShareState] = useState<"idle"|"copied">("idle");
+  const [shareState, setShareState] = useState<"idle"|"copied-link"|"unavailable">("idle");
   const share = async () => {
     if (!shareFile) return;
     const result = await shareResult(shareFile.blob, shareFile.name);
-    if (result === "copied") { setShareState("copied"); window.setTimeout(() => setShareState("idle"), 1800); }
+    if (result === "cancelled") return;
+    const match = window.location.pathname.match(/^\/tools\/([^/?#]+)/);
+    sendAjnAnalytics({ event_name: "interaction", path: window.location.pathname, tool_id: match?.[1], element_id: result === "shared" ? "share-file" : result === "copied-link" ? "copy-tool-link" : "share-unavailable" });
+    if (result === "copied-link" || result === "unavailable") {
+      setShareState(result);
+      window.setTimeout(() => setShareState("idle"), 1800);
+    }
   };
   return <div className="animate-in fade-in slide-in-from-bottom-2 py-4 text-center duration-300" role="status" aria-live="polite">
     <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl border border-emerald-200 bg-emerald-50 text-emerald-700"><FileCheck2 className="h-6 w-6"/></div>
     <h3 className="text-xl font-black text-slate-950">{msg || t("result.ready")}</h3>
-    <p className="mx-auto mt-1 max-w-md text-xs font-medium leading-5 text-slate-500">Review the result, then download or share it when your device supports file sharing.</p>
+    <p className="mx-auto mt-1 max-w-md text-xs font-medium leading-5 text-slate-500">{t("result.shareHelp")}</p>
     <div className="mt-5 flex flex-wrap justify-center gap-2">
       {onDownload && <Btn onClick={onDownload} style={{background:"#0f172a"}}><Download size={16}/>{dlLabel || t("common.download")}</Btn>}
-      {shareFile && <Btn variant="secondary" onClick={() => void share()}><Share2 size={15}/>{shareState === "copied" ? "Link copied" : "Share"}</Btn>}
+      {shareFile && <Btn variant="secondary" onClick={() => void share()}><Share2 size={15}/>{shareState === "copied-link" ? t("result.toolLinkCopied") : shareState === "unavailable" ? t("result.shareUnavailable") : t("result.shareFile")}</Btn>}
       <Btn variant="secondary" onClick={()=>{if(typeof window!=="undefined"){const match=window.location.pathname.match(/^\/tools\/([^/?#]+)/);sendAjnAnalytics({event_name:"tool_reset",path:window.location.pathname,tool_id:match?.[1]});}onReset();}}><RefreshCcw size={15}/>{t("common.processAnother")}</Btn>
     </div>
   </div>;
@@ -232,21 +250,21 @@ export function Done({ msg, onDownload, dlLabel, onReset, shareFile }: { msg?:st
 
 export function Range({ label, value, min, max, step=1, onChange, fmt }: { label:string; value:number; min:number; max:number; step?:number; onChange:(v:number)=>void; fmt?:(v:number)=>string }) {
   const id = useId();
-  return <div><div className="mb-2 flex items-center justify-between gap-3"><label htmlFor={id} className="text-xs font-bold text-slate-700 dark:text-slate-300">{label}</label><span className="rounded-lg bg-slate-100 px-2 py-1 text-xs font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-300">{fmt?.(value)??value}</span></div><input id={id} className="jn-range" type="range" min={min} max={max} step={step} value={value} onChange={e=>onChange(+e.target.value)}/></div>;
+  return <div><div className="mb-2 flex items-center justify-between gap-3"><label htmlFor={id} className="text-xs font-bold text-slate-700">{label}</label><span className="rounded-lg bg-slate-100 px-2 py-1 text-xs font-bold text-slate-600">{fmt?.(value)??value}</span></div><input id={id} className="jn-range" type="range" min={min} max={max} step={step} value={value} onChange={e=>onChange(+e.target.value)}/></div>;
 }
 
 export function Pills<T extends string|number>({ opts, val, onChange }: { opts:{label:string;value:T}[]; val:T; onChange:(v:T)=>void }) {
-  return <div className="flex flex-wrap gap-2">{opts.map(o=><button type="button" key={String(o.value)} aria-pressed={val===o.value} onClick={()=>onChange(o.value)} className={cn("min-h-10 rounded-xl border px-3 py-2 text-xs font-bold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500", val===o.value ? "border-blue-600 bg-blue-600 text-white shadow-md shadow-blue-600/15" : "border-slate-200 bg-white text-slate-700 hover:border-blue-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300")}>{o.label}</button>)}</div>;
+  return <div className="flex flex-wrap gap-2">{opts.map(o=><button type="button" key={String(o.value)} aria-pressed={val===o.value} onClick={()=>onChange(o.value)} className={cn("min-h-10 rounded-xl border px-3 py-2 text-xs font-bold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500", val===o.value ? "border-blue-600 bg-blue-600 text-white shadow-md shadow-blue-600/15" : "border-slate-200 bg-white text-slate-700 hover:border-blue-200")}>{o.label}</button>)}</div>;
 }
 
 export function F({ label, hint, children }: { label:string; hint?:string; children:ReactNode }) {
-  return <div className="flex flex-col gap-1.5"><div className="text-xs font-bold text-slate-700 dark:text-slate-300">{label}</div>{children}{hint && <p className="m-0 text-xs font-medium leading-5 text-slate-500 dark:text-slate-400">{hint}</p>}</div>;
+  return <div className="flex flex-col gap-1.5"><div className="text-xs font-bold text-slate-700">{label}</div>{children}{hint && <p className="m-0 text-xs font-medium leading-5 text-slate-500">{hint}</p>}</div>;
 }
 
 export function Info({ children, bg="rgba(37,99,235,0.05)", col="var(--jn-text-secondary)" }: { children:ReactNode; bg?:string; col?:string }) {
-  return <div style={{background:bg,color:col}} className="rounded-xl border border-slate-200/70 p-3 text-xs font-medium leading-5 dark:border-slate-700">{children}</div>;
+  return <div style={{background:bg,color:col}} className="rounded-xl border border-slate-200/70 p-3 text-xs font-medium leading-5">{children}</div>;
 }
 export function G2({ children, gap=12 }: { children:ReactNode; gap?:number }) { return <div className="jn-grid2" style={{gap}}>{children}</div>; }
-export function Err({ msg }: { msg:string }) { return msg ? <div role="alert" aria-live="assertive" className="mt-2 rounded-xl border border-red-200 bg-red-50 px-3 py-2.5 text-xs font-bold leading-5 text-red-700 dark:border-red-400/20 dark:bg-red-500/10 dark:text-red-200">{msg}</div> : null; }
+export function Err({ msg }: { msg:string }) { return msg ? <div role="alert" aria-live="assertive" className="mt-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-xs font-semibold leading-5 text-red-700"><strong className="mr-1 font-black">Could not finish.</strong>{msg} Check the file or settings, then try again.</div> : null; }
 
-export interface WorkspaceProps { title:string; description:string; icon:string; accent?:string; badge?:string; processingMode?:"browser"|"temporary-server"; children:ReactNode; }
+export interface WorkspaceProps { title:string; description:string; accent?:string; children:ReactNode; }

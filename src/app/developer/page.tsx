@@ -55,7 +55,7 @@ export default function DeveloperPage() {
           <div>
             <span className="ajn-section-kicker">Developer of AJN PDF</span>
             <h1 className="mt-6 text-[clamp(3.3rem,8vw,7rem)] font-black leading-[.88] tracking-[-.065em] text-foreground">ANJAN</h1>
-            <p className="mt-5 text-xl font-black text-blue-600 dark:text-blue-300">Building AJN PDF and AJN Studio from India.</p>
+            <p className="mt-5 text-xl font-black text-blue-600">Building AJN PDF and AJN Studio from India.</p>
             <p className="mt-6 max-w-2xl text-base font-medium leading-8 text-muted-foreground md:text-lg">{AJN_BRAND.developerBio}</p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link href="/pdf-tools" className="ajn-primary-button">Explore AJN PDF <ArrowRight className="h-4 w-4" /></Link>
@@ -87,7 +87,7 @@ export default function DeveloperPage() {
               <h2 className="mt-5 text-3xl font-black tracking-[-.04em] text-foreground md:text-5xl">AJN, AJN PDF and AJN Studio—one connected product identity.</h2>
               <p className="mt-5 max-w-3xl text-sm font-medium leading-7 text-muted-foreground">The developer page, product pages, guides and public image feed use consistent authorship and structured data. Search engines still decide how and when those pages appear; the website does not promise a particular ranking.</p>
             </div>
-            <Globe2 className="h-20 w-20 text-blue-600/25 dark:text-blue-300/25" />
+            <Globe2 className="h-20 w-20 text-blue-600/25" />
           </div>
         </section>
       </main>
