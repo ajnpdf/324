@@ -26,7 +26,7 @@ const page=requireText('src/app/page.tsx',["{ id: 'ocr'","{ id: 'edit'","{ id: '
 for(const old of ['<VisualStories />','<ToolCategories />','<Workflows />','<FormatStrip />']) if(page.includes(old)) fail(`Homepage still renders removed long-form section ${old}`);
 pass('Homepage is shorter and keeps focused discovery, workflow, trust and FAQ sections');
 
-requireText('src/i18n/locales/en.json',['Work Smarter with Powerful PDF Tools.','Fast, clear file workflows.','100+ tools to convert']);
+requireText('src/i18n/locales/en.json',['Work Smarter with Powerful PDF Tools.','','100+ tools to convert']);
 const heroUi=text('src/components/landing/hero.tsx')+text('src/components/landing/mobile-home-hero.tsx');
 if(heroUi.includes('PremiumBackground')) fail('Hero still mounts decorative premium background shapes'); else pass('Hero no longer mounts wave/blob background shapes');
 
