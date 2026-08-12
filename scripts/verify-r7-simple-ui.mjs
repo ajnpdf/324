@@ -98,7 +98,7 @@ if (grid.includes('framer-motion') || grid.includes('onPointerMove')) fail('The 
 const en = JSON.parse(text('src/i18n/locales/en.json'));
 if (en['home.kicker'] !== 'Smart • Fast • Effortless') fail('Homepage kicker is not the approved Smart • Fast • Effortless copy.');
 if (en['home.title1'] !== 'Powerful PDF Tools.') fail('Homepage hero title line 1 is incorrect.');
-if (en['home.title2'] !== 'Made Simple by AJN PDF.') fail('Homepage hero title line 2 is incorrect.');
+if (en['home.title2'] !== '') fail('Homepage hero title line 2 is incorrect.');
 if (en['home.subtitle'] !== 'Convert, organize, edit, protect, sign and process your files with professional tools designed for speed and simplicity.') fail('Homepage hero subtitle is incorrect.');
 
 const hero = text('src/components/landing/hero.tsx');

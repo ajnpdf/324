@@ -14,7 +14,7 @@ R7 is a frontend-only UI/UX release built on the verified R6.2 production baseli
 - Updated the homepage hero to:
   - Smart • Fast • Effortless
   - Powerful PDF Tools.
-  - Made Simple by AJN PDF.
+  - 
   - Convert, organize, edit, protect, sign and process your files with professional tools designed for speed and simplicity.
 - Replaced the older promotional hero illustration with a compact four-step Upload → Process → Preview → Download workflow panel.
 - Preserved the light-only UI, transparent AJN website logo, search, categories, accessibility, analytics and mobile navigation.
