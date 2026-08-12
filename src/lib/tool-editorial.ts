@@ -161,7 +161,7 @@ export function getToolEditorial(tool: ServiceTool): ToolEditorial {
     faqs: custom.faqs || [
       {
         question: `Is ${tool.name} free to use?`,
-        answer: `Yes. The current AJN PDF production version provides ${tool.name} without a subscription. File-size and browser-memory limits may still apply.`,
+        answer: `Yes. The current AJN PDF production version provides ${tool.name} without a subscription. This tool accepts up to ${policy.maxFiles} ${policy.maxFiles === 1 ? 'file' : 'files'} per selection and up to ${policy.maxFileSizeMb} MB per file.`,
       },
       {
         question: `Does AJN PDF store files used with ${tool.name}?`,

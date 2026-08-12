@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { ArrowLeft, Download, FileCheck2, Home, RefreshCcw, Share2, UploadCloud, X } from "lucide-react";
 import { LogoAnimation } from "../landing/logo-animation";
 import { LanguageSwitcher } from "../i18n/language-switcher";
+import { ToolRuntimeFactsInline } from "@/components/ajn/tool-runtime-facts";
 import { cn } from "../../lib/utils";
 import { sendAjnAnalytics } from "../analytics/site-analytics";
 import { useLanguage } from "@/lib/i18n/language-context";
@@ -168,6 +169,7 @@ export function ToolWorkspace({ title, description, accent = T.red, children }: 
             <p className="mt-1.5 max-w-2xl text-sm font-medium leading-6 text-slate-600 sm:text-[15px]">{localized.desc}</p>
           </div>
         </div>
+        <ToolRuntimeFactsInline toolId={toolId} />
         <section className="jn-card ajn-product-canvas rounded-2xl border border-white/70 bg-white/92 p-3 shadow-[0_24px_70px_rgba(30,62,130,.11)] backdrop-blur-xl sm:rounded-2xl sm:p-5">
           {children}
         </section>

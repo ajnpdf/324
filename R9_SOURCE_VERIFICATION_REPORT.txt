@@ -11,7 +11,7 @@ Validated in the packaged source:
 - Mobile horizontal cards remain the default; desktop Comfortable / Compact / List layouts remain available and persisted.
 - Ranked task search, aliases, typo tolerance and OCR/Edit/Organize/Security intent filters remain wired.
 - Homepage is focused: hero -> directory -> workflow -> one visual showcase -> safeguards -> FAQ -> footer.
-- Hero copy uses Work Smarter + Made Simple by AJN PDF + 100+ tools positioning.
+- Hero copy uses Work Smarter + clear file-workflow positioning + 100+ tools positioning.
 - Homepage workflow, processing overlay, result sharing, safeguards and FAQ use the five-language UI translation system.
 - 484 shared UI translation keys are structurally aligned across English, Hindi, Telugu, Tamil and Kannada.
 - Full-page processing uses real lifecycle state; no seconds counter and no elapsed-time fake phases.

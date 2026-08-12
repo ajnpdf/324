@@ -20,7 +20,7 @@ const backend = read('backend/app/main.py');
 const setup = read('SETUP_FULL_PRODUCTION.ps1');
 const installer = read('INSTALL_WINDOWS_CONVERTERS.ps1');
 
-expect('Light-only bootstrap prevents theme flash', layout.includes('ajn-theme-bootstrap') && layout.includes("classList.remove('dark')") && layout.includes("dataset.theme='light'"));
+expect('Deterministic light HTML prevents pre-hydration theme mutation', layout.includes('data-theme="light"') && layout.includes("style={{ colorScheme: 'light' }}") && !layout.includes('ajn-theme-bootstrap') && !layout.includes('suppressHydrationWarning'));
 expect('ThemeProvider wraps application', layout.includes('<ThemeProvider>'));
 expect('ThemeProvider forces light mode', themeProvider.includes("root.classList.remove('dark')") && themeProvider.includes("theme: 'light'"));
 expect('Stored dark preference is removed', themeProvider.includes('localStorage.removeItem'));

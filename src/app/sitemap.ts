@@ -24,6 +24,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/blog/ocr-digital-archiving`, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${SITE_URL}/faq`, changeFrequency: 'monthly', priority: 0.5 },
     { url: `${SITE_URL}/security`, changeFrequency: 'monthly', priority: 0.5 },
+    { url: `${SITE_URL}/limits`, changeFrequency: 'monthly', priority: 0.65 },
+    { url: `${SITE_URL}/ocr`, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${SITE_URL}/transparency`, changeFrequency: 'monthly', priority: 0.5 },
     { url: `${SITE_URL}/contact`, changeFrequency: 'monthly', priority: 0.5 },
     { url: `${SITE_URL}/privacy`, changeFrequency: 'yearly', priority: 0.3 },

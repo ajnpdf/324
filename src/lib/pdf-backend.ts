@@ -31,6 +31,12 @@ export type PdfBackendHealth = {
   messageKey: string;
   service?: string;
   version?: string;
+  maxFileMb?: number;
+  maxTotalMb?: number;
+  maxConcurrentJobs?: number;
+  processingTimeoutSeconds?: number;
+  conversionTools?: number;
+  availableConversionTools?: number;
 };
 
 export async function checkPdfBackendHealth(signal?: AbortSignal): Promise<PdfBackendHealth> {
@@ -61,6 +67,12 @@ export async function checkPdfBackendHealth(signal?: AbortSignal): Promise<PdfBa
       messageKey: 'backend.ready',
       service: payload.service,
       version: payload.version,
+      maxFileMb: Number.isFinite(Number(payload.max_file_mb)) ? Number(payload.max_file_mb) : undefined,
+      maxTotalMb: Number.isFinite(Number(payload.max_total_mb)) ? Number(payload.max_total_mb) : undefined,
+      maxConcurrentJobs: Number.isFinite(Number(payload.max_concurrent_jobs)) ? Number(payload.max_concurrent_jobs) : undefined,
+      processingTimeoutSeconds: Number.isFinite(Number(payload.processing_timeout_seconds)) ? Number(payload.processing_timeout_seconds) : undefined,
+      conversionTools: Number.isFinite(Number(payload.conversion_tools)) ? Number(payload.conversion_tools) : undefined,
+      availableConversionTools: Number.isFinite(Number(payload.available_conversion_tools)) ? Number(payload.available_conversion_tools) : undefined,
     };
   } catch (error) {
     if (error instanceof DOMException && error.name === 'AbortError') {

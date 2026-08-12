@@ -2,17 +2,16 @@
 
 import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
+import { Search } from 'lucide-react';
 import { Navbar } from '../components/landing/navbar';
 import Hero from '../components/landing/hero';
 import { ServicesGrid } from '../components/landing/services-grid';
-import { cn } from '../lib/utils';
-import { Search } from 'lucide-react';
 import { Input } from '../components/ui/input';
+import { cn } from '../lib/utils';
 import { ADSENSE_SLOTS } from '../lib/ad-slots';
 import { BUILD_PUBLIC_TOOLS } from '@/lib/build-public-tools';
 import { sendAjnAnalytics } from '../components/analytics/site-analytics';
 import { useLanguage } from '@/lib/i18n/language-context';
-import { MobileHomeHero } from '@/components/landing/mobile-home-hero';
 
 const FeatureShowcase = dynamic(() => import('../components/landing/feature-showcase').then((module) => module.FeatureShowcase));
 const ChromeExtensionPromo = dynamic(() => import('../components/landing/chrome-extension-promo').then((module) => module.ChromeExtensionPromo));
@@ -69,32 +68,48 @@ export default function HomePage() {
     <div className="ajn-page-shell">
       <Navbar />
       <main>
-        <MobileHomeHero />
-        <div className="hidden md:block">
-          <Hero searchValue={search} onSearchChange={setSearch} />
-        </div>
+        <Hero />
 
-        <section className="relative mx-auto max-w-7xl scroll-mt-[72px] px-4 pb-10 pt-4 md:px-8 md:py-28" id="public-tools">
-          <div className="border-b border-slate-200 pb-3 md:pb-8">
-            <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between md:gap-6">
+        <section className="relative mx-auto max-w-7xl scroll-mt-[72px] px-4 pb-10 pt-4 md:px-8 md:pb-20 md:pt-12" id="public-tools">
+          <div className="border-b border-slate-200 pb-4 md:pb-7">
+            <span className="ajn-section-kicker hidden md:inline-flex">{t('home.directoryKicker')}</span>
+            <div className="mt-0 flex items-end justify-between gap-4 md:mt-5">
               <div className="max-w-3xl">
-                <span className="ajn-section-kicker hidden md:inline-flex">{t('home.directoryKicker')}</span>
-                <h2 className="flex items-baseline justify-between gap-3 text-[1.65rem] font-black leading-tight tracking-[-.045em] text-slate-950 md:hidden">
-                  <span>{t('common.tools')}</span>
-                  <span className="text-[11px] font-black tracking-normal text-blue-600">{BUILD_PUBLIC_TOOLS.length} {t('common.available')}</span>
-                </h2>
-                <h2 className="mt-5 hidden text-6xl font-black tracking-[-.04em] text-slate-950 md:block">{t('home.chooseTool')}</h2>
-                <p className="mt-4 hidden text-sm font-medium leading-6 text-slate-600 md:block">{t('home.directoryDesc')}</p>
+                <h2 className="text-[1.65rem] font-black leading-tight tracking-[-.045em] text-slate-950 md:text-5xl">{t('home.chooseTool')}</h2>
+                <p className="mt-3 hidden text-sm font-medium leading-6 text-slate-600 md:block">{t('home.directoryDesc')}</p>
               </div>
+              <span className="shrink-0 text-[11px] font-black text-blue-700">{BUILD_PUBLIC_TOOLS.length} {t('common.available')}</span>
+            </div>
+          </div>
 
-              <div className="hidden max-w-[620px] gap-1 overflow-x-auto rounded-2xl border border-slate-200 bg-white p-1 shadow-sm md:flex [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div data-ajn-home-search="primary" className="sticky top-[64px] z-30 -mx-4 border-b border-slate-200/80 bg-white/[0.97] px-4 py-3 shadow-[0_8px_24px_rgba(15,23,42,.05)] backdrop-blur-xl md:static md:mx-0 md:mt-6 md:rounded-2xl md:border md:px-4 md:shadow-sm">
+            <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
+              <div className="relative flex-1">
+                <label htmlFor="home-tool-search" className="sr-only">{t('nav.searchLabel')}</label>
+                <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-blue-700" />
+                <Input
+                  id="home-tool-search"
+                  value={search}
+                  onChange={(event) => setSearch(event.target.value)}
+                  placeholder={t('common.searchTools')}
+                  enterKeyHint="search"
+                  autoComplete="off"
+                  className="h-11 rounded-xl border-slate-200 bg-white pl-10 pr-3 text-sm font-semibold text-slate-950 shadow-sm focus-visible:ring-blue-500/30 md:h-12"
+                />
+              </div>
+              <div className="flex gap-2 overflow-x-auto pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label={t('home.filterAria')}>
                 {categories.map((category) => (
                   <button
                     type="button"
                     key={category.id}
                     onClick={() => chooseCategory(category.id)}
                     aria-pressed={activeCategory === category.id}
-                    className={cn('rounded-xl px-4 py-2.5 text-[11px] font-black transition', activeCategory === category.id ? 'bg-blue-600 text-white shadow-md' : 'text-slate-600 hover:bg-slate-50 hover:text-blue-700')}
+                    className={cn(
+                      'min-h-10 shrink-0 rounded-xl border px-3.5 py-2 text-[10px] font-black transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500',
+                      activeCategory === category.id
+                        ? 'border-blue-600 bg-blue-600 text-white shadow-sm'
+                        : 'border-slate-200 bg-white text-slate-700 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-800',
+                    )}
                   >
                     {t(category.key)}
                   </button>
@@ -103,37 +118,9 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="sticky top-[72px] z-30 -mx-4 border-b border-slate-200/80 bg-white/[0.96] px-4 py-3 shadow-[0_8px_24px_rgba(15,23,42,.05)] backdrop-blur-xl md:hidden">
-            <label htmlFor="mobile-home-tool-search" className="sr-only">{t('nav.searchLabel')}</label>
-            <div className="relative">
-              <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-blue-600" />
-              <Input
-                id="mobile-home-tool-search"
-                value={search}
-                onChange={(event) => setSearch(event.target.value)}
-                placeholder={t('common.searchTools')}
-                enterKeyHint="search"
-                autoComplete="off"
-                className="h-11 rounded-xl border-slate-200 bg-white pl-10 pr-3 text-sm font-semibold text-slate-950 shadow-sm focus-visible:ring-blue-500/30"
-              />
-            </div>
-            <div className="mt-2 flex gap-2 overflow-x-auto pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label={t('home.filterAria')}>
-              {categories.map((category) => (
-                <button
-                  type="button"
-                  key={category.id}
-                  onClick={() => chooseCategory(category.id)}
-                  aria-pressed={activeCategory === category.id}
-                  className={cn('shrink-0 rounded-xl border px-3.5 py-2 text-[10px] font-black transition', activeCategory === category.id ? 'border-blue-600 bg-blue-600 text-white shadow-sm' : 'border-slate-200 bg-white text-slate-600')}
-                >
-                  {t(category.key)}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="mt-3 md:mt-10"><ServicesGrid query={search} category={activeCategory} /></div>
+          <div className="mt-4 md:mt-8"><ServicesGrid query={search} category={activeCategory} /></div>
         </section>
+
         <AdSenseUnit slot={ADSENSE_SLOTS.homePrimary} width={400} height={80} className="ajn-ad-zone my-8 min-h-[80px] md:my-12" label={t('common.advertisement')} />
         <ChromeExtensionPromo />
         <HowItWorks />

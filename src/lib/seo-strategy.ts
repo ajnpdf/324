@@ -69,7 +69,14 @@ export function getToolSeoProfile(tool: ServiceTool): ToolSeoProfile {
     : category === 'image'
       ? ['creators', 'students', 'marketing teams', 'small businesses']
       : ['students', 'professionals', 'business teams', 'legal and finance users'];
-  const description = `${tool.desc} Use AJN PDF with simple controls, clear steps and a downloadable result.`.slice(0, 158);
+  const benefit = tool.benefits[0]?.toLowerCase() || 'clear output controls';
+  const useCase = tool.useCases[0]?.toLowerCase() || 'everyday file work';
+  const descriptionLead = isOcr
+    ? `${tool.name} online uses OCR for ${useCase}. ${tool.desc}`
+    : isConversion
+      ? `${tool.name} online converts files for ${useCase}. ${tool.desc}`
+      : `${tool.name} online helps with ${useCase}. ${tool.desc}`;
+  const description = `${descriptionLead} Includes ${benefit} and a downloadable result.`.replace(/\s+/g, ' ').slice(0, 158);
 
   return {
     primaryKeyword,

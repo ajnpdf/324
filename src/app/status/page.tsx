@@ -69,7 +69,7 @@ export default function StatusPage() {
                     <p className="mt-1 text-sm font-medium text-muted-foreground">The page checks whether file conversion is ready before enabling supported actions.</p>
                   </div>
                 </div>
-                <div className="mt-6"><BackendStatus /></div>
+                <div className="mt-6"><BackendStatus autoRefreshMs={30000} /></div>
               </div>
               <Link href="/transparency" className="inline-flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-blue-600 px-5 py-3 text-sm font-extrabold text-white shadow-lg shadow-blue-200 transition hover:-translate-y-0.5 hover:bg-blue-700">
                 File processing policy <ArrowRight className="h-4 w-4" />
@@ -79,7 +79,7 @@ export default function StatusPage() {
 
           <div className="mt-8 flex items-start gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-5 text-sm font-semibold leading-6 text-emerald-900">
             <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0" />
-            Availability on this page reflects the current service check. Refresh when you need the latest processing status.
+            Availability is refreshed automatically every 30 seconds while this status page is open. You can also refresh the service check manually.
           </div>
         </section>
       </main>

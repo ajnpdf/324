@@ -1418,3 +1418,17 @@ body { background:#ffffff; }
   border-color:#e2e8f0 !important;
   box-shadow:0 2px 8px rgba(15,23,42,.04) !important;
 }
+
+/* R10.8 mobile rendering and contrast polish */
+.ajn-progressive-tool-card {
+  content-visibility: auto;
+  contain-intrinsic-size: 82px;
+}
+.ajn-r8-file-preview b { color:#64748b; }
+.ajn-ad-zone {
+  contain: layout style;
+  overflow-anchor: none;
+}
+@media (max-width: 767px) {
+  .ajn-progressive-tool-card { contain-intrinsic-size: 78px; }
+}

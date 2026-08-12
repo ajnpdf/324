@@ -109,15 +109,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   };
 
   return (
-    <html lang="en" suppressHydrationWarning className={`${manrope.variable} ${inter.variable} ${jetBrainsMono.variable}`}>
+    <html lang="en" data-theme="light" className={`${manrope.variable} ${inter.variable} ${jetBrainsMono.variable}`} style={{ colorScheme: 'light' }}>
       <body className="font-sans antialiased">
-        <Script
-          id="ajn-theme-bootstrap"
-          strategy="beforeInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{localStorage.removeItem('ajn_theme');var d=document.documentElement;d.classList.remove('dark');d.dataset.theme='light';d.style.colorScheme='light';}catch(e){}})();`,
-          }}
-        />
         <Script id="json-ld" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} strategy="afterInteractive" />
         <ThemeProvider>
           <LanguageProvider>

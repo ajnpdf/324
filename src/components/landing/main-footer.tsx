@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, Cookie, Instagram, Mail, ShieldCheck, Youtube } from 'lucide-react';
+import { ArrowRight, Cookie, Mail, ShieldCheck } from 'lucide-react';
 import { LogoAnimation } from './logo-animation';
 import { AJN_BRAND } from '@/lib/brand';
 import { useLanguage } from '@/lib/i18n/language-context';
@@ -9,7 +9,7 @@ import { useLanguage } from '@/lib/i18n/language-context';
 const commonToolIds = ['merge-pdf','split-pdf','compress-pdf','protect-pdf','unlock-pdf','repair-pdf'] as const;
 const productLinks = [
   ['footer.allTools','/pdf-tools'],['common.chromeExtension','/chrome-extension'],['footer.conversionTools','/conversion-tools'],['footer.imageTools','/image-tools'],['footer.pdfUtilities','/pdf-utilities'],
-  ['footer.filePolicy','/transparency'],['footer.security','/security'],['footer.status','/status'],['common.guides','/blog'],['footer.discover','/discover'],
+  ['footer.filePolicy','/transparency'],['footer.limits','/limits'],['footer.ocrGuide','/ocr'],['footer.security','/security'],['footer.status','/status'],['common.guides','/blog'],['footer.discover','/discover'],
   ['footer.developer','/developer'],['footer.studio','/ajn-studio'],['footer.contact','/contact'],
 ] as const;
 const legalLinks = [
@@ -26,8 +26,6 @@ export function MainFooter() {
   const { t, tool } = useLanguage();
   const openPrivacyChoices = () => window.dispatchEvent(new Event('ajn-open-cookie-consent'));
   const socialLinks = [
-    { icon: Instagram, href: AJN_BRAND.social.instagram, label: 'Instagram' },
-    { icon: Youtube, href: AJN_BRAND.social.youtube, label: 'YouTube' },
     { icon: Mail, href: `mailto:${AJN_BRAND.contactEmail}`, label: t('common.contact') },
   ];
   const trustItems = [t('footer.trustTools'),t('footer.trustLimits'),t('footer.trustNoAccount'),t('footer.trustDownloads')];
@@ -40,7 +38,7 @@ export function MainFooter() {
         <div><h3 className="text-xs font-black tracking-[.12em] text-red-300">{t('footer.legal')}</h3><nav className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-1">{legalLinks.map(([key,href])=><Link key={href} href={href} className="block text-xs font-bold text-slate-300 hover:text-white">{t(key)}</Link>)}</nav><button type="button" onClick={openPrivacyChoices} className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-xs font-black text-white hover:bg-white/10"><Cookie className="h-4 w-4"/>{t('cookie.privacy')}</button></div>
       </div>
       <div className="mt-12 grid gap-3 border-y border-white/10 py-6 sm:grid-cols-2 lg:grid-cols-4">{trustItems.map((item,i)=><div key={i} className="flex items-start gap-2 text-[11px] font-semibold leading-5 text-slate-300"><ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400"/>{item}</div>)}</div>
-      <div className="mt-8 flex flex-col gap-3 text-[11px] font-semibold text-slate-400 sm:flex-row sm:items-center sm:justify-between"><p>{t('footer.copyright')}</p><p>{t('footer.developed')}</p></div>
+      <div className="mt-8 flex flex-col gap-3 text-[11px] font-semibold text-slate-300 sm:flex-row sm:items-center sm:justify-between"><p>{t('footer.copyright')}</p><p>{t('footer.developed')}</p></div>
     </div>
   </footer>;
 }

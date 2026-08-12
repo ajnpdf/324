@@ -56,23 +56,6 @@ export function ProcessingActivityProvider() {
   }, []);
 
   useEffect(() => {
-    const backend = process.env.NEXT_PUBLIC_PDF_BACKEND_URL?.trim();
-    if (!backend) return;
-    try {
-      const origin = new URL(backend, window.location.href).origin;
-      const existing = document.head.querySelector(`link[data-ajn-backend-preconnect="${origin}"]`);
-      if (existing) return;
-      const link = document.createElement("link");
-      link.rel = "preconnect";
-      link.href = origin;
-      link.crossOrigin = "anonymous";
-      link.dataset.ajnBackendPreconnect = origin;
-      document.head.appendChild(link);
-      return () => link.remove();
-    } catch { return; }
-  }, []);
-
-  useEffect(() => {
     const nativeFetch = window.fetch.bind(window);
     window.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
       if (!isServerProcessingRequest(input, init)) return nativeFetch(input, init);

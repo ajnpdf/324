@@ -3,7 +3,7 @@
 R9 is a frontend-only production update built from the R8.3 source line. It does not modify the Python backend, package.json, package-lock.json, or the target repository's verified backend capability manifests.
 
 ## Product and UI
-- Hero: “Work Smarter with Powerful PDF Tools. ”
+- Hero: “Work Smarter with Powerful PDF Tools. Fast, clear file workflows.”
 - 100+ wording is used for marketing while the live directory can show the exact available count.
 - Decorative wave, blob, radial glow and large circle layers were removed from public page backgrounds and tool cards; surfaces now use restrained white/neutral gradients.
 - Plain-white tool icon surfaces remain; mobile cards are compact horizontal rows.
