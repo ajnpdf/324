@@ -1,4 +1,6 @@
 import type { ComponentType } from 'react';
+import Image from 'next/image';
+import { CONVERSION_ICON_ASSETS } from '@/lib/conversion-icon-assets';
 import {
   ArchiveRestore,
   ArrowDown,
@@ -205,20 +207,31 @@ function ConversionGlyph({ from, to, tone }: { from: string; to: string; tone: T
  * Every public tool receives either a dedicated action glyph or a source→target
  * format pair. It replaces the 107 raster card artworks with lightweight vector UI.
  */
-export function ToolArtwork({ toolId, toolName, className }: ToolArtworkProps) {
+export function ToolArtwork({ toolId, toolName, className, priority = false }: ToolArtworkProps) {
   const tone = toneFor(toolId);
   const colors = toneClasses[tone];
   const conversion = getConversion(toolId);
+  const conversionAsset = CONVERSION_ICON_ASSETS[toolId];
   const Icon = specialIcons[toolId] ?? FileImage;
 
   return (
     <span
-      className={cn('ajn-tool-artwork ajn-simple-tool-icon flex shrink-0 items-center justify-center', colors.shell, className)}
+      className={cn('ajn-tool-artwork ajn-simple-tool-icon relative flex shrink-0 items-center justify-center overflow-hidden', colors.shell, className)}
       title={toolName}
       aria-hidden="true"
       data-tool-icon={toolId}
+      data-tool-icon-source={conversionAsset ? 'ajn-conversion-asset' : 'vector'}
     >
-      {conversion ? (
+      {conversionAsset ? (
+        <Image
+          src={conversionAsset}
+          alt=""
+          fill
+          sizes="64px"
+          priority={priority}
+          className="object-contain p-[2px]"
+        />
+      ) : conversion ? (
         <ConversionGlyph from={conversion.from} to={conversion.to} tone={tone} />
       ) : (
         <Icon className={cn('h-[46%] w-[46%]', colors.icon)} strokeWidth={1.9} />

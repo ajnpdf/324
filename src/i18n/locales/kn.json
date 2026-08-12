@@ -482,5 +482,13 @@
   "footer.trustNoAccount": "ಸಾರ್ವಜನಿಕ ಟೂಲ್‌ಗಳಿಗೆ ಖಾತೆ ಅಗತ್ಯವಿಲ್ಲ",
   "footer.trustDownloads": "ಡೌನ್‌ಲೋಡ್‌ಗೆ ಸಿದ್ಧ ಫಲಿತಾಂಶಗಳು",
   "result.shareUnavailable": "ಹಂಚಿಕೆ ಲಭ್ಯವಿಲ್ಲ",
-  "errors.CANCELLED": "ಪ್ರಕ್ರಿಯೆಯನ್ನು ರದ್ದುಪಡಿಸಲಾಗಿದೆ."
+  "errors.CANCELLED": "ಪ್ರಕ್ರಿಯೆಯನ್ನು ರದ್ದುಪಡಿಸಲಾಗಿದೆ.",
+  "common.chromeExtension": "Chrome ಎಕ್ಸ್ಟೆನ್ಶನ್",
+  "chrome.promoKicker": "Chrome ಎಕ್ಸ್ಟೆನ್ಶನ್",
+  "chrome.promoTitle": "Chrome ಗಾಗಿ AJN PDF ಕ್ವಿಕ್ ಟೂಲ್ಸ್",
+  "chrome.promoDesc": "ನಾಲ್ಕು ಲೋಕಲ್ ಇಮೇಜ್ ಕ್ವಿಕ್ ಆಕ್ಷನ್‌ಗಳನ್ನು ಬಳಸಿ ಮತ್ತು ಪುಟ ಅಥವಾ ಬ್ರೌಸಿಂಗ್ ಇತಿಹಾಸ ಪ್ರವೇಶವಿಲ್ಲದೆ 100+ AJN PDF ವರ್ಕ್‌ಫ್ಲೋಗಳನ್ನು ಹುಡುಕಿ.",
+  "chrome.nativeTools": "4 ಲೋಕಲ್ ಇಮೇಜ್ ಟೂಲ್ಸ್",
+  "chrome.fastSearch": "ವೇಗದ ಟೂಲ್ ಹುಡುಕಾಟ",
+  "chrome.noPageAccess": "ಪುಟ ಓದುವ ಪ್ರವೇಶ ಇಲ್ಲ",
+  "chrome.learnMore": "Chrome ಎಕ್ಸ್ಟೆನ್ಶನ್ ನೋಡಿ"
 }

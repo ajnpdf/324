@@ -482,5 +482,13 @@
   "footer.trustNoAccount": "పబ్లిక్ టూల్స్‌కు అకౌంట్ అవసరం లేదు",
   "footer.trustDownloads": "డౌన్‌లోడ్‌కు సిద్ధమైన ఫలితాలు",
   "result.shareUnavailable": "షేర్ అందుబాటులో లేదు",
-  "errors.CANCELLED": "ప్రాసెసింగ్ రద్దు చేయబడింది."
+  "errors.CANCELLED": "ప్రాసెసింగ్ రద్దు చేయబడింది.",
+  "common.chromeExtension": "Chrome ఎక్స్‌టెన్షన్",
+  "chrome.promoKicker": "Chrome ఎక్స్‌టెన్షన్",
+  "chrome.promoTitle": "Chrome కోసం AJN PDF క్విక్ టూల్స్",
+  "chrome.promoDesc": "నాలుగు లోకల్ ఇమేజ్ క్విక్ యాక్షన్స్ ఉపయోగించి, పేజ్ లేదా బ్రౌజింగ్ హిస్టరీ యాక్సెస్ లేకుండా 100+ AJN PDF వర్క్‌ఫ్లోలను సెర్చ్ చేయండి.",
+  "chrome.nativeTools": "4 లోకల్ ఇమేజ్ టూల్స్",
+  "chrome.fastSearch": "ఫాస్ట్ టూల్ సెర్చ్",
+  "chrome.noPageAccess": "పేజ్ చదివే యాక్సెస్ లేదు",
+  "chrome.learnMore": "Chrome ఎక్స్‌టెన్షన్ చూడండి"
 }

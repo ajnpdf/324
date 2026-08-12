@@ -62,5 +62,3 @@ Manual launch QA still required after the automated Windows gates:
 - real download/share/copy-link flows
 - unfilled/no-consent ad behavior
 - Search Console URL inspection, sitemap submission and indexing/Core Web Vitals monitoring after deployment
-
-R9.3 HOTFIX: Git-aware secret scanner added. Target repositories scan Git-tracked source only; release archives still reject runtime artifacts.

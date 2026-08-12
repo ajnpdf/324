@@ -77,14 +77,17 @@ pass('SEO source keeps unique metadata, canonicals, sitemap/robots and accurate 
 requireText('src/components/adsense-unit.tsx',['data-ad-status',"adStatus === 'unfilled'",'MutationObserver']);
 pass('Unfilled ad slots can collapse after AdSense reports no inventory');
 
-const isTargetRepo = exists('.git');
-const hasSourceCapabilityManifest = exists('src/generated/backend-capabilities.json');
-const hasPublicCapabilityManifest = exists('public/backend-capabilities.json');
-if(!isTargetRepo && (hasSourceCapabilityManifest || hasPublicCapabilityManifest)) {
+const installedGitRepo = exists('.git');
+const sourceCapabilityManifest = exists('src/generated/backend-capabilities.json');
+const publicCapabilityManifest = exists('public/backend-capabilities.json');
+if (!installedGitRepo && (sourceCapabilityManifest || publicCapabilityManifest)) {
   fail('R9 release must not ship fabricated/stale backend capability manifests');
-} else if(isTargetRepo) {
-  if(!hasSourceCapabilityManifest) fail('Target repository live backend capability manifest is missing');
-  else pass('Target repository live backend capability manifest is preserved for verification');
+} else if (installedGitRepo) {
+  if (!sourceCapabilityManifest || !publicCapabilityManifest) {
+    fail('Installed repository must retain both live backend capability manifests');
+  } else {
+    pass('Installed repository retained live backend capability manifests; verify:capabilities validates their contents');
+  }
 }
 if(!exists('R9_TARGET_CAPABILITY_MANIFEST_POLICY.md')) fail('Target capability manifest policy missing'); else pass('R9 preserves the target repository capability manifest as source of truth');
 

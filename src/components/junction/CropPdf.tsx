@@ -65,7 +65,7 @@ export default function CropPdf() {
           updateToolProcessing(Math.round(((index+1)/pages.length)*100),`Cropping page ${index+1} of ${pages.length}`);
         });
         const bytes=await doc.save();
-        const outputBuffer = new ArrayBuffer(bytes.byteLength);
+        const outputBuffer=new ArrayBuffer(bytes.byteLength);
         new Uint8Array(outputBuffer).set(bytes);
         return new Blob([outputBuffer],{type:"application/pdf"});
       });

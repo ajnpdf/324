@@ -482,5 +482,13 @@
   "footer.trustNoAccount": "பொது கருவிகளுக்கு கணக்கு தேவையில்லை",
   "footer.trustDownloads": "பதிவிறக்கத் தயாரான முடிவுகள்",
   "result.shareUnavailable": "பகிர்வு கிடைக்கவில்லை",
-  "errors.CANCELLED": "செயலாக்கம் ரத்து செய்யப்பட்டது."
+  "errors.CANCELLED": "செயலாக்கம் ரத்து செய்யப்பட்டது.",
+  "common.chromeExtension": "Chrome எக்ஸ்டென்ஷன்",
+  "chrome.promoKicker": "Chrome எக்ஸ்டென்ஷன்",
+  "chrome.promoTitle": "Chrome-க்கு AJN PDF க்விக் டூல்ஸ்",
+  "chrome.promoDesc": "நான்கு லோகல் இமேஜ் க்விக் செயல்களை பயன்படுத்தி, பக்கம் அல்லது உலாவல் வரலாறு அணுகல் இல்லாமல் 100+ AJN PDF வேலைப்போக்குகளை தேடுங்கள்.",
+  "chrome.nativeTools": "4 லோகல் இமேஜ் டூல்ஸ்",
+  "chrome.fastSearch": "வேகமான டூல் தேடல்",
+  "chrome.noPageAccess": "பக்கம் படிக்கும் அணுகல் இல்லை",
+  "chrome.learnMore": "Chrome எக்ஸ்டென்ஷனை பார்க்கவும்"
 }

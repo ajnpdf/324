@@ -12,6 +12,7 @@ interface Props {
   accept: string;
   extensions: string[];
   accent: string;
+  badge?: string;
 }
 
 export default function ImageToPdfTool({ title, description, accept, extensions, accent }: Props) {

@@ -482,5 +482,13 @@
   "footer.trustNoAccount": "No public account required",
   "footer.trustDownloads": "Download-ready results",
   "result.shareUnavailable": "Sharing is unavailable",
-  "errors.CANCELLED": "Processing was cancelled."
+  "errors.CANCELLED": "Processing was cancelled.",
+  "common.chromeExtension": "Chrome Extension",
+  "chrome.promoKicker": "Chrome extension",
+  "chrome.promoTitle": "AJN PDF Quick Tools for Chrome",
+  "chrome.promoDesc": "Use four local image quick actions and search 100+ AJN PDF workflows without page or browsing-history access.",
+  "chrome.nativeTools": "4 local image tools",
+  "chrome.fastSearch": "Fast tool search",
+  "chrome.noPageAccess": "No page-reading access",
+  "chrome.learnMore": "Explore Chrome Extension"
 }

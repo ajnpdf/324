@@ -15,6 +15,7 @@ import { useLanguage } from '@/lib/i18n/language-context';
 import { MobileHomeHero } from '@/components/landing/mobile-home-hero';
 
 const FeatureShowcase = dynamic(() => import('../components/landing/feature-showcase').then((module) => module.FeatureShowcase));
+const ChromeExtensionPromo = dynamic(() => import('../components/landing/chrome-extension-promo').then((module) => module.ChromeExtensionPromo));
 const HowItWorks = dynamic(() => import('../components/landing/how-it-works').then((module) => module.HowItWorks));
 const TrustSecurity = dynamic(() => import('../components/landing/trust-security').then((module) => module.TrustSecurity));
 const FAQSection = dynamic(() => import('../components/landing/faq-section').then((module) => module.FAQSection));
@@ -134,6 +135,7 @@ export default function HomePage() {
           <div className="mt-3 md:mt-10"><ServicesGrid query={search} category={activeCategory} /></div>
         </section>
         <AdSenseUnit slot={ADSENSE_SLOTS.homePrimary} width={400} height={80} className="ajn-ad-zone my-8 min-h-[80px] md:my-12" label={t('common.advertisement')} />
+        <ChromeExtensionPromo />
         <HowItWorks />
         <FeatureShowcase />
         <AdSenseUnit slot={ADSENSE_SLOTS.homeSecondary} width={300} height={150} className="ajn-ad-zone my-8 min-h-[150px] md:my-12" label={t('common.advertisement')} />

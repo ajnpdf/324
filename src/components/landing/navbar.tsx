@@ -17,8 +17,8 @@ const links = [
   { key: 'common.conversion', href: '/conversion-tools' },
   { key: 'common.image', href: '/image-tools' },
   { key: 'common.pdf', href: '/pdf-utilities' },
-  { key: 'common.discover', href: '/discover' },
-  { key: 'common.howItWorks', href: '/transparency' },
+  { key: 'common.chromeExtension', href: '/chrome-extension' },
+  { key: 'common.howItWorks', href: '/#how-it-works' },
   { key: 'common.guides', href: '/blog' },
   { key: 'common.about', href: '/about' },
 ];

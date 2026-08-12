@@ -8,7 +8,7 @@ import { useLanguage } from '@/lib/i18n/language-context';
 
 const commonToolIds = ['merge-pdf','split-pdf','compress-pdf','protect-pdf','unlock-pdf','repair-pdf'] as const;
 const productLinks = [
-  ['footer.allTools','/pdf-tools'],['footer.conversionTools','/conversion-tools'],['footer.imageTools','/image-tools'],['footer.pdfUtilities','/pdf-utilities'],
+  ['footer.allTools','/pdf-tools'],['common.chromeExtension','/chrome-extension'],['footer.conversionTools','/conversion-tools'],['footer.imageTools','/image-tools'],['footer.pdfUtilities','/pdf-utilities'],
   ['footer.filePolicy','/transparency'],['footer.security','/security'],['footer.status','/status'],['common.guides','/blog'],['footer.discover','/discover'],
   ['footer.developer','/developer'],['footer.studio','/ajn-studio'],['footer.contact','/contact'],
 ] as const;

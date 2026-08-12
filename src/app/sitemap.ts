@@ -10,6 +10,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/conversion-tools`, changeFrequency: 'weekly', priority: 0.9 },
     { url: `${SITE_URL}/image-tools`, changeFrequency: 'weekly', priority: 0.85 },
     { url: `${SITE_URL}/pdf-utilities`, changeFrequency: 'weekly', priority: 0.85 },
+    { url: `${SITE_URL}/chrome-extension`, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${SITE_URL}/chrome-extension/privacy`, changeFrequency: 'yearly', priority: 0.35 },
     { url: `${SITE_URL}/about`, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${SITE_URL}/developer`, changeFrequency: 'monthly', priority: 0.75, images: [`${SITE_URL}/images/anjan-kumar-developer.jpg`] },
     { url: `${SITE_URL}/ajn-studio`, changeFrequency: 'monthly', priority: 0.65 },
