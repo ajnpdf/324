@@ -98,7 +98,7 @@ if (exists('APPLY_TEST_PUSH_FRONTEND.ps1')) {
   const updater = read('APPLY_TEST_PUSH_FRONTEND.ps1');
   ok(updater.includes('Assert-NoExistingStagedChanges'), 'R10 updater must refuse a pre-existing Git staging area.');
   ok(updater.includes('chrome-extension') && updater.includes('AJN-PDF-CHROME-EXTENSION-1.0.0.zip'), 'R10 updater must copy/stage extension source and the public test ZIP.');
-  ok(updater.includes('feat: add Chrome extension and refine product access') || updater.includes('fix: clear zero-warning lint gate for Chrome extension release') || updater.includes('fix: clear TypeScript gate for Chrome extension release') || updater.includes('fix: stage Chrome extension download artifact safely') || updater.includes('feat: integrate AJN PDF conversion icon assets') || updater.includes('fix: stabilize homepage and mobile tool discovery'), 'R10 updater commit message is missing.');
+  ok(updater.includes('feat: add Chrome extension and refine product access') || updater.includes('fix: clear zero-warning lint gate for Chrome extension release') || updater.includes('fix: clear TypeScript gate for Chrome extension release') || updater.includes('fix: stage Chrome extension download artifact safely') || updater.includes('feat: integrate AJN PDF conversion icon assets') || updater.includes('fix: stabilize homepage and mobile tool discovery') || updater.includes('fix: complete image licensing and admin diagnostics'), 'R10 updater commit message is missing.');
 }
 
 const websiteLocales = localeNames.map((locale) => json(`src/i18n/locales/${locale}.json`));

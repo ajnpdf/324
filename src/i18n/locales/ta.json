@@ -508,5 +508,6 @@
   "runtime.serviceOnline": "சேவை ஆன்லைனில் உள்ளது",
   "runtime.serviceUnavailable": "சேவை கிடைக்கவில்லை",
   "footer.limits": "வரம்புகள்",
-  "footer.ocrGuide": "OCR வழிகாட்டி"
+  "footer.ocrGuide": "OCR வழிகாட்டி",
+  "footer.imageLicensing": "பட உரிமம்"
 }

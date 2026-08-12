@@ -508,5 +508,6 @@
   "runtime.serviceOnline": "सेवा ऑनलाइन",
   "runtime.serviceUnavailable": "सेवा उपलब्ध नहीं",
   "footer.limits": "सीमाएँ",
-  "footer.ocrGuide": "OCR गाइड"
+  "footer.ocrGuide": "OCR गाइड",
+  "footer.imageLicensing": "छवि लाइसेंसिंग"
 }

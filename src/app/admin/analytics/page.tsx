@@ -12,6 +12,7 @@ import {
   Upload,
 } from 'lucide-react';
 import { PDF_BACKEND_URL } from '@/lib/pdf-backend';
+import { formatAdminApiError } from '@/lib/admin-diagnostics';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -132,7 +133,7 @@ export default function AnalyticsPage() {
         cache: 'no-store',
       });
       const payload = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(payload.error || payload.detail || `Analytics request failed with status ${response.status}.`);
+      if (!response.ok) throw new Error(formatAdminApiError('analytics', response.status, String(payload.error || payload.detail || '')));
       setData(payload as AnalyticsData);
       window.sessionStorage.setItem('ajn_analytics_admin_token', token);
     } catch (cause) {
@@ -185,7 +186,11 @@ export default function AnalyticsPage() {
                 <label className="flex items-center gap-2 font-bold"><input type="checkbox" checked={autoRefresh} onChange={(event) => setAutoRefresh(event.target.checked)} />Auto-refresh</label>
                 <span>Updated: {updated}</span>
               </div>
-              {error && <p className="mt-3 rounded-xl bg-red-50 px-3 py-2 text-xs font-bold text-red-700">{error}</p>}
+              {error && <p role="alert" className="mt-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-bold leading-5 text-red-800">{error}</p>}
+              <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-3 text-[11px] font-semibold leading-5 text-slate-600">
+                <p><span className="font-black text-slate-800">Running backend:</span> {PDF_BACKEND_URL || 'Not configured'}</p>
+                <p className="mt-1">Production requires <code className="font-black">AJN_ANALYTICS_ENABLED=true</code> and a private <code className="font-black">AJN_ANALYTICS_ADMIN_TOKEN</code> configured on that same backend deployment. Tokens are stored only in this tab&apos;s session storage.</p>
+              </div>
             </div>
           </div>
         </div>

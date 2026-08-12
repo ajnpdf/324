@@ -26,6 +26,10 @@ export default async function DiscoverPage() {
       url: `${SITE_URL}/discover/${post.slug}`,
       datePublished: post.published_at,
       creator: { '@type': 'Person', name: 'Anjan Kumar', url: `${SITE_URL}/developer` },
+      creditText: 'Published by AJN PDF / AJN Studio',
+      copyrightNotice: 'Copyright applies. See AJN PDF image licensing information.',
+      license: `${SITE_URL}/image-licensing`,
+      acquireLicensePage: `${SITE_URL}/contact`,
     })),
   };
 
@@ -41,7 +45,7 @@ export default async function DiscoverPage() {
             <h1 className="mt-6 text-5xl font-black tracking-[-.055em] text-foreground md:text-7xl">Original images, product updates and useful visual guides.</h1>
             <p className="mt-6 max-w-3xl text-base font-medium leading-8 text-muted-foreground">This public feed is managed by AJN PDF. Each post uses descriptive titles, captions and alt text so people and search engines can understand the image without keyword stuffing.</p>
           </div>
-          <Link href="/developer" className="ajn-secondary-button">Meet Anjan <ArrowRight className="h-4 w-4" /></Link>
+          <div className="flex flex-wrap gap-2"><Link href="/image-licensing" className="ajn-secondary-button">Image licensing</Link><Link href="/developer" className="ajn-secondary-button">Meet Anjan <ArrowRight className="h-4 w-4" /></Link></div>
         </section>
 
         <section className="mt-10 grid gap-3 rounded-3xl border border-border bg-card/80 p-5 text-sm text-card-foreground sm:grid-cols-3">

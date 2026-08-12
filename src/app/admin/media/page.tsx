@@ -23,6 +23,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { PDF_BACKEND_URL } from '@/lib/pdf-backend';
+import { formatAdminApiError } from '@/lib/admin-diagnostics';
 import { absoluteMediaUrl, type PublicMediaPost } from '@/lib/public-media';
 
 type PublishStatus = 'published' | 'draft' | 'scheduled';
@@ -114,7 +115,7 @@ export default function AdminMediaPage() {
         cache: 'no-store',
       });
       const payload = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(payload.detail || payload.error || 'The public-image list could not be loaded.');
+      if (!response.ok) throw new Error(formatAdminApiError('media', response.status, String(payload.detail || payload.error || '')));
       setPosts(normalizePosts(Array.isArray(payload.posts) ? payload.posts : []));
       window.sessionStorage.setItem('ajn_media_admin_token', token.trim());
     } catch (reason) {
@@ -147,7 +148,7 @@ export default function AdminMediaPage() {
         body: form,
       });
       const payload = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(payload.detail || payload.error || 'The image post could not be saved.');
+      if (!response.ok) throw new Error(formatAdminApiError('media', response.status, String(payload.detail || payload.error || '')));
       window.sessionStorage.setItem('ajn_media_admin_token', token.trim());
       setMessage(createStatus === 'draft' ? 'Draft saved.' : createStatus === 'scheduled' ? 'Image post scheduled.' : 'Public image published.');
       formElement.reset();
@@ -194,7 +195,7 @@ export default function AdminMediaPage() {
         body: form,
       });
       const payload = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(payload.detail || payload.error || 'The post could not be updated.');
+      if (!response.ok) throw new Error(formatAdminApiError('media', response.status, String(payload.detail || payload.error || '')));
       setMessage('Image post updated.');
       setEditing(null);
       await loadPosts();
@@ -220,7 +221,7 @@ export default function AdminMediaPage() {
         headers: { 'X-AJN-Admin-Token': token.trim(), 'X-AJN-Confirm-Title': confirmed },
       });
       const payload = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(payload.detail || payload.error || 'The post could not be deleted.');
+      if (!response.ok) throw new Error(formatAdminApiError('media', response.status, String(payload.detail || payload.error || '')));
       setMessage('Public image and generated media files deleted.');
       if (editing?.id === post.id) setEditing(null);
       await loadPosts();
@@ -260,8 +261,12 @@ export default function AdminMediaPage() {
             <div className="rounded-2xl border border-border bg-card p-4"><p className="text-xs font-bold text-muted-foreground">Scheduled</p><p className="mt-1 text-2xl font-black text-foreground">{counts.scheduled}</p></div>
             <div className="rounded-2xl border border-border bg-card p-4"><p className="text-xs font-bold text-muted-foreground">Drafts</p><p className="mt-1 text-2xl font-black text-foreground">{counts.draft}</p></div>
           </div>
-          {error && <p role="alert" className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-800">{error}</p>}
+          {error && <p role="alert" className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold leading-6 text-red-800">{error}</p>}
           {message && <p role="status" className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-bold text-emerald-800">{message}</p>}
+          <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs font-semibold leading-5 text-slate-600">
+            <p><span className="font-black text-slate-800">Running backend:</span> {PDF_BACKEND_URL || 'Not configured'}</p>
+            <p className="mt-1">Use the private <code className="font-black">AJN_MEDIA_ADMIN_TOKEN</code> configured on that same backend deployment. A token from a different local or production environment will be rejected. The token is stored only in this tab&apos;s session storage.</p>
+          </div>
         </section>
 
         <section className="mt-6 grid gap-6 xl:grid-cols-[.85fr_1.15fr]">

@@ -8,7 +8,7 @@ check('Brand identity declares Anjan, AJN PDF and AJN Studio',brand.includes("de
 check('Developer page uses public portrait and ProfilePage structured data',developer.includes('developerImage')&&developer.includes("'@type': 'ProfilePage'")&&developer.includes("'@type': 'Person'"));
 check('AJN Studio organization page exists',studio.includes("'@type': 'Organization'")&&studio.includes('AJN Studio'));
 check('Public discover collection uses ImageObject structured data',discover.includes("'@type': 'CollectionPage'")&&discover.includes("'@type': 'ImageObject'"));
-check('Discover detail uses ImageObject licensing fields',detail.includes('creditText')&&detail.includes('copyrightNotice')&&detail.includes('acquireLicensePage'));
+check('Discover detail uses ImageObject licensing fields',detail.includes('creditText')&&detail.includes('copyrightNotice')&&detail.includes('license')&&detail.includes('acquireLicensePage'));
 check('Admin publisher requires rights confirmation',adminMedia.includes('rights_confirmed')&&publicMedia.includes('rights_confirmed'));
 check('Admin publisher requires useful captions and alt text',adminMedia.includes('minLength={60}')&&publicMedia.includes('Form(min_length=60'));
 check('Media backend validates MIME, pixel count and file size',publicMedia.includes('ALLOWED_MIME')&&publicMedia.includes('MAX_IMAGE_PIXELS')&&publicMedia.includes('MAX_IMAGE_BYTES'));

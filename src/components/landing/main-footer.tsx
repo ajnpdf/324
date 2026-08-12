@@ -14,7 +14,7 @@ const productLinks = [
 ] as const;
 const legalLinks = [
   ['footer.privacyPolicy','/privacy'],['footer.terms','/terms'],['footer.cookiePolicy','/cookies'],['footer.filePolicy','/file-processing-policy'],
-  ['footer.acceptableUse','/acceptable-use'],['footer.dataDeletion','/data-deletion'],['footer.unlockPolicy','/unlock-authorization-policy'],['footer.dmca','/dmca'],
+  ['footer.acceptableUse','/acceptable-use'],['footer.dataDeletion','/data-deletion'],['footer.unlockPolicy','/unlock-authorization-policy'],['footer.imageLicensing','/image-licensing'],['footer.dmca','/dmca'],
 ] as const;
 const commonFallback: Record<string,[string,string]> = {
   'merge-pdf':['Merge PDF','Combine PDF files in the order you choose.'], 'split-pdf':['Split PDF','Separate a PDF into the pages you need.'],

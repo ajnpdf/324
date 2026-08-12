@@ -508,5 +508,6 @@
   "runtime.serviceOnline": "ಸೇವೆ ಆನ್‌ಲೈನ್",
   "runtime.serviceUnavailable": "ಸೇವೆ ಲಭ್ಯವಿಲ್ಲ",
   "footer.limits": "ಮಿತಿಗಳು",
-  "footer.ocrGuide": "OCR ಮಾರ್ಗದರ್ಶಿ"
+  "footer.ocrGuide": "OCR ಮಾರ್ಗದರ್ಶಿ",
+  "footer.imageLicensing": "ಚಿತ್ರ ಪರವಾನಗಿ"
 }

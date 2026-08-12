@@ -50,9 +50,10 @@ export default async function DiscoverPostPage({ params }: Props) {
     thumbnailUrl: post.thumbnail_url || absoluteImage,
     uploadDate: post.published_at,
     creator: { '@type': 'Person', name: 'Anjan Kumar', url: `${SITE_URL}/developer` },
-    creditText: 'AJN PDF / AJN Studio',
-    copyrightNotice: 'AJN PDF',
-    acquireLicensePage: `${SITE_URL}/copyright`,
+    creditText: 'Published by AJN PDF / AJN Studio',
+    copyrightNotice: 'Copyright applies. See AJN PDF image licensing information.',
+    license: `${SITE_URL}/image-licensing`,
+    acquireLicensePage: `${SITE_URL}/contact`,
   };
 
   return (

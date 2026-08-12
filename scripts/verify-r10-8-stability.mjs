@@ -55,10 +55,10 @@ check('security header set includes CSP, HSTS, nosniff, referrer, permissions an
 check('HSTS is production-default but preload remains explicit opt-in', nextConfig.includes("process.env.AJN_ENABLE_HSTS !== 'false'") && nextConfig.includes("process.env.AJN_HSTS_PRELOAD === 'true'"));
 check('Trusted Types is not forced before ad/analytics compatibility QA', !nextConfig.includes("require-trusted-types-for"));
 check('tool SEO description generator includes tool-specific name/use case/benefit inputs', seo.includes('tool.name') && seo.includes('const useCase =') && seo.includes('const benefit ='));
-check('all five UI locale dictionaries contain identical 510-key structures', (() => {
+check('all five UI locale dictionaries contain identical shared-key structures with at least the R10.8 baseline', (() => {
   const flatten = (obj, prefix = '', out = {}) => { for (const [k,v] of Object.entries(obj)) { const key = prefix ? `${prefix}.${k}` : k; if (v && typeof v === 'object' && !Array.isArray(v)) flatten(v,key,out); else out[key]=v; } return out; };
   const dicts = ['en','hi','te','ta','kn'].map((code) => Object.keys(flatten(JSON.parse(read(`src/i18n/locales/${code}.json`)))).sort());
-  return dicts[0].length === 510 && dicts.slice(1).every((keys) => JSON.stringify(keys) === JSON.stringify(dicts[0]));
+  return dicts[0].length >= 510 && dicts.slice(1).every((keys) => JSON.stringify(keys) === JSON.stringify(dicts[0]));
 })());
 const removedMetaName = ['next', 'size', 'adjust'].join('-');
 check('no source-owned obsolete size-adjust metadata remains', !sourceText.includes(removedMetaName));

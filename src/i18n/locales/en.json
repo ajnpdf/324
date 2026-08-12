@@ -508,5 +508,6 @@
   "runtime.serviceOnline": "Service online",
   "runtime.serviceUnavailable": "Service unavailable",
   "footer.limits": "Limits",
-  "footer.ocrGuide": "OCR guide"
+  "footer.ocrGuide": "OCR guide",
+  "footer.imageLicensing": "Image licensing"
 }

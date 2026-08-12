@@ -32,6 +32,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/terms`, changeFrequency: 'yearly', priority: 0.3 },
     { url: `${SITE_URL}/cookies`, changeFrequency: 'yearly', priority: 0.3 },
     { url: `${SITE_URL}/copyright`, changeFrequency: 'yearly', priority: 0.3 },
+    { url: `${SITE_URL}/image-licensing`, changeFrequency: 'yearly', priority: 0.4 },
     { url: `${SITE_URL}/dmca`, changeFrequency: 'yearly', priority: 0.3 },
     { url: `${SITE_URL}/disclaimer`, changeFrequency: 'yearly', priority: 0.3 },
     { url: `${SITE_URL}/acceptable-use`, changeFrequency: 'yearly', priority: 0.3 },

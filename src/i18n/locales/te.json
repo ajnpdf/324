@@ -508,5 +508,6 @@
   "runtime.serviceOnline": "సేవ ఆన్‌లైన్‌లో ఉంది",
   "runtime.serviceUnavailable": "సేవ అందుబాటులో లేదు",
   "footer.limits": "పరిమితులు",
-  "footer.ocrGuide": "OCR గైడ్"
+  "footer.ocrGuide": "OCR గైడ్",
+  "footer.imageLicensing": "చిత్ర లైసెన్సింగ్"
 }
