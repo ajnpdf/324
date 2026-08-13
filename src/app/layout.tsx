@@ -23,8 +23,8 @@ const jetBrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-jet
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   applicationName: SITE_NAME,
-  title: { default: '100+ PDF, Document & Image Tools | AJN PDF', template: '%s | AJN PDF' },
-  description: 'Work smarter with 100+ tools to convert, merge, compress, edit, sign, scan and organize PDF, document and image files in one clean workspace.',
+  title: { default: 'Free PDF Tools Online - Convert, Merge, Compress & Edit | AJN PDF', template: '%s | AJN PDF' },
+  description: 'Use AJN PDF to convert, merge, compress, edit, sign, scan and OCR PDF, document and image files online with simple, powerful tools.',
   alternates: { canonical: '/', types: { 'application/rss+xml': `${SITE_URL}/feed.xml` } },
   authors: [{ name: AJN_BRAND.developerName, url: `${SITE_URL}/developer` }],
   creator: AJN_BRAND.developerName,
@@ -33,8 +33,8 @@ export const metadata: Metadata = {
   icons: { icon: [{ url: '/favicon.ico', rel: 'shortcut icon' }], apple: [{ url: '/favicon.ico' }] },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1, 'max-video-preview': -1 } },
   openGraph: {
-    title: '100+ PDF, Document & Image Tools | AJN PDF',
-    description: 'Work smarter with 100+ PDF, document, image and OCR tools in one clean workspace.',
+    title: 'Free PDF Tools Online - Convert, Merge, Compress & Edit | AJN PDF',
+    description: 'Use AJN PDF to convert, merge, compress, edit, sign, scan and OCR PDF, document and image files online with simple, powerful tools.',
     url: '/',
     siteName: SITE_NAME,
     type: 'website',
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: '100+ PDF, Document & Image Tools | AJN PDF',
+    title: 'Free PDF Tools Online - Convert, Merge, Compress & Edit | AJN PDF',
     description: '100+ simple PDF, document, image and OCR tools from AJN PDF.',
     images: ['/og-image.jpg'],
   },
