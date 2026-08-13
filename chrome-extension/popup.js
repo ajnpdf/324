@@ -42,7 +42,7 @@
     if (api) chrome.tabs.create({ url });
     else window.open(url, '_blank', 'noopener,noreferrer');
   };
-  const toolUrl = (id) => `${siteBase}/tools/${encodeURIComponent(id)}?utm_source=chrome_extension&utm_medium=extension&utm_campaign=quick_tools`;
+  const toolUrl = (id) => `${siteBase}/${encodeURIComponent(id)}?utm_source=chrome_extension&utm_medium=extension&utm_campaign=quick_tools`;
   const getRecent = () => {
     try { return JSON.parse(localStorage.getItem('ajn-ext-recent') || '[]').filter((id) => tools.some((t) => t.id === id)).slice(0,5); }
     catch { return []; }

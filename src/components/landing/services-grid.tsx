@@ -8,6 +8,7 @@ import { BUILD_PUBLIC_TOOLS } from '../../lib/build-public-tools';
 import { useLanguage } from '@/lib/i18n/language-context';
 import { ToolArtwork } from '@/components/ajn/tool-artwork';
 import { cn } from '@/lib/utils';
+import { toolPath } from '@/lib/tool-routes';
 
 interface ServicesGridProps { query: string; category: string; }
 type ViewMode = 'horizontal' | 'comfortable' | 'compact';
@@ -55,7 +56,7 @@ function Highlight({ text, highlight }: { text: string; highlight: string }) {
 
 function ToolCard({ tool, query, priority=false, view }:{tool:(typeof BUILD_PUBLIC_TOOLS)[number];query:string;priority?:boolean;view:ViewMode}){
   const {tool:localizeTool}=useLanguage(); const localized=localizeTool(tool.id,tool.name,tool.desc,tool.keywords); const category=getPublicToolCategory(tool);
-  return <Link href={`/tools/${tool.id}`} className="ajn-progressive-tool-card group block h-full rounded-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2" aria-label={localized.name} data-analytics-id={`tool-card-${tool.id}`} data-analytics-category={category}>
+  return <Link href={toolPath(tool.id)} className="ajn-progressive-tool-card group block h-full rounded-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2" aria-label={localized.name} data-analytics-id={`tool-card-${tool.id}`} data-analytics-category={category}>
     <article className={cn('ajn-tool-card ajn-horizontal-tool-card h-full',view==='compact'&&'ajn-tool-card-compact',view==='horizontal'&&'ajn-tool-card-list')}>
       <div className="relative z-10 flex min-h-[78px] items-center gap-3 px-3 py-2.5 sm:min-h-[82px] sm:px-3.5 sm:py-3"><ToolArtwork toolId={tool.id} toolName={localized.name} priority={priority} className="h-11 w-11 sm:h-12 sm:w-12"/><div className="min-w-0 flex flex-1 flex-col justify-center"><h3 className="min-w-0 truncate text-[14px] font-extrabold leading-5 tracking-[-.01em] text-slate-950 sm:text-[14.5px]"><Highlight text={localized.name} highlight={query}/></h3><p className={cn('mt-0.5 text-[11px] font-medium leading-4 text-slate-600 sm:text-[11.5px]',view==='horizontal'?'line-clamp-2':'line-clamp-1')}><Highlight text={localized.desc} highlight={query}/></p></div><ChevronRight aria-hidden="true" className="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-150 group-hover:translate-x-0.5 group-hover:text-slate-600"/></div>
     </article></Link>;

@@ -6,7 +6,7 @@ const grid=fs.readFileSync('src/components/landing/services-grid.tsx','utf8');
 const css=fs.readFileSync('src/app/globals.css','utf8');
 const checks=[
  ['single responsive hero is present before the tool directory',home.includes('<Hero />')&&home.indexOf('<Hero />')<home.indexOf('id="public-tools"')&&!home.includes('MobileHomeHero')],
- ['responsive hero exposes real tool routes',hero.includes('href="#public-tools"')&&hero.includes('href="/tools/merge-pdf"')],
+ ['responsive hero exposes real tool routes',hero.includes('href="#public-tools"')&&hero.includes('href="/merge-pdf"')],
  ['hero uses localized Work Smarter message',hero.includes("home.title1")&&hero.includes("home.title2")&&hero.includes("home.explore100")&&hero.includes("home.mobileSearchHint")],
  ['homepage contains one primary search id',(home.match(/id="home-tool-search"/g)||[]).length===1&&!home.includes('mobile-home-tool-search')],
  ['mobile category controls remain sticky',home.includes('sticky top-[64px]')],

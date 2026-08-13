@@ -4,6 +4,7 @@ import type { OutputBuffer } from '@/lib/engine';
 import { CheckCircle2, Download, ExternalLink, FileCode, Trash2 } from 'lucide-react';
 import { useLanguage } from '@/lib/i18n/language-context';
 import { sendAjnAnalytics } from '@/components/analytics/site-analytics';
+import { toolIdFromPathname } from '@/lib/tool-routes';
 
 interface Props { jobs: OutputBuffer[]; onPreview: (j: OutputBuffer) => void; onClear: () => void; }
 
@@ -13,8 +14,8 @@ export function OutputSection({ jobs, onPreview, onClear }: Props) {
     if (!job.objectUrl) return;
     const a = document.body.appendChild(document.createElement('a'));
     a.href = job.objectUrl; a.download = job.fileName; a.click(); document.body.removeChild(a);
-    const match = window.location.pathname.match(/^\/tools\/([^/?#]+)/);
-    sendAjnAnalytics({ event_name: 'download', path: window.location.pathname, tool_id: match?.[1] });
+    const toolId = toolIdFromPathname(window.location.pathname);
+    sendAjnAnalytics({ event_name: 'download', path: window.location.pathname, tool_id: toolId });
   };
   return <section className="space-y-4" aria-live="polite">
     <div className="flex items-center justify-between gap-3 px-1"><div className="flex items-center gap-2"><div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600"><CheckCircle2 className="h-4 w-4"/></div><h3 className="text-sm font-extrabold text-slate-900">{t('result.ready')} ({jobs.length})</h3></div><button type="button" onClick={onClear} className="inline-flex min-h-10 items-center gap-2 rounded-xl px-3 text-xs font-bold text-red-600 hover:bg-red-50"><Trash2 className="h-4 w-4"/>{t('common.clearAll')}</button></div>

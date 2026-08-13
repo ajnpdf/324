@@ -15,9 +15,9 @@ export default function MergePdfSafetyGuide() {
     ]}
     checklist={['Use a trusted browser and device', 'Confirm document order before processing', 'Open the downloaded result independently', 'Delete local copies you no longer need']}
     relatedTools={[
-      { href: '/tools/merge-pdf', title: 'Merge PDF', description: 'Combine multiple PDFs in a browser workflow.' },
-      { href: '/tools/organize-pdf', title: 'Organize PDF', description: 'Reorder or prepare pages before merging.' },
-      { href: '/tools/split-pdf', title: 'Split PDF', description: 'Separate pages that should not be included.' },
+      { href: '/merge-pdf', title: 'Merge PDF', description: 'Combine multiple PDFs in a browser workflow.' },
+      { href: '/organize-pdf', title: 'Organize PDF', description: 'Reorder or prepare pages before merging.' },
+      { href: '/split-pdf', title: 'Split PDF', description: 'Separate pages that should not be included.' },
     ]}
   />;
 }

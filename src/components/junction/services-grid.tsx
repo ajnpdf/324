@@ -7,6 +7,7 @@ import { ArrowRight, Search } from "lucide-react";
 import Link from "next/link";
 import { cn } from "../../lib/utils";
 import { useMemo, useState, useEffect, useRef } from "react";
+import { toolPath } from '@/lib/tool-routes';
 
 interface ServicesGridProps {
   query: string;
@@ -56,7 +57,7 @@ function LiquidToolCard({ tool, query }: { tool: any; query: string }) {
   };
 
   return (
-    <Link href={`/tools/${tool.id}`}>
+    <Link href={toolPath(tool.id)}>
       <div
         ref={cardRef}
         onMouseMove={handleMouseMove}

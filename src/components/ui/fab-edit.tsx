@@ -14,7 +14,7 @@ export function FABEdit() {
       className="fixed bottom-6 right-6 z-[80]"
     >
       <Link
-        href="/tools/add-text"
+        href="/add-text"
         aria-label="Open Add Text to PDF"
         className="group relative flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-[0_18px_40px_rgba(37,99,235,.32)] transition hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-200"
       >

@@ -9,6 +9,8 @@ import Link from 'next/link';
 import { ScrollArea } from './ui/scroll-area';
 import { useLanguage } from '@/lib/i18n/language-context';
 import { ToolArtwork } from '@/components/ajn/tool-artwork';
+import { toolPath } from '@/lib/tool-routes';
+import { scoreToolSearch } from '@/lib/tool-search';
 
 export function SearchModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const [query, setQuery] = useState('');
@@ -28,10 +30,10 @@ export function SearchModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
   const results = useMemo(() => {
     const q = query.toLocaleLowerCase(language).trim();
     if (!q) return [];
-    return BUILD_PUBLIC_TOOLS.filter((item) => {
+    return BUILD_PUBLIC_TOOLS.map((item) => {
       const localized = localizeTool(item.id, item.name, item.desc, item.keywords);
-      return [localized.name, localized.desc, ...localized.aliases, ...item.keywords].join(' ').toLocaleLowerCase(language).includes(q);
-    }).slice(0, 12);
+      return { item, score: scoreToolSearch(q, item, localized) };
+    }).filter((entry) => entry.score > 0).sort((a, b) => b.score - a.score).slice(0, 12).map((entry) => entry.item);
   }, [query, language, localizeTool]);
 
   const handleSelect = (selected: ServiceTool) => {
@@ -62,7 +64,7 @@ export function SearchModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
 
   const ToolRow = ({ item }: { item: ServiceTool }) => {
     const localized = localizeTool(item.id, item.name, item.desc, item.keywords);
-    return <Link href={`/tools/${item.id}`} onClick={() => handleSelect(item)} className="group flex min-h-[66px] items-center gap-3 rounded-xl border border-slate-200/80 bg-white p-2.5 transition hover:border-blue-200 hover:shadow-lg">
+    return <Link href={toolPath(item.id)} onClick={() => handleSelect(item)} className="group flex min-h-[66px] items-center gap-3 rounded-xl border border-slate-200/80 bg-white p-2.5 transition hover:border-blue-200 hover:shadow-lg">
       <ToolArtwork toolId={item.id} toolName={localized.name} className="h-11 w-11" />
       <div className="min-w-0 flex-1"><div className="truncate text-sm font-extrabold text-slate-900">{localized.name}</div><p className="mt-0.5 line-clamp-1 text-xs font-medium text-slate-500">{localized.desc}</p></div>
       <ArrowRight className="h-4 w-4 shrink-0 text-slate-300 transition group-hover:translate-x-1 group-hover:text-blue-600" />

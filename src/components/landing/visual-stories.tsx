@@ -23,7 +23,7 @@ export function VisualStories() {
               </div>
             </div>
           </div>
-          <div className="p-6 md:p-8"><h3 className="text-2xl font-black tracking-[-.03em] text-slate-950">See the change before you finish.</h3><p className="mt-3 text-sm font-medium leading-6 text-slate-500">Visual tools give more room to page order, placement and previews while keeping secondary controls quiet.</p><Link href="/tools/organize-pdf" className="mt-5 inline-flex items-center gap-2 text-xs font-black text-blue-600">Open Organize PDF <ArrowRight className="h-4 w-4"/></Link></div>
+          <div className="p-6 md:p-8"><h3 className="text-2xl font-black tracking-[-.03em] text-slate-950">See the change before you finish.</h3><p className="mt-3 text-sm font-medium leading-6 text-slate-500">Visual tools give more room to page order, placement and previews while keeping secondary controls quiet.</p><Link href="/organize-pdf" className="mt-5 inline-flex items-center gap-2 text-xs font-black text-blue-600">Open Organize PDF <ArrowRight className="h-4 w-4"/></Link></div>
         </article>
 
         <article className="ajn-visual-story-card overflow-hidden rounded-[1.6rem] border border-slate-200 bg-white shadow-[0_22px_60px_rgba(37,62,113,.08)]">

@@ -63,7 +63,7 @@ for (const removedText of ['Temporary server tools', '2 modes', 'Browser and tem
 setup.includes('backend\\smoke_test.py') && setup.includes('npm.cmd') ? pass('Full setup runs backend smoke tests and frontend checks') : fail('Setup validation workflow incomplete');
 setup.includes('INSTALL_OCR_LANGUAGES.ps1') && setup.includes('TESSDATA_PREFIX') ? pass('Windows setup installs project-local OCR language data') : fail('OCR language setup is missing');
 for (const [legacy, canonical] of [['jpg-pdf','jpg-to-pdf'], ['pdf-jpg','pdf-to-jpg'], ['heic-pdf','heic-to-pdf'], ['xml-pdf','xml-to-pdf'], ['json-pdf','json-to-pdf'], ['txt-pdf','txt-to-pdf']]) {
-  nextConfig.includes(`/tools/${legacy}`) && nextConfig.includes(`/tools/${canonical}`) ? pass(`Legacy alias ${legacy} redirects to ${canonical}`) : fail(`Missing canonical redirect for ${legacy}`);
+  nextConfig.includes(`/tools/${legacy}`) && nextConfig.includes(`/${canonical}`) ? pass(`Legacy alias ${legacy} redirects to ${canonical}`) : fail(`Missing canonical redirect for ${legacy}`);
 }
 
 if (failed) process.exit(1);

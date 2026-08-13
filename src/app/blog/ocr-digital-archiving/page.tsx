@@ -15,9 +15,9 @@ export default function OcrArchivingGuide() {
     ]}
     checklist={['Use the installed language that matches the page', 'Check orientation and contrast first', 'Review critical names and numbers manually', 'Keep the original scan with the OCR result']}
     relatedTools={[
-      { href: '/tools/scanned-pdf-to-text', title: 'Scanned PDF to Text', description: 'Extract readable text from scanned PDF pages.' },
-      { href: '/tools/scanned-pdf-to-searchable-pdf', title: 'Searchable PDF', description: 'Add a searchable text layer to scanned pages.' },
-      { href: '/tools/image-to-text', title: 'Image to Text', description: 'Recognize text from a supported image.' },
+      { href: '/scanned-pdf-to-text', title: 'Scanned PDF to Text', description: 'Extract readable text from scanned PDF pages.' },
+      { href: '/scanned-pdf-to-searchable-pdf', title: 'Searchable PDF', description: 'Add a searchable text layer to scanned pages.' },
+      { href: '/image-to-text', title: 'Image to Text', description: 'Recognize text from a supported image.' },
     ]}
   />;
 }

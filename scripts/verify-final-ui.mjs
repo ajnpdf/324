@@ -14,7 +14,11 @@ for(const marker of ['clamp(','@media (max-width:430px)','prefers-reduced-motion
 for(const cls of ['ajn-tool-card','ajn-white-icon-tile']) css.includes(`.${cls}`)?pass(`Component .${cls}`):fail(`Missing .${cls}`);
 for(const label of ['Comfortable','Compact','List']) grid.includes(label)?pass(`Desktop layout ${label}`):fail(`Desktop layout ${label} missing`);
 grid.includes('SEARCH_EXPANSIONS')&&grid.includes('distanceAtMostTwo')?pass('Search aliases and typo tolerance present'):fail('Smart search ranking missing');
-for(const key of ['common.conversion','common.image','common.pdf','common.howItWorks','common.guides','common.about']) navbar.includes(`key: '${key}'`)?pass(`Header ${key}`):fail(`Header missing ${key}`);
+for(const id of ['merge-pdf','split-pdf','compress-pdf']) navbar.includes(`id: '${id}'`)?pass(`Header quick tool ${id}`):fail(`Header quick tool missing ${id}`);
+navbar.includes('function ConvertMenu()')&&navbar.includes('Convert to PDF')&&navbar.includes('Convert from PDF')?pass('Header professional Convert menu'):fail('Header Convert menu missing');
+navbar.includes("toolPath('scanned-pdf-to-text')")?pass('Header OCR & Scan shortcut'):fail('Header OCR & Scan shortcut missing');
+navbar.includes('<AllToolsMenu')?pass('Header nine-dot All Tools launcher'):fail('Header All Tools launcher missing');
+for(const key of ['common.guides','common.about']) navbar.includes(`key: '${key}'`)?pass(`Header/mobile info ${key}`):fail(`Header/mobile info missing ${key}`);
 logic.includes('const selectedLevel: CompressionLevel')&&logic.includes('level: selectedLevel')?pass('Compression typing fixed'):fail('Compression typing missing');
 for(const prohibited of [/100%\s*(private|local|secure)/i,/trusted by (millions|thousands)/i,/99\.9%\s*uptime/i,/free forever/i,/no limits/i]) prohibited.test([home,hero,mobile,grid,navbar].join('\n'))?fail(`Unsupported claim ${prohibited}`):pass(`Avoids ${prohibited}`);
 !hero.includes('PremiumBackground')&&!mobile.includes('PremiumBackground')?pass('Hero decorative wave/blob layer removed'):fail('Hero decorative shape layer remains');

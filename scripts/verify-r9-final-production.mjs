@@ -64,14 +64,14 @@ const publicCopy=[...['en','hi','te','ta','kn'].map(l=>text(`src/i18n/locales/${
 for(const phrase of ['Runs in your browser','Uses temporary processing','Processed in this browser','Synthesizing preview','Scraping high-fidelity nodes','Optimizing pixel matrix','INTELLIGENT RASTER COMPRESSION','ADVANCED VISION & ASSET EXTRACTION','UNIVERSAL PAGE ARCHIVING']) if(publicCopy.includes(phrase)) fail(`Unpolished public phrase remains: ${phrase}`);
 pass('Primary public tool copy avoids the audited developer-style phrases');
 
-const toolRoute=requireText('src/app/tools/[id]/page.tsx',["'@type': 'WebApplication'","'@type': 'BreadcrumbList'",'generateMetadata']);
+const toolRoute=requireText('src/app/(tool-pages)/[id]/page.tsx',["'@type': 'WebApplication'","'@type': 'BreadcrumbList'",'generateMetadata']);
 for(const x of ["'@type': 'FAQPage'","'@type': 'HowTo'","totalTime: 'PT5M'"]) if(toolRoute.includes(x)) fail(`Unsupported/invented tool schema remains: ${x}`);
 const rootLayout=requireText('src/app/layout.tsx',['Free PDF Tools Online - Convert, Merge, Compress & Edit | AJN PDF','NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION']);
 if(rootLayout.includes('SearchAction')) fail('Inaccurate WebSite SearchAction remains');
 const strategy=requireText('src/lib/seo-strategy.ts',['const candidate = `${base} – Free ${suffix}`;','return candidate.length <= 60 ? candidate : base;']);
 if(strategy.includes('`${base} | AJN PDF`')) fail('Tool title can duplicate the root title template');
 requireText('src/app/robots.ts',['sitemap.xml','image-sitemap.xml']);
-requireText('src/app/sitemap.ts',['BUILD_PUBLIC_TOOLS','`${SITE_URL}/tools/${tool.id}`']);
+requireText('src/app/sitemap.ts',['BUILD_PUBLIC_TOOLS','`${SITE_URL}${toolPath(tool.id)}`']);
 pass('SEO source keeps unique metadata, canonicals, sitemap/robots and accurate structured data');
 
 requireText('src/components/adsense-unit.tsx',['data-ad-status',"adStatus === 'unfilled'",'MutationObserver']);

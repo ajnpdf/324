@@ -2,6 +2,7 @@ import type { MetadataRoute } from 'next';
 import { BUILD_PUBLIC_TOOLS } from '@/lib/build-public-tools';
 import { SEO_EXCLUDED_TOOL_IDS, SITE_URL } from '@/lib/seo-config';
 import { fetchPublicMediaPosts } from '@/lib/public-media';
+import { toolPath } from '@/lib/tool-routes';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const corePages: MetadataRoute.Sitemap = [
@@ -45,7 +46,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const toolPages: MetadataRoute.Sitemap = BUILD_PUBLIC_TOOLS
     .filter((tool) => !SEO_EXCLUDED_TOOL_IDS.has(tool.id))
     .map((tool) => ({
-      url: `${SITE_URL}/tools/${tool.id}`,
+      url: `${SITE_URL}${toolPath(tool.id)}`,
       changeFrequency: 'monthly',
       priority: tool.badge === 'Popular' ? 0.9 : 0.7,
     }));

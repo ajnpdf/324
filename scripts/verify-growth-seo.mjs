@@ -25,7 +25,7 @@ for (const file of requiredFiles) fs.existsSync(path.join(root, file)) ? pass(`S
 const seo = read('src/lib/seo-config.ts');
 const strategy = read('src/lib/seo-strategy.ts');
 const links = read('src/lib/internal-linking.ts');
-const toolPage = read('src/app/tools/[id]/page.tsx');
+const toolPage = read('src/app/(tool-pages)/[id]/page.tsx');
 const editorial = read('src/components/junction/tool-editorial-content.tsx');
 const layout = read('src/app/layout.tsx');
 const robots = read('src/app/robots.ts');

@@ -16,8 +16,8 @@ export default function FreePdfEditorGuide() {
     checklist={['Use a realistic test document first', 'Read the processing and limitation labels', 'Open the result in another application', 'Prefer clear controls over fake popularity claims']}
     relatedTools={[
       { href: '/pdf-tools', title: 'AJN PDF directory', description: 'Find a focused PDF, conversion, image or OCR workflow.' },
-      { href: '/tools/organize-pdf', title: 'Organize PDF', description: 'Reorder and prepare PDF pages.' },
-      { href: '/tools/compress-pdf', title: 'Compress PDF', description: 'Reduce file size with documented limitations.' },
+      { href: '/organize-pdf', title: 'Organize PDF', description: 'Reorder and prepare PDF pages.' },
+      { href: '/compress-pdf', title: 'Compress PDF', description: 'Reduce file size with documented limitations.' },
     ]}
   />;
 }

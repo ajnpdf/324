@@ -47,7 +47,7 @@ if (unlock.includes('I own this document or have permission')) pass('Unlock auth
 else fail('Unlock authorization confirmation missing');
 
 const shared = read('src/components/junction/_shared.tsx');
-const toolRoute = read('src/app/tools/[id]/page.tsx');
+const toolRoute = read('src/app/(tool-pages)/[id]/page.tsx');
 if (!shared.includes('AdSenseUnit') && toolRoute.indexOf('ToolEditorialContent') < toolRoute.indexOf('AdSenseUnit')) pass('Tool ads are separated from controls by useful editorial content');
 else fail('Tool advertisement placement is too close to processing controls');
 

@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const required = [
-  'src/app/tools/[id]/page.tsx',
+  'src/app/(tool-pages)/[id]/page.tsx',
   'src/components/junction/ProtectPdf.tsx',
   'src/components/junction/UnlockPdf.tsx',
   'src/components/junction/RepairPdf.tsx',

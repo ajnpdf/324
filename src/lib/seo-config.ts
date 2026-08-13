@@ -3,6 +3,7 @@ import type { ServiceTool } from './tools-data';
 import { isToolPublic } from './tool-policy';
 import { getToolSeoProfile } from './seo-strategy';
 import { isBuildToolAvailable } from './tool-capabilities';
+import { toolPath } from './tool-routes';
 
 export const SITE_URL = 'https://www.ajnpdf.com';
 export const SITE_NAME = 'AJN PDF';
@@ -21,11 +22,11 @@ export const SEO_EXCLUDED_TOOL_IDS = new Set([
 ]);
 
 export const TOOL_CANONICAL_OVERRIDES: Record<string, string> = {
-  'smart-read': '/tools/pdf-text',
+  'smart-read': '/pdf-text',
 };
 
 export function buildToolMetadata(tool: ServiceTool): Metadata {
-  const pathname = `/tools/${tool.id}`;
+  const pathname = toolPath(tool.id);
   const canonicalPath = TOOL_CANONICAL_OVERRIDES[tool.id] || pathname;
   const seo = getToolSeoProfile(tool);
   const description = seo.description;

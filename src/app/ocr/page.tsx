@@ -12,12 +12,12 @@ export const metadata: Metadata = {
 };
 
 const workflows = [
-  ['Scanned PDF → Text', '/tools/scanned-pdf-to-text'],
-  ['Scanned PDF → Word', '/tools/scanned-pdf-to-word'],
-  ['Scanned PDF → Searchable PDF', '/tools/scanned-pdf-to-searchable-pdf'],
-  ['Image → Text', '/tools/image-to-text'],
-  ['Image → Word', '/tools/image-to-word'],
-  ['Handwriting Image → Text', '/tools/handwriting-image-to-text'],
+  ['Scanned PDF → Text', '/scanned-pdf-to-text'],
+  ['Scanned PDF → Word', '/scanned-pdf-to-word'],
+  ['Scanned PDF → Searchable PDF', '/scanned-pdf-to-searchable-pdf'],
+  ['Image → Text', '/image-to-text'],
+  ['Image → Word', '/image-to-word'],
+  ['Handwriting Image → Text', '/handwriting-image-to-text'],
 ] as const;
 
 export default function OcrGuidePage() {

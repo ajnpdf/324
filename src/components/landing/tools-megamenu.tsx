@@ -8,6 +8,7 @@ import { cn } from '../../lib/utils';
 import { BUILD_PUBLIC_TOOL_IDS, BUILD_PUBLIC_TOOLS } from '@/lib/build-public-tools';
 import { ToolArtwork } from '@/components/ajn/tool-artwork';
 import { ScrollArea } from '../ui/scroll-area';
+import { toolPath } from '@/lib/tool-routes';
 
 /**
  * AJN Tools Menu - Professional Navigation
@@ -17,46 +18,46 @@ const pdfCategories = [
   {
     title: "ORGANIZE",
     tools: [
-      { name: "Merge PDF", href: "/tools/merge-pdf", icon: Layout, color: "text-blue-500" },
-      { name: "Split PDF", href: "/tools/split-pdf", icon: Scissors, color: "text-purple-500" },
-      { name: "Remove Pages", href: "/tools/delete-pdf-pages", icon: Trash2, color: "text-red-500" },
-      { name: "Organize PDF", href: "/tools/organize-pdf", icon: LayoutGrid, color: "text-orange-500" },
-      { name: "Flatten PDF", href: "/tools/flatten-pdf", icon: Layers, color: "text-indigo-500" },
+      { name: "Merge PDF", href: "/merge-pdf", icon: Layout, color: "text-blue-500" },
+      { name: "Split PDF", href: "/split-pdf", icon: Scissors, color: "text-purple-500" },
+      { name: "Remove Pages", href: "/delete-pdf-pages", icon: Trash2, color: "text-red-500" },
+      { name: "Organize PDF", href: "/organize-pdf", icon: LayoutGrid, color: "text-orange-500" },
+      { name: "Flatten PDF", href: "/flatten-pdf", icon: Layers, color: "text-indigo-500" },
     ]
   },
   {
     title: "CONVERT TO",
     tools: [
-      { name: "WORD to PDF", href: "/tools/word-to-pdf", icon: FileText, color: "text-blue-600" },
-      { name: "EXCEL to PDF", href: "/tools/excel-to-pdf", icon: FileSpreadsheet, color: "text-emerald-700" },
-      { name: "JPG to PDF", href: "/tools/jpg-to-pdf", icon: ImageIcon, color: "text-amber-500" },
-      { name: "HTML to PDF", href: "/tools/html-to-pdf", icon: Code2, color: "text-indigo-600" },
+      { name: "WORD to PDF", href: "/word-to-pdf", icon: FileText, color: "text-blue-600" },
+      { name: "EXCEL to PDF", href: "/excel-to-pdf", icon: FileSpreadsheet, color: "text-emerald-700" },
+      { name: "JPG to PDF", href: "/jpg-to-pdf", icon: ImageIcon, color: "text-amber-500" },
+      { name: "HTML to PDF", href: "/html-to-pdf", icon: Code2, color: "text-indigo-600" },
     ]
   },
   {
     title: "CONVERT FROM",
     tools: [
-      { name: "PDF to WORD", href: "/tools/pdf-to-word", icon: FileEdit, color: "text-blue-600" },
-      { name: "PDF to EXCEL", href: "/tools/pdf-to-excel", icon: FileSpreadsheet, color: "text-emerald-700" },
-      { name: "PDF to PPT", href: "/tools/pdf-to-pptx", icon: Presentation, color: "text-orange-500" },
-      { name: "PDF to JPG", href: "/tools/pdf-to-jpg", icon: ImageIcon, color: "text-amber-500" },
+      { name: "PDF to WORD", href: "/pdf-to-word", icon: FileEdit, color: "text-blue-600" },
+      { name: "PDF to EXCEL", href: "/pdf-to-excel", icon: FileSpreadsheet, color: "text-emerald-700" },
+      { name: "PDF to PPT", href: "/pdf-to-pptx", icon: Presentation, color: "text-orange-500" },
+      { name: "PDF to JPG", href: "/pdf-to-jpg", icon: ImageIcon, color: "text-amber-500" },
     ]
   },
   {
     title: "EDIT & SIGN",
     tools: [
-      { name: "Sign PDF", href: "/tools/sign-pdf", icon: PenTool, color: "text-blue-600" },
-      { name: "Watermark", href: "/tools/watermark-pdf", icon: Stamp, color: "text-slate-600" },
-      { name: "Page Numbers", href: "/tools/page-number", icon: FileDigit, color: "text-indigo-500" },
-      { name: "Edit Metadata", href: "/tools/pdf-metadata", icon: FileEdit, color: "text-slate-500" },
+      { name: "Sign PDF", href: "/sign-pdf", icon: PenTool, color: "text-blue-600" },
+      { name: "Watermark", href: "/watermark-pdf", icon: Stamp, color: "text-slate-600" },
+      { name: "Page Numbers", href: "/page-number", icon: FileDigit, color: "text-indigo-500" },
+      { name: "Edit Metadata", href: "/pdf-metadata", icon: FileEdit, color: "text-slate-500" },
     ]
   },
   {
     title: "INTELLIGENCE",
     tools: [
-      { name: "OCR Tools", href: "/tools/ocr-advanced", icon: BrainCircuit, color: "text-purple-600" },
-      { name: "Repair PDF", href: "/tools/repair-pdf", icon: Wrench, color: "text-red-500" },
-      { name: "Make Searchable", href: "/tools/scanned-pdf-to-searchable-pdf", icon: Search, color: "text-blue-500" },
+      { name: "OCR Tools", href: "/ocr-advanced", icon: BrainCircuit, color: "text-purple-600" },
+      { name: "Repair PDF", href: "/repair-pdf", icon: Wrench, color: "text-red-500" },
+      { name: "Make Searchable", href: "/scanned-pdf-to-searchable-pdf", icon: Search, color: "text-blue-500" },
     ]
   }
 ];
@@ -146,7 +147,7 @@ export function IMGToolsDropdown() {
                     {imgTools.map((tool, tIdx) => (
                       <Link 
                         key={tIdx} 
-                        href={`/tools/${tool.id}`}
+                        href={toolPath(tool.id)}
                         className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-black/5 transition-all group"
                       >
                         <ToolArtwork toolId={tool.id} toolName={tool.name} className="h-9 w-9 transition-transform group-hover:scale-[1.03]" />

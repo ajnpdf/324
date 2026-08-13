@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { useReportWebVitals } from 'next/web-vitals';
 import { PDF_BACKEND_URL } from '@/lib/pdf-backend';
+import { toolIdFromPathname } from '@/lib/tool-routes';
 
 const CONSENT_KEY = 'ajn_cookie_consent';
 
@@ -57,9 +58,9 @@ function hasConsent(): boolean {
 }
 
 function currentToolId(path: string): string | undefined {
-  const match = path.match(/^\/tools\/([^/?#]+)/);
-  return match?.[1];
+  return toolIdFromPathname(path);
 }
+
 
 function categoryFromPath(path: string): string | undefined {
   if (path.startsWith('/conversion-tools')) return 'conversion';

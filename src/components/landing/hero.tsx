@@ -32,7 +32,7 @@ export default function Hero() {
           <p className="mt-4 max-w-2xl text-sm font-semibold leading-6 text-slate-600 md:mt-6 md:text-[clamp(1rem,1.35vw,1.14rem)] md:leading-8">{t('home.subtitle')}</p>
           <div className="mt-6 flex flex-col gap-2.5 sm:flex-row md:mt-7 md:gap-3">
             <Button asChild className="ajn-primary-action h-11 rounded-xl px-5 text-[11px] font-black md:h-12 md:px-6 md:text-[12px]"><Link href="#public-tools">{t('home.explore100')} <ArrowRight className="ml-2 h-4 w-4" /></Link></Button>
-            <Button asChild variant="outline" className="ajn-secondary-action h-11 rounded-xl px-5 text-[11px] font-black md:h-12 md:px-6 md:text-[12px]"><Link href="/tools/merge-pdf"><LayoutGrid className="mr-2 h-4 w-4" />{t('home.startMerge')}</Link></Button>
+            <Button asChild variant="outline" className="ajn-secondary-action h-11 rounded-xl px-5 text-[11px] font-black md:h-12 md:px-6 md:text-[12px]"><Link href="/merge-pdf"><LayoutGrid className="mr-2 h-4 w-4" />{t('home.startMerge')}</Link></Button>
           </div>
           <p className="mt-4 text-[11px] font-bold leading-5 text-slate-600 md:hidden">{t('home.mobileSearchHint')}</p>
         </div>

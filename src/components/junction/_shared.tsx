@@ -1,15 +1,13 @@
 "use client";
 import React, { useCallback, useId, useRef, useState, type ReactNode } from "react";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { ArrowLeft, Download, FileCheck2, Home, RefreshCcw, Share2, UploadCloud, X } from "lucide-react";
-import { LogoAnimation } from "../landing/logo-animation";
-import { LanguageSwitcher } from "../i18n/language-switcher";
+import { usePathname } from "next/navigation";
+import { Download, FileCheck2, RefreshCcw, Share2, UploadCloud, X } from "lucide-react";
 import { ToolRuntimeFactsInline } from "@/components/ajn/tool-runtime-facts";
 import { cn } from "../../lib/utils";
 import { sendAjnAnalytics } from "../analytics/site-analytics";
 import { useLanguage } from "@/lib/i18n/language-context";
 import { ToolArtwork } from "@/components/ajn/tool-artwork";
+import { toolIdFromPathname } from "@/lib/tool-routes";
 
 export interface ToolFile { file: File; name: string; size: number; }
 
@@ -39,8 +37,8 @@ export function dl(blob: Blob, name: string) {
   a.href = u;
   a.download = name;
   a.click();
-  const match = window.location.pathname.match(/^\/tools\/([^/?#]+)/);
-  sendAjnAnalytics({ event_name: "download", path: window.location.pathname, tool_id: match?.[1] });
+  const toolId = toolIdFromPathname(window.location.pathname);
+  sendAjnAnalytics({ event_name: "download", path: window.location.pathname, tool_id: toolId });
   setTimeout(() => {
     if (document.body.contains(a)) document.body.removeChild(a);
     URL.revokeObjectURL(u);
@@ -139,28 +137,13 @@ function injectStyles(accent = T.red) {
 }
 
 export function ToolWorkspace({ title, description, accent = T.red, children }: WorkspaceProps) {
-  const router = useRouter();
   const pathname = usePathname();
-  const { t, tool: localizeTool } = useLanguage();
+  const { tool: localizeTool } = useLanguage();
   React.useEffect(() => { injectStyles(accent); }, [accent]);
-  const toolId = pathname?.match(/^\/tools\/([^/?#]+)/)?.[1] || "";
+  const toolId = toolIdFromPathname(pathname) || "";
   const localized = localizeTool(toolId, title, description, []);
   return (
     <div className="jn-workspace relative min-h-screen overflow-hidden" style={{ "--jn-accent": accent, background: "transparent", WebkitFontSmoothing: "antialiased" } as React.CSSProperties}>
-      <header className="fixed inset-x-0 top-0 z-[100] flex h-16 items-center justify-between border-b border-slate-200/70 bg-white/88 px-3 backdrop-blur-xl sm:px-5">
-        <div className="flex min-w-0 items-center gap-2 sm:gap-3">
-          <Link href="/" className="shrink-0" aria-label="AJN PDF"><LogoAnimation className="h-9 w-28 sm:w-32" showGlow={false} /></Link>
-          <span className="hidden h-5 w-px bg-slate-200 sm:block" />
-          <button onClick={() => router.back()} className="inline-flex min-h-11 items-center gap-1.5 rounded-xl px-2 text-sm font-bold text-slate-600 transition hover:bg-slate-100" aria-label={t("tool.back")}>
-            <ArrowLeft size={16} /> <span className="hidden sm:inline">{t("common.back")}</span>
-          </button>
-        </div>
-        <div className="flex items-center gap-2">
-          <LanguageSwitcher compact />
-          <Link href="/" className="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:border-blue-200 hover:text-blue-600" aria-label={t("common.home")}><Home size={17} /></Link>
-        </div>
-      </header>
-
       <main className="relative z-10 mx-auto w-full max-w-5xl px-3 pb-12 pt-24 sm:px-5 sm:pt-28">
         <div className="mx-auto mb-5 flex max-w-3xl items-center gap-3.5 text-left sm:mb-7 sm:gap-5">
           <ToolArtwork toolId={toolId} toolName={localized.name} priority className="h-[52px] w-[52px] sm:h-14 sm:w-14" />
@@ -201,9 +184,9 @@ export function Drop({ files, onChange, accept="*", multiple=false, label, sub }
     if (!raw) return;
     const arr = Array.from(raw).filter(f => f.size > 0).map(f => ({ file: f, name: f.name, size: f.size }));
     if (typeof window !== "undefined" && arr.length > 0) {
-      const match = window.location.pathname.match(/^\/tools\/([^/?#]+)/);
+      const toolId = toolIdFromPathname(window.location.pathname);
       const countBucket = arr.length === 1 ? "one-file" : arr.length <= 5 ? "two-to-five-files" : "six-plus-files";
-      sendAjnAnalytics({ event_name: "upload_selected", path: window.location.pathname, tool_id: match?.[1], element_id: countBucket });
+      sendAjnAnalytics({ event_name: "upload_selected", path: window.location.pathname, tool_id: toolId, element_id: countBucket });
     }
     onChange(multiple ? [...files, ...arr] : arr);
   }, [files,multiple,onChange]);
@@ -231,8 +214,8 @@ export function Done({ msg, onDownload, dlLabel, onReset, shareFile }: { msg?:st
     if (!shareFile) return;
     const result = await shareResult(shareFile.blob, shareFile.name);
     if (result === "cancelled") return;
-    const match = window.location.pathname.match(/^\/tools\/([^/?#]+)/);
-    sendAjnAnalytics({ event_name: "interaction", path: window.location.pathname, tool_id: match?.[1], element_id: result === "shared" ? "share-file" : result === "copied-link" ? "copy-tool-link" : "share-unavailable" });
+    const toolId = toolIdFromPathname(window.location.pathname);
+    sendAjnAnalytics({ event_name: "interaction", path: window.location.pathname, tool_id: toolId, element_id: result === "shared" ? "share-file" : result === "copied-link" ? "copy-tool-link" : "share-unavailable" });
     if (result === "copied-link" || result === "unavailable") {
       setShareState(result);
       window.setTimeout(() => setShareState("idle"), 1800);
@@ -245,7 +228,7 @@ export function Done({ msg, onDownload, dlLabel, onReset, shareFile }: { msg?:st
     <div className="mt-5 flex flex-wrap justify-center gap-2">
       {onDownload && <Btn onClick={onDownload} style={{background:"#0f172a"}}><Download size={16}/>{dlLabel || t("common.download")}</Btn>}
       {shareFile && <Btn variant="secondary" onClick={() => void share()}><Share2 size={15}/>{shareState === "copied-link" ? t("result.toolLinkCopied") : shareState === "unavailable" ? t("result.shareUnavailable") : t("result.shareFile")}</Btn>}
-      <Btn variant="secondary" onClick={()=>{if(typeof window!=="undefined"){const match=window.location.pathname.match(/^\/tools\/([^/?#]+)/);sendAjnAnalytics({event_name:"tool_reset",path:window.location.pathname,tool_id:match?.[1]});}onReset();}}><RefreshCcw size={15}/>{t("common.processAnother")}</Btn>
+      <Btn variant="secondary" onClick={()=>{if(typeof window!=="undefined"){const toolId=toolIdFromPathname(window.location.pathname);sendAjnAnalytics({event_name:"tool_reset",path:window.location.pathname,tool_id:toolId});}onReset();}}><RefreshCcw size={15}/>{t("common.processAnother")}</Btn>
     </div>
   </div>;
 }

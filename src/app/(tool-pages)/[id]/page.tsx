@@ -12,6 +12,8 @@ import { AdSenseUnit } from '@/components/adsense-unit';
 import { ADSENSE_SLOTS } from '@/lib/ad-slots';
 import { MainFooter } from '@/components/landing/main-footer';
 import { getToolSeoProfile } from '@/lib/seo-strategy';
+import { Navbar } from '@/components/landing/navbar';
+import { toolPath } from '@/lib/tool-routes';
 
 export const dynamicParams = false;
 
@@ -47,7 +49,7 @@ export default async function ToolPage({ params }: ToolPageProps) {
         '@type': 'WebApplication',
         name: tool.name,
         description: seo.description,
-        url: `${SITE_URL}/tools/${tool.id}`,
+        url: `${SITE_URL}${toolPath(tool.id)}`,
         applicationCategory: 'UtilitiesApplication',
         operatingSystem: 'Web',
         isAccessibleForFree: true,
@@ -63,7 +65,7 @@ export default async function ToolPage({ params }: ToolPageProps) {
         itemListElement: [
           { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
           { '@type': 'ListItem', position: 2, name: categoryLabel, item: `${SITE_URL}${categoryPath}` },
-          { '@type': 'ListItem', position: 3, name: tool.name, item: `${SITE_URL}/tools/${tool.id}` },
+          { '@type': 'ListItem', position: 3, name: tool.name, item: `${SITE_URL}${toolPath(tool.id)}` },
         ],
       },
     ],
@@ -71,6 +73,7 @@ export default async function ToolPage({ params }: ToolPageProps) {
 
   return (
     <>
+      <Navbar />
       <Script
         id={`tool-schema-${tool.id}`}
         type="application/ld+json"

@@ -15,8 +15,8 @@ export default function PdfSecurityGuide() {
     ]}
     checklist={['Use unique open and owner passwords', 'Verify permissions in a desktop PDF viewer', 'Share passwords through a separate secure channel', 'Keep an unencrypted source in protected storage']}
     relatedTools={[
-      { href: '/tools/protect-pdf', title: 'Protect PDF', description: 'Create an AES-256 password-protected PDF.' },
-      { href: '/tools/unlock-pdf', title: 'Unlock PDF', description: 'Remove protection using the current valid password.' },
+      { href: '/protect-pdf', title: 'Protect PDF', description: 'Create an AES-256 password-protected PDF.' },
+      { href: '/unlock-pdf', title: 'Unlock PDF', description: 'Remove protection using the current valid password.' },
       { href: '/security', title: 'Security controls', description: 'Review validation, cleanup and authorization rules.' },
     ]}
   />;

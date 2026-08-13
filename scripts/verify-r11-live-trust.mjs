@@ -16,7 +16,7 @@ const transparency = read('src/app/transparency/page.tsx');
 const privacy = read('src/app/privacy/page.tsx');
 const toolPolicy = read('src/lib/tool-policy.ts');
 const toolEditorial = read('src/components/junction/tool-editorial-content.tsx');
-const toolPage = read('src/app/tools/[id]/page.tsx');
+const toolPage = read('src/app/(tool-pages)/[id]/page.tsx');
 const sitemap = read('src/app/sitemap.ts');
 const robots = read('src/app/robots.ts');
 const errorPage = read('src/app/error.tsx');
@@ -39,9 +39,9 @@ check('homepage meta description is truthful and task-oriented', layout.includes
 check('Open Graph and Twitter metadata use the new homepage title', (layout.match(/Free PDF Tools Online - Convert, Merge, Compress & Edit \| AJN PDF/g) || []).length >= 3);
 check('canonical host is www.ajnpdf.com', seo.includes("export const SITE_URL = 'https://www.ajnpdf.com';"));
 check('bare domain permanently redirects to www', nextConfig.includes("value: 'ajnpdf.com'") && nextConfig.includes("destination: 'https://www.ajnpdf.com/:path*'"));
-check('stale Smart Read route redirects to canonical PDF text tool', nextConfig.includes("source: '/tools/smart-read'") && nextConfig.includes("destination: '/tools/pdf-text'"));
-check('legacy PDF-to-PPT route redirects to current converter', nextConfig.includes("source: '/tools/pdf-ppt'") && nextConfig.includes("destination: '/tools/pdf-to-powerpoint'"));
-check('legacy searchable OCR route redirects to current converter', nextConfig.includes("source: '/tools/ocr-searchable'") && nextConfig.includes("destination: '/tools/scanned-pdf-to-searchable-pdf'"));
+check('stale Smart Read route redirects to canonical PDF text tool', nextConfig.includes("source: '/tools/smart-read'") && nextConfig.includes("destination: '/pdf-text'"));
+check('legacy PDF-to-PPT route redirects to current converter', nextConfig.includes("source: '/tools/pdf-ppt'") && nextConfig.includes("destination: '/pdf-to-powerpoint'"));
+check('legacy searchable OCR route redirects to current converter', nextConfig.includes("source: '/tools/ocr-searchable'") && nextConfig.includes("destination: '/scanned-pdf-to-searchable-pdf'"));
 
 const locales = ['en','hi','te','ta','kn'].map((code) => JSON.parse(read(`src/i18n/locales/${code}.json`)));
 check('all five locales keep identical 511-key structure', locales.every((d) => Object.keys(d).length === 511) && locales.every((d) => Object.keys(d).join('\n') === Object.keys(locales[0]).join('\n')));

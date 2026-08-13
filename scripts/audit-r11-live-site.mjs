@@ -12,7 +12,7 @@ async function fetchText(url, init = {}) {
 function hasAny(text, values) { return values.some((v) => text.toLowerCase().includes(v.toLowerCase())); }
 
 const publicPages = [
-  '/', '/about', '/privacy', '/faq', '/transparency', '/pdf-tools', '/conversion-tools', '/image-tools', '/pdf-utilities', '/limits', '/ocr', '/image-licensing', '/discover', '/tools/merge-pdf', '/tools/compress-pdf', '/tools/pdf-to-word', '/tools/scanned-pdf-to-text', '/tools/image-to-pdf'
+  '/', '/about', '/privacy', '/faq', '/transparency', '/pdf-tools', '/conversion-tools', '/image-tools', '/pdf-utilities', '/limits', '/ocr', '/image-licensing', '/discover', '/merge-pdf', '/compress-pdf', '/pdf-to-word', '/scanned-pdf-to-text', '/image-to-pdf'
 ];
 const staleClaims = [
   'zero-server-transit',
@@ -51,11 +51,11 @@ try {
 } catch (error) { fail(`bare-domain redirect check failed: ${error.message}`); }
 
 for (const [oldPath, newPath] of [
-  ['/tools/pdf-jpg','/tools/pdf-to-jpg'],
-  ['/tools/json-pdf','/tools/json-to-pdf'],
-  ['/tools/smart-read','/tools/pdf-text'],
-  ['/tools/pdf-ppt','/tools/pdf-to-powerpoint'],
-  ['/tools/ocr-searchable','/tools/scanned-pdf-to-searchable-pdf'],
+  ['/tools/pdf-jpg','/pdf-to-jpg'],
+  ['/tools/json-pdf','/json-to-pdf'],
+  ['/tools/smart-read','/pdf-text'],
+  ['/tools/pdf-ppt','/pdf-to-powerpoint'],
+  ['/tools/ocr-searchable','/scanned-pdf-to-searchable-pdf'],
 ]) {
   try {
     const { response } = await fetchText(`${base}${oldPath}`);
@@ -69,7 +69,7 @@ try {
   const { response, text } = await fetchText(`${base}/sitemap.xml`);
   if (response.ok && /<urlset|<sitemapindex/i.test(text)) pass('sitemap.xml returns XML'); else fail(`sitemap.xml invalid HTTP=${response.status}`);
   if (!text.includes('/admin/')) pass('sitemap excludes admin routes'); else fail('sitemap exposes admin route');
-  if (text.includes(`${base}/tools/merge-pdf`)) pass('sitemap includes public tool routes'); else fail('sitemap missing merge-pdf');
+  if (text.includes(`${base}/merge-pdf`)) pass('sitemap includes public tool routes'); else fail('sitemap missing merge-pdf');
 } catch (error) { fail(`sitemap check failed: ${error.message}`); }
 
 try {
