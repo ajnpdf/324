@@ -26,7 +26,7 @@ const page=requireText('src/app/page.tsx',["{ id: 'ocr'","{ id: 'edit'","{ id: '
 for(const old of ['<VisualStories />','<ToolCategories />','<Workflows />','<FormatStrip />']) if(page.includes(old)) fail(`Homepage still renders removed long-form section ${old}`);
 pass('Homepage is shorter and keeps focused discovery, workflow, trust and FAQ sections');
 
-requireText('src/i18n/locales/en.json',['Work Smarter with Powerful PDF Tools.','','100+ tools to convert']);
+requireText('src/i18n/locales/en.json',['Free PDF Tools Online - Convert, Merge, Compress, Edit & OCR','100+ tools to convert']);
 const heroUi=text('src/components/landing/hero.tsx')+text('src/components/landing/mobile-home-hero.tsx');
 if(heroUi.includes('PremiumBackground')) fail('Hero still mounts decorative premium background shapes'); else pass('Hero no longer mounts wave/blob background shapes');
 
@@ -66,7 +66,7 @@ pass('Primary public tool copy avoids the audited developer-style phrases');
 
 const toolRoute=requireText('src/app/tools/[id]/page.tsx',["'@type': 'WebApplication'","'@type': 'BreadcrumbList'",'generateMetadata']);
 for(const x of ["'@type': 'FAQPage'","'@type': 'HowTo'","totalTime: 'PT5M'"]) if(toolRoute.includes(x)) fail(`Unsupported/invented tool schema remains: ${x}`);
-const rootLayout=requireText('src/app/layout.tsx',['100+ PDF, Document & Image Tools | AJN PDF','NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION']);
+const rootLayout=requireText('src/app/layout.tsx',['Free PDF Tools Online - Convert, Merge, Compress & Edit | AJN PDF','NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION']);
 if(rootLayout.includes('SearchAction')) fail('Inaccurate WebSite SearchAction remains');
 const strategy=requireText('src/lib/seo-strategy.ts',['const candidate = `${base} – Free ${suffix}`;','return candidate.length <= 60 ? candidate : base;']);
 if(strategy.includes('`${base} | AJN PDF`')) fail('Tool title can duplicate the root title template');

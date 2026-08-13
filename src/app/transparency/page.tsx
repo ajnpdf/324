@@ -16,7 +16,7 @@ const modes = [
     title: 'Service-assisted tools',
     tag: 'When required',
     accent: 'bg-red-50 text-red-600 border-red-100',
-    body: 'Advanced conversion, OCR and security workflows can use the processing service for the requested action. Request workspace data is cleaned after delivery or an error.',
+    body: 'Advanced conversion, OCR and security workflows can use the processing service for the requested action. Request workspace data is scheduled for cleanup after delivery or an error.',
   },
 ];
 
@@ -59,7 +59,7 @@ export default function TransparencyPage() {
               <div>
                 <Trash2 className="h-7 w-7 text-emerald-600" />
                 <h2 className="mt-5 text-xl font-black">Temporary cleanup</h2>
-                <p className="mt-3 text-sm leading-7 text-slate-600">Server jobs use request-specific temporary directories and schedule cleanup after delivery.</p>
+                <p className="mt-3 text-sm leading-7 text-slate-600">Server jobs use request-specific temporary directories and schedule cleanup after delivery or a handled error.</p>
               </div>
               <div>
                 <Server className="h-7 w-7 text-red-600" />

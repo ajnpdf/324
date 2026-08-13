@@ -21,7 +21,7 @@
 3. Complete payment profile and any requested identity/address steps.
 4. In **Privacy & messaging**, publish Google's certified consent message for applicable EEA, UK and Switzerland traffic.
 5. Review Auto Ads. Prefer disabling Auto Ads for this tool application, or create exclusions so automatic placements cannot appear inside tool workspaces or near download controls.
-6. Verify `https://ajnpdf.com/ads.txt` and the publisher ownership signal.
+6. Verify `https://www.ajnpdf.com/ads.txt` and the publisher ownership signal.
 7. Test manual units only after consent on the live production domain.
 8. Request review only after the real content, guides, legal pages, backend and public tools are deployed.
 

@@ -43,7 +43,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Free PDF Tools Online - Convert, Merge, Compress & Edit | AJN PDF',
-    description: '100+ simple PDF, document, image and OCR tools from AJN PDF.',
+    description: 'Use AJN PDF to convert, merge, compress, edit, sign, scan and OCR PDF, document and image files online with simple, powerful tools.',
     images: ['/og-image.jpg'],
   },
   verification: { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined },

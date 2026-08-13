@@ -4,7 +4,7 @@ import { isToolPublic } from './tool-policy';
 import { getToolSeoProfile } from './seo-strategy';
 import { isBuildToolAvailable } from './tool-capabilities';
 
-export const SITE_URL = 'https://ajnpdf.com';
+export const SITE_URL = 'https://www.ajnpdf.com';
 export const SITE_NAME = 'AJN PDF';
 export const ADSENSE_CLIENT = 'ca-pub-4495802176396975';
 

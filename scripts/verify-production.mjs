@@ -35,7 +35,7 @@ if (!backend.includes('RATE_LIMIT_PER_MINUTE') || !backend.includes('_PROCESSING
 if (!backend.includes('X-Request-ID') || !backend.includes('request_complete')) throw new Error('Request ID or structured request logging is missing.');
 
 const nextConfig = fs.readFileSync('next.config.ts', 'utf8');
-if (!nextConfig.includes("value: 'www.ajnpdf.com'") || !nextConfig.includes("destination: 'https://ajnpdf.com/:path*'")) throw new Error('Canonical www redirect is missing.');
+if (!nextConfig.includes("value: 'ajnpdf.com'") || !nextConfig.includes("destination: 'https://www.ajnpdf.com/:path*'")) throw new Error('Canonical bare-domain to www redirect is missing.');
 const adsLoader = fs.readFileSync('src/components/adsense-script-loader.tsx', 'utf8');
 for (const route of ['/privacy', '/terms', '/security', '/status', '/transparency']) {
   if (!adsLoader.includes(`'${route}'`)) throw new Error(`AdSense legal/trust exclusion is missing: ${route}`);

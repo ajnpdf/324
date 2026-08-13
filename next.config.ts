@@ -45,7 +45,7 @@ const nextConfig: NextConfig = {
   turbopack: { resolveAlias: { canvas: './src/lib/mocks/empty.js' } },
   async redirects() {
     return [
-      { source: '/:path*', has: [{ type: 'host', value: 'www.ajnpdf.com' }], destination: 'https://ajnpdf.com/:path*', permanent: true },
+      { source: '/:path*', has: [{ type: 'host', value: 'ajnpdf.com' }], destination: 'https://www.ajnpdf.com/:path*', permanent: true },
       { source: '/guides', destination: '/blog', permanent: true },
       { source: '/ajn', destination: '/ajn-studio', permanent: true },
       { source: '/story', destination: '/about', permanent: true },
@@ -71,6 +71,9 @@ const nextConfig: NextConfig = {
       { source: '/tools/xml-pdf', destination: '/tools/xml-to-pdf', permanent: true },
       { source: '/tools/json-pdf', destination: '/tools/json-to-pdf', permanent: true },
       { source: '/tools/txt-pdf', destination: '/tools/txt-to-pdf', permanent: true },
+      { source: '/tools/smart-read', destination: '/tools/pdf-text', permanent: true },
+      { source: '/tools/pdf-ppt', destination: '/tools/pdf-to-powerpoint', permanent: true },
+      { source: '/tools/ocr-searchable', destination: '/tools/scanned-pdf-to-searchable-pdf', permanent: true },
     ];
   },
   async headers() {

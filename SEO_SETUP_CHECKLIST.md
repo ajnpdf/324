@@ -2,7 +2,7 @@
 
 ## Environment variables
 
-- `NEXT_PUBLIC_APP_URL=https://ajnpdf.com`
+- `NEXT_PUBLIC_APP_URL=https://www.ajnpdf.com`
 - `NEXT_PUBLIC_PDF_BACKEND_URL=https://api.ajnpdf.com`
 - `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION=` optional HTML-tag token
 - `NEXT_PUBLIC_GA4_MEASUREMENT_ID=` optional GA4 web measurement ID
@@ -11,7 +11,7 @@
 
 1. Add and verify the `ajnpdf.com` domain property using DNS.
 2. Test the homepage, category hubs and highest-priority tools with URL Inspection.
-3. Submit `https://ajnpdf.com/sitemap.xml`.
+3. Submit `https://www.ajnpdf.com/sitemap.xml`.
 4. Review indexing exclusions before requesting broad indexing.
 5. Monitor queries and pages; use actual impression data to update titles and content.
 

@@ -5,7 +5,7 @@
 Deploy the Next.js project and configure:
 
 ```env
-NEXT_PUBLIC_APP_URL=https://ajnpdf.com
+NEXT_PUBLIC_APP_URL=https://www.ajnpdf.com
 NEXT_PUBLIC_PDF_BACKEND_URL=https://api.ajnpdf.com
 NEXT_PUBLIC_ADSENSE_CLIENT=ca-pub-4495802176396975
 NEXT_PUBLIC_ADSENSE_SLOT_HOME_PRIMARY=3648223351
@@ -16,7 +16,7 @@ NEXT_PUBLIC_GA4_MEASUREMENT_ID=
 NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION=
 ```
 
-Use `https://ajnpdf.com` as the canonical host. The included Next.js redirect sends `www.ajnpdf.com` to the canonical host.
+Use `https://www.ajnpdf.com` as the canonical host. The included Next.js redirect sends `ajnpdf.com` to the canonical host.
 
 ## 2. Backend environment
 
@@ -25,7 +25,7 @@ Deploy `backend/Dockerfile` with a persistent volume mounted at `/app/data`.
 ```env
 AJN_MAX_FILE_MB=75
 AJN_MAX_TOTAL_MB=150
-AJN_ALLOWED_ORIGINS=https://ajnpdf.com
+AJN_ALLOWED_ORIGINS=https://www.ajnpdf.com,https://ajnpdf.com
 AJN_ENABLE_HSTS=true  # set only after HTTPS is verified stable
 AJN_RATE_LIMIT_PER_MINUTE=30
 AJN_ANALYTICS_RATE_LIMIT_PER_MINUTE=120

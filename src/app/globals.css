@@ -1432,13 +1432,3 @@ body { background:#ffffff; }
 @media (max-width: 767px) {
   .ajn-progressive-tool-card { contain-intrinsic-size: 78px; }
 }
-
-/* AJN-PDF-GLOBAL-ZOOM-START */
-/*
- * Global presentation scale requested for AJN PDF.
- * Browser support that implements CSS zoom will render at 115%.
- */
-html {
-  zoom: 1.15;
-}
-/* AJN-PDF-GLOBAL-ZOOM-END */

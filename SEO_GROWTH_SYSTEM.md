@@ -84,9 +84,9 @@ Use the private `/admin/analytics` page to find high-traffic pages with low star
 
 ## 9. External setup required
 
-- Deploy `https://ajnpdf.com` and the Python API over HTTPS.
+- Deploy `https://www.ajnpdf.com` and the Python API over HTTPS.
 - Verify the domain in Google Search Console.
-- Submit `https://ajnpdf.com/sitemap.xml`.
+- Submit `https://www.ajnpdf.com/sitemap.xml`.
 - Add a GA4 web stream ID only if optional analytics is desired.
 - Configure a Google-certified consent solution where applicable.
 - Validate structured data and live URLs.

@@ -17,7 +17,7 @@ const groups = [
       },
       {
         q: 'Are temporary files deleted?',
-        a: 'Service-assisted jobs use a request-specific workspace that is cleaned after the result is delivered. Session-based tools keep their working state in the active page.',
+        a: 'Service-assisted jobs use a request-specific workspace that is scheduled for cleanup after the result is delivered. Session-based tools keep their working state in the active page.',
       },
     ],
   },

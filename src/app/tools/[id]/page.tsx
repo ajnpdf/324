@@ -6,6 +6,7 @@ import { ALL_TOOLS, getPublicToolCategory } from '@/lib/tools-data';
 import { BUILD_PUBLIC_TOOLS } from '@/lib/build-public-tools';
 import { isBuildToolAvailable } from '@/lib/tool-capabilities';
 import { buildToolMetadata, SITE_NAME, SITE_URL } from '@/lib/seo-config';
+import { AJN_BRAND } from '@/lib/brand';
 import { ToolEditorialContent } from '@/components/junction/tool-editorial-content';
 import { AdSenseUnit } from '@/components/adsense-unit';
 import { ADSENSE_SLOTS } from '@/lib/ad-slots';
@@ -52,7 +53,9 @@ export default async function ToolPage({ params }: ToolPageProps) {
         isAccessibleForFree: true,
         offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
         featureList: [...tool.benefits, ...tool.useCases],
-        publisher: { '@type': 'Organization', name: SITE_NAME, url: SITE_URL },
+        author: { '@id': `${SITE_URL}/developer#anjan` },
+        publisher: { '@id': `${SITE_URL}/ajn-studio#organization` },
+        brand: { '@type': 'Brand', name: AJN_BRAND.productName, url: SITE_URL },
         isPartOf: { '@type': 'WebSite', name: SITE_NAME, url: SITE_URL },
       },
       {

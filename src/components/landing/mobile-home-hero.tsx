@@ -18,7 +18,7 @@ export function MobileHomeHero() {
             <span className="ajn-mobile-value-chip"><Gauge className="h-3 w-3 text-emerald-600" /> {valueWords[2]}</span>
           </div>
           <h1 className="mt-4 text-[2.05rem] font-black leading-[.99] tracking-[-.052em] text-slate-950">
-            {t('home.title1')} <span className="text-violet-600">{t('home.title2')}</span>
+            {t('home.title1')}{t('home.title2') ? <> <span className="text-violet-600">{t('home.title2')}</span></> : null}
           </h1>
           <p className="mt-3 max-w-sm text-[12.5px] font-semibold leading-5 text-slate-600">{t('home.subtitle')}</p>
           <div className="mt-5 grid grid-cols-2 gap-2.5">

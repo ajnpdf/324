@@ -26,13 +26,13 @@ The popup also searches the AJN PDF public workflow catalog so you can open the 
 The native quick actions use only files you explicitly select. Their processing logic is packaged with the extension. The extension does not contain content scripts or remotely hosted JavaScript.
 
 ## Website
-https://ajnpdf.com/chrome-extension
+https://www.ajnpdf.com/chrome-extension
 
 ## Support
-https://ajnpdf.com/contact
+https://www.ajnpdf.com/contact
 
 ## Privacy policy
-https://ajnpdf.com/chrome-extension/privacy
+https://www.ajnpdf.com/chrome-extension/privacy
 
 ## Privacy-practice review notes
 - Manifest permissions: none.

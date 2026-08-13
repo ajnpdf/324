@@ -47,7 +47,7 @@ ALLOWED_ORIGINS = [
     origin.strip()
     for origin in os.getenv(
         "AJN_ALLOWED_ORIGINS",
-        "http://localhost:3000,http://localhost:9002,https://ajnpdf.com",
+        "http://localhost:3000,http://localhost:9002,https://www.ajnpdf.com,https://ajnpdf.com",
     ).split(",")
     if origin.strip()
 ]

@@ -26,8 +26,8 @@ export default function Hero() {
               return <span className="ajn-hero-value-chip" key={word}><Icon className={`h-3.5 w-3.5 ${tone}`} /> {word}</span>;
             })}
           </div>
-          <h1 className="mt-5 max-w-[820px] text-[clamp(2.2rem,8.5vw,3.2rem)] font-black leading-[.98] tracking-[-.052em] text-slate-950 md:mt-6 md:text-[clamp(3rem,5.8vw,5.2rem)]">
-            {t('home.title1')} <span className="text-violet-700">{t('home.title2')}</span>
+          <h1 className="mt-5 max-w-[780px] text-[clamp(2.15rem,8vw,3.05rem)] font-black leading-[1.01] tracking-[-.046em] text-slate-950 md:mt-6 md:text-[clamp(2.9rem,4.4vw,4.15rem)] md:leading-[1.02]">
+            {t('home.title1')}{t('home.title2') ? <> <span className="text-violet-700">{t('home.title2')}</span></> : null}
           </h1>
           <p className="mt-4 max-w-2xl text-sm font-semibold leading-6 text-slate-600 md:mt-6 md:text-[clamp(1rem,1.35vw,1.14rem)] md:leading-8">{t('home.subtitle')}</p>
           <div className="mt-6 flex flex-col gap-2.5 sm:flex-row md:mt-7 md:gap-3">

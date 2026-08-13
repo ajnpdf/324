@@ -221,34 +221,17 @@ def command_path(name: str) -> str | None:
         found = shutil.which(candidate)
         if found:
             return found
-    # Windows-only fallback search. On Linux/Cloud Run, never interpret
-    # Windows drive paths or Windows glob patterns. If shutil.which() above
-    # did not find the dependency, return unavailable cleanly.
-    if os.name == "nt":
-        windows_candidates = {
-            "calibre": [Path(r"C:\Program Files\Calibre2\ebook-convert.exe")],
-            "tesseract": [Path(r"C:\Program Files\Tesseract-OCR\tesseract.exe")],
-            "mutool": [Path(r"C:\Program Files\MuPDF\mutool.exe")],
-        }.get(name, [])
-
-        if name == "mutool":
-            windows_candidates.extend(
-                sorted(
-                    Path(r"C:\Program Files\gs").glob("gs*/bin/gswin64c.exe"),
-                    reverse=True,
-                )
-            )
-            windows_candidates.extend(
-                sorted(
-                    Path(r"C:\Program Files\Artifex Software").rglob("mutool.exe"),
-                    reverse=True,
-                )
-            )
-
-        for candidate in windows_candidates:
-            if candidate.exists():
-                return str(candidate)
-
+    windows_candidates = {
+        "calibre": [Path(r"C:\Program Files\Calibre2\ebook-convert.exe")],
+        "tesseract": [Path(r"C:\Program Files\Tesseract-OCR\tesseract.exe")],
+        "mutool": [Path(r"C:\Program Files\MuPDF\mutool.exe")],
+    }.get(name, [])
+    if name == "mutool":
+        windows_candidates.extend(sorted(Path(r"C:\Program Files\gs").glob(r"gs*\bin\gswin64c.exe"), reverse=True))
+        windows_candidates.extend(sorted(Path(r"C:\Program Files\Artifex Software").glob(r"**\mutool.exe"), reverse=True))
+    for candidate in windows_candidates:
+        if candidate.exists():
+            return str(candidate)
     return None
 
 
@@ -294,7 +277,7 @@ def _validate_public_url(raw_url: str) -> str:
 def _download_public_html(raw_url: str, max_bytes: int = 5 * 1024 * 1024) -> tuple[str, str]:
     current = _validate_public_url(raw_url)
     session = requests.Session()
-    headers = {"User-Agent": "AJN-PDF/2.0 (+https://ajnpdf.com)"}
+    headers = {"User-Agent": "AJN-PDF/2.0 (+https://www.ajnpdf.com)"}
     for _ in range(4):
         with session.get(current, timeout=(5, 20), headers=headers, allow_redirects=False, stream=True) as response:
             if response.is_redirect or response.is_permanent_redirect:
@@ -1082,45 +1065,6 @@ def _office_to_pdf(source: Path, output: Path, workdir: Path) -> None:
     raise RuntimeError(f"LibreOffice conversion failed after retry: {last_error}")
 
 
-def _epub_to_pdf(source: Path, output: Path) -> None:
-    """Render EPUB content with AJN's text-safe ReportLab pipeline.
-
-    This deliberately avoids Calibre's PDF output plugin/Qt WebEngine.
-    """
-    with warnings.catch_warnings():
-        warnings.filterwarnings(
-            "ignore",
-            message=r"In the future version we will turn default option ignore_ncx to True\.",
-            category=UserWarning,
-            module=r"ebooklib\.epub",
-        )
-        warnings.filterwarnings(
-            "ignore",
-            message=r"This search incorrectly ignores the root element, and will be fixed in a future version\..*",
-            category=FutureWarning,
-            module=r"ebooklib\.epub",
-        )
-        book = epub.read_epub(str(source), options={"ignore_ncx": True})
-
-    sections: list[str] = []
-    for item in book.get_items():
-        if item.get_type() == 9:  # ebooklib.ITEM_DOCUMENT
-            sections.append(
-                _html_to_text(
-                    item.get_content().decode("utf-8", errors="replace")
-                )
-            )
-
-    text = "\n\n".join(section for section in sections if section).strip()
-    if not text:
-        raise ValueError("The eBook did not contain readable document content.")
-
-    _write_pdf_text(
-        [{"page": 1, "text": text, "lines": text.splitlines()}],
-        output,
-        source.stem,
-    )
-
 def _ebook_external(source: Path, output: Path) -> None:
     executable = command_path("calibre")
     if not executable:
@@ -1473,17 +1417,28 @@ def convert(spec: ConversionSpec, files: list[Path], output: Path, options: dict
             raise ValueError("The web page did not contain readable text.")
         _write_pdf_text([{"page": 1, "text": text, "lines": text.splitlines()}], output, final_url)
     elif processor == "ebook_to_pdf":
-        _epub_to_pdf(source, output)
+        with warnings.catch_warnings():
+            warnings.filterwarnings(
+                "ignore",
+                message=r"In the future version we will turn default option ignore_ncx to True\.",
+                category=UserWarning,
+                module=r"ebooklib\.epub",
+            )
+            warnings.filterwarnings(
+                "ignore",
+                message=r"This search incorrectly ignores the root element, and will be fixed in a future version\..*",
+                category=FutureWarning,
+                module=r"ebooklib\.epub",
+            )
+            book = epub.read_epub(str(source), options={"ignore_ncx": True})
+        sections = []
+        for item in book.get_items():
+            if item.get_type() == 9:  # ebooklib.ITEM_DOCUMENT
+                sections.append(_html_to_text(item.get_content().decode("utf-8", errors="replace")))
+        text = "\n\n".join(section for section in sections if section)
+        _write_pdf_text([{"page": 1, "text": text, "lines": text.splitlines()}], output, source.stem)
     elif processor == "ebook_external_to_pdf":
-        # MOBI/AZW3 -> EPUB via Calibre, then use AJN's own PDF renderer.
-        # Direct Calibre -> PDF invokes Qt WebEngine/Chromium and is not
-        # reliable in headless/root container build environments.
-        intermediate_epub = workdir / f"{source.stem}.intermediate.epub"
-        intermediate_epub.unlink(missing_ok=True)
-        _ebook_external(source, intermediate_epub)
-        if not intermediate_epub.exists() or intermediate_epub.stat().st_size <= 32:
-            raise RuntimeError("Calibre did not create a valid intermediate EPUB.")
-        _epub_to_pdf(intermediate_epub, output)
+        _ebook_external(source, output)
     elif processor == "eml_to_pdf":
         message = BytesParser(policy=policy.default).parsebytes(source.read_bytes())
         body = message.get_body(preferencelist=("plain", "html"))

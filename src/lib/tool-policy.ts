@@ -82,8 +82,8 @@ export function getToolPolicy(id: string): ToolPolicy {
       maxFileSizeMb: 75,
       publicByDefault: true,
       limitation: conversionBackendIds.has(id)
-        ? 'Processed by the AJN PDF conversion service. Uploaded files are used only for the requested conversion and removed after the response.'
-        : 'Requires the AJN PDF secure processing service. Files are removed after the response.',
+        ? 'Processed by the AJN PDF conversion service. Uploaded files are used only for the requested conversion and the request workspace is scheduled for cleanup after the response.'
+        : 'Requires the AJN PDF secure processing service. The request workspace is scheduled for cleanup after the response.',
     };
   }
   return {

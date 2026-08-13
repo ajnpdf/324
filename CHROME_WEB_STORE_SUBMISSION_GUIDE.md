@@ -19,7 +19,7 @@ Use `AJN-PDF-CHROME-EXTENSION-1.0.0.zip`. `manifest.json` is at the ZIP root.
 2. Verify generated PDF/image downloads open correctly.
 3. Confirm the extension popup and workspace match the store screenshots/listing copy.
 4. Capture an actual 1280x800 or 640x400 screenshot from the loaded extension for final listing use.
-5. Use `https://ajnpdf.com/chrome-extension/privacy` as the extension privacy-policy URL after R10 is deployed.
+5. Use `https://www.ajnpdf.com/chrome-extension/privacy` as the extension privacy-policy URL after R10 is deployed.
 6. In the Chrome Web Store privacy fields, keep the single-purpose statement narrow and justify only capabilities actually present.
 7. Do not add future permissions "just in case". Add new permissions only when a real feature needs them.
 8. Upload the ZIP in the Chrome Developer Dashboard, complete Store Listing, Privacy, Distribution and test instructions if requested, then submit for review.

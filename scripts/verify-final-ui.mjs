@@ -6,7 +6,7 @@ const home=read('src/app/page.tsx'),hero=read('src/components/landing/hero.tsx')
 const en=JSON.parse(read('src/i18n/locales/en.json'));
 for(const id of ['all','conversion','image','pdf','ocr','edit','organize','security']) home.includes(`id: '${id}'`)?pass(`Category/intent ${id} wired`):fail(`Category/intent ${id} missing`);
 hero.includes("t('home.title1')")&&hero.includes("t('home.title2')")&&hero.includes("t('home.subtitle')")?pass('Localized hero heading/copy'):fail('Localized hero copy missing');
-String(en['home.title1']||'').includes('Work Smarter') && String(en['home.subtitle']||'').includes('100+ tools') ? pass('Work Smarter and 100+ value proposition present') : fail('R9 value proposition missing');
+String(en['home.title1']||'').includes('Free PDF Tools Online') && String(en['home.subtitle']||'').includes('100+ tools') ? pass('SEO-targeted PDF tools H1 and 100+ supporting value proposition present') : fail('R11 homepage value proposition missing');
 const marketing=String(en['home.subtitle']||'');
 !/browser|temporary processing|server mode/i.test(marketing)?pass('Hero avoids internal processing architecture language'):fail('Hero exposes internal processing architecture');
 const responsive=css+'\n'+hero+'\n'+mobile+'\n'+grid;

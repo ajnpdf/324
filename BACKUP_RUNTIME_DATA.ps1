@@ -31,7 +31,7 @@ if (-not (Get-ChildItem -LiteralPath $Stage -Force -ErrorAction SilentlyContinue
 @{
   product = 'AJN PDF'
   createdAt = (Get-Date).ToUniversalTime().ToString('o')
-  version = '3.0.5'
+  version = '3.1.0-R11'
 } | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $Stage 'backup-manifest.json') -Encoding UTF8
 
 Compress-Archive -Path (Join-Path $Stage '*') -DestinationPath $Archive -Force

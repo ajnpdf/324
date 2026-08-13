@@ -1,6 +1,6 @@
 (() => {
   'use strict';
-  const siteBase = 'https://ajnpdf.com';
+  const siteBase = 'https://www.ajnpdf.com';
   const tools = Array.isArray(window.AJN_TOOLS) ? window.AJN_TOOLS : [];
   const api = globalThis.chrome && chrome.runtime && chrome.tabs ? chrome : null;
   const fallbackMessages = {

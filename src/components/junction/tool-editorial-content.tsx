@@ -47,7 +47,7 @@ export function ToolEditorialContent({ tool }: { tool: ServiceTool }) {
               <p className="mt-4 text-sm font-medium leading-7 text-slate-600">
                 {isBrowser
                   ? 'This tool handles supported files within the active session. Keep this tab open until your result is ready.'
-                  : 'This operation sends the selected file only for the active request. Request workspace data is cleaned after the result is returned.'}
+                  : 'This operation sends the selected file only for the active request. Request workspace data is scheduled for cleanup after the result is returned.'}
               </p>
             </details>
 

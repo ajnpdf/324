@@ -60,7 +60,7 @@ check('retained brand/media verifier now requires all four Google image licensin
 if (exists('APPLY_TEST_PUSH_FRONTEND.ps1')) {
   const updater = read('APPLY_TEST_PUSH_FRONTEND.ps1');
   check('package updater carries R10.9 source verification before lint/build/commit', updater.includes('verify-r10-9-search-admin.mjs') && updater.indexOf('verify-r10-9-search-admin.mjs') < updater.indexOf('Invoke-NpmGate "lint"') && updater.indexOf('verify-r10-9-search-admin.mjs') < updater.indexOf('git -C $RepoPath commit -m'));
-  check('package updater copies the local admin setup helper without touching backend source', updater.includes('CONFIGURE_AJN_ADMIN_LOCAL.ps1') && updater.includes('backend, package.json, package-lock.json and live capability manifests will not be copied'));
+  check('package updater copies the local admin setup helper with a declared backend policy', updater.includes('CONFIGURE_AJN_ADMIN_LOCAL.ps1') && updater.includes('R11_BACKEND_POLICY:') && updater.includes('backend/.env.example') && updater.includes('backend/app/main.py') && updater.includes('backend/app/conversion_engine.py'));
   check('package updater uses the R10.9 commit message', updater.includes('fix: complete image licensing and admin diagnostics'));
 }
 

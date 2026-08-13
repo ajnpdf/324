@@ -1,6 +1,6 @@
 (() => {
   'use strict';
-  const siteBase = 'https://ajnpdf.com';
+  const siteBase = 'https://www.ajnpdf.com';
   const api = globalThis.chrome && chrome.runtime && chrome.tabs ? chrome : null;
   const configs = {
     'image-to-pdf': { title:'Image to PDF', description:'Combine JPG, PNG, WEBP and other browser-supported images into one PDF directly in the extension.', multiple:true, action:'Create PDF' },

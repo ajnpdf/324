@@ -24,6 +24,22 @@ if (expected.size === 0) {
   process.exit(1);
 }
 
+function sha256(buffer) {
+  return crypto.createHash('sha256').update(buffer).digest('hex');
+}
+
+// All protected backend entries in the AJN PDF source baseline are text files.
+// Windows Git can materialize CRLF while release packages use LF. A byte-only
+// comparison therefore produces false changes on a correct checkout. Normalize
+// only UTF-8 BOM and line endings; every other byte/content difference still fails.
+function normalizedTextBytes(buffer) {
+  if (buffer.includes(0)) return buffer; // defensive: never rewrite binary-like data
+  let text = buffer.toString('utf8');
+  if (text.charCodeAt(0) === 0xfeff) text = text.slice(1);
+  text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  return Buffer.from(text, 'utf8');
+}
+
 const failures = [];
 for (const [rel, hash] of expected) {
   const full = path.join(root, rel);
@@ -31,17 +47,16 @@ for (const [rel, hash] of expected) {
     failures.push(`Missing protected backend source file ${rel}`);
     continue;
   }
-  const actual = crypto.createHash('sha256').update(fs.readFileSync(full)).digest('hex');
-  if (actual !== hash) failures.push(`Changed protected backend source file ${rel}`);
+  const bytes = fs.readFileSync(full);
+  const raw = sha256(bytes);
+  const normalized = sha256(normalizedTextBytes(bytes));
+  if (raw !== hash && normalized !== hash) {
+    failures.push(`Changed protected backend source file ${rel} (raw=${raw.slice(0,12)} normalized=${normalized.slice(0,12)} expected=${hash.slice(0,12)})`);
+  }
 }
 
-// IMPORTANT:
-// A production/local AJN PDF checkout legitimately contains runtime-generated backend
-// artifacts such as backend/.venv, tessdata, SQLite databases, acceptance-test output,
-// fixtures and __pycache__. They are intentionally NOT part of the frozen source
-// checksum manifest and must not make a frontend-only release fail.
-// The frontend updater separately refuses to stage anything under backend/.
-
+// Runtime-generated backend artifacts (.venv, tessdata, SQLite DBs, fixtures,
+// __pycache__, etc.) are intentionally outside this protected source manifest.
 if (failures.length) {
   console.error('AJN PDF BACKEND FROZEN CHECK: FAIL');
   failures.forEach((failure) => console.error(` - ${failure}`));
@@ -49,5 +64,5 @@ if (failures.length) {
 }
 
 console.log(
-  `AJN PDF BACKEND FROZEN CHECK: PASS (${expected.size} protected source files unchanged; runtime artifacts ignored)`,
+  `AJN PDF BACKEND FROZEN CHECK: PASS (${expected.size} protected source files unchanged; Windows CRLF/BOM normalized; runtime artifacts ignored)`,
 );

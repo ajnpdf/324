@@ -1,6 +1,6 @@
 # AJN PDF Post-Deployment Checklist
 
-1. Verify `https://ajnpdf.com`, `https://api.ajnpdf.com/health` and HTTPS redirects.
+1. Verify `https://www.ajnpdf.com`, `https://api.ajnpdf.com/health` and HTTPS redirects.
 2. Verify `/robots.txt`, `/sitemap.xml`, `/image-sitemap.xml`, `/feed.xml` and `/ads.txt`.
 3. Verify `/developer`, `/ajn-studio`, `/discover` and a published image detail page.
 4. Confirm admin routes are noindex and excluded from AdSense.
