@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import type { ServiceTool } from './tools-data';
 import { isToolPublic } from './tool-policy';
 import { getToolSeoProfile } from './seo-strategy';
-import { isBuildToolAvailable } from './tool-capabilities';
 import { toolPath } from './tool-routes';
 
 export const SITE_URL = 'https://www.ajnpdf.com';
@@ -30,7 +29,7 @@ export function buildToolMetadata(tool: ServiceTool): Metadata {
   const canonicalPath = TOOL_CANONICAL_OVERRIDES[tool.id] || pathname;
   const seo = getToolSeoProfile(tool);
   const description = seo.description;
-  const shouldIndex = isToolPublic(tool.id) && isBuildToolAvailable(tool.id) && !SEO_EXCLUDED_TOOL_IDS.has(tool.id);
+  const shouldIndex = isToolPublic(tool.id) && !SEO_EXCLUDED_TOOL_IDS.has(tool.id);
 
   return {
     title: seo.title,
