@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     url: '/',
     siteName: SITE_NAME,
     type: 'website',
-    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'AJN PDF red green blue professional toolkit' }],
+    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'AJN PDF professional document toolkit interface' }],
   },
   twitter: {
     card: 'summary_large_image',
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     images: ['/og-image.jpg'],
   },
   verification: { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined },
-  other: { 'google-adsense-account': ADSENSE_PUBLISHER },
+  other: { 'google-adsense-account': ADSENSE_PUBLISHER, 'ajn-release': '3.1.0-r13' },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

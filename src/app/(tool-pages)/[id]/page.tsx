@@ -3,8 +3,8 @@ import Script from 'next/script';
 import { notFound } from 'next/navigation';
 import { ToolWorkspaceClient } from '@/components/junction/tool-workspace-client';
 import { ALL_TOOLS, getPublicToolCategory } from '@/lib/tools-data';
+import { isToolPublic } from '@/lib/tool-policy';
 import { BUILD_PUBLIC_TOOLS } from '@/lib/build-public-tools';
-import { isBuildToolAvailable } from '@/lib/tool-capabilities';
 import { buildToolMetadata, SITE_NAME, SITE_URL } from '@/lib/seo-config';
 import { AJN_BRAND } from '@/lib/brand';
 import { ToolEditorialContent } from '@/components/junction/tool-editorial-content';
@@ -28,7 +28,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: ToolPageProps): Promise<Metadata> {
   const { id } = await params;
   const tool = ALL_TOOLS.find((item) => item.id === id);
-  if (!tool || !isBuildToolAvailable(id)) return { title: 'Tool Not Found', robots: { index: false, follow: false } };
+  if (!tool || !isToolPublic(id)) return { title: 'Tool Not Found', robots: { index: false, follow: false } };
   return buildToolMetadata(tool);
 }
 

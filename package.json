@@ -11,7 +11,7 @@
     "typecheck": "tsc --noEmit",
     "verify:seo-ads": "node scripts/verify-seo-ads.mjs",
     "verify:phase1": "node scripts/verify-phase1.mjs",
-    "check": "npm run verify:r12 && npm run verify:seo-ads && npm run verify:phase1 && npm run verify:production && npm run verify:trust-ui && npm run verify:links && npm run verify:final-ui && npm run verify:conversions && npm run verify:growth-seo && npm run verify:theme-analytics && npm run verify:brand-media-theme && npm run verify:final-production && npm run verify:capabilities && npm run verify:accessibility && npm run verify:mobile-first && npm run verify:i18n && npm run verify:tool-ux && npm run verify:dependency-policy && npm run verify:secrets && npm run verify:code-quality && npm run verify:backend-workflow && npm run lint && npm run typecheck && npm run build",
+    "check": "npm run verify:r13 && npm run verify:r12 && npm run verify:seo-ads && npm run verify:phase1 && npm run verify:production && npm run verify:trust-ui && npm run verify:links && npm run verify:final-ui && npm run verify:conversions && npm run verify:growth-seo && npm run verify:theme-analytics && npm run verify:brand-media-theme && npm run verify:final-production && npm run verify:capabilities && npm run verify:accessibility && npm run verify:mobile-first && npm run verify:i18n && npm run verify:tool-ux && npm run verify:dependency-policy && npm run verify:secrets && npm run verify:code-quality && npm run verify:backend-workflow && npm run lint && npm run typecheck && npm run verify:r13-browser-pdf && npm run build",
     "preview": "next start -p 3000",
     "verify:production": "node scripts/verify-production.mjs",
     "verify:trust-ui": "node scripts/verify-trust-ui.mjs",
@@ -32,10 +32,17 @@
     "verify:code-quality": "node scripts/verify-code-quality.mjs",
     "verify:backend-workflow": "node scripts/verify-backend-workflow.mjs",
     "verify:premium-ui": "node scripts/verify-premium-liquid-ui.mjs",
-    "check:frontend": "npm run verify:r12 && npm run verify:premium-ui && npm run verify:backend-frozen && npm run verify:seo-ads && npm run verify:trust-ui && npm run verify:links && npm run verify:final-ui && npm run verify:theme-analytics && npm run verify:accessibility && npm run verify:mobile-first && npm run verify:i18n && npm run verify:tool-ux && npm run verify:secrets && npm run verify:code-quality && npm run lint && npm run typecheck && npm run build",
+    "check:frontend": "npm run verify:r13 && npm run verify:r12 && npm run verify:premium-ui && npm run verify:backend-frozen && npm run verify:seo-ads && npm run verify:trust-ui && npm run verify:links && npm run verify:final-ui && npm run verify:theme-analytics && npm run verify:accessibility && npm run verify:mobile-first && npm run verify:i18n && npm run verify:tool-ux && npm run verify:secrets && npm run verify:code-quality && npm run lint && npm run typecheck && npm run verify:r13-browser-pdf && npm run build",
     "verify:backend-frozen": "node scripts/verify-backend-frozen.mjs",
     "verify:r12": "node scripts/verify-r12-root-routes-nav.mjs",
-    "verify:r12-runtime": "node scripts/verify-r12-runtime.mjs"
+    "verify:r12-runtime": "node scripts/verify-r12-runtime.mjs",
+    "verify:r13": "node scripts/verify-r13-production-final.mjs",
+    "verify:r13-runtime": "node scripts/verify-r13-runtime.mjs",
+    "verify:r13-browser-pdf": "node scripts/verify-r13-browser-pdf-acceptance.mjs",
+    "audit:r13-live": "node scripts/audit-r13-live-site.mjs",
+    "report:r13-capabilities": "node scripts/report-r13-capabilities.mjs",
+    "audit:r13-browser": "node scripts/audit-r13-browser-layout.mjs",
+    "report:r13-final": "node scripts/generate-r13-final-report.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",

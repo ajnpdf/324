@@ -1,13 +1,15 @@
 "use client";
 import React, { useCallback, useId, useRef, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
-import { Download, FileCheck2, RefreshCcw, Share2, UploadCloud, X } from "lucide-react";
+import { AlertTriangle, Download, FileCheck2, Loader2, RefreshCcw, Share2, UploadCloud, X } from "lucide-react";
 import { ToolRuntimeFactsInline } from "@/components/ajn/tool-runtime-facts";
 import { cn } from "../../lib/utils";
 import { sendAjnAnalytics } from "../analytics/site-analytics";
 import { useLanguage } from "@/lib/i18n/language-context";
 import { ToolArtwork } from "@/components/ajn/tool-artwork";
 import { toolIdFromPathname } from "@/lib/tool-routes";
+import { getToolLimitProfile } from "@/lib/tool-limits";
+import { usePdfBackendStatus } from "./backend-status";
 
 export interface ToolFile { file: File; name: string; size: number; }
 
@@ -123,7 +125,7 @@ function injectStyles(accent = T.red) {
     .jn-range::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--jn-accent,${accent});border:3px solid white;cursor:pointer}
     input[type=checkbox]{accent-color:var(--jn-accent,${accent});cursor:pointer}
     .jn-file-pill{display:flex;align-items:center;justify-content:space-between;background:var(--jn-pill-bg);border-radius:14px;padding:10px 12px;gap:10px;border:1px solid var(--jn-border)}
-    .jn-btn-base{min-height:46px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 20px;border-radius:13px;font-size:14px;font-weight:800;cursor:pointer;border:none;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;font-family:inherit}
+    .jn-btn-base{min-height:46px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 20px;border-radius:13px;font-size:14px;font-weight:800;cursor:pointer;border:none;transition:transform .14s ease,box-shadow .14s ease,border-color .14s ease,background-color .14s ease,color .14s ease;font-family:inherit}
     .jn-btn-base:hover:not(:disabled){transform:translateY(-1px)}
     .jn-btn-base:active:not(:disabled){transform:scale(.98)}
     .jn-btn-base:disabled{opacity:.5;cursor:not-allowed}
@@ -136,14 +138,21 @@ function injectStyles(accent = T.red) {
   document.head.appendChild(s);
 }
 
-export function ToolWorkspace({ title, description, accent = T.red, children }: WorkspaceProps) {
+export function ToolWorkspace({ title, description, accent = T.blue, children }: WorkspaceProps) {
   const pathname = usePathname();
   const { tool: localizeTool } = useLanguage();
   React.useEffect(() => { injectStyles(accent); }, [accent]);
   const toolId = toolIdFromPathname(pathname) || "";
   const localized = localizeTool(toolId, title, description, []);
+  const limitProfile = getToolLimitProfile(toolId);
+  const serverMode = limitProfile.executionMode === "server";
+  const { health, checking, online, refresh } = usePdfBackendStatus(serverMode ? 30000 : 0, serverMode);
+  const effectiveMaxFile = serverMode && health.maxFileMb ? Math.min(limitProfile.maxFileSizeMb, health.maxFileMb) : limitProfile.maxFileSizeMb;
+  const serviceBlocked = serverMode && (checking || !online);
+  const fileCountText = limitProfile.maxFiles === 1 ? "1 file" : `up to ${limitProfile.maxFiles} files`;
+
   return (
-    <div className="jn-workspace relative min-h-screen overflow-hidden" style={{ "--jn-accent": accent, background: "transparent", WebkitFontSmoothing: "antialiased" } as React.CSSProperties}>
+    <div className="jn-workspace relative min-h-screen overflow-hidden" style={{ "--jn-accent": "#2563EB", background: "transparent", WebkitFontSmoothing: "antialiased" } as React.CSSProperties}>
       <main className="relative z-10 mx-auto w-full max-w-5xl px-3 pb-12 pt-24 sm:px-5 sm:pt-28">
         <div className="mx-auto mb-5 flex max-w-3xl items-center gap-3.5 text-left sm:mb-7 sm:gap-5">
           <ToolArtwork toolId={toolId} toolName={localized.name} priority className="h-[52px] w-[52px] sm:h-14 sm:w-14" />
@@ -153,8 +162,23 @@ export function ToolWorkspace({ title, description, accent = T.red, children }: 
           </div>
         </div>
         <ToolRuntimeFactsInline toolId={toolId} />
-        <section className="jn-card ajn-product-canvas rounded-2xl border border-white/70 bg-white/92 p-3 shadow-[0_24px_70px_rgba(30,62,130,.11)] backdrop-blur-xl sm:rounded-2xl sm:p-5">
-          {children}
+        <section className="jn-card ajn-product-canvas rounded-2xl border border-slate-200 bg-white p-3 shadow-[0_20px_58px_rgba(30,62,130,.09)] sm:p-5">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-blue-100 bg-blue-50/70 px-3 py-2.5 text-[11px] font-extrabold text-slate-700" aria-label="Upload limits">
+            <span>Upload: {fileCountText} • up to {effectiveMaxFile} MB each</span>
+            <span className="text-blue-700">{serverMode ? "Server-assisted" : "Browser-local"}</span>
+          </div>
+          {serverMode && serviceBlocked && (
+            <div role="status" aria-live="polite" className="mb-4 flex items-start justify-between gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-amber-950">
+              <div className="flex min-w-0 gap-2.5">
+                {checking ? <Loader2 className="mt-0.5 h-4 w-4 shrink-0 animate-spin" /> : <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />}
+                <div><p className="text-xs font-black">{checking ? "Checking processing service…" : "Processing service unavailable"}</p><p className="mt-1 text-[11px] font-semibold leading-5 opacity-80">{checking ? "AJN PDF is confirming live availability before accepting a server-processing job." : "This tool is temporarily disabled before upload. Browser-local AJN PDF tools remain available."}</p></div>
+              </div>
+              {!checking && <button type="button" onClick={() => void refresh()} className="shrink-0 rounded-lg border border-amber-300 bg-white px-3 py-2 text-[10px] font-black text-amber-900">Retry</button>}
+            </div>
+          )}
+          <fieldset disabled={serviceBlocked} aria-disabled={serviceBlocked || undefined} className="m-0 min-w-0 border-0 p-0 disabled:cursor-not-allowed disabled:opacity-70">
+            {children}
+          </fieldset>
         </section>
       </main>
     </div>
@@ -170,7 +194,14 @@ export function Btn({ onClick, disabled, loading, children, variant = "primary",
     secondary: { background: "var(--jn-secondary-bg)", color: "var(--jn-text-primary)", border: "1px solid var(--jn-border)" },
     ghost: { background: "transparent", color: "var(--jn-text-primary)", border: "1px solid var(--jn-border)" },
   };
-  return <button type="button" className="jn-btn-base" onClick={onClick} disabled={disabled||loading} aria-busy={loading || undefined} style={{ width: full ? "100%" : undefined, ...v[variant], ...style }}>{loading && <span className="jn-inline-loader" aria-hidden="true"><i/><i/><i/></span>}{children}</button>;
+  const customStyle = { ...style } as React.CSSProperties;
+  if (variant === "primary") {
+    delete customStyle.background;
+    delete customStyle.backgroundColor;
+    delete customStyle.color;
+    delete customStyle.boxShadow;
+  }
+  return <button type="button" className="jn-btn-base" onClick={onClick} disabled={disabled||loading} aria-busy={loading || undefined} style={{ width: full ? "100%" : undefined, ...v[variant], ...customStyle }}>{loading && <span className="jn-inline-loader" aria-hidden="true"><i/><i/><i/></span>}{children}</button>;
 }
 
 export function Drop({ files, onChange, accept="*", multiple=false, label, sub }: {

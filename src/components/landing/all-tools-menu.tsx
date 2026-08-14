@@ -20,7 +20,7 @@ const POPULAR_IDS = [
 
 const GROUP_ORDER = [
   'Popular', 'Organize PDF', 'Compress & Optimize', 'Convert from PDF', 'Convert to PDF',
-  'OCR & Scan', 'Image Tools', 'Edit & Sign', 'Security', 'More Tools',
+  'OCR & Scan', 'Image Tools', 'Edit & Sign', 'Security', 'Documents', 'More Tools',
 ] as const;
 
 type GroupName = (typeof GROUP_ORDER)[number];
@@ -36,6 +36,7 @@ function groupFor(tool: ServiceTool): GroupName {
   if (/(merge|split|organize|delete-pdf-pages|page-number|flatten|rotate-pdf|crop-pdf)/.test(id)) return 'Organize PDF';
   if (/(sign|watermark|add-text|add-image|metadata|compare)/.test(id)) return 'Edit & Sign';
   if (/(protect|unlock)/.test(id)) return 'Security';
+  if (/(word|docx|doc-|excel|xlsx|xls-|powerpoint|pptx|ppt-|odt|ods|odp|rtf|txt|html|markdown|xml|json|csv|epub|mobi|azw3|eml|msg|xps)/.test(id)) return 'Documents';
   return 'More Tools';
 }
 
@@ -72,11 +73,12 @@ export function AllToolsMenu({ className, iconOnly = false }: { className?: stri
         }
       }
     };
+    const previousOverflow = document.body.style.overflow;
     document.addEventListener('keydown', onKeyDown);
     document.body.style.overflow = 'hidden';
     return () => {
       document.removeEventListener('keydown', onKeyDown);
-      document.body.style.overflow = '';
+      document.body.style.overflow = previousOverflow;
       previous?.focus?.();
     };
   }, [open]);
@@ -104,10 +106,9 @@ export function AllToolsMenu({ className, iconOnly = false }: { className?: stri
     return GROUP_ORDER.map((name) => ({ name, items: map.get(name) || [] })).filter((group) => group.items.length > 0);
   }, [filtered]);
 
-  const openTool = (id: string) => {
+  const openTool = () => {
     setOpen(false);
     setQuery('');
-    router.prefetch(toolPath(id));
   };
 
   return (
@@ -117,6 +118,7 @@ export function AllToolsMenu({ className, iconOnly = false }: { className?: stri
         aria-haspopup="dialog"
         aria-expanded={open}
         aria-label={t('common.openAllTools')}
+        data-analytics-id="nav-all-tools"
         onClick={() => setOpen(true)}
         className={cn('inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 text-[11px] font-black text-slate-700 shadow-sm transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700', iconOnly && 'h-10 w-10 px-0', className)}
       >
@@ -152,7 +154,7 @@ export function AllToolsMenu({ className, iconOnly = false }: { className?: stri
                 </div>
                 <div className="relative mt-4">
                   <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-blue-600" />
-                  <input autoFocus value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search: merge, make PDF smaller, image to text, Word..." className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50/70 pl-10 pr-4 text-sm font-semibold text-slate-950 outline-none transition focus:border-blue-300 focus:bg-white focus:ring-4 focus:ring-blue-100" />
+                  <input autoFocus aria-label="Search all AJN PDF tools" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search: merge, make PDF smaller, image to text, Word..." className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50/70 pl-10 pr-4 text-sm font-semibold text-slate-950 outline-none transition focus:border-blue-300 focus:bg-white focus:ring-4 focus:ring-blue-100" />
                 </div>
               </div>
 
@@ -172,7 +174,7 @@ export function AllToolsMenu({ className, iconOnly = false }: { className?: stri
                               prefetch={false}
                               onPointerEnter={() => router.prefetch(toolPath(item.id))}
                               onFocus={() => router.prefetch(toolPath(item.id))}
-                              onClick={() => openTool(item.id)}
+                              onClick={openTool}
                               className="group flex min-h-[68px] items-center gap-3 rounded-xl border border-slate-200/80 bg-white p-2.5 transition hover:-translate-y-px hover:border-blue-200 hover:bg-blue-50/40 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"
                             >
                               <ToolArtwork toolId={item.id} toolName={localized.name} className="h-10 w-10 shrink-0" />

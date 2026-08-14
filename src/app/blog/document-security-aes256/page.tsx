@@ -1,4 +1,7 @@
 import { GuideArticle } from '@/components/blog/guide-article';
+import { guideMetadata } from '@/lib/guide-metadata';
+
+export const metadata = guideMetadata('document-security-aes256', 'PDF passwords and AES-256 explained', 'Password protection can restrict opening and selected actions, but it must be configured carefully and does not replace device security, access control or responsible sharing.');
 
 export default function PdfSecurityGuide() {
   return <GuideArticle

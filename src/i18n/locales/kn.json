@@ -509,5 +509,12 @@
   "runtime.serviceUnavailable": "ಸೇವೆ ಲಭ್ಯವಿಲ್ಲ",
   "footer.limits": "ಮಿತಿಗಳು",
   "footer.ocrGuide": "OCR ಮಾರ್ಗದರ್ಶಿ",
-  "footer.imageLicensing": "ಚಿತ್ರ ಪರವಾನಗಿ"
+  "footer.imageLicensing": "ಚಿತ್ರ ಪರವಾನಗಿ",
+  "status.checking": "ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ",
+  "status.operational": "ಸೇವೆಯಲ್ಲಿದೆ",
+  "status.degraded": "ಭಾಗಶಃ ಲಭ್ಯ",
+  "status.unavailable": "ಲಭ್ಯವಿಲ್ಲ",
+  "status.lastChecked": "ಕೊನೆಯ ಪರಿಶೀಲನೆ",
+  "processing.cancelling": "ರದ್ದು ಮಾಡಲಾಗುತ್ತಿದೆ…",
+  "processing.cancellingDescription": "ಸಕ್ರಿಯ ವಿನಂತಿಯನ್ನು ನಿಲ್ಲಿಸಲಾಗುತ್ತಿದೆ. ನಿಮ್ಮ ಕಾರ್ಯಕ್ಷೇತ್ರ ಮತ್ತೆ ಸಿದ್ಧ ಸ್ಥಿತಿಗೆ ಬರುತ್ತದೆ."
 }

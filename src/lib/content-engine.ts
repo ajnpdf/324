@@ -23,29 +23,60 @@ export const CONTENT_BRIEFS: ContentBrief[] = [
     relatedTools: ['scanned-pdf-to-text', 'image-to-text', 'scanned-pdf-to-searchable-pdf'], status: 'published',
   },
   {
-    slug: 'pdf-to-word-layout-guide', cluster: 'conversion', intent: 'transactional-support',
-    title: 'PDF to Word: what formatting can be preserved?', primaryKeyword: 'pdf to word formatting',
+    slug: 'scanned-pdf-to-word', cluster: 'conversion', intent: 'transactional-support',
+    title: 'How to convert a scanned PDF to editable Word text', primaryKeyword: 'scanned pdf to word',
     supportingQuestions: ['Why do complex tables move?', 'When should OCR be used first?'],
-    relatedTools: ['pdf-to-word', 'pdf-to-docx', 'scanned-pdf-to-word'], status: 'planned',
+    relatedTools: ['pdf-to-word', 'pdf-to-docx', 'scanned-pdf-to-word'], status: 'published',
   },
   {
-    slug: 'compress-pdf-quality-guide', cluster: 'core-pdf', intent: 'transactional-support',
-    title: 'How to reduce PDF size without ruining readability', primaryKeyword: 'compress pdf without losing quality',
+    slug: 'reduce-pdf-size-keep-quality', cluster: 'core-pdf', intent: 'transactional-support',
+    title: 'How to reduce PDF size while keeping text readable', primaryKeyword: 'compress pdf without losing quality',
     supportingQuestions: ['Which compression level should I choose?', 'Why do scanned PDFs stay large?'],
-    relatedTools: ['compress-pdf', 'pdf-to-grayscale-pdf'], status: 'planned',
+    relatedTools: ['compress-pdf', 'pdf-to-grayscale-pdf'], status: 'published',
   },
   {
-    slug: 'image-to-pdf-file-preparation', cluster: 'image', intent: 'informational',
-    title: 'Prepare JPG and PNG files before creating a PDF', primaryKeyword: 'image to pdf preparation',
+    slug: 'image-to-pdf-jpg-vs-png', cluster: 'image', intent: 'informational',
+    title: 'Image to PDF: when to use JPG, PNG or another source format', primaryKeyword: 'jpg vs png for pdf',
     supportingQuestions: ['Which image resolution is enough?', 'How should page size and orientation be chosen?'],
-    relatedTools: ['jpg-to-pdf', 'png-to-pdf', 'multiple-images-to-one-pdf'], status: 'planned',
+    relatedTools: ['jpg-to-pdf', 'png-to-pdf', 'multiple-images-to-one-pdf'], status: 'published',
   },
   {
-    slug: 'pdf-password-permissions-explained', cluster: 'security', intent: 'informational',
-    title: 'PDF open passwords, owner passwords and permissions', primaryKeyword: 'PDF password permissions',
+    slug: 'document-security-aes256', cluster: 'security', intent: 'informational',
+    title: 'PDF passwords, encryption and permissions explained', primaryKeyword: 'PDF password encryption permissions',
     supportingQuestions: ['What is the difference between user and owner passwords?', 'Can printing and copying be restricted?'],
-    relatedTools: ['protect-pdf', 'unlock-pdf'], status: 'planned',
+    relatedTools: ['protect-pdf', 'unlock-pdf'], status: 'published',
   },
+  {
+    slug: 'how-ocr-works', cluster: 'ocr', intent: 'informational',
+    title: 'How OCR works on scanned PDFs and images', primaryKeyword: 'how OCR works',
+    supportingQuestions: ['Why is a scanned PDF not searchable?', 'How does scan quality affect OCR?'],
+    relatedTools: ['scanned-pdf-to-text', 'image-to-text', 'scanned-pdf-to-searchable-pdf'], status: 'published',
+  },
+  {
+    slug: 'improve-ocr-indian-languages', cluster: 'ocr', intent: 'informational',
+    title: 'How to improve OCR for Indian-language scans', primaryKeyword: 'improve Telugu Hindi OCR',
+    supportingQuestions: ['Which OCR language should I select?', 'What scan resolution is practical?'],
+    relatedTools: ['image-to-text', 'scanned-pdf-to-text', 'handwriting-image-to-text'], status: 'published',
+  },
+  {
+    slug: 'why-pdf-compression-limited', cluster: 'core-pdf', intent: 'transactional-support',
+    title: 'Why some PDF files cannot be compressed much further', primaryKeyword: 'why pdf will not compress more',
+    supportingQuestions: ['Why did my PDF shrink only a little?', 'What content makes PDFs large?'],
+    relatedTools: ['compress-pdf', 'pdf-to-grayscale-pdf'], status: 'published',
+  },
+  {
+    slug: 'pdf-vs-docx', cluster: 'conversion', intent: 'informational',
+    title: 'PDF vs DOCX: when to use each format', primaryKeyword: 'pdf vs docx',
+    supportingQuestions: ['Which format is easier to edit?', 'Why can conversion change layout?'],
+    relatedTools: ['pdf-to-word', 'word-to-pdf', 'scanned-pdf-to-word'], status: 'published',
+  },
+  {
+    slug: 'pdf-accessibility-basics', cluster: 'core-pdf', intent: 'informational',
+    title: 'PDF accessibility basics before you share a document', primaryKeyword: 'pdf accessibility basics',
+    supportingQuestions: ['Why does real text matter?', 'How should PDF accessibility be validated?'],
+    relatedTools: ['scanned-pdf-to-searchable-pdf', 'pdf-text'], status: 'published',
+  },
+
 ];
 
 export const CONTENT_QUALITY_GATE = [

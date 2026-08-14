@@ -1,4 +1,7 @@
 import { GuideArticle } from '@/components/blog/guide-article';
+import { guideMetadata } from '@/lib/guide-metadata';
+
+export const metadata = guideMetadata('best-free-pdf-editor', 'How to evaluate a free online PDF editor', 'A useful PDF editor should explain what it can do, where files are processed, what limits apply and whether the downloaded result is valid—without relying on inflated claims.');
 
 export default function FreePdfEditorGuide() {
   return <GuideArticle

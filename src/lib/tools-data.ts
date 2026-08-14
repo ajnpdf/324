@@ -24,7 +24,7 @@ export const ALL_TOOLS: ServiceTool[] = [
   { 
     id: 'merge-pdf', name: 'Merge PDF', desc: 'Combine multiple PDF files into one easily.', 
     icon: Layout, tag: 'merge', cat: 'pdf', mode: 'PDF', badge: 'Popular', color: 'text-blue-500', perfIndex: 'Fast',
-    benefits: ["Combine files quickly", "Safe local work"],
+    benefits: ["Combine files quickly", "Flexible file order"],
     useCases: ["Combining reports"],
     instructions: ["Upload PDFs", "Sort", "Merge"],
     keywords: ["combine", "join", "concatenate", "bundle", "attach", "multiple pdf"]
@@ -252,7 +252,7 @@ export const ALL_TOOLS: ServiceTool[] = [
   { 
     id: 'heic-pdf', name: 'HEIC to PDF', desc: 'Convert iPhone photos to standard PDF documents.', 
     icon: Smartphone, tag: 'convert', cat: 'pdf', mode: 'PDF', color: 'text-cyan-500', perfIndex: 'iOS Ready',
-    benefits: ["Native iOS Support", "Local work"],
+    benefits: ["Native iOS Support", "Visual signing"],
     useCases: ["iPhone Photos"],
     instructions: ["Upload HEIC", "Transcode", "Save PDF"],
     keywords: ["iphone", "heic", "heif", "apple", "photos"]
@@ -368,7 +368,7 @@ export const ALL_TOOLS: ServiceTool[] = [
   { 
     id: 'ocr-advanced', name: 'OCR Text Extraction', desc: 'Extract text from scanned PDFs and images with selectable OCR settings.',
     icon: Scan, tag: 'ocr', cat: 'ai', mode: 'AI', color: 'text-purple-600', perfIndex: 'OCR',
-    benefits: ["15+ Languages", "Instant copy"],
+    benefits: ["6 OCR languages", "Instant copy"],
     useCases: ["Digitizing notes"],
     instructions: ["Upload file", "Identify", "Copy"],
     keywords: ["ocr", "text recognition", "scanned", "handwriting", "read text"]
@@ -392,7 +392,7 @@ export const ALL_TOOLS: ServiceTool[] = [
   { 
     id: 'sign-pdf', name: 'Sign PDF', desc: 'Place a visual electronic signature on a PDF document.',
     icon: PenTool, tag: 'edit', cat: 'pdf', mode: 'PDF', color: 'text-blue-600', perfIndex: 'Auth',
-    benefits: ["Easy signatures", "Local work"],
+    benefits: ["Easy signatures", "Visual signing"],
     useCases: ["E-Signing"],
     instructions: ["Upload PDF", "Draw", "Embed"],
     keywords: ["visual signature", "electronic signature", "esign", "sign pdf"]
@@ -400,7 +400,7 @@ export const ALL_TOOLS: ServiceTool[] = [
   { 
     id: 'pdf-text', name: 'PDF to Text', desc: 'Extract clean text from your PDF documents.',
     icon: Brain, tag: 'ai', cat: 'pdf', mode: 'PDF', badge: 'Smart', color: 'text-purple-500', perfIndex: 'Deep',
-    benefits: ["Clean extraction", "Local buffer"],
+    benefits: ["Clean extraction", "Text extraction"],
     useCases: ["Reading help"],
     instructions: ["Upload PDF", "Process", "Copy Text"],
     keywords: ["read", "extract text", "summary", "semantic", "pdf to text"]
@@ -408,7 +408,7 @@ export const ALL_TOOLS: ServiceTool[] = [
   { 
     id: 'smart-read', name: 'Smart Read', desc: 'Get all text content from your PDF documents.',
     icon: Brain, tag: 'ai', cat: 'pdf', mode: 'PDF', badge: 'Smart', color: 'text-purple-500', perfIndex: 'Deep',
-    benefits: ["Clean extraction", "Local buffer"],
+    benefits: ["Clean extraction", "Text extraction"],
     useCases: ["Reading help"],
     instructions: ["Upload PDF", "Process", "Copy Text"],
     keywords: ["read", "extract text", "summary", "semantic"]
@@ -418,7 +418,7 @@ export const ALL_TOOLS: ServiceTool[] = [
   { 
     id: 'html-pdf', name: 'HTML to PDF', desc: 'Save web snippets or .html files as PDF documents.',
     icon: Code2, tag: 'convert', cat: 'pdf', mode: 'PDF', color: 'text-orange-500', perfIndex: 'System',
-    benefits: ["CSS preserved", "Local render"],
+    benefits: ["CSS preserved", "Browser render"],
     useCases: ["Saving receipts"],
     instructions: ["Upload HTML", "Render", "Save PDF"],
     keywords: ["html", "web", "code", "browser", "creation"]

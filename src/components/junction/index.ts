@@ -16,7 +16,7 @@ export { default as ImageToPdfTool } from "./ImageToPdfTool";
 export { default as JpgToPdf } from "./JpgToPdf";
 export { default as JsonToPdf } from "./JsonToPdf";
 export { default as MemeMaker } from "./MemeMaker";
-export { default as MergePdf } from "./MergePdf";
+export { default as MergePdf } from "./MergePdfNoSsr";
 export { default as OcrAdvanced } from "./OcrAdvanced";
 export { default as OcrScanner } from "./OcrScanner";
 export { default as OrganizePdf } from "./OrganizePdf";

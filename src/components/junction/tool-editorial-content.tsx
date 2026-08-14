@@ -26,7 +26,7 @@ export function ToolEditorialContent({ tool }: { tool: ServiceTool }) {
             <p className="mt-4 text-sm font-medium leading-7 text-muted-foreground md:text-base">{content.details}</p>
 
             <div className="mt-8 rounded-3xl border border-slate-100 bg-slate-50/80 p-6">
-              <h3 className="text-lg font-black text-slate-950">Recommended workflow</h3>
+              <h3 className="text-lg font-black text-slate-950">Recommended</h3>
               <ol className="mt-5 space-y-4">
                 {tool.instructions.map((step, index) => (
                   <li id={`step-${index + 1}`} key={step} className="flex gap-3 text-sm font-medium leading-6 text-muted-foreground">

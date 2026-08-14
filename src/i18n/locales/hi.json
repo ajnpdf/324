@@ -509,5 +509,12 @@
   "runtime.serviceUnavailable": "सेवा उपलब्ध नहीं",
   "footer.limits": "सीमाएँ",
   "footer.ocrGuide": "OCR गाइड",
-  "footer.imageLicensing": "छवि लाइसेंसिंग"
+  "footer.imageLicensing": "छवि लाइसेंसिंग",
+  "status.checking": "जाँच जारी",
+  "status.operational": "संचालित",
+  "status.degraded": "आंशिक उपलब्ध",
+  "status.unavailable": "अनुपलब्ध",
+  "status.lastChecked": "अंतिम जाँच",
+  "processing.cancelling": "रद्द किया जा रहा है…",
+  "processing.cancellingDescription": "सक्रिय अनुरोध रोका जा रहा है। आपका कार्यक्षेत्र फिर तैयार स्थिति में आ जाएगा।"
 }

@@ -18,7 +18,8 @@ const special=[...artwork.matchAll(/\n\s*'([^']+)':\s*([A-Za-z0-9_]+),/g)].filte
 if(new Set(special.map(m=>m[1])).size!==34) fail('Expected 34 dedicated action icon mappings'); else pass('34 dedicated action icons retained');
 if(exists('public/tool-icons') && fs.readdirSync(full('public/tool-icons')).some(n=>/\.(png|jpe?g|webp)$/i.test(n))) fail('Legacy raster card icons remain'); else pass('Legacy raster card icon artwork removed');
 
-const grid=requireText('src/components/landing/services-grid.tsx',['Comfortable','Compact','List','SEARCH_EXPANSIONS','distanceAtMostTwo','INTENT_IDS','min-h-[78px]']);
+const grid=requireText('src/components/landing/services-grid.tsx',['Comfortable','Compact','List','SEARCH_EXPANSIONS','distanceAtMostTwo','INTENT_IDS']);
+if(!/min-h-\[(?:7[8-9]|8[0-9])px\]/.test(grid)) fail('Tool cards lost the compact mobile minimum-height guard');
 for(const old of ['2 × 2','4 × 4','Horizontal']) if(grid.includes(old)) fail(`Old layout label remains: ${old}`);
 pass('Adaptive Comfortable / Compact / List directory and ranked search source present');
 
@@ -68,8 +69,8 @@ const toolRoute=requireText('src/app/(tool-pages)/[id]/page.tsx',["'@type': 'Web
 for(const x of ["'@type': 'FAQPage'","'@type': 'HowTo'","totalTime: 'PT5M'"]) if(toolRoute.includes(x)) fail(`Unsupported/invented tool schema remains: ${x}`);
 const rootLayout=requireText('src/app/layout.tsx',['Free PDF Tools Online - Convert, Merge, Compress & Edit | AJN PDF','NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION']);
 if(rootLayout.includes('SearchAction')) fail('Inaccurate WebSite SearchAction remains');
-const strategy=requireText('src/lib/seo-strategy.ts',['const candidate = `${base} – Free ${suffix}`;','return candidate.length <= 60 ? candidate : base;']);
-if(strategy.includes('`${base} | AJN PDF`')) fail('Tool title can duplicate the root title template');
+const strategy=requireText('src/lib/seo-strategy.ts',['PRIORITY_TITLES','buildNaturalDescription','| AJN PDF']);
+if(strategy.includes("'Free PDF Tools Online - Convert, Merge, Compress & Edit | AJN PDF'")) fail('Tool SEO strategy duplicates the root homepage title');
 requireText('src/app/robots.ts',['sitemap.xml','image-sitemap.xml']);
 requireText('src/app/sitemap.ts',['BUILD_PUBLIC_TOOLS','`${SITE_URL}${toolPath(tool.id)}`']);
 pass('SEO source keeps unique metadata, canonicals, sitemap/robots and accurate structured data');

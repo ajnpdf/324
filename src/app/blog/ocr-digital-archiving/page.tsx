@@ -1,4 +1,7 @@
 import { GuideArticle } from '@/components/blog/guide-article';
+import { guideMetadata } from '@/lib/guide-metadata';
+
+export const metadata = guideMetadata('ocr-digital-archiving', 'OCR for scanned documents and digital archives', 'Good OCR starts with a readable scan, the correct language model and human review. Searchable output is useful, but recognition quality depends on the source document.');
 
 export default function OcrArchivingGuide() {
   return <GuideArticle

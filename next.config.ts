@@ -39,6 +39,8 @@ const contentSecurityPolicy = [
 ].filter(Boolean).join('; ');
 
 const nextConfig: NextConfig = {
+  poweredByHeader: false,
+  compress: true,
   outputFileTracingRoot: process.cwd(),
   output: 'standalone',
   webpack: (config) => { config.resolve.alias.canvas = false; return config; },
@@ -60,6 +62,7 @@ const nextConfig: NextConfig = {
       { source: '/junction/:path*', destination: '/pdf-tools', permanent: true },
       { source: '/view/:path*', destination: '/pdf-tools', permanent: true },
       { source: '/tools', destination: '/pdf-tools', permanent: true },
+      { source: '/tools/psd-pdf', destination: '/psd-pdf', permanent: true },
       { source: '/tools/word-pdf', destination: '/word-to-pdf', permanent: true },
       { source: '/tools/pdf-word', destination: '/pdf-to-word', permanent: true },
       { source: '/tools/excel-pdf', destination: '/excel-to-pdf', permanent: true },

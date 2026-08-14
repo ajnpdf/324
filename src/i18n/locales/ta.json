@@ -509,5 +509,12 @@
   "runtime.serviceUnavailable": "சேவை கிடைக்கவில்லை",
   "footer.limits": "வரம்புகள்",
   "footer.ocrGuide": "OCR வழிகாட்டி",
-  "footer.imageLicensing": "பட உரிமம்"
+  "footer.imageLicensing": "பட உரிமம்",
+  "status.checking": "சரிபார்க்கிறது",
+  "status.operational": "செயலில் உள்ளது",
+  "status.degraded": "பகுதி சேவை",
+  "status.unavailable": "கிடைக்கவில்லை",
+  "status.lastChecked": "கடைசியாக சரிபார்த்தது",
+  "processing.cancelling": "ரத்து செய்யப்படுகிறது…",
+  "processing.cancellingDescription": "செயலில் உள்ள கோரிக்கை நிறுத்தப்படுகிறது. பணிப்பரப்பு மீண்டும் தயாரான நிலைக்கு திரும்பும்."
 }

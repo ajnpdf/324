@@ -509,5 +509,12 @@
   "runtime.serviceUnavailable": "సేవ అందుబాటులో లేదు",
   "footer.limits": "పరిమితులు",
   "footer.ocrGuide": "OCR గైడ్",
-  "footer.imageLicensing": "చిత్ర లైసెన్సింగ్"
+  "footer.imageLicensing": "చిత్ర లైసెన్సింగ్",
+  "status.checking": "తనిఖీ జరుగుతోంది",
+  "status.operational": "సేవ అందుబాటులో ఉంది",
+  "status.degraded": "పాక్షికంగా అందుబాటులో ఉంది",
+  "status.unavailable": "అందుబాటులో లేదు",
+  "status.lastChecked": "చివరి తనిఖీ",
+  "processing.cancelling": "రద్దు చేస్తోంది…",
+  "processing.cancellingDescription": "ప్రస్తుత అభ్యర్థనను ఆపుతోంది. మీ వర్క్‌స్పేస్ మళ్లీ సిద్ధ స్థితికి వస్తుంది."
 }

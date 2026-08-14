@@ -5,7 +5,7 @@ export const RESERVED_ROOT_ROUTES = new Set([
   'contact', 'conversion-tools', 'cookies', 'copyright', 'data-deletion', 'developer',
   'disclaimer', 'discover', 'dmca', 'faq', 'feed.xml', 'file-processing-policy',
   'image-licensing', 'image-sitemap.xml', 'image-tools', 'limits', 'ocr', 'pdf-tools',
-  'pdf-utilities', 'privacy', 'public-media', 'robots.txt', 'security', 'sitemap.xml',
+  'pdf-utilities', 'privacy', 'psd-pdf', 'public-media', 'robots.txt', 'security', 'sitemap.xml',
   'status', 'terms', 'transparency', 'unlock-authorization-policy',
 ]);
 

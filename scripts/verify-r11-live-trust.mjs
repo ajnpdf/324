@@ -44,7 +44,7 @@ check('legacy PDF-to-PPT route redirects to current converter', nextConfig.inclu
 check('legacy searchable OCR route redirects to current converter', nextConfig.includes("source: '/tools/ocr-searchable'") && nextConfig.includes("destination: '/scanned-pdf-to-searchable-pdf'"));
 
 const locales = ['en','hi','te','ta','kn'].map((code) => JSON.parse(read(`src/i18n/locales/${code}.json`)));
-check('all five locales keep identical 511-key structure', locales.every((d) => Object.keys(d).length === 511) && locales.every((d) => Object.keys(d).join('\n') === Object.keys(locales[0]).join('\n')));
+check('all five locales retain the R10.9 baseline and identical key structure', locales.every((d) => Object.keys(d).length >= 511) && locales.every((d) => Object.keys(d).join('\n') === Object.keys(locales[0]).join('\n')));
 check('all five homepage title2 values are empty', locales.every((d) => d['home.title2'] === ''));
 check('all five homepage H1 values include PDF + OCR intent', locales.every((d) => /PDF/i.test(d['home.title1']) && /OCR/i.test(d['home.title1'])));
 

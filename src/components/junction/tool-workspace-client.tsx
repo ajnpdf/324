@@ -16,7 +16,7 @@ const SERVER_CONVERSION_IDS = new Set(CONVERSION_TOOLS.map((tool) => tool.id));
 
 const TOOL_COMPONENTS: Record<string, any> = {
   // --- CORE PDF SUITE ---
-  'merge-pdf': dynamic(() => import('./MergePdf'), { ssr: false }),
+  'merge-pdf': dynamic(() => import('./MergePdfNoSsr'), { ssr: false }),
   'split-pdf': dynamic(() => import('./SplitPdf'), { ssr: false }),
   'compress-pdf': dynamic(() => import('./CompressPdf'), { ssr: false }),
   'rotate-pdf': dynamic(() => import('./RotatePdf'), { ssr: false }),

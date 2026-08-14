@@ -1,4 +1,7 @@
 import { GuideArticle } from '@/components/blog/guide-article';
+import { guideMetadata } from '@/lib/guide-metadata';
+
+export const metadata = guideMetadata('browser-native-architecture', 'How browser-based PDF processing works', 'Browser workflows can process selected files with JavaScript and WebAssembly inside the active tab, while advanced formats may still require a clearly labelled server engine.');
 
 export default function BrowserArchitectureGuide() {
   return <GuideArticle

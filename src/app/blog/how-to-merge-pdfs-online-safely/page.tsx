@@ -1,4 +1,7 @@
 import { GuideArticle } from '@/components/blog/guide-article';
+import { guideMetadata } from '@/lib/guide-metadata';
+
+export const metadata = guideMetadata('how-to-merge-pdfs-online-safely', 'How to merge PDFs online safely', 'A reliable merge workflow checks processing mode, page order, output quality and the sensitivity of the documents before downloading the result.');
 
 export default function MergePdfSafetyGuide() {
   return <GuideArticle

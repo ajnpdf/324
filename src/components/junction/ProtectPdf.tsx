@@ -67,7 +67,7 @@ export default function ProtectPdf() {
               ))}
             </div>
           </F>
-          <Info>Passwords are used only for this request, are not written to application logs, and temporary files are deleted after delivery.</Info>
+          <Info>Passwords are used only for this request and are not written to application logs. Temporary request workspace data is scheduled for cleanup after the response is returned.</Info>
           <Err msg={error} />
           <Btn onClick={run} loading={loading} disabled={!files.length || !password || !confirm || !online} full style={{ background: "#2563EB" }}>Protect PDF</Btn>
         </div>

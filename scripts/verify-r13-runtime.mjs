@@ -1,0 +1,193 @@
+import { spawn } from 'node:child_process';
+import fs from 'node:fs';
+import path from 'node:path';
+
+const root = process.cwd();
+const ids = JSON.parse(fs.readFileSync(path.join(root, 'scripts', 'r13-public-tool-ids.json'), 'utf8'));
+const nextBin = path.join(root, 'node_modules', 'next', 'dist', 'bin', 'next');
+if (!fs.existsSync(nextBin)) {
+  console.error(`FAIL: Next.js runtime was not found at ${nextBin}`);
+  process.exit(1);
+}
+if (!fs.existsSync(path.join(root, '.next', 'BUILD_ID'))) {
+  console.error('FAIL: .next production output is missing; run npm run build first.');
+  process.exit(1);
+}
+
+const port = 41400 + (process.pid % 500);
+const origin = `http://127.0.0.1:${port}`;
+const standaloneServer = path.join(root, '.next', 'standalone', 'server.js');
+const useStandalone = fs.existsSync(standaloneServer);
+const child = spawn(
+  process.execPath,
+  useStandalone ? [standaloneServer] : [nextBin, 'start', '-H', '127.0.0.1', '-p', String(port)],
+  {
+    cwd: useStandalone ? path.dirname(standaloneServer) : root,
+    env: { ...process.env, NODE_ENV: 'production', PORT: String(port), HOSTNAME: '127.0.0.1' },
+    stdio: ['ignore', 'pipe', 'pipe'],
+  },
+);
+
+let serverOutput = '';
+child.stdout.on('data', (chunk) => { serverOutput += chunk.toString(); });
+child.stderr.on('data', (chunk) => { serverOutput += chunk.toString(); });
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const failures = [];
+const passes = [];
+const pass = (message) => { passes.push(message); console.log(`PASS: ${message}`); };
+const fail = (message) => failures.push(message);
+
+async function request(pathname) {
+  const response = await fetch(`${origin}${pathname}`, { redirect: 'manual', headers: { 'user-agent': 'AJN-PDF-R13-Runtime-Audit/1.0' } });
+  return { response, text: await response.text() };
+}
+function locationPath(result) {
+  const raw = result.response.headers.get('location') || '';
+  if (!raw) return '';
+  try { return new URL(raw, origin).pathname; } catch { return raw; }
+}
+function canonicalFrom(html) {
+  const match = html.match(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)["']/i)
+    || html.match(/<link[^>]+href=["']([^"']+)["'][^>]+rel=["']canonical["']/i);
+  return match?.[1] || '';
+}
+async function mapLimit(items, limit, worker) {
+  let cursor = 0;
+  const runners = Array.from({ length: Math.min(limit, items.length) }, async () => {
+    while (true) {
+      const index = cursor++;
+      if (index >= items.length) return;
+      await worker(items[index], index);
+    }
+  });
+  await Promise.all(runners);
+}
+
+const aliases = {
+  '/tools/word-pdf': '/word-to-pdf',
+  '/tools/pdf-word': '/pdf-to-word',
+  '/tools/excel-pdf': '/excel-to-pdf',
+  '/tools/pdf-excel': '/pdf-to-excel',
+  '/tools/ppt-pdf': '/ppt-to-pdf',
+  '/tools/jpg-pdf': '/jpg-to-pdf',
+  '/tools/pdf-jpg': '/pdf-to-jpg',
+  '/tools/heic-pdf': '/heic-to-pdf',
+  '/tools/html-pdf': '/html-to-pdf',
+  '/tools/xml-pdf': '/xml-to-pdf',
+  '/tools/json-pdf': '/json-to-pdf',
+  '/tools/txt-pdf': '/txt-to-pdf',
+  '/tools/smart-read': '/pdf-text',
+  '/tools/pdf-ppt': '/pdf-to-powerpoint',
+  '/tools/ocr-searchable': '/scanned-pdf-to-searchable-pdf',
+  '/tools/psd-pdf': '/psd-pdf',
+};
+
+try {
+  let home;
+  for (let attempt = 0; attempt < 80; attempt += 1) {
+    if (child.exitCode !== null) throw new Error(`Next.js exited before readiness.\n${serverOutput.slice(-5000)}`);
+    try {
+      home = await request('/');
+      if (home.response.ok) break;
+    } catch {}
+    await sleep(400);
+  }
+  if (!home?.response.ok) throw new Error(`Homepage did not become ready on ${origin}.\n${serverOutput.slice(-5000)}`);
+  pass('production server became ready');
+  if (!/name=["']ajn-release["'][^>]+content=["']3\.1\.0-r13["']/i.test(home.text)
+      && !/content=["']3\.1\.0-r13["'][^>]+name=["']ajn-release["']/i.test(home.text)) {
+    fail('homepage is missing the AJN R13 release marker');
+  } else {
+    pass('homepage carries the AJN PDF 3.1.0-r13 release marker');
+  }
+
+  const rootResults = [];
+  await mapLimit(ids, 10, async (id) => {
+    try {
+      const result = await request(`/${id}`);
+      const canonical = canonicalFrom(result.text);
+      const expectedCanonical = `https://www.ajnpdf.com/${id}`;
+      const ok = result.response.status === 200 && canonical === expectedCanonical && !result.text.includes(`https://www.ajnpdf.com/tools/${id}`);
+      rootResults.push({ id, status: result.response.status, canonical, ok });
+      if (!ok) fail(`/${id}: status=${result.response.status}, canonical=${canonical || '(missing)'}`);
+    } catch (error) {
+      rootResults.push({ id, status: 0, canonical: '', ok: false, error: String(error) });
+      fail(`/${id}: request failed: ${error}`);
+    }
+  });
+  if (rootResults.every((item) => item.ok)) pass(`all ${ids.length} canonical root tool pages return 200 with self canonicals`);
+
+  const legacyResults = [];
+  await mapLimit(ids, 10, async (id) => {
+    try {
+      const result = await request(`/tools/${id}`);
+      const location = locationPath(result);
+      const ok = [301, 308].includes(result.response.status) && location === `/${id}`;
+      legacyResults.push({ id, status: result.response.status, location, ok });
+      if (!ok) fail(`/tools/${id}: status=${result.response.status}, location=${location || '(missing)'}`);
+    } catch (error) {
+      legacyResults.push({ id, status: 0, location: '', ok: false, error: String(error) });
+      fail(`/tools/${id}: request failed: ${error}`);
+    }
+  });
+  if (legacyResults.every((item) => item.ok)) pass(`all ${ids.length} legacy /tools/* URLs permanently redirect in one hop to root slugs`);
+
+  for (const [source, target] of Object.entries(aliases)) {
+    const result = await request(source);
+    const location = locationPath(result);
+    if (![301, 308].includes(result.response.status) || location !== target) fail(`${source}: expected permanent redirect to ${target}, got ${result.response.status} ${location || '(missing)'}`);
+  }
+  if (!failures.some((item) => item.startsWith('/tools/') && Object.keys(aliases).some((alias) => item.startsWith(alias)))) pass('historical alias redirect map is intentional and direct');
+
+  const psd = await request('/psd-pdf');
+  if (psd.response.status !== 410) fail(`/psd-pdf returned ${psd.response.status}; expected intentional 410 retirement`);
+  else pass('retired PSD-to-PDF endpoint returns intentional 410 instead of unrelated redirect');
+
+  const toolsDir = await request('/tools');
+  if (![301, 308].includes(toolsDir.response.status) || locationPath(toolsDir) !== '/pdf-tools') fail(`/tools directory redirect is incorrect: ${toolsDir.response.status} ${locationPath(toolsDir)}`);
+  else pass('/tools permanently redirects to /pdf-tools');
+
+  const sitemap = await request('/sitemap.xml');
+  if (sitemap.response.status !== 200) fail(`/sitemap.xml returned ${sitemap.response.status}`);
+  else {
+    const missing = ids.filter((id) => !sitemap.text.includes(`https://www.ajnpdf.com/${id}`));
+    if (missing.length) fail(`sitemap is missing canonical tool URLs: ${missing.slice(0, 12).join(', ')}`);
+    if (/https:\/\/www\.ajnpdf\.com\/tools\//i.test(sitemap.text)) fail('sitemap still publishes legacy /tools/ URLs');
+    if (!missing.length && !/https:\/\/www\.ajnpdf\.com\/tools\//i.test(sitemap.text)) pass(`sitemap contains all ${ids.length} root tool URLs and zero legacy /tools/ tool URLs`);
+  }
+
+  const trustPaths = ['/', '/about', '/privacy', '/faq', '/transparency', '/pdf-tools'];
+  const stalePatterns = [/100%\s*(?:private|local)/i,/Unlimited file size/i,/50,?000\+/i,/50K\+\+/i,/Zero-Server-Transit/i,/files never leave/i,/files are never uploaded/i,/Safe Browsing Verified/i,/No servers/i,/zero server uploads/i];
+  for (const pathname of trustPaths) {
+    const result = await request(pathname);
+    if (result.response.status !== 200) { fail(`${pathname} returned ${result.response.status}`); continue; }
+    for (const pattern of stalePatterns) if (pattern.test(result.text)) fail(`${pathname} contains stale claim ${pattern}`);
+  }
+  if (!failures.some((item) => trustPaths.some((pathname) => item.startsWith(`${pathname} `)))) pass('built public trust pages contain none of the audited stale universal claims');
+
+  const report = {
+    generatedAt: new Date().toISOString(),
+    origin,
+    canonicalTools: rootResults,
+    legacyTools: legacyResults,
+    historicalAliases: aliases,
+    failures,
+  };
+  const builtReportPath = process.env.AJN_R13_BUILT_REPORT || path.join(root, 'R13_BUILT_RUNTIME_REPORT.json');
+  fs.mkdirSync(path.dirname(builtReportPath), { recursive: true });
+  fs.writeFileSync(builtReportPath, `${JSON.stringify(report, null, 2)}\n`);
+
+  if (failures.length) {
+    for (const failure of failures) console.error(`FAIL: ${failure}`);
+    throw new Error(`R13 built runtime verification failed with ${failures.length} issue(s).`);
+  }
+  console.log(`AJN PDF R13 BUILT RUNTIME VERIFICATION: PASS (${ids.length} root pages + ${ids.length} legacy redirects).`);
+  console.log('Real Chrome/Edge rendering, field Core Web Vitals, CMP/AdSense behavior and public Vercel deployment remain live-environment gates.');
+} catch (error) {
+  console.error(`FAIL: ${error instanceof Error ? error.message : String(error)}`);
+  process.exitCode = 1;
+} finally {
+  if (child.exitCode === null) child.kill('SIGTERM');
+  await sleep(300);
+  if (child.exitCode === null) child.kill('SIGKILL');
+}

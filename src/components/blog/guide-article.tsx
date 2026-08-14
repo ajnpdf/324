@@ -29,9 +29,11 @@ type Props = {
   sections: GuideSection[];
   checklist?: string[];
   relatedTools: RelatedGuideTool[];
+  datePublished?: string;
+  dateModified?: string;
 };
 
-export function GuideArticle({ slug, eyebrow, title, summary, readTime, sections, checklist = [], relatedTools }: Props) {
+export function GuideArticle({ slug, eyebrow, title, summary, readTime, sections, checklist = [], relatedTools, datePublished = '2026-08-06', dateModified = '2026-08-13' }: Props) {
   const canonical = `${SITE_URL}/blog/${slug}`;
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -42,8 +44,8 @@ export function GuideArticle({ slug, eyebrow, title, summary, readTime, sections
         headline: title,
         description: summary,
         url: canonical,
-        datePublished: '2026-08-06',
-        dateModified: '2026-08-06',
+        datePublished,
+        dateModified,
         inLanguage: 'en',
         isAccessibleForFree: true,
         author: { '@id': `${SITE_URL}/developer#anjan` },
@@ -73,7 +75,7 @@ export function GuideArticle({ slug, eyebrow, title, summary, readTime, sections
             <p className="mx-auto mt-6 max-w-3xl text-base font-medium leading-8 text-muted-foreground md:text-lg">{summary}</p>
             <div className="mt-7 flex flex-wrap items-center justify-center gap-3 text-xs font-bold text-muted-foreground">
               <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-2"><Clock className="h-3.5 w-3.5" /> {readTime}</span>
-              <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-2"><CalendarDays className="h-3.5 w-3.5" /> Reviewed 6 August 2026</span>
+              <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-2"><CalendarDays className="h-3.5 w-3.5" /> Reviewed 13 August 2026</span>
               <Link href="/developer" className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-2 text-blue-600 hover:bg-muted">By {AJN_BRAND.developerName}</Link>
             </div>
           </header>

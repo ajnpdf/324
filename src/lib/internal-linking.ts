@@ -3,16 +3,52 @@ import { BUILD_PUBLIC_TOOLS } from './build-public-tools';
 
 const GUIDE_MAP: Record<string, { href: string; title: string }[]> = {
   conversion: [
+    { href: '/blog/pdf-vs-docx', title: 'PDF vs DOCX: when to use each format' },
+    { href: '/blog/scanned-pdf-to-word', title: 'How scanned PDF to Word conversion works' },
     { href: '/blog/browser-native-architecture', title: 'How online conversion processing works' },
-    { href: '/blog/best-free-pdf-editor', title: 'How to evaluate an online PDF tool' },
   ],
   image: [
-    { href: '/blog/ocr-digital-archiving', title: 'OCR and scanned document preparation' },
-    { href: '/blog/browser-native-architecture', title: 'Browser processing and file limits' },
+    { href: '/blog/image-to-pdf-jpg-vs-png', title: 'Image to PDF: JPG vs PNG' },
+    { href: '/blog/how-ocr-works', title: 'How OCR works on images and scans' },
+    { href: '/blog/improve-ocr-indian-languages', title: 'Improve OCR for Indian-language scans' },
   ],
   pdf: [
     { href: '/blog/how-to-merge-pdfs-online-safely', title: 'How to merge PDFs safely' },
+    { href: '/blog/reduce-pdf-size-keep-quality', title: 'Reduce PDF size while keeping text readable' },
     { href: '/blog/document-security-aes256', title: 'PDF passwords and AES-256 explained' },
+  ],
+};
+
+const TOOL_GUIDES: Record<string, { href: string; title: string }[]> = {
+  'compress-pdf': [
+    { href: '/blog/reduce-pdf-size-keep-quality', title: 'Reduce PDF size while keeping text readable' },
+    { href: '/blog/why-pdf-compression-limited', title: 'Why some PDFs barely shrink' },
+  ],
+  'pdf-to-word': [
+    { href: '/blog/pdf-vs-docx', title: 'PDF vs DOCX: when to use each format' },
+    { href: '/blog/scanned-pdf-to-word', title: 'Convert scanned PDFs to editable Word text' },
+  ],
+  'scanned-pdf-to-word': [
+    { href: '/blog/scanned-pdf-to-word', title: 'Convert scanned PDFs to editable Word text' },
+    { href: '/blog/how-ocr-works', title: 'How OCR works on scans' },
+  ],
+  'scanned-pdf-to-text': [
+    { href: '/blog/how-ocr-works', title: 'How OCR works on scans' },
+    { href: '/blog/improve-ocr-indian-languages', title: 'Improve OCR for Indian-language scans' },
+  ],
+  'image-to-text': [
+    { href: '/blog/how-ocr-works', title: 'How OCR works on images' },
+    { href: '/blog/improve-ocr-indian-languages', title: 'Improve OCR for Indian-language scans' },
+  ],
+  'jpg-to-pdf': [
+    { href: '/blog/image-to-pdf-jpg-vs-png', title: 'Image to PDF: JPG vs PNG' },
+  ],
+  'png-to-pdf': [
+    { href: '/blog/image-to-pdf-jpg-vs-png', title: 'Image to PDF: JPG vs PNG' },
+  ],
+  'scanned-pdf-to-searchable-pdf': [
+    { href: '/blog/pdf-accessibility-basics', title: 'PDF accessibility basics' },
+    { href: '/blog/how-ocr-works', title: 'How OCR works on scans' },
   ],
 };
 
@@ -42,5 +78,8 @@ export function getRelatedTools(toolId: string, limit = 6): ServiceTool[] {
 }
 
 export function getRelatedGuides(tool: ServiceTool) {
-  return GUIDE_MAP[getPublicToolCategory(tool)] ?? GUIDE_MAP.pdf;
+  const specific = TOOL_GUIDES[tool.id] ?? [];
+  const category = GUIDE_MAP[getPublicToolCategory(tool)] ?? GUIDE_MAP.pdf;
+  const combined = [...specific, ...category];
+  return combined.filter((guide, index) => combined.findIndex((candidate) => candidate.href === guide.href) === index).slice(0, 3);
 }

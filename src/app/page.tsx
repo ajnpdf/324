@@ -97,7 +97,7 @@ export default function HomePage() {
                   className="h-11 rounded-xl border-slate-200 bg-white pl-10 pr-3 text-sm font-semibold text-slate-950 shadow-sm focus-visible:ring-blue-500/30 md:h-12"
                 />
               </div>
-              <div className="flex gap-2 overflow-x-auto pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label={t('home.filterAria')}>
+              <div className="flex gap-2 overflow-x-visible flex-wrap pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label={t('home.filterAria')}>
                 {categories.map((category) => (
                   <button
                     type="button"

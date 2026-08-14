@@ -1432,3 +1432,164 @@ body { background:#ffffff; }
 @media (max-width: 767px) {
   .ajn-progressive-tool-card { contain-intrinsic-size: 78px; }
 }
+
+/* ========================================================================== */
+/* AJN PDF R13 — PRODUCTION FINAL / RESPONSIVE / SINGLE-BRAND VISUAL SYSTEM   */
+/* ========================================================================== */
+:root {
+  --ajn-primary: #2563eb;
+  --ajn-primary-hover: #1d4ed8;
+  --ajn-primary-pressed: #1e40af;
+  --ajn-primary-soft: #eff6ff;
+  --ajn-success: #047857;
+  --ajn-success-soft: #ecfdf5;
+  --ajn-warning: #b45309;
+  --ajn-warning-soft: #fffbeb;
+  --ajn-error: #b91c1c;
+  --ajn-error-soft: #fef2f2;
+  --ajn-disabled: #64748b;
+  --ajn-disabled-soft: #f1f5f9;
+  --ajn-focus-ring: #2563eb;
+}
+
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Never use CSS zoom to compensate for layout sizing. Browser zoom/reflow is
+   supported through responsive layout and fluid type instead. */
+html { font-size: 100%; }
+
+.ajn-primary-action,
+.jn-btn-base:not(:disabled) {
+  transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease,
+    box-shadow 140ms ease, transform 140ms ease;
+}
+
+.ajn-primary-action {
+  background: var(--ajn-primary) !important;
+  color: #fff !important;
+  border-color: var(--ajn-primary) !important;
+}
+.ajn-primary-action:hover { background: var(--ajn-primary-hover) !important; }
+.ajn-primary-action:active { background: var(--ajn-primary-pressed) !important; transform: translateY(1px); }
+
+:where(a, button, input, select, textarea, [role="button"], [tabindex]):focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--ajn-focus-ring) 72%, white);
+  outline-offset: 3px;
+}
+
+.ajn-tool-card {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 88px;
+}
+
+.ajn-tool-card::after {
+  background: var(--ajn-primary) !important;
+}
+
+.ajn-tool-card-enter {
+  animation: ajn-r13-card-enter 150ms ease-out both;
+}
+
+@keyframes ajn-r13-card-enter {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.ajn-status-dot {
+  display: inline-block;
+  width: .55rem;
+  height: .55rem;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: var(--ajn-disabled);
+}
+.ajn-status-dot[data-state="checking"] { background: var(--ajn-warning); animation: ajn-r13-status-pulse 1.25s ease-in-out infinite; }
+.ajn-status-dot[data-state="operational"] { background: var(--ajn-success); }
+.ajn-status-dot[data-state="degraded"] { background: var(--ajn-warning); }
+.ajn-status-dot[data-state="unavailable"] { background: var(--ajn-error); }
+
+@keyframes ajn-r13-status-pulse {
+  0%, 100% { opacity: .45; transform: scale(.86); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
+/* Keep ad inventory visually separate from document actions while reserving
+   layout space to protect CLS. */
+.ajn-ad-zone,
+[data-ajn-ad-zone="true"] {
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  box-shadow: none;
+}
+
+/* Selected directory controls use a visible state, not a faint border only. */
+[aria-pressed="true"].ajn-filter-chip,
+[aria-selected="true"].ajn-filter-chip,
+.ajn-filter-chip[data-active="true"] {
+  border-color: var(--ajn-primary) !important;
+  background: var(--ajn-primary) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, .16);
+}
+
+/* Responsive hardening for compact phones and high browser zoom. */
+@media (max-width: 430px) {
+  .ajn-tool-card { contain-intrinsic-size: auto 80px; }
+  .ajn-tool-card-enter { animation-duration: 130ms; }
+}
+
+@media (max-width: 359px) {
+  .ajn-tool-card { min-width: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ajn-tool-card-enter,
+  .ajn-status-dot[data-state="checking"] {
+    animation: none !important;
+  }
+  .ajn-primary-action,
+  .jn-btn-base,
+  .ajn-tool-card,
+  .ajn-card-arrow {
+    transition-duration: .01ms !important;
+  }
+  .ajn-primary-action:active { transform: none !important; }
+}
+
+@media (forced-colors: active) {
+  .ajn-status-dot { forced-color-adjust: auto; border: 1px solid ButtonText; }
+  .ajn-primary-action { border: 1px solid ButtonText !important; }
+}
+
+
+/* AJN R13 FINAL BROWSER-AUDIT MULTI-BUTTON REFLOW */
+@media (max-width: 768px) {
+  main .flex:has(> button:nth-child(3)) {
+    min-width: 0;
+    max-width: 100%;
+    flex-wrap: wrap !important;
+    overflow-x: visible !important;
+  }
+
+  main .flex:has(> button:nth-child(3)) > button {
+    max-width: 100%;
+    flex: 0 1 auto;
+  }
+
+  main [role="tablist"] {
+    min-width: 0;
+    max-width: 100%;
+    flex-wrap: wrap !important;
+    overflow-x: visible !important;
+  }
+
+  main [role="tablist"] > button {
+    max-width: 100%;
+    flex: 0 1 auto;
+    white-space: normal;
+  }
+}

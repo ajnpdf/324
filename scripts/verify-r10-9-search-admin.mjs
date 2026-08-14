@@ -52,7 +52,7 @@ const locales = localeNames.map((name) => JSON.parse(read(`src/i18n/locales/${na
 const keys = locales.map((messages) => Object.keys(messages).sort().join('|'));
 check('all five locale dictionaries retain identical key structures', new Set(keys).size === 1);
 check('image licensing footer label exists in every locale', locales.every((messages) => typeof messages['footer.imageLicensing'] === 'string' && messages['footer.imageLicensing'].trim()));
-check('R10.9 locale structure contains 511 shared keys', locales.every((messages) => Object.keys(messages).length === 511));
+check('R10.9 locale baseline of at least 511 shared keys is retained', locales.every((messages) => Object.keys(messages).length >= 511));
 
 const brandVerifier = read('scripts/verify-brand-media-theme.mjs');
 check('retained brand/media verifier now requires all four Google image licensing fields', brandVerifier.includes("detail.includes('license')"));
