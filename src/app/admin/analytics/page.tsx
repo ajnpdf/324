@@ -127,7 +127,7 @@ export default function AnalyticsPage() {
     setError('');
     if (!silent) setLoading(true);
     try {
-      if (!PDF_BACKEND_URL) throw new Error('NEXT_PUBLIC_PDF_BACKEND_URL is not configured.');
+      if (!PDF_BACKEND_URL) throw new Error('AJN PDF connection is not configured.');
       const response = await fetch(`${PDF_BACKEND_URL}/api/admin/analytics?window_days=${windowDays}`, {
         headers: { 'X-AJN-Admin-Token': token },
         cache: 'no-store',
@@ -188,8 +188,8 @@ export default function AnalyticsPage() {
               </div>
               {error && <p role="alert" className="mt-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-bold leading-5 text-red-800">{error}</p>}
               <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-3 text-[11px] font-semibold leading-5 text-slate-600">
-                <p><span className="font-black text-slate-800">Running backend:</span> {PDF_BACKEND_URL || 'Not configured'}</p>
-                <p className="mt-1">Production requires <code className="font-black">AJN_ANALYTICS_ENABLED=true</code> and a private <code className="font-black">AJN_ANALYTICS_ADMIN_TOKEN</code> configured on that same backend deployment. Tokens are stored only in this tab&apos;s session storage.</p>
+                <p><span className="font-black text-slate-800">Connected endpoint:</span> {PDF_BACKEND_URL || 'Not configured'}</p>
+                <p className="mt-1">Production requires <code className="font-black">AJN_ANALYTICS_ENABLED=true</code> and a private <code className="font-black">AJN_ANALYTICS_ADMIN_TOKEN</code> configured for that same deployment. Tokens are stored only in this tab&apos;s session storage.</p>
               </div>
             </div>
           </div>
@@ -216,8 +216,8 @@ export default function AnalyticsPage() {
             </section>
 
             <section className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              <MetricCard label="Backend conversions" value={number(summary.total)} />
-              <MetricCard label="Backend failures" value={number(summary.failed)} tone={Number(summary.failed || 0) ? 'red' : 'green'} />
+              <MetricCard label="Online conversions" value={number(summary.total)} />
+              <MetricCard label="Conversion failures" value={number(summary.failed)} tone={Number(summary.failed || 0) ? 'red' : 'green'} />
               <MetricCard label="Average processing" value={`${Math.round(Number(summary.avg_duration_ms || 0))} ms`} />
               <MetricCard label="Processed input" value={bytes(summary.input_bytes)} />
             </section>
@@ -242,7 +242,7 @@ export default function AnalyticsPage() {
             </div>
 
             <section className="ajn-theme-surface mt-6 overflow-hidden rounded-3xl">
-              <div className="border-b border-slate-200 p-5"><h2 className="text-lg font-black">Tool usage and output reliability</h2><p className="mt-1 text-xs text-slate-500">Backend conversion runs aggregated by tool. No filenames or document contents are included.</p></div>
+              <div className="border-b border-slate-200 p-5"><h2 className="text-lg font-black">Tool usage and output reliability</h2><p className="mt-1 text-xs text-slate-500">Conversion runs aggregated by tool. No filenames or document contents are included.</p></div>
               <div className="overflow-x-auto"><table className="w-full min-w-[780px] text-left text-sm"><thead className="bg-slate-50 text-[11px] uppercase tracking-[.1em] text-slate-500"><tr><th className="px-5 py-3">Tool</th><th className="px-5 py-3">Runs</th><th className="px-5 py-3">Success</th><th className="px-5 py-3">Failed</th><th className="px-5 py-3">Average time</th><th className="px-5 py-3">Output</th></tr></thead><tbody>{data.tools.map((row) => <tr key={String(row.tool_id)} className="border-t border-slate-100"><td className="px-5 py-4 font-black">{String(row.tool_id)}</td><td className="px-5 py-4">{number(row.runs)}</td><td className="px-5 py-4 text-emerald-600">{number(row.success)}</td><td className="px-5 py-4 text-red-600">{number(row.failed)}</td><td className="px-5 py-4">{Math.round(Number(row.avg_duration_ms || 0))} ms</td><td className="px-5 py-4">{bytes(row.output_bytes)}</td></tr>)}</tbody></table></div>
             </section>
 

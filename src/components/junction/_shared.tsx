@@ -165,13 +165,13 @@ export function ToolWorkspace({ title, description, accent = T.blue, children }:
         <section className="jn-card ajn-product-canvas rounded-2xl border border-slate-200 bg-white p-3 shadow-[0_20px_58px_rgba(30,62,130,.09)] sm:p-5">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-blue-100 bg-blue-50/70 px-3 py-2.5 text-[11px] font-extrabold text-slate-700" aria-label="Upload limits">
             <span>Upload: {fileCountText} • up to {effectiveMaxFile} MB each</span>
-            <span className="text-blue-700">{serverMode ? "Server-assisted" : "Browser-local"}</span>
+            <span className="text-blue-700">{serverMode ? "Online workflow" : "On-device workflow"}</span>
           </div>
           {serverMode && serviceBlocked && (
             <div role="status" aria-live="polite" className="mb-4 flex items-start justify-between gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-amber-950">
               <div className="flex min-w-0 gap-2.5">
                 {checking ? <Loader2 className="mt-0.5 h-4 w-4 shrink-0 animate-spin" /> : <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />}
-                <div><p className="text-xs font-black">{checking ? "Checking processing service…" : "Processing service unavailable"}</p><p className="mt-1 text-[11px] font-semibold leading-5 opacity-80">{checking ? "AJN PDF is confirming live availability before accepting a server-processing job." : "This tool is temporarily disabled before upload. Browser-local AJN PDF tools remain available."}</p></div>
+                <div><p className="text-xs font-black">{checking ? "Checking availability…" : "Temporarily unavailable"}</p><p className="mt-1 text-[11px] font-semibold leading-5 opacity-80">{checking ? "AJN PDF is confirming live availability before accepting the selected file." : "This tool is temporarily unavailable. On-device AJN PDF tools remain available."}</p></div>
               </div>
               {!checking && <button type="button" onClick={() => void refresh()} className="shrink-0 rounded-lg border border-amber-300 bg-white px-3 py-2 text-[10px] font-black text-amber-900">Retry</button>}
             </div>

@@ -68,7 +68,7 @@ const articles = [
   {
     href: '/blog/browser-native-architecture',
     title: 'How browser-based PDF processing works',
-    desc: 'Understand browser-local processing, memory limits and why some advanced workflows need a server engine.',
+    desc: 'Understand on-device processing, memory limits and why some advanced workflows use an online conversion engine.',
     tag: 'Architecture', readTime: '6 min', icon: BookOpen,
   },
   {

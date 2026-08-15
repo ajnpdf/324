@@ -5,7 +5,7 @@ export default function AcceptableUsePage() {
     <LegalPageShell
       eyebrow="Usage policy"
       title="Acceptable Use Policy"
-      summary="This policy defines the lawful and authorised uses of AJN PDF and its temporary processing service."
+      summary="This policy defines the lawful and authorised uses of AJN PDF and its online file workflows."
       sections={[
         {
           title: 'Allowed use',

@@ -5,24 +5,24 @@ export default function SecurityPage() {
     <LegalPageShell
       eyebrow="Security"
       title="Security Practices"
-      summary="AJN PDF uses a local-first architecture for compatible tools and a separate temporary processing service for operations that require a native PDF engine."
+      summary="AJN PDF separates on-device work from temporary online workflows and applies practical safeguards before files are processed."
       sections={[
         {
-          title: 'Processing separation',
+          title: 'Clear file handling',
           bullets: [
-            'Some workflows can process files on your device. When a secure processing service is required, AJN PDF identifies that workflow in its file-processing information.',
-            'Protect, Unlock and Repair use a clearly labelled temporary server workflow when the secure processing service is online.',
-            'Tool pages display their processing mode and backend availability before processing begins.',
+            'Compatible tools work inside the active browser session.',
+            'Advanced workflows clearly indicate when the selected file will be uploaded temporarily to complete the requested action.',
+            'Tool pages check live availability before accepting files for an online workflow.',
           ],
         },
         {
-          title: 'Temporary backend controls',
+          title: 'Temporary request safeguards',
           bullets: [
-            'Unique temporary working directory for each request.',
-            'PDF signature, file-size and input validation.',
-            'Restricted CORS origins and processing timeouts.',
-            'Automatic cleanup after file delivery and cleanup of abandoned temporary data.',
-            'Passwords are not included in application logs.',
+            'Each online request uses an isolated temporary working area.',
+            'File type, size and request inputs are validated before processing.',
+            'HTTPS, origin restrictions, timeouts and workload limits protect the request path.',
+            'Temporary request files are scheduled for cleanup after delivery and abandoned work is cleaned automatically.',
+            'PDF passwords are never intended to appear in application logs or analytics.',
           ],
         },
         {

@@ -12,12 +12,12 @@ const groups = [
         a: 'File handling depends on the workflow. Each tool provides practical handling details, limits and result steps before you begin.',
       },
       {
-        q: 'Which tools use the processing service?',
-        a: 'Advanced conversion, OCR, protection, unlocking and repair workflows can use the processing service when a native engine is required.',
+        q: 'Which tools use an online workflow?',
+        a: 'Advanced conversion, OCR, protection, unlocking and repair workflows may temporarily upload the selected file when an additional conversion engine is required.',
       },
       {
         q: 'Are temporary files deleted?',
-        a: 'Service-assisted jobs use a request-specific workspace that is scheduled for cleanup after the result is delivered. Session-based tools keep their working state in the active page.',
+        a: 'Online requests use an isolated temporary work area that is scheduled for cleanup after the result is delivered. On-device tools keep their working state in the active page.',
       },
     ],
   },

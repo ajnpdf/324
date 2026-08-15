@@ -30,7 +30,7 @@ export default function CookiesPage() {
         {
           title: 'No file storage cookie',
           paragraphs: [
-            'AJN PDF does not store uploaded PDF or image files inside cookies. Files selected for browser tools remain in browser memory, while server tools use temporary request storage as described in the File Processing Policy.',
+            'AJN PDF does not store uploaded PDF or image files inside cookies. Files selected for browser tools remain in browser memory, while online workflows use temporary request storage as described in the File Processing Policy.',
           ],
         },
       ]}

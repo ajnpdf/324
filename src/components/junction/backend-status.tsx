@@ -1,13 +1,13 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { AlertTriangle, CheckCircle2, Clock3, Loader2, RefreshCw, ServerOff } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, Clock3, Loader2, RefreshCw, WifiOff } from 'lucide-react';
 import { checkPdfBackendHealth, type PdfBackendHealth } from '@/lib/pdf-backend';
 import { useLanguage } from '@/lib/i18n/language-context';
 
 const INITIAL_HEALTH: PdfBackendHealth = {
   status: 'offline',
-  message: 'Checking secure processing service…',
+  message: 'Checking online tools…',
   messageKey: 'backend.checking',
 };
 
@@ -70,7 +70,7 @@ export function BackendStatus({ compact = false, autoRefreshMs = 0, showLastChec
       : displayState === 'degraded'
         ? t('status.degraded')
         : t('status.unavailable');
-  const StateIcon = displayState === 'checking' ? Loader2 : displayState === 'operational' ? CheckCircle2 : displayState === 'degraded' ? AlertTriangle : ServerOff;
+  const StateIcon = displayState === 'checking' ? Loader2 : displayState === 'operational' ? CheckCircle2 : displayState === 'degraded' ? AlertTriangle : WifiOff;
 
   return (
     <div role="status" aria-live="polite" aria-busy={checking || undefined} className={`ajn-backend-status ${toneClass}`} style={{ padding: compact ? 10 : 14 }}>
@@ -82,11 +82,8 @@ export function BackendStatus({ compact = false, autoRefreshMs = 0, showLastChec
           {!compact && <div style={{ marginTop: 3, fontSize: 10, fontWeight: 700, opacity: .84 }}>{t(health.messageKey)}</div>}
           {!compact && online && (
             <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[10px] font-extrabold text-slate-700">
-              {health.version && <span>v{health.version}</span>}
-              {health.maxFileMb && <span>File {health.maxFileMb} MB</span>}
-              {health.maxTotalMb && <span>Total {health.maxTotalMb} MB</span>}
-              {health.processingTimeoutSeconds && <span>Timeout {health.processingTimeoutSeconds}s</span>}
-              {typeof health.availableConversionTools === 'number' && typeof health.conversionTools === 'number' && <span>{health.availableConversionTools}/{health.conversionTools} conversions available{degraded ? ' · dependency limited' : ''}</span>}
+
+              {typeof health.availableConversionTools === 'number' && typeof health.conversionTools === 'number' && <span>{health.availableConversionTools}/{health.conversionTools} online workflows available{degraded ? ' · some optional formats unavailable' : ''}</span>}
             </div>
           )}
           {!compact && showLastChecked && lastCheckedAt && (

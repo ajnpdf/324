@@ -138,7 +138,7 @@ export default function ServerConversionTool({ toolId }: { toolId: string }) {
       setError(friendlyBackendError(t, cause));
       sendAjnAnalytics({ event_name: 'tool_error', path: window.location.pathname, tool_id: toolId });
     } finally {
-      // Server endpoint does not expose truthful per-job percentage progress yet.
+      // This workflow does not expose truthful per-job percentage progress yet.
     }
   };
 

@@ -5,7 +5,7 @@ type RuntimeImageProps = Omit<ImgHTMLAttributes<HTMLImageElement>, 'alt'> & {
 };
 
 /**
- * RuntimeImage is intentionally used for Blob URLs, data URLs and runtime backend media.
+ * RuntimeImage is intentionally used for Blob URLs, data URLs and runtime media.
  * These sources cannot safely use the Next.js image optimizer without preconfigured hosts
  * and, for local previews, must never be uploaded to an optimizer endpoint.
  */

@@ -8,7 +8,7 @@ import { SITE_URL } from '@/lib/seo-config';
 
 const focusAreas = [
   { icon: FileSearch, title: 'Useful document workflows', text: 'PDF, OCR, image and office-file tools built around clear inputs, limits and downloadable results.' },
-  { icon: ShieldCheck, title: 'Honest processing', text: 'Browser and server-assisted tools are labelled so users understand how each workflow operates.' },
+  { icon: ShieldCheck, title: 'Honest processing', text: 'On-device and online workflows are labelled so users understand how each file is handled.' },
   { icon: Layers3, title: 'Accessible product design', text: 'Responsive layouts, light and dark themes, keyboard states and reduced-motion support are part of the product system.' },
 ];
 

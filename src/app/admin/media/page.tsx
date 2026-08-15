@@ -100,7 +100,7 @@ export default function AdminMediaPage() {
 
   const loadPosts = useCallback(async () => {
     if (!PDF_BACKEND_URL) {
-      setError('NEXT_PUBLIC_PDF_BACKEND_URL is not configured.');
+      setError('AJN PDF connection is not configured.');
       return;
     }
     if (!token.trim()) {
@@ -128,7 +128,7 @@ export default function AdminMediaPage() {
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!PDF_BACKEND_URL) {
-      setError('NEXT_PUBLIC_PDF_BACKEND_URL is not configured.');
+      setError('AJN PDF connection is not configured.');
       return;
     }
     if (!token.trim()) {
@@ -243,7 +243,7 @@ export default function AdminMediaPage() {
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <Link href="/admin/analytics" className="ajn-secondary-button">Analytics</Link>
-              
+
               <Link href="/discover" target="_blank" rel="noreferrer" className="ajn-secondary-button">Open public feed <ExternalLink className="h-4 w-4" /></Link>
             </div>
           </div>
@@ -264,8 +264,8 @@ export default function AdminMediaPage() {
           {error && <p role="alert" className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold leading-6 text-red-800">{error}</p>}
           {message && <p role="status" className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-bold text-emerald-800">{message}</p>}
           <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs font-semibold leading-5 text-slate-600">
-            <p><span className="font-black text-slate-800">Running backend:</span> {PDF_BACKEND_URL || 'Not configured'}</p>
-            <p className="mt-1">Use the private <code className="font-black">AJN_MEDIA_ADMIN_TOKEN</code> configured on that same backend deployment. A token from a different local or production environment will be rejected. The token is stored only in this tab&apos;s session storage.</p>
+            <p><span className="font-black text-slate-800">Connected endpoint:</span> {PDF_BACKEND_URL || 'Not configured'}</p>
+            <p className="mt-1">Use the private <code className="font-black">AJN_MEDIA_ADMIN_TOKEN</code> configured for that same deployment. A token from a different local or production environment will be rejected. The token is stored only in this tab&apos;s session storage.</p>
           </div>
         </section>
 

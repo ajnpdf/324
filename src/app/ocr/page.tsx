@@ -36,7 +36,7 @@ export default function OcrGuidePage() {
           <div className="mt-5 flex flex-wrap gap-2">
             {OCR_LANGUAGE_CODES.map((code) => <span key={code} className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-black text-slate-800">{OCR_LANGUAGE_LABELS[code]}</span>)}
           </div>
-          <p className="mt-4 text-xs font-medium leading-6 text-slate-600">The processing service exposes the languages installed for the current deployment. A tool can show a smaller list if a language pack is unavailable at runtime.</p>
+          <p className="mt-4 text-xs font-medium leading-6 text-slate-600">The tool shows the OCR languages available for the current deployment. The list can be smaller when a language pack is unavailable.</p>
         </section>
 
         <section className="mt-8 grid gap-5 lg:grid-cols-2">

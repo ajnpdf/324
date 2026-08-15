@@ -30,7 +30,7 @@ const packageJson = JSON.parse(read('package.json'));
 check('107 canonical tool IDs retained', ids.length === 107 && new Set(ids).size === 107);
 check('root-level URL-neutral tool page exists', exists('src/app/(tool-pages)/[id]/page.tsx'));
 check('legacy src/app/tools route folder is absent', !exists('src/app/tools'));
-check('all public workflows remain routable even when a backend capability is temporarily unavailable', buildPublic.includes('export const BUILD_PUBLIC_TOOLS = PUBLIC_TOOLS'));
+check('all public workflows remain routable even when an online capability is temporarily unavailable', buildPublic.includes('export const BUILD_PUBLIC_TOOLS = PUBLIC_TOOLS'));
 check('reserved route protection includes retired PSD URL', routes.includes("'psd-pdf'"));
 check('PSD historical URL has explicit redirect and 410 retired endpoint', nextConfig.includes("source: '/tools/psd-pdf'") && exists('src/app/psd-pdf/route.ts') && read('src/app/psd-pdf/route.ts').includes('status: 410'));
 check('all legacy tool URLs use permanent root redirects', nextConfig.includes("source: '/tools/:id'") && nextConfig.includes("destination: '/:id'") && nextConfig.includes('permanent: true'));
@@ -60,8 +60,8 @@ check('status displays last-checked time and capability counts', status.includes
 check('status uses icon + label + color state marker', status.includes('StateIcon') && status.includes('ajn-status-dot') && status.includes('data-state={displayState}'));
 
 check('tool workspace surfaces actual per-tool upload limits before controls', shared.includes('getToolLimitProfile') && shared.includes('aria-label="Upload limits"') && shared.includes('up to {effectiveMaxFile} MB each'));
-check('server-assisted tools are disabled before upload when service is unavailable', shared.includes('serviceBlocked') && shared.includes('<fieldset disabled={serviceBlocked}'));
-check('browser-local tools remain independent from backend status', shared.includes('usePdfBackendStatus(serverMode ? 30000 : 0, serverMode)'));
+check('online tools are disabled before upload when service is unavailable', shared.includes('serviceBlocked') && shared.includes('<fieldset disabled={serviceBlocked}'));
+check('on-device tools remain independent from online availability', shared.includes('usePdfBackendStatus(serverMode ? 30000 : 0, serverMode)'));
 check('primary tool actions are normalized to AJN blue', shared.includes('linear-gradient(135deg,#2563EB,#1D4ED8)') && shared.includes('delete customStyle.background'));
 
 check('processing overlay has immediate cancelling state', activity.includes('"cancelling"') && activity.includes('processing.cancelling') && activity.includes('abortController.current?.abort()'));
@@ -71,7 +71,7 @@ check('completion uses a restrained success check icon', activity.includes('<Che
 check('priority SEO titles use natural high-intent copy', seo.includes('Merge PDF Online - Combine PDF Files | AJN PDF') && seo.includes('Compress PDF Online - Reduce PDF Size | AJN PDF'));
 check('generic SEO descriptions no longer use keyword-stuffed “helps with” template', !seo.includes('online helps with'));
 check('generic editorial copy no longer uses awkward “utility for” template', !editorial.includes('is an AJN PDF utility for'));
-check('server cleanup wording is scheduled rather than an absolute instant-delete promise', editorial.includes('scheduled for cleanup'));
+check('temporary cleanup wording is scheduled rather than an absolute instant-delete promise', editorial.includes('scheduled for cleanup'));
 
 const localeDir = path.join(root, 'src/i18n/locales');
 const localeFiles = ['en','hi','te','ta','kn'];

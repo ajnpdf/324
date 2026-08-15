@@ -67,8 +67,8 @@ export function unavailableBuildReason(id: string): string | null {
   const policy = getToolPolicy(id);
   if (!policy.publicByDefault) return policy.limitation || 'This tool is not included in the public release.';
   if (policy.processingMode === 'browser') return null;
-  if (!manifestValid) return 'Server capabilities have not been generated for this deployment. Run the production capability export before building.';
+  if (!manifestValid) return 'Live availability information is missing for this deployment.';
   const capability = getBuildCapability(id);
-  if (!capability) return 'This server-processing tool was not enabled in the deployment capability manifest.';
+  if (!capability) return 'This online workflow is not enabled for the current deployment.';
   return capability.available ? null : capability.unavailableReason || 'A required conversion dependency is unavailable.';
 }

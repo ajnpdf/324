@@ -24,7 +24,7 @@ export default function ProtectPdf() {
   const run = async () => {
     const validation = validateFiles(files.map(item => item.file), { extensions: [".pdf"], minFiles: 1, maxFiles: 1, maxSizeMb: 50 });
     if (validation) { setError(validation); return; }
-    if (!online) { setError("Secure processing service is temporarily unavailable. Check the service status and try again."); return; }
+    if (!online) { setError("This tool is temporarily unavailable. Check live status and try again."); return; }
     if (password.length < 8) { setError("Use an open password with at least 8 characters for stronger protection."); return; }
     if (password !== confirm) { setError("The password confirmation does not match."); return; }
     if (ownerPassword && ownerPassword === password) { setError("For stronger permission control, use a different owner password or leave it empty."); return; }

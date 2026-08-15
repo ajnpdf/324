@@ -10,15 +10,15 @@ export function formatAdminApiError(area: AdminArea, status: number, detail: str
   const tokenName = TOKEN_ENV[area];
 
   if (area === 'analytics' && status === 404 && /analytics.*disabled/i.test(message)) {
-    return 'Anonymous analytics are disabled on the running backend. Set AJN_ANALYTICS_ENABLED=true in that deployment and restart or redeploy the backend.';
+    return 'Anonymous analytics are disabled for the connected deployment. Set AJN_ANALYTICS_ENABLED=true and redeploy the connected service.';
   }
 
   if (status === 401 || status === 403 || /valid .*admin token|required/i.test(message)) {
-    return `${area === 'media' ? 'Media' : 'Analytics'} admin token rejected by the running backend. Use the value configured as ${tokenName} on that same deployment, then restart or redeploy after any environment change.`;
+    return `${area === 'media' ? 'Media' : 'Analytics'} admin token was rejected. Use the value configured as ${tokenName} for the connected deployment, then redeploy after any environment change.`;
   }
 
   if (status === 404) {
-    return `${area === 'media' ? 'Media admin' : 'Analytics admin'} endpoint is not available on the running backend. Confirm the frontend is connected to the AJN PDF 3.1.0 backend and redeploy if necessary.`;
+    return `${area === 'media' ? 'Media admin' : 'Analytics admin'} endpoint is not available for the connected deployment. Confirm the AJN PDF 3.1.0 service configuration and redeploy if necessary.`;
   }
 
   if (status === 429) {

@@ -19,7 +19,7 @@ export default function TermsPage() {
           title: 'Prohibited use',
           bullets: [
             'Do not use the service to bypass access controls without authorisation, guess passwords, infringe copyright, distribute malware or process illegal content.',
-            'Do not overload, scrape, reverse engineer, interfere with or attempt unauthorised access to the website or processing service.',
+            'Do not overload, scrape, reverse engineer, interfere with or attempt unauthorised access to the website or online workflows.',
             'Do not present a visual signature created by AJN PDF as a certificate-backed digital signature unless it has been independently signed by a valid digital-signature system.',
           ],
         },
@@ -33,7 +33,7 @@ export default function TermsPage() {
         {
           title: 'Availability',
           paragraphs: [
-            'Tool availability and limits can depend on the device, file complexity, format and required processing service. We may temporarily disable a workflow when its output, security or infrastructure is not reliable.',
+            'Tool availability and limits can depend on the device, file complexity, format and required online workflow. We may temporarily disable a workflow when its output, security or infrastructure is not reliable.',
           ],
         },
         {

@@ -10,7 +10,7 @@ export function PublicMediaGrid({ posts }: { posts: PublicMediaPost[] }) {
         <article key={post.slug} className="ajn-media-card group">
           <Link href={`/discover/${post.slug}`} className="block" data-analytics-id={`media-card-${post.slug}`}>
             <div className="relative aspect-square overflow-hidden bg-muted">
-              {/* Dynamic backend media uses regular images so a separate Next image host configuration is unnecessary. */}
+              {/* Dynamic media uses regular images so a separate Next image host configuration is unnecessary. */}
               <RuntimeImage
                 src={post.thumbnail_url || post.image_url}
                 alt={post.alt_text}

@@ -1,14 +1,14 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { CheckCircle2, FileStack, Gauge, HardDrive, Monitor, Server, Timer, WifiOff } from 'lucide-react';
+import { CheckCircle2, FileStack, Gauge, Globe2, HardDrive, Monitor, Timer, WifiOff } from 'lucide-react';
 import { checkPdfBackendHealth, type PdfBackendHealth } from '@/lib/pdf-backend';
 import { getToolLimitProfile } from '@/lib/tool-limits';
 import { useLanguage } from '@/lib/i18n/language-context';
 
 const INITIAL_HEALTH: PdfBackendHealth = {
   status: 'offline',
-  message: 'Checking processing service…',
+  message: 'Checking online tools…',
   messageKey: 'backend.checking',
 };
 
@@ -40,7 +40,7 @@ export function ToolRuntimeFactsInline({ toolId }: { toolId: string }) {
 
   const facts = [
     {
-      icon: profile.executionMode === 'local' ? Monitor : Server,
+      icon: profile.executionMode === 'local' ? Monitor : Globe2,
       label: t('runtime.processing'),
       value: profile.executionMode === 'local' ? t('runtime.onDevice') : t('runtime.secureService'),
     },

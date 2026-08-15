@@ -20,7 +20,7 @@ export default function RepairPdf() {
   const run = async () => {
     const validation = validateFiles(files.map(item => item.file), { extensions: [".pdf"], minFiles: 1, maxFiles: 1, maxSizeMb: 50 });
     if (validation) { setError(validation); return; }
-    if (!online) { setError("Secure processing service is temporarily unavailable. Check the service status and try again."); return; }
+    if (!online) { setError("This tool is temporarily unavailable. Check live status and try again."); return; }
     setError(""); setLoading(true);
     try { setResult(await repairPdfOnServer(files[0].file, safeOutputName(outputName, "repaired", ".pdf"))); }
     catch (e: unknown) { setError(friendlyBackendError(t, e, "errors.processingFailed")); }

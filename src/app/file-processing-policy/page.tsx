@@ -5,23 +5,23 @@ export default function FileProcessingPolicyPage() {
     <LegalPageShell
       eyebrow="File processing"
       title="File Processing Policy"
-      summary="AJN PDF explains whether a workflow stays in the active session or uses the processing service, together with practical limits and cleanup behavior."
+      summary="AJN PDF explains whether a workflow stays in the active session or temporarily uploads the selected file, together with practical limits and cleanup behavior."
       sections={[
         {
           title: 'Session-based processing',
           bullets: [
             'The selected document is read by JavaScript or WebAssembly in the current browser tab.',
-            'AJN PDF does not intentionally send the file to its processing API for a session-based workflow.',
+            'AJN PDF does not intentionally upload the selected file for an on-device workflow.',
             'The browser may use memory, temporary cache or download storage according to browser and operating-system behaviour.',
           ],
         },
         {
-          title: 'Service-assisted processing',
+          title: 'Online processing',
           bullets: [
-            'The file and required options are transmitted over HTTPS to the configured AJN PDF processing service.',
-            'The service creates a request-specific temporary directory, performs the requested operation and streams the result back.',
+            'For supported advanced tools, the selected file and required options are transmitted over HTTPS only to complete the requested action.',
+            'Each request uses an isolated temporary workspace, completes the requested operation and returns the result.',
             'The application removes the request directory after the response and runs cleanup for abandoned temporary jobs.',
-            'Service-assisted tools include advanced OCR, office and eBook conversions, PDF security operations, repair and format workflows that require the configured processing engine.',
+            'Online workflows include advanced OCR, office and eBook conversions, PDF security operations, repair and format workflows that need additional conversion engines.',
           ],
         },
         {

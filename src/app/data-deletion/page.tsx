@@ -9,11 +9,11 @@ export default function DataDeletionPage() {
       sections={[
         {
           title: 'Files processed in the browser',
-          paragraphs: ['AJN PDF does not have a server copy to delete. Reset or close the tool page and remove the downloaded file through your own device if desired.'],
+          paragraphs: ['For on-device workflows, AJN PDF does not intentionally create an uploaded copy. Reset or close the tool page and remove the downloaded file from your device if desired.'],
         },
         {
           title: 'Files processed temporarily',
-          paragraphs: ['The processing service is designed to remove temporary input and output files after delivery. If a processing request fails, abandoned temporary folders are subject to automatic cleanup.'],
+          paragraphs: ['Online workflows schedule temporary input and output files for cleanup after delivery. If a request fails, abandoned temporary work areas are subject to automatic cleanup.'],
         },
         {
           title: 'Correspondence and support data',

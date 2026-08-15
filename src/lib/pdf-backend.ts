@@ -1,6 +1,42 @@
-const RAW_BACKEND_URL = (process.env.NEXT_PUBLIC_PDF_BACKEND_URL || '').trim();
-export const PDF_BACKEND_URL = RAW_BACKEND_URL.replace(/\/$/, '');
+const ENV_SERVICE_URL = (
+  process.env.NEXT_PUBLIC_PDF_BACKEND_URL ||
+  process.env.NEXT_PUBLIC_AJN_PDF_API_URL ||
+  ''
+).trim();
+
+// Public, non-secret default for the current AJN PDF processing endpoint.
+// An explicit valid environment value always wins. A website-origin value is
+// rejected because it would make client requests loop back to the Next.js site.
+const DEFAULT_SERVICE_URL = 'https://ajn-pdf-api-rswf5f4f3q-el.a.run.app';
+
+function normalizeServiceUrl(value: string): string {
+  const trimmed = value.trim().replace(/\/+$/, '');
+  if (!trimmed) return '';
+  try {
+    const url = new URL(trimmed);
+    const host = url.hostname.toLowerCase();
+    const localHttp = url.protocol === 'http:' && (host === '127.0.0.1' || host === 'localhost');
+    if (url.protocol !== 'https:' && !localHttp) return '';
+    const websiteHost = host === 'ajnpdf.com' || host === 'www.ajnpdf.com';
+    const onlyRootPath = !url.pathname || url.pathname === '/';
+    if (websiteHost && onlyRootPath) return '';
+    if (process.env.NODE_ENV === 'production' && (host === '127.0.0.1' || host === 'localhost')) return '';
+    return url.toString().replace(/\/$/, '');
+  } catch {
+    return '';
+  }
+}
+
+const NORMALIZED_ENV_URL = normalizeServiceUrl(ENV_SERVICE_URL);
+export const PDF_BACKEND_URL = NORMALIZED_ENV_URL || DEFAULT_SERVICE_URL;
 export const isPdfBackendConfigured = Boolean(PDF_BACKEND_URL);
+export const PDF_BACKEND_USING_FALLBACK = !NORMALIZED_ENV_URL;
+const SERVICE_CANDIDATES = [...new Set([NORMALIZED_ENV_URL, DEFAULT_SERVICE_URL].filter(Boolean))];
+let activeServiceUrl = PDF_BACKEND_URL;
+
+function currentServiceUrl(): string {
+  return activeServiceUrl || PDF_BACKEND_URL;
+}
 
 export class PdfBackendError extends Error {
   code: string;
@@ -24,7 +60,6 @@ export function getPdfBackendErrorRequestId(error: unknown): string | null {
   return error instanceof PdfBackendError ? error.requestId || null : null;
 }
 
-
 export type PdfBackendHealth = {
   status: 'online' | 'offline' | 'not-configured';
   message: string;
@@ -39,177 +74,112 @@ export type PdfBackendHealth = {
   availableConversionTools?: number;
 };
 
-export async function checkPdfBackendHealth(signal?: AbortSignal): Promise<PdfBackendHealth> {
-  if (!isPdfBackendConfigured) {
-    return {
-      status: 'not-configured',
-      message: 'Processing service URL is not configured.',
-      messageKey: 'backend.notConfigured',
-    };
-  }
-
+async function fetchWithTimeout(url: string, init: RequestInit, timeoutMs: number, signal?: AbortSignal): Promise<Response> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  const abortFromCaller = () => controller.abort();
+  signal?.addEventListener('abort', abortFromCaller, { once: true });
   try {
-    const response = await fetch(`${PDF_BACKEND_URL}/ready`, {
-      method: 'GET',
-      cache: 'no-store',
-      signal,
-    });
-    if (!response.ok) {
-      return { status: 'offline', message: `Processing service returned HTTP ${response.status}.`, messageKey: 'backend.offline' };
-    }
-    const payload = await response.json().catch(() => ({}));
-    if (payload?.status !== 'ok') {
-      return { status: 'offline', message: 'Processing service returned an unhealthy response.', messageKey: 'backend.offline' };
-    }
-    return {
-      status: 'online',
-      message: 'Processing service is ready for file processing.',
-      messageKey: 'backend.ready',
-      service: payload.service,
-      version: payload.version,
-      maxFileMb: Number.isFinite(Number(payload.max_file_mb)) ? Number(payload.max_file_mb) : undefined,
-      maxTotalMb: Number.isFinite(Number(payload.max_total_mb)) ? Number(payload.max_total_mb) : undefined,
-      maxConcurrentJobs: Number.isFinite(Number(payload.max_concurrent_jobs)) ? Number(payload.max_concurrent_jobs) : undefined,
-      processingTimeoutSeconds: Number.isFinite(Number(payload.processing_timeout_seconds)) ? Number(payload.processing_timeout_seconds) : undefined,
-      conversionTools: Number.isFinite(Number(payload.conversion_tools)) ? Number(payload.conversion_tools) : undefined,
-      availableConversionTools: Number.isFinite(Number(payload.available_conversion_tools)) ? Number(payload.available_conversion_tools) : undefined,
-    };
-  } catch (error) {
-    if (error instanceof DOMException && error.name === 'AbortError') {
-      return { status: 'offline', message: 'Processing service health check timed out.', messageKey: 'backend.offline' };
-    }
-    return { status: 'offline', message: 'Processing service is temporarily unavailable.', messageKey: 'backend.offline' };
+    return await fetch(url, { ...init, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+    signal?.removeEventListener('abort', abortFromCaller);
   }
 }
 
-async function postPdf(path: string, form: FormData): Promise<Blob> {
+export async function checkPdfBackendHealth(signal?: AbortSignal): Promise<PdfBackendHealth> {
   if (!isPdfBackendConfigured) {
-    throw new PdfBackendError('Processing service is not configured.', 'SERVICE_UNAVAILABLE');
+    return { status: 'not-configured', message: 'This feature is temporarily unavailable.', messageKey: 'backend.notConfigured' };
   }
+
+  for (const candidate of SERVICE_CANDIDATES) {
+    try {
+      const response = await fetchWithTimeout(`${candidate}/ready`, { method: 'GET', cache: 'no-store' }, 7000, signal);
+      if (!response.ok) continue;
+      const payload = await response.json().catch(() => ({}));
+      if (payload?.status !== 'ok') continue;
+      activeServiceUrl = candidate;
+      return {
+        status: 'online',
+        message: 'Ready to use.',
+        messageKey: 'backend.ready',
+        service: payload.service,
+        version: payload.version,
+        maxFileMb: Number.isFinite(Number(payload.max_file_mb)) ? Number(payload.max_file_mb) : undefined,
+        maxTotalMb: Number.isFinite(Number(payload.max_total_mb)) ? Number(payload.max_total_mb) : undefined,
+        maxConcurrentJobs: Number.isFinite(Number(payload.max_concurrent_jobs)) ? Number(payload.max_concurrent_jobs) : undefined,
+        processingTimeoutSeconds: Number.isFinite(Number(payload.processing_timeout_seconds)) ? Number(payload.processing_timeout_seconds) : undefined,
+        conversionTools: Number.isFinite(Number(payload.conversion_tools)) ? Number(payload.conversion_tools) : undefined,
+        availableConversionTools: Number.isFinite(Number(payload.available_conversion_tools)) ? Number(payload.available_conversion_tools) : undefined,
+      };
+    } catch {
+      if (signal?.aborted) break;
+    }
+  }
+  return { status: 'offline', message: 'Online tools are temporarily unavailable.', messageKey: 'backend.offline' };
+}
+
+async function postPdf(path: string, form: FormData): Promise<Blob> {
+  if (!isPdfBackendConfigured) throw new PdfBackendError('This tool is temporarily unavailable.', 'SERVICE_UNAVAILABLE');
   const controller = new AbortController();
   const timeout = window.setTimeout(() => controller.abort(), 190_000);
   try {
-    const response = await fetch(`${PDF_BACKEND_URL}${path}`, {
-      method: 'POST',
-      body: form,
-      signal: controller.signal,
-    });
+    const response = await fetch(`${currentServiceUrl()}${path}`, { method: 'POST', body: form, signal: controller.signal });
     if (!response.ok) {
       const payload = await response.json().catch(() => ({}));
-      throw new PdfBackendError(payload.error || `Processing failed with status ${response.status}.`, payload.code || 'PROCESSING_FAILED', response.status, response.headers.get('x-request-id') || payload.request_id);
+      throw new PdfBackendError(payload.error || `Could not complete this request (${response.status}).`, payload.code || 'PROCESSING_FAILED', response.status, response.headers.get('x-request-id') || payload.request_id);
     }
     return await response.blob();
   } catch (error) {
-    if (error instanceof DOMException && error.name === 'AbortError') {
-      if (controller.signal.aborted) throw new PdfBackendError('Processing timed out.', 'TIMEOUT');
-      throw new PdfBackendError('Processing was cancelled.', 'CANCELLED');
-    }
-    if (error instanceof TypeError) {
-      throw new PdfBackendError('Processing service is temporarily unavailable.', 'SERVICE_UNAVAILABLE');
-    }
+    if (error instanceof DOMException && error.name === 'AbortError') throw new PdfBackendError('This request took too long. Try a smaller file or try again.', 'TIMEOUT');
+    if (error instanceof TypeError) throw new PdfBackendError('This tool is temporarily unavailable. Please try again.', 'SERVICE_UNAVAILABLE');
     throw error;
   } finally {
     window.clearTimeout(timeout);
   }
 }
 
-export async function protectPdfOnServer(args: {
-  file: File;
-  userPassword: string;
-  ownerPassword?: string;
-  outputName: string;
-  allowPrinting: boolean;
-  allowCopying: boolean;
-  allowEditing: boolean;
-  allowAnnotations: boolean;
-  allowFormFilling: boolean;
-}): Promise<Blob> {
+export async function protectPdfOnServer(args: { file: File; userPassword: string; ownerPassword?: string; outputName: string; allowPrinting: boolean; allowCopying: boolean; allowEditing: boolean; allowAnnotations: boolean; allowFormFilling: boolean; }): Promise<Blob> {
   const form = new FormData();
-  form.set('file', args.file);
-  form.set('user_password', args.userPassword);
-  form.set('owner_password', args.ownerPassword || '');
-  form.set('output_name', args.outputName);
-  form.set('allow_printing', String(args.allowPrinting));
-  form.set('allow_copying', String(args.allowCopying));
-  form.set('allow_editing', String(args.allowEditing));
-  form.set('allow_annotations', String(args.allowAnnotations));
-  form.set('allow_form_filling', String(args.allowFormFilling));
+  form.set('file', args.file); form.set('user_password', args.userPassword); form.set('owner_password', args.ownerPassword || '');
+  form.set('output_name', args.outputName); form.set('allow_printing', String(args.allowPrinting)); form.set('allow_copying', String(args.allowCopying));
+  form.set('allow_editing', String(args.allowEditing)); form.set('allow_annotations', String(args.allowAnnotations)); form.set('allow_form_filling', String(args.allowFormFilling));
   return postPdf('/api/pdf/protect', form);
 }
 
-export async function unlockPdfOnServer(args: {
-  file: File;
-  password: string;
-  authorized: boolean;
-  outputName: string;
-}): Promise<Blob> {
-  const form = new FormData();
-  form.set('file', args.file);
-  form.set('password', args.password);
-  form.set('authorized', String(args.authorized));
-  form.set('output_name', args.outputName);
+export async function unlockPdfOnServer(args: { file: File; password: string; authorized: boolean; outputName: string; }): Promise<Blob> {
+  const form = new FormData(); form.set('file', args.file); form.set('password', args.password); form.set('authorized', String(args.authorized)); form.set('output_name', args.outputName);
   return postPdf('/api/pdf/unlock', form);
 }
 
 export async function repairPdfOnServer(file: File, outputName: string): Promise<Blob> {
-  const form = new FormData();
-  form.set('file', file);
-  form.set('output_name', outputName);
-  return postPdf('/api/pdf/repair', form);
+  const form = new FormData(); form.set('file', file); form.set('output_name', outputName); return postPdf('/api/pdf/repair', form);
 }
 
-export type ConversionToolManifest = {
-  id: string;
-  name: string;
-  category: string;
-  inputExtensions: string[];
-  outputExtension: string;
-  available: boolean;
-  unavailableReason?: string | null;
-  limitation?: string | null;
-  multiFile: boolean;
-  ocrLanguages?: string[];
-};
+export type ConversionToolManifest = { id: string; name: string; category: string; inputExtensions: string[]; outputExtension: string; available: boolean; unavailableReason?: string | null; limitation?: string | null; multiFile: boolean; ocrLanguages?: string[]; };
 
 export async function getConversionToolManifest(signal?: AbortSignal): Promise<ConversionToolManifest[]> {
   if (!isPdfBackendConfigured) return [];
   try {
-    const response = await fetch(`${PDF_BACKEND_URL}/api/tools`, { cache: 'no-store', signal });
+    const response = await fetchWithTimeout(`${currentServiceUrl()}/api/tools`, { cache: 'no-store' }, 8000, signal);
     if (!response.ok) return [];
     const payload = await response.json();
     return Array.isArray(payload?.tools) ? payload.tools : [];
-  } catch {
-    return [];
-  }
+  } catch { return []; }
 }
 
-export async function convertOnServer(args: {
-  toolId: string;
-  files: File[];
-  outputName: string;
-  sourceUrl?: string;
-  options?: Record<string, unknown>;
-}): Promise<{ blob: Blob; filename: string }> {
-  if (!isPdfBackendConfigured) {
-    throw new PdfBackendError('The conversion service is not configured.', 'SERVICE_UNAVAILABLE');
-  }
+export async function convertOnServer(args: { toolId: string; files: File[]; outputName: string; sourceUrl?: string; options?: Record<string, unknown>; }): Promise<{ blob: Blob; filename: string }> {
+  if (!isPdfBackendConfigured) throw new PdfBackendError('This tool is temporarily unavailable.', 'SERVICE_UNAVAILABLE');
   const form = new FormData();
   for (const file of args.files) form.append('files', file);
-  form.set('output_name', args.outputName);
-  form.set('source_url', args.sourceUrl || '');
-  form.set('options_json', JSON.stringify(args.options || {}));
-
+  form.set('output_name', args.outputName); form.set('source_url', args.sourceUrl || ''); form.set('options_json', JSON.stringify(args.options || {}));
   const controller = new AbortController();
   const timeout = window.setTimeout(() => controller.abort(), 310_000);
   try {
-    const response = await fetch(`${PDF_BACKEND_URL}/api/convert/${encodeURIComponent(args.toolId)}`, {
-      method: 'POST',
-      body: form,
-      signal: controller.signal,
-    });
+    const response = await fetch(`${currentServiceUrl()}/api/convert/${encodeURIComponent(args.toolId)}`, { method: 'POST', body: form, signal: controller.signal });
     if (!response.ok) {
       const payload = await response.json().catch(() => ({}));
-      throw new PdfBackendError(payload.error || `Conversion failed with status ${response.status}.`, payload.code || 'PROCESSING_FAILED', response.status, response.headers.get('x-request-id') || payload.request_id);
+      throw new PdfBackendError(payload.error || `Could not complete this conversion (${response.status}).`, payload.code || 'PROCESSING_FAILED', response.status, response.headers.get('x-request-id') || payload.request_id);
     }
     const disposition = response.headers.get('content-disposition') || '';
     const utfMatch = disposition.match(/filename\*=UTF-8''([^;]+)/i);
@@ -217,15 +187,8 @@ export async function convertOnServer(args: {
     const filename = decodeURIComponent(utfMatch?.[1] || plainMatch?.[1] || `${args.toolId}-result`);
     return { blob: await response.blob(), filename };
   } catch (error) {
-    if (error instanceof DOMException && error.name === 'AbortError') {
-      if (controller.signal.aborted) throw new PdfBackendError('The conversion timed out.', 'TIMEOUT');
-      throw new PdfBackendError('The conversion was cancelled.', 'CANCELLED');
-    }
-    if (error instanceof TypeError) {
-      throw new PdfBackendError('The conversion service is temporarily unavailable.', 'SERVICE_UNAVAILABLE');
-    }
+    if (error instanceof DOMException && error.name === 'AbortError') throw new PdfBackendError('This conversion took too long. Try a smaller file or try again.', 'TIMEOUT');
+    if (error instanceof TypeError) throw new PdfBackendError('This tool is temporarily unavailable. Please try again.', 'SERVICE_UNAVAILABLE');
     throw error;
-  } finally {
-    window.clearTimeout(timeout);
-  }
+  } finally { window.clearTimeout(timeout); }
 }

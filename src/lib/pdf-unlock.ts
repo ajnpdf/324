@@ -3,18 +3,18 @@
 /**
  * Legacy compatibility module.
  * Password guessing and browser-side decryption were intentionally removed.
- * Use src/lib/pdf-backend.ts with the optional Python backend instead.
+ * Use src/lib/pdf-backend.ts with the online workflow instead.
  */
 export async function detectPDFSecurity() {
-  throw new Error('Security inspection requires the optional AJN PDF Python backend.');
+  throw new Error('Security inspection requires the AJN PDF online workflow.');
 }
 
 export async function unlockWithPassword() {
-  throw new Error('Real PDF decryption requires the optional AJN PDF Python backend.');
+  throw new Error('Real PDF decryption requires the AJN PDF online workflow.');
 }
 
 export async function removeRestrictionsOnly() {
-  throw new Error('Restriction removal requires the optional AJN PDF Python backend.');
+  throw new Error('Restriction removal requires the AJN PDF online workflow.');
 }
 
 export class PasswordAttemptManager {

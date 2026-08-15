@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { CheckCircle2, Server, ServerOff, TriangleAlert } from 'lucide-react';
+import { CheckCircle2, Cloud, CloudOff, TriangleAlert } from 'lucide-react';
 import { getConversionToolManifest, type ConversionToolManifest } from '@/lib/pdf-backend';
 
 export function CapabilitySummary({ toolCount }: { toolCount: number }) {
@@ -30,7 +30,7 @@ export function CapabilitySummary({ toolCount }: { toolCount: number }) {
         <p className="mt-2 text-sm font-medium leading-6 text-slate-600">PDF, document, image, OCR and conversion workflows in one clear workspace.</p>
       </div>
       <div className="rounded-3xl border border-blue-100 bg-blue-50 p-5 ">
-        {tools === null ? <Server className="h-5 w-5 animate-pulse text-blue-600" /> : error ? <ServerOff className="h-5 w-5 text-amber-600" /> : <Server className="h-5 w-5 text-blue-600" />}
+        {tools === null ? <Cloud className="h-5 w-5 animate-pulse text-blue-600" /> : error ? <CloudOff className="h-5 w-5 text-amber-600" /> : <Cloud className="h-5 w-5 text-blue-600" />}
         <p className="mt-4 text-3xl font-black text-foreground">{tools === null ? '…' : error ? 'Offline' : counts.available}</p>
         <p className="mt-1 text-xs font-black text-muted-foreground">Conversion workflows ready</p>
       </div>

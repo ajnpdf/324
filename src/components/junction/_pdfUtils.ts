@@ -96,14 +96,14 @@ export async function compressPdf(file: File): Promise<Blob> {
    4. PROTECT
 ───────────────────────────────────────────────────────────── */
 export async function protectPdf(): Promise<Blob> {
-  throw new Error('Real PDF encryption requires the optional AJN PDF Python backend.');
+  throw new Error('Real PDF encryption requires the AJN PDF online workflow.');
 }
 
 /* ─────────────────────────────────────────────────────────────
    5. UNLOCK / REPAIR (re-save removing restrictions)
 ───────────────────────────────────────────────────────────── */
 export async function unlockPdf(): Promise<Blob> {
-  throw new Error('Real PDF decryption requires the optional AJN PDF Python backend.');
+  throw new Error('Real PDF decryption requires the AJN PDF online workflow.');
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -329,7 +329,7 @@ export async function imagesToPdf(files: File[]): Promise<Blob> {
 export async function pdfToImages(file: File, dpi: number, quality: number): Promise<{ name: string; blob: Blob }[]> {
   // Ensure correct ESM worker is used
   initPdfWorker();
-  
+
   const pdfjsLib = await import("pdfjs-dist");
   const arrayBuffer = await file.arrayBuffer();
   // Fix: Ensure data is passed as Uint8Array for pdfjs v4 compatibility

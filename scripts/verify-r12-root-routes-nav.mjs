@@ -27,7 +27,12 @@ check('legacy app/tools route folder is removed', !exists('src/app/tools'));
 check('tool route is a URL-neutral route group', routeFile.includes('(tool-pages)'));
 check('tool metadata canonical uses shared root route helper', seo.includes('const pathname = toolPath(tool.id);'));
 check('tool schema uses root URL helper', toolPage.includes('`${SITE_URL}${toolPath(tool.id)}`'));
-check('tool sitemap publishes root tool URLs', sitemap.includes('`${SITE_URL}${toolPath(tool.id)}`'));
+const sitemapUsesRootToolPaths =
+  sitemap.includes('toolPath(tool.id)') &&
+  (sitemap.includes('url: `${SITE_URL}${toolPath(tool.id)}`') ||
+   sitemap.includes('url: `${SITE_URL}${pathname}`')) &&
+  !sitemap.includes('/tools/');
+check('tool sitemap publishes canonical root tool URLs', sitemapUsesRootToolPaths);
 check('legacy /tools directory permanently redirects to the public tool directory', nextConfig.includes("source: '/tools'") && nextConfig.includes("destination: '/pdf-tools'"));
 check('legacy /tools/:id permanently redirects to root path', nextConfig.includes("source: '/tools/:id'") && nextConfig.includes("destination: '/:id'") && nextConfig.includes('permanent: true'));
 check('legacy Smart Read redirects directly to root canonical tool', nextConfig.includes("source: '/tools/smart-read'") && nextConfig.includes("destination: '/pdf-text'"));
