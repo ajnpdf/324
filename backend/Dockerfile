@@ -1,4 +1,11 @@
 FROM python:3.12-slim
+# AJN PDF R14.8.2 - Calibre ebook-convert production runtime
+RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends calibre \
+    && command -v ebook-convert \
+    && ebook-convert --version \
+    && rm -rf /var/lib/apt/lists/*
+
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
