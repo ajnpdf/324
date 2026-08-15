@@ -111,20 +111,20 @@ const CUSTOM: Record<string, Partial<ToolEditorial>> = {
     limitations: ['This is not certificate-based digital signing.', 'The tool does not verify signer identity or create a trusted timestamp.'],
   },
   'protect-pdf': {
-    overview: 'Protect PDF applies password encryption to a document through the optional AJN PDF Python processor. It is intended for files you are authorised to secure before sharing or storage.',
+    overview: 'Protect PDF applies password encryption to a document with secure online processing. It is intended for files you are authorised to secure before sharing or storage.',
     details: 'The selected file is uploaded only for this request, protected with the chosen password and permissions, returned to your browser, and temporary request files are scheduled for cleanup. Passwords are not stored or written to application logs.',
     tips: ['Use a long, unique password and share it through a separate channel.', 'Test the protected file in another PDF viewer.', 'Keep an unencrypted backup in a secure location.'],
     limitations: ['Encryption cannot prevent an authorised recipient from photographing or reproducing visible content.', 'This tool requires online availability.'],
   },
   'unlock-pdf': {
     overview: 'Unlock PDF removes encryption only when the current valid password is supplied and the user confirms ownership or authorisation. AJN PDF does not guess, brute-force, or bypass unknown passwords.',
-    details: 'The optional Python processor validates the supplied password, creates an unencrypted copy, returns it to the browser, and schedules the request workspace for cleanup. The original encrypted PDF remains unchanged.',
+    details: 'AJN PDF securely validates the supplied password, prepares an unprotected copy for download, and schedules temporary request data for cleanup. The original encrypted PDF remains unchanged.',
     tips: ['Use this tool only for documents you own or are authorised to modify.', 'Confirm the downloaded file opens without a password.', 'Store sensitive unlocked copies securely.'],
     limitations: ['The current valid password is required.', 'This tool requires online availability.'],
   },
   'repair-pdf': {
     overview: 'Repair PDF attempts to recover documents with minor structural problems such as damaged cross-reference information or incomplete internal indexing.',
-    details: 'The optional Python processor opens the file with a recovery-capable PDF library, rebuilds a clean output when possible, and returns a separate repaired copy. The original file is never overwritten.',
+    details: 'AJN PDF securely analyzes the file, rebuilds a clean output when possible, and returns a separate repaired copy. The original file is never overwritten.',
     tips: ['Try opening the result in more than one PDF viewer.', 'Compare the recovered page count with the original.', 'Keep the damaged source in case another recovery method is needed.'],
     limitations: ['Severely truncated, encrypted, or overwritten data may be impossible to recover.', 'Successful opening does not guarantee every embedded object was restored.'],
   },

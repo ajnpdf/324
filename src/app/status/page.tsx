@@ -48,7 +48,7 @@ export default function StatusPage() {
             </div>
           </section>
 
-          <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-5 text-sm font-semibold leading-6 text-slate-700">A degraded state means one or more optional conversion engines are unavailable. On-device tools remain independent and usable.</div>
+          <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-5 text-sm font-semibold leading-6 text-slate-700">Limited availability means one or more optional formats are temporarily unavailable. Other available tools continue to work normally.</div>
         </section>
       </main>
       <MainFooter />
