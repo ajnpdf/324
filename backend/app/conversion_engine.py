@@ -183,7 +183,7 @@ for slug, label, exts, processor, limitation, dep in [
     ("azw3-to-pdf", "AZW3 to PDF", (".azw3",), "ebook_external_to_pdf", "Requires Calibre ebook-convert.", "calibre"),
     ("eml-to-pdf", "EML to PDF", (".eml",), "eml_to_pdf", "Attachments are listed but are not embedded automatically.", None),
     ("msg-to-pdf", "MSG to PDF", (".msg",), "msg_to_pdf", "Attachments are listed but are not embedded automatically.", None),
-    ("xps-to-pdf", "XPS to PDF", (".xps",), "xps_to_pdf", "Requires MuPDF or Ghostscript.", "mutool"),
+    ("xps-to-pdf", "XPS to PDF", (".xps",), "xps_to_pdf", "Converts standard XPS documents to PDF; complex effects and embedded fonts may render differently.", None),
 ]:
     _add(ConversionSpec(slug, label, "document-to-pdf", exts, ".pdf", "application/pdf", processor, limitation=limitation, external_dependency=dep))
 
@@ -1318,6 +1318,27 @@ def _pdf_pages_zip(source: Path, output: Path, workdir: Path) -> None:
 
 
 def convert(spec: ConversionSpec, files: list[Path], output: Path, options: dict[str, Any], workdir: Path, source_url: str | None = None) -> None:
+    # AJN_R14_7_XPS_PYMUPDF_START
+    if spec.processor == "xps_to_pdf":
+        if not files:
+            raise ValueError("XPS to PDF requires one XPS file.")
+        try:
+            import pymupdf as _ajn_pymupdf
+            _ajn_xps_doc = _ajn_pymupdf.open(str(files[0]))
+            try:
+                _ajn_pdf_bytes = _ajn_xps_doc.convert_to_pdf()
+            finally:
+                _ajn_xps_doc.close()
+            if not _ajn_pdf_bytes.startswith(b"%PDF-"):
+                raise ValueError("The XPS document could not be converted to a valid PDF.")
+            with open(output, "wb") as _ajn_out:
+                _ajn_out.write(_ajn_pdf_bytes)
+            return
+        except ValueError:
+            raise
+        except Exception as _ajn_exc:
+            raise ValueError("The XPS document could not be converted.") from _ajn_exc
+    # AJN_R14_7_XPS_PYMUPDF_END
     validate_input_files(spec, files)
     available, reason = tool_available(spec)
     if not available:
