@@ -16,9 +16,10 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     AJN_ANALYTICS_DB=/tmp/ajn_analytics.sqlite3 \
     AJN_PUBLIC_MEDIA_DB=/tmp/ajn_public_media.sqlite3 \
     AJN_PUBLIC_MEDIA_ROOT=/tmp/public_media \
+    XDG_RUNTIME_DIR=/tmp/runtime-ajn \
     QT_QPA_PLATFORM=offscreen \
     QT_QUICK_BACKEND=software \
-    QTWEBENGINE_CHROMIUM_FLAGS=--disable-gpu \
+    QTWEBENGINE_CHROMIUM_FLAGS="--disable-gpu --disable-dev-shm-usage" \
     DEBIAN_FRONTEND=noninteractive
 
 # Native engines for AJN PDF server-assisted workflows.
@@ -35,7 +36,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates curl \
     && rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p /home/ajn /tmp/public_media /tmp/ajn-work
 
 WORKDIR /app
 COPY requirements.txt ./requirements.txt
@@ -44,12 +44,6 @@ RUN pip install --no-cache-dir --upgrade pip \
 
 # Fail the image build if the critical native processors are missing.
 
-# Run Calibre / Qt WebEngine as an unprivileged user.
-# Cloud Run also executes the final service as this user.
-RUN id -u ajn >/dev/null 2>&1 || useradd --uid 10001 --user-group --home-dir /home/ajn --shell /usr/sbin/nologin ajn
-RUN mkdir -p /home/ajn /tmp/public_media /tmp/ajn-work \
-    && chown -R 10001:10001 /app /home/ajn /tmp/public_media /tmp/ajn-work
-USER 10001
 
 RUN python -c "import fitz,pikepdf,pytesseract,docx,openpyxl,PIL,reportlab,ebooklib,cairosvg" \
     && libreoffice --headless --version \
@@ -64,10 +58,18 @@ COPY smoke_test.py capability_audit.py full_acceptance_test.py ./
 # generation across every available backend conversion family.
 RUN python -m compileall -q app
 
+
+# Production runtime identity.
+# Build preparation stays root; acceptance and Cloud Run run as ajn.
+RUN useradd --uid 10001 --user-group --create-home --home-dir /home/ajn --shell /usr/sbin/nologin ajn \
+    && mkdir -p /tmp/public_media /tmp/ajn-work /tmp/runtime-ajn \
+    && chown -R 10001:10001 /app /home/ajn /tmp/public_media /tmp/ajn-work /tmp/runtime-ajn \
+    && chmod 700 /tmp/runtime-ajn
+
+USER 10001
+
 RUN python -c "from app.main import app; assert app.title == 'AJN PDF Conversion API'; print('PASS: FastAPI application import')" \
     && python full_acceptance_test.py
 
-RUN useradd --home-dir /home/ajn --uid 10001 ajn \
-    && chown -R 10001:10001 /app /tmp/public_media /tmp/ajn-work /home/ajn
 
 CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT} --workers 1 --proxy-headers"]
