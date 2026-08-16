@@ -16,6 +16,9 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     AJN_ANALYTICS_DB=/tmp/ajn_analytics.sqlite3 \
     AJN_PUBLIC_MEDIA_DB=/tmp/ajn_public_media.sqlite3 \
     AJN_PUBLIC_MEDIA_ROOT=/tmp/public_media \
+    QT_QPA_PLATFORM=offscreen \
+    QT_QUICK_BACKEND=software \
+    QTWEBENGINE_CHROMIUM_FLAGS=--disable-gpu \
     DEBIAN_FRONTEND=noninteractive
 
 # Native engines for AJN PDF server-assisted workflows.
@@ -40,6 +43,14 @@ RUN pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir -r requirements.txt
 
 # Fail the image build if the critical native processors are missing.
+
+# Run Calibre / Qt WebEngine as an unprivileged user.
+# Cloud Run also executes the final service as this user.
+RUN id -u ajn >/dev/null 2>&1 || useradd --uid 10001 --user-group --home-dir /home/ajn --shell /usr/sbin/nologin ajn
+RUN mkdir -p /home/ajn /tmp/public_media /tmp/ajn-work \
+    && chown -R 10001:10001 /app /home/ajn /tmp/public_media /tmp/ajn-work
+USER 10001
+
 RUN python -c "import fitz,pikepdf,pytesseract,docx,openpyxl,PIL,reportlab,ebooklib,cairosvg" \
     && libreoffice --headless --version \
     && tesseract --version \
@@ -58,6 +69,5 @@ RUN python -c "from app.main import app; assert app.title == 'AJN PDF Conversion
 
 RUN useradd --home-dir /home/ajn --uid 10001 ajn \
     && chown -R 10001:10001 /app /tmp/public_media /tmp/ajn-work /home/ajn
-USER 10001
 
 CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT} --workers 1 --proxy-headers"]
