@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack -p 9002",
-    "prebuild": "node scripts/generate-sitemap-lastmod.mjs && node scripts/verify-sitemap-indexing.mjs && node scripts/verify-capability-manifest.mjs",
+    "predev": "node scripts/sync-pdfjs-worker.mjs",
+    "prebuild": "node scripts/sync-pdfjs-worker.mjs && node scripts/generate-sitemap-lastmod.mjs && node scripts/verify-sitemap-indexing.mjs && node scripts/verify-capability-manifest.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "node scripts/run-eslint.mjs",

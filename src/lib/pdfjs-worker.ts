@@ -2,15 +2,17 @@
 
 import * as pdfjsLib from 'pdfjs-dist';
 
+const PDF_WORKER_SRC = '/pdf.worker.min.mjs';
+
 /**
- * Centralized PDF.js Worker Configuration
- * Standardized for local processing using modern ESM format.
+ * PDF.js worker configuration for AJN PDF browser workflows.
+ * The worker is copied from the installed, pinned pdfjs-dist package into
+ * public/ before dev/build so it is served from the AJN PDF origin and remains
+ * compatible with the production worker-src/script-src CSP.
  */
 export function initPdfWorker() {
-  if (typeof window !== 'undefined') {
-    if (!pdfjsLib.GlobalWorkerOptions.workerSrc) {
-      const version = '4.10.38';
-      pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${version}/pdf.worker.min.mjs`;
-    }
+  if (typeof window === 'undefined') return;
+  if (pdfjsLib.GlobalWorkerOptions.workerSrc !== PDF_WORKER_SRC) {
+    pdfjsLib.GlobalWorkerOptions.workerSrc = PDF_WORKER_SRC;
   }
 }
