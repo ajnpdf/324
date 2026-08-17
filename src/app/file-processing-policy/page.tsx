@@ -1,49 +1,68 @@
+import type { Metadata } from 'next';
 import { LegalPageShell } from '@/components/legal/legal-page-shell';
+import { MERGE_PDF_LIMITS, SERVER_LIMIT_DEFAULTS } from '@/lib/tool-limits';
+import { PROCESSING_DISCLOSURE } from '@/lib/processing-disclosure';
+
+export const metadata: Metadata = {
+  title: 'File Processing Policy',
+  description:
+    'How AJN PDF handles browser-native and server-backed file processing, current request limits, temporary workspaces and operational safeguards.',
+  alternates: { canonical: '/file-processing-policy' },
+};
 
 export default function FileProcessingPolicyPage() {
   return (
     <LegalPageShell
       eyebrow="File processing"
       title="File Processing Policy"
-      summary="AJN PDF explains whether a workflow stays in the active session or temporarily uploads the selected file, together with practical limits and cleanup behavior."
+      summary={PROCESSING_DISCLOSURE.summary}
       sections={[
         {
-          title: 'Session-based processing',
+          title: 'Browser-native processing',
           bullets: [
-            'The selected document is read by JavaScript or WebAssembly in the current browser tab.',
-            'AJN PDF does not intentionally upload the selected file for an on-device workflow.',
-            'The browser may use memory, temporary cache or download storage according to browser and operating-system behaviour.',
+            'Supported local workflows read the selected document inside the active browser session.',
+            'AJN PDF does not intentionally upload the selected file when the selected workflow is identified as browser-native.',
+            'Browser memory, temporary cache and download storage remain subject to the browser, operating system and device.',
           ],
         },
         {
-          title: 'Online processing',
+          title: 'Server-backed processing',
           bullets: [
-            'For supported advanced tools, the selected file and required options are transmitted over HTTPS only to complete the requested action.',
-            'Each request uses an isolated temporary workspace, completes the requested operation and returns the result.',
-            'The application removes the request directory after the response and runs cleanup for abandoned temporary jobs.',
-            'Online workflows include advanced OCR, office and eBook conversions, PDF security operations, repair and format workflows that need additional conversion engines.',
+            'When an advanced conversion, OCR, repair or security workflow requires online processing, the selected file and required options are transmitted over HTTPS for that active request.',
+            'The processing service uses a request workspace to perform the selected operation and return the result.',
+            'AJN PDF is a processing service rather than permanent cloud file storage. Temporary request workspaces are subject to the active backend cleanup policy.',
+            'The interface checks live availability and can apply lower live file or total-request limits before upload.',
+          ],
+        },
+        {
+          title: 'Current configured limits',
+          paragraphs: [
+            `The current source default for server-backed conversion workflows is ${SERVER_LIMIT_DEFAULTS.maxFileSizeMb} MB per file and ${SERVER_LIMIT_DEFAULTS.maxTotalSizeMb} MB across one request. The live tool interface takes precedence when the active backend reports a lower limit.`,
+            `Merge PDF is a browser-native workflow with a separate policy of up to ${MERGE_PDF_LIMITS.maxFiles} files, ${MERGE_PDF_LIMITS.maxFileSizeMb} MB per file and ${MERGE_PDF_LIMITS.maxTotalSizeMb} MB combined.`,
+            'AJN PDF does not publish one universal file-size promise for every tool. Browser-native workflows also depend on RAM, page complexity, image resolution and device capability.',
           ],
         },
         {
           title: 'Availability and dependencies',
           paragraphs: [
-            'The public catalogue is generated from a deployment capability manifest. A tool that requires an unavailable converter, codec or licensed engine is hidden from public navigation and excluded from the generated sitemap.',
-            'Conversion quality depends on the original document, fonts, images, page structure and destination format. Reconstructed office documents may not preserve every layout detail.',
+            'The public catalogue is generated from a deployment capability manifest. A workflow that depends on an unavailable converter or processing capability can be hidden from public navigation or shown as unavailable rather than returning a fake result.',
+            'Conversion quality depends on the original document, fonts, images, page structure and destination format. Reconstructed office documents, OCR output and repaired PDFs should be reviewed before replacing the source.',
           ],
         },
         {
-          title: 'Configured limits',
-          paragraphs: [
-            'The default local setup accepts up to 75 MB per file and 150 MB across one request, with a five-minute processing timeout. A production operator may apply stricter limits according to infrastructure capacity and abuse protection.',
-            'Complex, damaged, encrypted or unusually large documents may fail or time out. AJN PDF displays a clear error or unavailable state rather than returning a fake result.',
-          ],
-        },
-        {
-          title: 'Passwords, OCR text and logs',
+          title: 'Failures, cancellation and recovery',
           bullets: [
-            'PDF passwords are used only for the active request and must not be written to application analytics or request logs.',
-            'Extracted OCR text and document contents are not stored in the anonymous analytics database.',
-            'Operational logs contain request identifiers, route, status and duration—not uploaded filenames or document contents.',
+            'A rejected file, unavailable backend, invalid password, timeout or unsupported document should return an explicit error state.',
+            'Keep the source file until the downloaded result has been opened and checked.',
+            'Retry only after reviewing the displayed reason; repeated requests do not guarantee that a damaged or unsupported source can be recovered.',
+          ],
+        },
+        {
+          title: 'Passwords, OCR text and analytics',
+          bullets: [
+            'PDF passwords are used only for the active security request and are not intended for analytics events.',
+            'Extracted OCR text and document contents are not intended to be written to anonymous product analytics.',
+            'Operational telemetry should describe route, status, duration or failure category rather than document contents.',
           ],
         },
       ]}

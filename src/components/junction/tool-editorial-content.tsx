@@ -113,6 +113,7 @@ export function ToolEditorialContent({ tool }: { tool: ServiceTool }) {
         <div className="relative mt-10 flex flex-wrap gap-3 border-t border-slate-100 pt-7">
           <Link href="/pdf-tools" className="inline-flex items-center gap-2 rounded-2xl bg-blue-600 px-5 py-3 text-xs font-black text-white shadow-lg shadow-blue-100 transition hover:-translate-y-0.5 hover:bg-blue-700">Browse public tools <ArrowRight className="h-4 w-4" /></Link>
           <Link href="/security" className="rounded-2xl border border-border bg-card px-5 py-3 text-xs font-black text-card-foreground hover:bg-muted">Security and privacy</Link>
+          <Link href="/discover/guides" className="rounded-2xl border border-border bg-card px-5 py-3 text-xs font-black text-card-foreground hover:bg-muted">Guide library</Link>
           <Link href="/contact" className="rounded-2xl border border-border bg-card px-5 py-3 text-xs font-black text-card-foreground hover:bg-muted">Report a problem</Link>
         </div>
       </div>

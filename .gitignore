@@ -65,3 +65,6 @@ CLOUD_RUN_BACKEND_URL.txt
 CLOUD_RUN_DEPLOYMENT_RESULT.json
 CLOUD_RUN_VERCEL_ENV.txt
 .env*
+
+# Track placeholder-only environment documentation for clean CI/worktrees.
+!.env.example
