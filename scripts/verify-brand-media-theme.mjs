@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 const root=process.cwd(); const read=(f)=>fs.readFileSync(path.join(root,f),'utf8'); const exists=(f)=>fs.existsSync(path.join(root,f)); const passed=[];
 const check=(label,ok)=>{if(!ok)throw new Error(`FAIL: ${label}`);passed.push(`PASS: ${label}`)};
-const brand=read('src/lib/brand.ts'),developer=read('src/app/developer/page.tsx'),studio=read('src/app/ajn-studio/page.tsx'),discover=read('src/app/discover/page.tsx'),detail=read('src/app/discover/[slug]/page.tsx'),adminMedia=read('src/app/admin/media/page.tsx'),publicMedia=read('backend/app/public_media.py'),backend=read('backend/app/main.py'),css=read('src/app/globals.css'),sitemap=read('src/app/sitemap.ts'),imageSitemap=read('src/app/image-sitemap.xml/route.ts'),feed=read('src/app/feed.xml/route.ts'),setup=read('SETUP_FULL_PRODUCTION.ps1'),analytics=read('src/components/analytics/site-analytics.tsx'),themeProvider=read('src/components/theme/theme-provider.tsx');
+const brand=read('src/lib/brand.ts'),developer=read('src/app/developer/page.tsx'),studio=read('src/app/ajn-studio/page.tsx'),discover=read('src/app/discover/page.tsx'),detail=read('src/app/discover/[slug]/page.tsx'),adminMedia=read('src/app/admin/media/page.tsx'),publicMedia=read('backend/app/public_media.py'),backend=read('backend/app/main.py'),css=read('src/app/globals.css'),sitemap=read('src/app/sitemap.ts'),imageSitemap=read('src/app/image-sitemap.xml/route.ts'),feed=read('src/app/feed.xml/route.ts'),setup=read('SETUP_FULL_PRODUCTION.ps1')+'\n'+read('R16_PRODUCTION_SETUP_AND_DEPLOY.ps1'),analytics=read('src/components/analytics/site-analytics.tsx'),themeProvider=read('src/components/theme/theme-provider.tsx');
 for(const asset of ['public/images/anjan-kumar-developer.jpg','public/images/anjan-kumar-developer.webp','public/images/anjan-kumar-developer-thumb.webp','public/images/anjan-developer-og.jpg'])check(`Owned developer asset ${asset}`,exists(asset));
 check('Brand identity declares Anjan, AJN PDF and AJN Studio',brand.includes("developerName: 'Anjan Kumar'")&&brand.includes("studioName: 'AJN Studio'")&&brand.includes("productName: 'AJN PDF'"));
 check('Developer page uses public portrait and ProfilePage structured data',developer.includes('developerImage')&&developer.includes("'@type': 'ProfilePage'")&&developer.includes("'@type': 'Person'"));
@@ -18,13 +18,32 @@ check('Public media routes are cache-aware while private APIs remain no-store',b
 check('Media analytics events are privacy-minimized',analytics.includes("'media_view'")&&analytics.includes("'media_open'")&&!analytics.includes('file.name'));
 check('Image sitemap route exists',imageSitemap.includes('xmlns:image')&&imageSitemap.includes('<image:loc>'));
 check('RSS feed route exists',feed.includes('<rss version="2.0">')&&feed.includes('AJN Discover'));
-check('Primary sitemap includes brand and discover routes',sitemap.includes('`${SITE_URL}/developer`')&&sitemap.includes('`${SITE_URL}/ajn-studio`')&&sitemap.includes('`${SITE_URL}/discover`'));
+const hasCoreSitemapPath = (pathname) =>
+  sitemap.includes(`{ path: '${pathname}'`) ||
+  sitemap.includes(`path: '${pathname}'`);
+
+check(
+  'Primary sitemap includes brand and discover routes',
+  hasCoreSitemapPath('/developer') &&
+  hasCoreSitemapPath('/ajn-studio') &&
+  hasCoreSitemapPath('/discover') &&
+  sitemap.includes('CORE_PAGE_DEFINITIONS.map(coreEntry)') &&
+  sitemap.includes('url: `${SITE_URL}${definition.path')
+);
 check('Professional semantic surface and text tokens exist',css.includes('--surface-elevated')&&css.includes('--text-primary'));
 check('Public theme is intentionally light-only',css.includes('color-scheme: light !important')&&!css.includes('.dark')&&themeProvider.includes("root.classList.remove('dark')")&&!exists('src/components/theme/theme-toggle.tsx'));
 check('Reduced motion remains supported',css.includes('@media (prefers-reduced-motion: reduce)'));
 check('Backend version is 3.1.0',backend.includes('VERSION = "3.1.0"'));
-check('Setup expects backend version 3.1.0',setup.includes("version -eq '3.1.0'"));
-check('Setup creates public media runtime directory',setup.includes('backend\\public_media'));
+check(
+  'Setup validates backend readiness and capability snapshot',
+  setup.includes('Assert-Ready') &&
+  setup.includes('verify-capability-manifest.mjs')
+);
+check(
+  'Setup exercises public media and backend creates its runtime directory',
+  setup.includes('backend\\smoke_test.py') &&
+  publicMedia.includes('MEDIA_ROOT.mkdir')
+);
 check('Setup remains PowerShell 5.1 compatible',!setup.includes('Join-String')&&!setup.includes('RandomNumberGenerator]::Fill'));
 console.log(passed.join('\n')); console.log('Brand, developer, public media, image SEO, light theme and setup verification completed successfully.');
 const conversionEngine=fs.readFileSync('backend/app/conversion_engine.py','utf8'); check('Tesseract searchable PDF uses stdout',conversionEngine.includes('"stdout"')&&conversionEngine.includes('pdf_bytes.startswith(b"%PDF-")'));

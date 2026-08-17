@@ -32,7 +32,7 @@ export function buildToolMetadata(tool: ServiceTool): Metadata {
   const shouldIndex = isToolPublic(tool.id) && !SEO_EXCLUDED_TOOL_IDS.has(tool.id);
 
   return {
-    title: seo.title,
+    title: { absolute: seo.title },
     description,
     alternates: { canonical: canonicalPath },
     keywords: [seo.primaryKeyword, ...seo.secondaryKeywords, ...seo.questionKeywords, 'AJN PDF'],

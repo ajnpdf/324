@@ -8,7 +8,7 @@ import { sendAjnAnalytics } from "../analytics/site-analytics";
 import { useLanguage } from "@/lib/i18n/language-context";
 import { ToolArtwork } from "@/components/ajn/tool-artwork";
 import { toolIdFromPathname } from "@/lib/tool-routes";
-import { getToolLimitProfile } from "@/lib/tool-limits";
+import { getToolLimitProfile, resolveBackendLimits } from "@/lib/tool-limits";
 import { usePdfBackendStatus } from "./backend-status";
 
 export interface ToolFile { file: File; name: string; size: number; }
@@ -147,7 +147,9 @@ export function ToolWorkspace({ title, description, accent = T.blue, children }:
   const limitProfile = getToolLimitProfile(toolId);
   const serverMode = limitProfile.executionMode === "server";
   const { health, checking, online, refresh } = usePdfBackendStatus(serverMode ? 30000 : 0, serverMode);
-  const effectiveMaxFile = serverMode && health.maxFileMb ? Math.min(limitProfile.maxFileSizeMb, health.maxFileMb) : limitProfile.maxFileSizeMb;
+  const liveLimits = resolveBackendLimits(health);
+  const effectiveMaxFile = serverMode ? liveLimits.maxFileSizeMb : limitProfile.maxFileSizeMb;
+  const effectiveMaxTotal = serverMode ? liveLimits.maxTotalSizeMb : limitProfile.maxTotalSizeMb;
   const serviceBlocked = serverMode && (checking || !online);
   const fileCountText = limitProfile.maxFiles === 1 ? "1 file" : `up to ${limitProfile.maxFiles} files`;
 
@@ -164,7 +166,7 @@ export function ToolWorkspace({ title, description, accent = T.blue, children }:
         <ToolRuntimeFactsInline toolId={toolId} />
         <section className="jn-card ajn-product-canvas rounded-2xl border border-slate-200 bg-white p-3 shadow-[0_20px_58px_rgba(30,62,130,.09)] sm:p-5">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-blue-100 bg-blue-50/70 px-3 py-2.5 text-[11px] font-extrabold text-slate-700" aria-label="Upload limits">
-            <span>Upload: {fileCountText} • up to {effectiveMaxFile} MB each</span>
+            <span>Upload: {fileCountText} • up to {effectiveMaxFile} MB each{effectiveMaxTotal ? ` • ${effectiveMaxTotal} MB total` : ""}</span>
             <span className="text-blue-700">{serverMode ? "Online workflow" : "On-device workflow"}</span>
           </div>
           {serverMode && serviceBlocked && (

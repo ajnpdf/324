@@ -18,6 +18,22 @@ const search = read('src/lib/tool-search.ts');
 const seo = read('src/lib/seo-config.ts');
 const sitemap = read('src/app/sitemap.ts');
 const nextConfig = read('next.config.ts');
+
+function hasLegacyToolRedirect(source, destination) {
+  const inline =
+    nextConfig.includes(`source: '/tools/${source}'`) &&
+    nextConfig.includes(`destination: '/${destination}'`);
+
+  const centralized =
+    (nextConfig.includes('legacyToolAliases') ||
+      nextConfig.includes('directLegacyToolRedirects')) &&
+    (
+      nextConfig.includes(`'${source}': '${destination}'`) ||
+      nextConfig.includes(`"${source}": "${destination}"`)
+    );
+
+  return inline || centralized;
+}
 const chromePopup = read('chrome-extension/popup.js');
 const toolPage = read(routeFile);
 const packageJson = JSON.parse(read('package.json'));
@@ -35,9 +51,9 @@ const sitemapUsesRootToolPaths =
 check('tool sitemap publishes canonical root tool URLs', sitemapUsesRootToolPaths);
 check('legacy /tools directory permanently redirects to the public tool directory', nextConfig.includes("source: '/tools'") && nextConfig.includes("destination: '/pdf-tools'"));
 check('legacy /tools/:id permanently redirects to root path', nextConfig.includes("source: '/tools/:id'") && nextConfig.includes("destination: '/:id'") && nextConfig.includes('permanent: true'));
-check('legacy Smart Read redirects directly to root canonical tool', nextConfig.includes("source: '/tools/smart-read'") && nextConfig.includes("destination: '/pdf-text'"));
-check('legacy PDF-to-PPT redirects directly to root canonical tool', nextConfig.includes("source: '/tools/pdf-ppt'") && nextConfig.includes("destination: '/pdf-to-powerpoint'"));
-check('legacy OCR searchable redirects directly to root canonical tool', nextConfig.includes("source: '/tools/ocr-searchable'") && nextConfig.includes("destination: '/scanned-pdf-to-searchable-pdf'"));
+check('legacy Smart Read redirects directly to root canonical tool', hasLegacyToolRedirect('smart-read', 'pdf-text'));
+check('legacy PDF-to-PPT redirects directly to root canonical tool', hasLegacyToolRedirect('pdf-ppt', 'pdf-to-powerpoint'));
+check('legacy OCR searchable redirects directly to root canonical tool', hasLegacyToolRedirect('ocr-searchable', 'scanned-pdf-to-searchable-pdf'));
 check('shared route helper protects reserved root routes', routeHelper.includes('RESERVED_ROOT_ROUTES') && routeHelper.includes('collides with reserved route'));
 check('analytics route helper supports root and legacy tool paths', routeHelper.includes("parts[0] === 'tools'") && routeHelper.includes('return first;'));
 

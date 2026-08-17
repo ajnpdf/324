@@ -56,8 +56,13 @@ function checkClientDirective(dir) {
 checkClientDirective('src');
 pass('Client directives remain first statements', misplacedClientDirective.length === 0);
 const warningIntegration = fs.readFileSync('backend/app/conversion_engine.py', 'utf8');
-const setup = fs.readFileSync('SETUP_FULL_PRODUCTION.ps1', 'utf8');
+const setup = `${fs.readFileSync('SETUP_FULL_PRODUCTION.ps1', 'utf8')}
+${fs.readFileSync('R16_PRODUCTION_SETUP_AND_DEPLOY.ps1', 'utf8')}`;
 pass('Known EbookLib 0.18 warnings are scoped at the integration boundary', warningIntegration.includes('warnings.catch_warnings()') && warningIntegration.includes('ignore_ncx'));
-pass('Optional Ghostscript absence is reported as informational status', setup.includes('INFO: Ghostscript is unavailable') && !setup.includes('Write-Warning "Ghostscript is unavailable'));
+pass(
+  'XPS uses PyMuPDF and Ghostscript is not required',
+  setup.includes('XPS uses PyMuPDF; Ghostscript is not required') &&
+  !setup.includes('Write-Warning "Ghostscript is unavailable')
+);
 
 console.log('AJN PDF zero-warning code-quality source guard completed successfully.');

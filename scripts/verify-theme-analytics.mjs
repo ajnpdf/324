@@ -17,7 +17,7 @@ const professionalSkeleton = read('src/components/ajnpdf/professional-skeleton.m
 const analytics = read('src/components/analytics/site-analytics.tsx');
 const admin = read('src/app/admin/analytics/page.tsx');
 const backend = read('backend/app/main.py');
-const setup = read('SETUP_FULL_PRODUCTION.ps1');
+const setup = `${read('SETUP_FULL_PRODUCTION.ps1')}\n${read('R16_PRODUCTION_SETUP_AND_DEPLOY.ps1')}`;
 const installer = read('INSTALL_WINDOWS_CONVERTERS.ps1');
 
 expect('Deterministic light HTML prevents pre-hydration theme mutation', layout.includes('data-theme="light"') && layout.includes("style={{ colorScheme: 'light' }}") && !layout.includes('ajn-theme-bootstrap') && !layout.includes('suppressHydrationWarning'));
@@ -47,10 +47,18 @@ expect('Backend stores aggregate theme, device and referrer fields', backend.inc
 expect('Backend returns CRO funnel rates', backend.includes('start_to_complete_rate') && backend.includes('complete_to_download_rate'));
 expect('Backend declares that IP addresses are not stored', backend.includes('"ip_addresses_stored": False'));
 
-expect('PowerShell 5.1 random token generation is compatible', setup.includes('RandomNumberGenerator]::Create()') && !setup.includes('RandomNumberGenerator]::Fill'));
+expect(
+  'PowerShell local admin token generation is PowerShell 5.1 compatible',
+  (setup.includes('[Guid]::NewGuid()') || setup.includes('RandomNumberGenerator]::Create()')) &&
+  !setup.includes('RandomNumberGenerator]::Fill')
+);
 expect('PowerShell setup avoids Join-String', !setup.includes('Join-String') && !installer.includes('Join-String'));
 expect('Converter installer avoids machine PATH writes', !installer.includes("SetEnvironmentVariable('Path', ($machinePath") && installer.includes("'User'"));
-expect('Setup checks backend version 3.1.0', setup.includes("version -eq '3.1.0'"));
+expect(
+  'Setup validates backend readiness and capability snapshot',
+  setup.includes('Assert-Ready') &&
+  setup.includes('verify-capability-manifest.mjs')
+);
 
 console.log(checks.join('\n'));
 console.log('Light-only theme, animation, analytics, privacy and PowerShell compatibility verification completed successfully.');

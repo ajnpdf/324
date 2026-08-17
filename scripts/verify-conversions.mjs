@@ -14,7 +14,9 @@ const workspace = read('src/components/junction/tool-workspace-client.tsx');
 const component = read('src/components/junction/ServerConversionTool.tsx');
 const policy = read('src/lib/tool-policy.ts');
 const sitemap = read('src/app/sitemap.ts');
-const setup = read('SETUP_FULL_PRODUCTION.ps1');
+const setupWrapper = read('SETUP_FULL_PRODUCTION.ps1');
+const productionRunner = read('R16_PRODUCTION_SETUP_AND_DEPLOY.ps1');
+const setup = `${setupWrapper}\n${productionRunner}`;
 const nextConfig = read('next.config.ts');
 
 const ids = [...frontend.matchAll(/tool\('([^']+)'/g)].map((match) => match[1]);
@@ -60,10 +62,35 @@ for (const removedText of ['Temporary server tools', '2 modes', 'Browser and tem
   publicFiles.includes(removedText) ? fail(`Removed public text still present: ${removedText}`) : pass(`Removed obsolete text: ${removedText}`);
 }
 
-setup.includes('backend\\smoke_test.py') && setup.includes('npm.cmd') ? pass('Full setup runs backend smoke tests and frontend checks') : fail('Setup validation workflow incomplete');
-setup.includes('INSTALL_OCR_LANGUAGES.ps1') && setup.includes('TESSDATA_PREFIX') ? pass('Windows setup installs project-local OCR language data') : fail('OCR language setup is missing');
+setup.includes('backend\\smoke_test.py') &&
+setup.includes('@("run","check")') &&
+setupWrapper.includes('R16_PRODUCTION_SETUP_AND_DEPLOY.ps1')
+  ? pass('Full setup delegates to R16 runner with backend smoke tests and frontend checks')
+  : fail('Setup validation workflow incomplete');
+setup.includes('backend\\tessdata') &&
+setup.includes('TESSDATA_PREFIX') &&
+setup.includes('backend\\capability_audit.py')
+  ? pass('Windows setup validates bundled/system OCR language capability')
+  : fail('OCR language setup is missing');
+function hasLegacyToolRedirect(legacy, canonical) {
+  const inline =
+    nextConfig.includes(`/tools/${legacy}`) &&
+    nextConfig.includes(`/${canonical}`);
+
+  const centralized =
+    nextConfig.includes('legacyToolAliases') &&
+    (
+      nextConfig.includes(`'${legacy}': '${canonical}'`) ||
+      nextConfig.includes(`"${legacy}": "${canonical}"`)
+    );
+
+  return inline || centralized;
+}
+
 for (const [legacy, canonical] of [['jpg-pdf','jpg-to-pdf'], ['pdf-jpg','pdf-to-jpg'], ['heic-pdf','heic-to-pdf'], ['xml-pdf','xml-to-pdf'], ['json-pdf','json-to-pdf'], ['txt-pdf','txt-to-pdf']]) {
-  nextConfig.includes(`/tools/${legacy}`) && nextConfig.includes(`/${canonical}`) ? pass(`Legacy alias ${legacy} redirects to ${canonical}`) : fail(`Missing canonical redirect for ${legacy}`);
+  hasLegacyToolRedirect(legacy, canonical)
+    ? pass(`Legacy alias ${legacy} redirects to ${canonical}`)
+    : fail(`Missing canonical redirect for ${legacy}`);
 }
 
 if (failed) process.exit(1);

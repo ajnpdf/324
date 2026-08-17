@@ -2,11 +2,12 @@
 
 import React, { useState } from "react";
 import { ToolWorkspace, Drop, Btn, Done, Err, F, G2, IS, Info, ToolFile, dl } from "./_shared";
-import { protectPdfOnServer } from "@/lib/pdf-backend";
+import { protectPdfOnServer, checkPdfBackendHealth } from "@/lib/pdf-backend";
 import { safeOutputName, validateFiles } from "@/lib/file-validation";
 import { BackendStatus, usePdfBackendStatus } from "./backend-status";
 import { useLanguage } from "@/lib/i18n/language-context";
 import { friendlyBackendError } from "@/lib/i18n/backend-errors";
+import { resolveBackendLimits } from "@/lib/tool-limits";
 
 export default function ProtectPdf() {
   const { t } = useLanguage();
@@ -19,12 +20,16 @@ export default function ProtectPdf() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<Blob | null>(null);
   const [error, setError] = useState("");
-  const { online } = usePdfBackendStatus();
+  const { online, health } = usePdfBackendStatus();
+  const liveLimits = resolveBackendLimits(health);
 
   const run = async () => {
-    const validation = validateFiles(files.map(item => item.file), { extensions: [".pdf"], minFiles: 1, maxFiles: 1, maxSizeMb: 50 });
+    const latestHealth = await checkPdfBackendHealth();
+    if (latestHealth.status !== "online") { setError("This tool is temporarily unavailable. Check live status and try again."); return; }
+    const latestLimits = resolveBackendLimits(latestHealth);
+    const effectiveMaxMb = Math.min(latestLimits.maxFileSizeMb, latestLimits.maxTotalSizeMb);
+    const validation = validateFiles(files.map(item => item.file), { extensions: [".pdf"], minFiles: 1, maxFiles: 1, maxSizeMb: effectiveMaxMb });
     if (validation) { setError(validation); return; }
-    if (!online) { setError("This tool is temporarily unavailable. Check live status and try again."); return; }
     if (password.length < 8) { setError("Use an open password with at least 8 characters for stronger protection."); return; }
     if (password !== confirm) { setError("The password confirmation does not match."); return; }
     if (ownerPassword && ownerPassword === password) { setError("For stronger permission control, use a different owner password or leave it empty."); return; }
@@ -55,7 +60,7 @@ export default function ProtectPdf() {
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           <BackendStatus />
-          <Drop files={files} onChange={setFiles} accept=".pdf,application/pdf" label="Select one PDF" sub="PDF · maximum 50 MB" />
+          <Drop files={files} onChange={setFiles} accept=".pdf,application/pdf" label="Select one PDF" sub={`PDF · live server limit ${liveLimits.maxFileSizeMb} MB`} />
           <G2><F label="Open password" hint="Minimum 8 characters recommended"><input style={IS} type="password" autoComplete="new-password" value={password} onChange={event => setPassword(event.target.value)} /></F><F label="Confirm password"><input style={IS} type="password" autoComplete="new-password" value={confirm} onChange={event => setConfirm(event.target.value)} /></F></G2>
           <G2><F label="Owner password" hint="Optional and not shown again"><input style={IS} type="password" autoComplete="new-password" value={ownerPassword} onChange={event => setOwnerPassword(event.target.value)} /></F><F label="Output filename"><input style={IS} value={outputName} onChange={event => setOutputName(event.target.value)} /></F></G2>
           <F label="Document permissions">

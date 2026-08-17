@@ -3,8 +3,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FileOutput, Loader2 } from 'lucide-react';
 import { BUILD_PUBLIC_TOOLS } from '@/lib/build-public-tools';
-import { checkPdfBackendHealth, convertOnServer, getConversionToolManifest, getPdfBackendErrorCode, type ConversionToolManifest } from '@/lib/pdf-backend';
+import { checkPdfBackendHealth, convertOnServer, getConversionToolManifest, getPdfBackendErrorCode, type ConversionToolManifest, type PdfBackendHealth } from '@/lib/pdf-backend';
 import { getToolPolicy } from '@/lib/tool-policy';
+import { resolveBackendLimits, validateBackendSelection } from '@/lib/tool-limits';
 import { Btn, Done, Drop, Err, F, G2, Info, IS, Pills, Range, ToolWorkspace, type ToolFile, dl } from './_shared';
 import { sendAjnAnalytics } from '@/components/analytics/site-analytics';
 import { useLanguage } from '@/lib/i18n/language-context';
@@ -30,6 +31,7 @@ export default function ServerConversionTool({ toolId }: { toolId: string }) {
   const policy = getToolPolicy(toolId);
   const [manifest, setManifest] = useState<ConversionToolManifest | null>(null);
   const [backendReady, setBackendReady] = useState(false);
+  const [backendHealth, setBackendHealth] = useState<PdfBackendHealth | null>(null);
   const [availabilityIssue, setAvailabilityIssue] = useState<'service' | 'manifest' | null>(null);
   const [files, setFiles] = useState<ToolFile[]>([]);
   const [sourceUrl, setSourceUrl] = useState('');
@@ -52,6 +54,7 @@ export default function ServerConversionTool({ toolId }: { toolId: string }) {
     ]);
     const nextManifest = tools.find((entry) => entry.id === toolId) || null;
     setBackendReady(health.status === 'online');
+    setBackendHealth(health);
     setManifest(nextManifest);
     if (health.status !== 'online') setAvailabilityIssue('service');
     else if (!nextManifest) setAvailabilityIssue('manifest');
@@ -83,6 +86,13 @@ export default function ServerConversionTool({ toolId }: { toolId: string }) {
   const isUrlTool = toolId === 'url-to-pdf';
   const multiple = manifest?.multiFile ?? policy.maxFiles > 1;
   const accept = extensionAccept(manifest?.inputExtensions);
+  const liveLimits = resolveBackendLimits(backendHealth);
+  const selectionSub = `${manifest?.inputExtensions?.join(', ') || t('conversion.supportedFormats')} • Up to ${liveLimits.maxFileSizeMb} MB each • ${liveLimits.maxTotalSizeMb} MB total`;
+  const onFilesChange = (next: ToolFile[]) => {
+    const validation = validateBackendSelection(next.map((item) => item.file), policy.maxFiles, backendHealth);
+    if (validation) { setError(validation); return; }
+    setError(''); setFiles(next);
+  };
   const canProcess = Boolean(
     tool &&
     status !== 'processing' &&
@@ -106,11 +116,16 @@ export default function ServerConversionTool({ toolId }: { toolId: string }) {
     setError('');
     setResult(null);
     const latestHealth = await checkPdfBackendHealth();
+    setBackendHealth(latestHealth);
     if (latestHealth.status !== 'online' || manifest?.available !== true) {
       setBackendReady(false);
       setAvailabilityIssue(latestHealth.status !== 'online' ? 'service' : 'manifest');
       setError(t('errors.SERVICE_UNAVAILABLE'));
       return;
+    }
+    if (!isUrlTool) {
+      const liveValidation = validateBackendSelection(files.map((item) => item.file), policy.maxFiles, latestHealth);
+      if (liveValidation) { setError(liveValidation); return; }
     }
     setStatus('processing');
     setProcessingStage('processing.converting');
@@ -194,11 +209,11 @@ export default function ServerConversionTool({ toolId }: { toolId: string }) {
             ) : (
               <Drop
                 files={files}
-                onChange={(next) => setFiles(next.slice(0, policy.maxFiles))}
+                onChange={onFilesChange}
                 accept={accept}
                 multiple={multiple}
                 label={multiple ? t('common.chooseFiles') : t('common.chooseFile')}
-                sub={`${manifest?.inputExtensions?.join(', ') || t('conversion.supportedFormats')} • Up to ${policy.maxFileSizeMb} MB each`}
+                sub={selectionSub}
               />
             )}
 

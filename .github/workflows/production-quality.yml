@@ -1,0 +1,32 @@
+name: AJN PDF production quality
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+jobs:
+  source-and-frontend-gates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: npm ci --no-audit --no-fund
+      - run: node scripts/verify-r16-consistency.mjs
+      - run: node scripts/verify-capability-manifest.mjs
+      - run: node scripts/verify-backend-workflow.mjs
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run verify:r13-browser-pdf
+      - run: npm run build
+      - run: npm run verify:r13-runtime
+      - run: python -m py_compile backend/app/main.py backend/app/conversion_engine.py backend/app/job_worker.py
+# Native LibreOffice/Tesseract/Calibre output acceptance remains a Docker/Cloud Run release gate.

@@ -32,7 +32,7 @@ check('root-level URL-neutral tool page exists', exists('src/app/(tool-pages)/[i
 check('legacy src/app/tools route folder is absent', !exists('src/app/tools'));
 check('all public workflows remain routable even when an online capability is temporarily unavailable', buildPublic.includes('export const BUILD_PUBLIC_TOOLS = PUBLIC_TOOLS'));
 check('reserved route protection includes retired PSD URL', routes.includes("'psd-pdf'"));
-check('PSD historical URL has explicit redirect and 410 retired endpoint', nextConfig.includes("source: '/tools/psd-pdf'") && exists('src/app/psd-pdf/route.ts') && read('src/app/psd-pdf/route.ts').includes('status: 410'));
+check('PSD historical URL has explicit redirect and 410 retired endpoint', nextConfig.includes("'psd-pdf': 'psd-pdf'") && nextConfig.includes('directLegacyToolRedirects') && exists('src/app/psd-pdf/route.ts') && read('src/app/psd-pdf/route.ts').includes('status: 410'));
 check('all legacy tool URLs use permanent root redirects', nextConfig.includes("source: '/tools/:id'") && nextConfig.includes("destination: '/:id'") && nextConfig.includes('permanent: true'));
 check('sitemap builds canonical root tool URLs', sitemap.includes('toolPath(tool.id)') && !sitemap.includes('`${SITE_URL}/tools/'));
 
@@ -69,8 +69,8 @@ check('processing does not invent numeric percentage when none is reported', act
 check('completion uses a restrained success check icon', activity.includes('<CheckCircle2 />') && !activity.toLowerCase().includes('confetti'));
 
 check('priority SEO titles use natural high-intent copy', seo.includes('Merge PDF Online - Combine PDF Files | AJN PDF') && seo.includes('Compress PDF Online - Reduce PDF Size | AJN PDF'));
-check('generic SEO descriptions no longer use keyword-stuffed “helps with” template', !seo.includes('online helps with'));
-check('generic editorial copy no longer uses awkward “utility for” template', !editorial.includes('is an AJN PDF utility for'));
+check('generic SEO descriptions no longer use keyword-stuffed â€œhelps withâ€ template', !seo.includes('online helps with'));
+check('generic editorial copy no longer uses awkward â€œutility forâ€ template', !editorial.includes('is an AJN PDF utility for'));
 check('temporary cleanup wording is scheduled rather than an absolute instant-delete promise', editorial.includes('scheduled for cleanup'));
 
 const localeDir = path.join(root, 'src/i18n/locales');
@@ -132,7 +132,7 @@ if (stale.length) fail(`stale claim matches: ${stale.slice(0, 12).join(' | ')}`)
 const freeForeverHits = visibleFiles
   .map((file) => ({ file, text: fs.readFileSync(file, 'utf8') }))
   .filter(({ text }) => /free forever/i.test(text));
-check('“free forever” appears only in the reviewed anti-claim educational context', freeForeverHits.length === 1 && path.relative(root, freeForeverHits[0].file).split(path.sep).join('/') === 'src/app/blog/best-free-pdf-editor/page.tsx' && /should not be hidden behind a permanent/i.test(freeForeverHits[0].text));
+check('â€œfree foreverâ€ appears only in the reviewed anti-claim educational context', freeForeverHits.length === 1 && path.relative(root, freeForeverHits[0].file).split(path.sep).join('/') === 'src/app/blog/best-free-pdf-editor/page.tsx' && /should not be hidden behind a permanent/i.test(freeForeverHits[0].text));
 
 const staleToolRefs = [];
 for (const top of ['src','chrome-extension']) {

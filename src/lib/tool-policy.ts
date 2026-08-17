@@ -1,4 +1,5 @@
 import { CONVERSION_TOOLS } from './conversion-tools';
+import { MERGE_PDF_LIMITS, SERVER_LIMIT_DEFAULTS } from './tool-limit-constants';
 export type ToolMaturity = 'stable' | 'limited' | 'backend' | 'hidden';
 export type ProcessingMode = 'browser' | 'temporary-server';
 
@@ -59,8 +60,8 @@ export function getToolPolicy(id: string): ToolPolicy {
   }
   if (stableBrowserIds.has(id)) {
     return {
-      maturity: 'stable', processingMode: 'browser', maxFiles: id === 'merge-pdf' || id === 'jpg-pdf' || id === 'png-to-pdf' ? 30 : 1,
-      maxFileSizeMb: 50, publicByDefault: true,
+      maturity: 'stable', processingMode: 'browser', maxFiles: id === 'merge-pdf' ? MERGE_PDF_LIMITS.maxFiles : id === 'jpg-pdf' || id === 'png-to-pdf' ? 30 : 1,
+      maxFileSizeMb: id === 'merge-pdf' ? MERGE_PDF_LIMITS.maxFileSizeMb : 50, publicByDefault: true,
     };
   }
   if (id in limitedBrowser) {
@@ -79,7 +80,7 @@ export function getToolPolicy(id: string): ToolPolicy {
     return {
       maturity: 'backend', processingMode: 'temporary-server',
       maxFiles: multiFileConversionIds.has(id) ? 30 : 1,
-      maxFileSizeMb: 75,
+      maxFileSizeMb: SERVER_LIMIT_DEFAULTS.maxFileSizeMb,
       publicByDefault: true,
       limitation: conversionBackendIds.has(id)
         ? 'Selected files are uploaded only for the requested action. Temporary request files are scheduled for cleanup after the result is returned.'

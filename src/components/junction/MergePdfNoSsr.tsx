@@ -1,3 +1,2 @@
-"use client";
-
-export { MergePdf, MergePdf as default } from "./MergePdf";
+'use client';
+export { default } from './MergePdf';

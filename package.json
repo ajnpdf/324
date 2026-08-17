@@ -11,7 +11,7 @@
     "typecheck": "tsc --noEmit",
     "verify:seo-ads": "node scripts/verify-seo-ads.mjs",
     "verify:phase1": "node scripts/verify-phase1.mjs",
-    "check": "npm run verify:r13 && npm run verify:r12 && npm run verify:seo-ads && npm run verify:phase1 && npm run verify:production && npm run verify:trust-ui && npm run verify:links && npm run verify:final-ui && npm run verify:conversions && npm run verify:growth-seo && npm run verify:theme-analytics && npm run verify:brand-media-theme && npm run verify:final-production && npm run verify:capabilities && npm run verify:accessibility && npm run verify:mobile-first && npm run verify:i18n && npm run verify:tool-ux && npm run verify:dependency-policy && npm run verify:secrets && npm run verify:code-quality && npm run verify:backend-workflow && npm run lint && npm run typecheck && npm run verify:r13-browser-pdf && npm run build",
+    "check": "npm run verify:r13 && npm run verify:r12 && npm run verify:seo-ads && npm run verify:phase1 && npm run verify:production && npm run verify:trust-ui && npm run verify:links && npm run verify:final-ui && npm run verify:conversions && npm run verify:growth-seo && npm run verify:theme-analytics && npm run verify:brand-media-theme && npm run verify:final-production && npm run verify:capabilities && npm run verify:accessibility && npm run verify:mobile-first && npm run verify:i18n && npm run verify:tool-ux && npm run verify:dependency-policy && npm run verify:secrets && npm run verify:code-quality && npm run verify:backend-workflow && npm run verify:r16-consistency && npm run lint && npm run typecheck && npm run verify:r13-browser-pdf && npm run build",
     "preview": "next start -p 3000",
     "verify:production": "node scripts/verify-production.mjs",
     "verify:trust-ui": "node scripts/verify-trust-ui.mjs",
@@ -43,6 +43,8 @@
     "report:r13-capabilities": "node scripts/report-r13-capabilities.mjs",
     "audit:r13-browser": "node scripts/audit-r13-browser-layout.mjs",
     "report:r13-final": "node scripts/generate-r13-final-report.mjs",
+    "verify:r16-consistency": "node scripts/verify-r16-consistency.mjs",
+    "verify:live-backend": "node scripts/verify-live-backend-contract.mjs",
     "verify:sitemap-indexing": "node scripts/verify-sitemap-indexing.mjs",
     "audit:sitemap-runtime": "node scripts/audit-sitemap-runtime.mjs"
   },

@@ -6,6 +6,7 @@ import { PlatformLoader } from '../platform-loader';
 import { BUILD_PUBLIC_TOOLS } from '@/lib/build-public-tools';
 import { CONVERSION_TOOLS } from '../../lib/conversion-tools';
 import ServerConversionTool from './ServerConversionTool';
+import MergePdf from './MergePdf';
 import { notFound } from 'next/navigation';
 
 /**
@@ -16,7 +17,6 @@ const SERVER_CONVERSION_IDS = new Set(CONVERSION_TOOLS.map((tool) => tool.id));
 
 const TOOL_COMPONENTS: Record<string, any> = {
   // --- CORE PDF SUITE ---
-  'merge-pdf': dynamic(() => import('./MergePdfNoSsr'), { ssr: false }),
   'split-pdf': dynamic(() => import('./SplitPdf'), { ssr: false }),
   'compress-pdf': dynamic(() => import('./CompressPdf'), { ssr: false }),
   'rotate-pdf': dynamic(() => import('./RotatePdf'), { ssr: false }),
@@ -91,7 +91,7 @@ interface ToolWorkspaceClientProps {
 
 export function ToolWorkspaceClient({ id }: ToolWorkspaceClientProps) {
   const toolData = BUILD_PUBLIC_TOOLS.find(t => t.id === id);
-  const ToolComponent = TOOL_COMPONENTS[id];
+  const ToolComponent = id === 'merge-pdf' ? MergePdf : TOOL_COMPONENTS[id];
 
   if (!toolData) {
     notFound();

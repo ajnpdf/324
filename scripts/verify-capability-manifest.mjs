@@ -6,49 +6,52 @@ const root = process.cwd();
 const pkg = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
 const sourcePath = path.join(root, 'src/generated/backend-capabilities.json');
 const publicPath = path.join(root, 'public/backend-capabilities.json');
+const failures = [];
+const fail = (message) => failures.push(message);
+const readJson = (file) => { try { return JSON.parse(fs.readFileSync(file, 'utf8')); } catch (error) { fail(`${path.relative(root,file)}: ${error.message}`); return {}; } };
 
-function fail(message) {
-  console.error(`FAIL: ${message}`);
-  process.exit(1);
+function canonical(value) {
+  if (Array.isArray(value)) return value.map(canonical);
+  if (value && typeof value === 'object') return Object.fromEntries(Object.keys(value).sort().map((key) => [key, canonical(value[key])]));
+  return value;
 }
-function readJson(file) {
-  if (!fs.existsSync(file)) fail(`Missing capability manifest: ${path.relative(root, file)}`);
-  try { return JSON.parse(fs.readFileSync(file, 'utf8')); }
-  catch (error) { fail(`Invalid JSON in ${path.relative(root, file)}: ${error.message}`); }
+function fingerprint(tools) {
+  const stable = [...tools].sort((a,b) => String(a.id).localeCompare(String(b.id)));
+  return crypto.createHash('sha256').update(JSON.stringify(canonical(stable))).digest('hex');
 }
 function validate(payload, label) {
-  if (payload.schemaVersion !== 2) fail(`${label}: schemaVersion must be 2.`);
-  if (!payload.generatedAt || Number.isNaN(Date.parse(payload.generatedAt))) fail(`${label}: generatedAt is missing. Run backend/export_capabilities.py on this machine before building.`);
-  if (payload.backendVersion !== pkg.version) fail(`${label}: backendVersion ${payload.backendVersion ?? 'null'} does not match package ${pkg.version}.`);
-  if (!Array.isArray(payload.tools) || payload.tools.length < 78) fail(`${label}: capability tool list is incomplete.`);
-  if (payload.toolCount !== payload.tools.length) fail(`${label}: toolCount does not match tools.length.`);
-  const available = payload.tools.filter((tool) => tool.available === true).length;
-  if (payload.availableCount !== available || payload.unavailableCount !== payload.tools.length - available) fail(`${label}: capability counts are inconsistent.`);
-  const ids = payload.tools.map((tool) => String(tool.id || ''));
-  if (ids.some((id) => !id) || new Set(ids).size !== ids.length) fail(`${label}: capability IDs are empty or duplicated.`);
-  for (const tool of payload.tools) {
-    for (const key of ['id','name','category','inputExtensions','outputExtension','available','multiFile','processingMode']) {
-      if (!(key in tool)) fail(`${label}: ${tool.id || 'unknown'} is missing ${key}.`);
-    }
-    if (tool.available === false && !String(tool.unavailableReason || '').trim()) fail(`${label}: ${tool.id} is unavailable without a reason.`);
+  const tools = Array.isArray(payload.tools) ? payload.tools : [];
+  if (payload.schemaVersion !== 2) fail(`${label}: schemaVersion must be 2`);
+  if (!payload.generatedAt || Number.isNaN(Date.parse(payload.generatedAt))) fail(`${label}: generatedAt is invalid`);
+  if (payload.backendVersion !== pkg.version) fail(`${label}: backendVersion must match package ${pkg.version}`);
+  if (tools.length !== 78 || payload.toolCount !== 78) fail(`${label}: production capability snapshot must contain exactly 78 backend capabilities`);
+  const ids = tools.map((tool) => String(tool.id || ''));
+  if (ids.some((id) => !id) || new Set(ids).size !== ids.length) fail(`${label}: capability IDs are empty or duplicated`);
+  const available = tools.filter((tool) => tool.available === true).length;
+  if (payload.availableCount !== available || payload.unavailableCount !== tools.length - available) fail(`${label}: availability counts are inconsistent`);
+  if (process.env.AJN_ALLOW_PARTIAL_CAPABILITY_MANIFEST !== '1' && available !== 78) fail(`${label}: production snapshot is stale/degraded (${available}/78); export capabilities on a fully ready backend`);
+  for (const tool of tools) {
+    for (const key of ['id','name','category','inputExtensions','outputExtension','available','multiFile','processingMode']) if (!(key in tool)) fail(`${label}: ${tool.id || 'unknown'} missing ${key}`);
+    if (tool.available === false && !String(tool.unavailableReason || '').trim()) fail(`${label}: ${tool.id} unavailable without reason`);
   }
-  const required = ['protect-pdf','unlock-pdf','repair-pdf','image-to-searchable-pdf','scanned-pdf-to-searchable-pdf','docx-to-pdf','pptx-to-pdf','pdf-to-docx'];
-  for (const id of required) if (!ids.includes(id)) fail(`${label}: required capability ${id} is missing.`);
   const conversionSource = fs.readFileSync(path.join(root, 'src/lib/conversion-tools.ts'), 'utf8');
-  const conversionIds = [...conversionSource.matchAll(/\btool\(\s*['"]([^'"]+)['"]/g)].map((match) => match[1]);
-  const missingConversions = conversionIds.filter((id) => !ids.includes(id));
-  if (missingConversions.length) fail(`${label}: conversion capabilities missing: ${missingConversions.slice(0, 12).join(', ')}`);
-  const stable = [...payload.tools].sort((a,b) => String(a.id).localeCompare(String(b.id)));
-  const fingerprint = crypto.createHash('sha256').update(JSON.stringify(stable)).digest('hex');
-  // Python's compact separators differ only by spaces, so accept the exported 64-hex fingerprint and cross-file equality below.
-  if (!/^[a-f0-9]{64}$/i.test(String(payload.capabilityFingerprint || ''))) fail(`${label}: capabilityFingerprint is invalid.`);
-  return { ids, fingerprint };
+  const frontendServerIds = [...conversionSource.matchAll(/\btool\(\s*['"]([^'"]+)['"]/g)].map((match) => match[1]);
+  const expectedIds = new Set([...frontendServerIds, 'png-to-pdf', 'protect-pdf', 'unlock-pdf', 'repair-pdf']);
+  if (expectedIds.size !== 78) fail(`${label}: source expected capability set is ${expectedIds.size}, expected 78`);
+  const missing = [...expectedIds].filter((id) => !ids.includes(id));
+  const extra = ids.filter((id) => !expectedIds.has(id));
+  if (missing.length) fail(`${label}: missing source capabilities: ${missing.join(', ')}`);
+  if (extra.length) fail(`${label}: unexpected capabilities: ${extra.join(', ')}`);
+  const computed = fingerprint(tools);
+  if (payload.capabilityFingerprint !== computed) fail(`${label}: fingerprint does not match canonical capability data`);
+  return { tools, computed };
 }
 
 const source = readJson(sourcePath);
 const publicManifest = readJson(publicPath);
-validate(source, 'source manifest');
-validate(publicManifest, 'public manifest');
-if (source.capabilityFingerprint !== publicManifest.capabilityFingerprint) fail('Source/public capability fingerprints differ.');
-if (JSON.stringify(source.tools) !== JSON.stringify(publicManifest.tools)) fail('Source/public capability tool lists differ.');
-console.log(`PASS: capability manifest is current for AJN PDF ${pkg.version} with ${source.availableCount}/${source.toolCount} backend tools available.`);
+const a = validate(source, 'source manifest');
+const b = validate(publicManifest, 'public manifest');
+if (JSON.stringify(source) !== JSON.stringify(publicManifest)) fail('source/public capability manifests are not byte-equivalent JSON data');
+if (a.computed !== b.computed) fail('source/public computed capability fingerprints differ');
+if (failures.length) { console.error('AJN PDF CAPABILITY MANIFEST: FAIL'); failures.forEach((item) => console.error(`- ${item}`)); process.exit(1); }
+console.log(`AJN PDF CAPABILITY MANIFEST: PASS (${source.availableCount}/${source.toolCount}, ${source.capabilityFingerprint.slice(0,12)})`);

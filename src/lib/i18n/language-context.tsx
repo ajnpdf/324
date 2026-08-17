@@ -21,12 +21,45 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguageState] = useState<LanguageCode>('en');
 
   useEffect(() => {
-    const saved = window.localStorage.getItem(STORAGE_KEY) as LanguageCode | null;
-    const browser = window.navigator.language.split('-')[0] as LanguageCode;
-    const target = saved && translations[saved] ? saved : translations[browser] ? browser : 'en';
-    setLanguageState(target);
-    document.documentElement.lang = target;
-    document.documentElement.dataset.language = target;
+    let frameOne = 0;
+    let frameTwo = 0;
+    let cancelled = false;
+
+    const applyInitialLanguage = () => {
+      if (cancelled) return;
+
+      const saved = window.localStorage.getItem(STORAGE_KEY) as LanguageCode | null;
+      const browser = window.navigator.language.split('-')[0] as LanguageCode;
+      const target = saved && translations[saved] ? saved : translations[browser] ? browser : 'en';
+
+      if (cancelled) return;
+
+      setLanguageState(target);
+      document.documentElement.lang = target;
+      document.documentElement.dataset.language = target;
+    };
+
+    const scheduleInitialLanguage = () => {
+      frameOne = window.requestAnimationFrame(() => {
+        frameTwo = window.requestAnimationFrame(() => {
+          applyInitialLanguage();
+        });
+      });
+    };
+
+    if (document.readyState === 'complete') {
+      scheduleInitialLanguage();
+    } else {
+      window.addEventListener('load', scheduleInitialLanguage, { once: true });
+    }
+
+    return () => {
+      cancelled = true;
+      window.removeEventListener('load', scheduleInitialLanguage);
+
+      if (frameOne) window.cancelAnimationFrame(frameOne);
+      if (frameTwo) window.cancelAnimationFrame(frameTwo);
+    };
   }, []);
 
   const setLanguage = useCallback((lang: LanguageCode) => {

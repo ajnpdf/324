@@ -1,11 +1,11 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-11T14:07:06.831722Z",
+  "generatedAt": "2026-08-16T17:00:41.181580Z",
   "backendVersion": "3.1.0",
   "toolCount": 78,
-  "availableCount": 76,
-  "unavailableCount": 2,
-  "capabilityFingerprint": "cbfed640556b0a14d1e83d291162904943c417415fecfe5e2f67b70500429120",
+  "availableCount": 78,
+  "unavailableCount": 0,
+  "capabilityFingerprint": "101746815cd9a18f34453375b9dce720a06f07fe4eda9b2beccc4566a541a766",
   "tools": [
     {
       "id": "azw3-to-pdf",
@@ -535,8 +535,8 @@
         ".pdf"
       ],
       "outputExtension": ".zip",
-      "available": false,
-      "unavailableReason": "AVIF encoding is unavailable in the installed Pillow build.",
+      "available": true,
+      "unavailableReason": null,
       "limitation": "AVIF encoding availability depends on the installed Pillow build.",
       "multiFile": false,
       "ocrLanguages": [],
@@ -1304,9 +1304,9 @@
         ".xps"
       ],
       "outputExtension": ".pdf",
-      "available": false,
-      "unavailableReason": "a licensed XPS/PostScript conversion engine is required for this conversion on the processing server.",
-      "limitation": "Requires MuPDF or Ghostscript.",
+      "available": true,
+      "unavailableReason": null,
+      "limitation": "Converts standard XPS documents to PDF; complex effects and embedded fonts may render differently.",
       "multiFile": false,
       "ocrLanguages": [],
       "processingMode": "temporary-server"

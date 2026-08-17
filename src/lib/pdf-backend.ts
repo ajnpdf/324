@@ -1,42 +1,13 @@
-const ENV_SERVICE_URL = (
-  process.env.NEXT_PUBLIC_PDF_BACKEND_URL ||
-  process.env.NEXT_PUBLIC_AJN_PDF_API_URL ||
-  ''
-).trim();
+import { configuredPdfBackendCandidates, DEFAULT_PDF_BACKEND_URL } from './backend-service-url';
 
-// Public, non-secret default for the current AJN PDF processing endpoint.
-// An explicit valid environment value always wins. A website-origin value is
-// rejected because it would make client requests loop back to the Next.js site.
-const DEFAULT_SERVICE_URL = 'https://ajn-pdf-api-rswf5f4f3q-el.a.run.app';
-
-function normalizeServiceUrl(value: string): string {
-  const trimmed = value.trim().replace(/\/+$/, '');
-  if (!trimmed) return '';
-  try {
-    const url = new URL(trimmed);
-    const host = url.hostname.toLowerCase();
-    const localHttp = url.protocol === 'http:' && (host === '127.0.0.1' || host === 'localhost');
-    if (url.protocol !== 'https:' && !localHttp) return '';
-    const websiteHost = host === 'ajnpdf.com' || host === 'www.ajnpdf.com';
-    const onlyRootPath = !url.pathname || url.pathname === '/';
-    if (websiteHost && onlyRootPath) return '';
-    if (process.env.NODE_ENV === 'production' && (host === '127.0.0.1' || host === 'localhost')) return '';
-    return url.toString().replace(/\/$/, '');
-  } catch {
-    return '';
-  }
-}
-
-const NORMALIZED_ENV_URL = normalizeServiceUrl(ENV_SERVICE_URL);
-export const PDF_BACKEND_URL = NORMALIZED_ENV_URL || DEFAULT_SERVICE_URL;
-export const isPdfBackendConfigured = Boolean(PDF_BACKEND_URL);
+const SERVICE_CANDIDATES = configuredPdfBackendCandidates(process.env.NODE_ENV === 'production');
+const NORMALIZED_ENV_URL = SERVICE_CANDIDATES.find((candidate) => candidate !== DEFAULT_PDF_BACKEND_URL) || '';
+export const PDF_BACKEND_URL = SERVICE_CANDIDATES[0] || DEFAULT_PDF_BACKEND_URL;
+export const isPdfBackendConfigured = SERVICE_CANDIDATES.length > 0;
 export const PDF_BACKEND_USING_FALLBACK = !NORMALIZED_ENV_URL;
-const SERVICE_CANDIDATES = [...new Set([NORMALIZED_ENV_URL, DEFAULT_SERVICE_URL].filter(Boolean))];
 let activeServiceUrl = PDF_BACKEND_URL;
 
-function currentServiceUrl(): string {
-  return activeServiceUrl || PDF_BACKEND_URL;
-}
+function currentServiceUrl(): string { return activeServiceUrl || PDF_BACKEND_URL; }
 
 export class PdfBackendError extends Error {
   code: string;

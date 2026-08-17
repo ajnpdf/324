@@ -1,0 +1,27 @@
+import fs from 'node:fs';
+const read=(f)=>fs.readFileSync(f,'utf8');
+const failures=[]; const check=(label,ok)=>ok?console.log(`PASS: ${label}`):failures.push(label);
+const next=read('next.config.ts'); const backend=read('src/lib/pdf-backend.ts'); const backendUrl=read('src/lib/backend-service-url.ts');
+const policy=read('src/lib/tool-policy.ts'); const limits=read('src/lib/tool-limit-constants.ts'); const server=read('src/components/junction/ServerConversionTool.tsx');
+const protect=read('src/components/junction/ProtectPdf.tsx'); const unlock=read('src/components/junction/UnlockPdf.tsx'); const repair=read('src/components/junction/RepairPdf.tsx');
+const merge=read('src/components/junction/MergePdf.tsx'); const mergeEngine=read('src/lib/merge-pdf-browser.ts'); const workspace=read('src/components/junction/tool-workspace-client.tsx');
+const audit=read('scripts/audit-r13-browser-layout.mjs'); const workflow=read('scripts/verify-backend-workflow.mjs'); const setup=read('R16_PRODUCTION_SETUP_AND_DEPLOY.ps1');
+const docker=read('backend/Dockerfile'); const engine=read('backend/app/conversion_engine.py');
+check('CSP and frontend use shared backend candidate resolver', next.includes('configuredPdfBackendCandidates') && backend.includes('configuredPdfBackendCandidates') && backendUrl.includes('NEXT_PUBLIC_AJN_PDF_API_URL') && backendUrl.includes('DEFAULT_PDF_BACKEND_URL'));
+check('server UI consumes live file/total limits', server.includes('resolveBackendLimits(backendHealth)') && server.includes('validateBackendSelection') && server.includes('latestHealth'));
+check('Protect/Unlock/Repair use and recheck live server limits', [protect,unlock,repair].every((s)=>s.includes('resolveBackendLimits(health)') && s.includes('checkPdfBackendHealth') && s.includes('effectiveMaxMb')));
+const cap=JSON.parse(read('src/generated/backend-capabilities.json')); check('capability snapshot is 78/78 production fingerprint', cap.toolCount===78 && cap.availableCount===78 && cap.unavailableCount===0 && cap.capabilityFingerprint.startsWith('101746815cd9'));
+check('workflow verifier follows candidate /ready implementation', workflow.includes('SERVICE_CANDIDATES') || workflow.includes('candidate}/ready'));
+check('setup never changes PowerShell execution policy', !/Set-ExecutionPolicy/i.test(setup));
+check('setup uses immutable npm ci and no npm install mutation', setup.includes('npm.cmd') && /\bci\b/.test(setup) && !/npm\.cmd[^\n]*install/i.test(setup));
+check('browser audit captures exception descriptions and stacks', audit.includes('exception.description') && audit.includes('stackTrace') && audit.includes('lineNumber'));
+check('Merge has no outer next/dynamic boundary', workspace.includes("import MergePdf from './MergePdf'") && !/['\"]merge-pdf['\"]\s*:\s*dynamic/.test(workspace));
+check('Merge UI and acceptance share merge-pdf-browser helper', merge.includes('mergePdfFiles') && mergeEngine.includes("await import('pdf-lib')") && read('scripts/verify-r13-browser-pdf-acceptance.mjs').includes('merge-pdf-browser.ts'));
+check('Merge limits have one source of truth', merge.includes('MERGE_PDF_LIMITS') && policy.includes('MERGE_PDF_LIMITS') && limits.includes('maxFiles: 30') && limits.includes('maxFileSizeMb: 50') && limits.includes('maxTotalSizeMb: 150'));
+check('Merge source has no mojibake', !/[Ã¢Ã‚][â‚¬Â¦Â·]/.test(merge) && !merge.includes('Ã¢â‚¬Â¦') && !merge.includes('Ã‚Â·'));
+const _aliasDirect=(next.match(/directLegacyToolRedirects/g)||[]).length; check('legacy redirect definitions are centralized', next.includes('legacyToolAliases') && next.includes('directLegacyToolRedirects') && !next.includes('AJN_R14_5_DIRECT_LEGACY_REDIRECTS'));
+check('browser audit includes all canonical public route IDs', audit.includes('r13-public-tool-ids.json') && audit.includes('allToolRoutes'));
+check('XPS is internal PyMuPDF, not mutool-gated', engine.includes('AJN_R14_7_XPS_PYMUPDF_START') && /xps-to-pdf[^\n]+None/.test(engine));
+check('Docker acceptance runs non-root with headless Calibre sandbox retained', docker.includes('USER 10001') && docker.lastIndexOf('USER 10001') < docker.lastIndexOf('python full_acceptance_test.py') && docker.includes('QT_QPA_PLATFORM=offscreen') && docker.includes('QT_QUICK_BACKEND=software') && docker.includes('--disable-gpu') && !docker.includes('--no-sandbox') && !docker.includes('QTWEBENGINE_DISABLE_SANDBOX'));
+if(failures.length){console.error('AJN PDF R16 CONSISTENCY: FAIL');failures.forEach((f)=>console.error(`- ${f}`));process.exit(1)}
+console.log('AJN PDF R16 CONSISTENCY: PASS');

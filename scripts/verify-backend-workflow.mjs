@@ -11,7 +11,7 @@ const worker = read('backend/app/job_worker.py');
 const httpAcceptance = read('backend/http_acceptance_test.py');
 const frontend = read('src/lib/pdf-backend.ts');
 const serverTool = read('src/components/junction/ServerConversionTool.tsx');
-const setup = read('SETUP_FULL_PRODUCTION.ps1');
+const setup = read('R16_PRODUCTION_SETUP_AND_DEPLOY.ps1');
 const packageScript = read('PACKAGE_PRODUCTION.ps1');
 const secretScan = read('scripts/secret-scan.mjs');
 
@@ -40,14 +40,16 @@ check('Analytics failures cannot mask conversion results', main.includes('conver
 check('Oversized and workload-limit failures return actionable codes', main.includes('\"too many pages\" in text') && main.includes('\"too large\" in text'));
 check('Errors include stable request references', main.includes('request.state.request_id') && main.includes('"request_id": request_id') && frontend.includes('requestId?: string'));
 check('Client request references are sanitized before logging/echo', main.includes('def _safe_request_id') && main.includes('[:64]') && main.includes('character.isalnum()'));
-check('Frontend processing readiness uses /ready', frontend.includes('`${PDF_BACKEND_URL}/ready`') && !frontend.includes('`${PDF_BACKEND_URL}/health`'));
+check('Frontend processing readiness uses candidate /ready endpoints', frontend.includes('SERVICE_CANDIDATES') && frontend.includes('`${candidate}/ready`') && !frontend.includes('`${candidate}/health`'));
 check('Frontend requires explicit live tool availability', serverTool.includes('backendReady') && serverTool.includes('manifest?.available === true'));
 check('Frontend rechecks readiness before processing', serverTool.includes('const latestHealth = await checkPdfBackendHealth()'));
+check('Frontend enforces live upload limits before upload', serverTool.includes('validateBackendSelection') && serverTool.includes('resolveBackendLimits') && serverTool.includes('latestHealth'));
+check('Backend URL CSP/client parity has one source', read('next.config.ts').includes('configuredPdfBackendCandidates') && frontend.includes('configuredPdfBackendCandidates'));
 check('Live HTTP acceptance iterates registered conversion specs', httpAcceptance.includes('for tool_id, spec in sorted(SPECS.items())'));
 check('Live HTTP acceptance validates process-isolation and request headers', httpAcceptance.includes('X-AJN-Worker-Isolation') && httpAcceptance.includes('X-Request-ID'));
 check('Live HTTP acceptance includes negative/error-path tests', httpAcceptance.includes('def _negative_tests') && httpAcceptance.includes('fake.pdf') && httpAcceptance.includes('expected_status=415') && httpAcceptance.includes('http-accept-file-count'));
 check('Live HTTP acceptance includes Protect/Unlock/Repair/Compress', httpAcceptance.includes('def _security_endpoints') && httpAcceptance.includes('/api/pdf/protect') && httpAcceptance.includes('/api/pdf/unlock') && httpAcceptance.includes('/api/pdf/repair') && httpAcceptance.includes('/api/pdf/compress'));
-check('Windows setup runs live HTTP acceptance before frontend build', setup.includes('backend\\http_acceptance_test.py') && setup.indexOf('backend\\http_acceptance_test.py') < setup.indexOf('Preparing frontend dependencies'));
+check('Windows setup runs live HTTP acceptance before frontend build', setup.includes('backend\\http_acceptance_test.py') && setup.indexOf('backend\\http_acceptance_test.py') < setup.indexOf('Invoke-Checked $Npm @("ci"'));
 check('HTTP acceptance results cannot ship in production packages', packageScript.includes('HTTP_ACCEPTANCE_RESULTS.json') && secretScan.includes('HTTP_ACCEPTANCE_RESULTS.json'));
 
 if (failures.length) {

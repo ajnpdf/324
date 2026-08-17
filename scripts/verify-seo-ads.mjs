@@ -10,6 +10,15 @@ const toolsData = read('src/lib/tools-data.ts');
 const workspace = read('src/components/junction/tool-workspace-client.tsx');
 const ids = [...toolsData.matchAll(/\bid:\s*'([^']+)'/g)].map((match) => match[1]);
 const mapped = new Map([...workspace.matchAll(/'([^']+)':\s*dynamic\(\(\)\s*=>\s*import\('\.\/([^']+)'\)/g)].map((match) => [match[1], match[2]]));
+
+// R16: Merge PDF intentionally uses a direct client import instead of an
+// outer next/dynamic boundary. Accept it only when both the direct import
+// and explicit route selector are present.
+const directMergeMapped =
+  workspace.includes("import MergePdf from './MergePdf'") &&
+  workspace.includes("id === 'merge-pdf' ? MergePdf : TOOL_COMPONENTS[id]");
+
+if (directMergeMapped) mapped.set('merge-pdf', 'MergePdf');
 if (ids.length !== new Set(ids).size) fail('Tool registry contains duplicate IDs.'); else pass(`${ids.length} unique tool IDs`);
 for (const id of ids) {
   const component = mapped.get(id);

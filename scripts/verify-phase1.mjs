@@ -15,8 +15,16 @@ const policy = read('src/lib/tool-policy.ts');
 const workspace = read('src/components/junction/tool-workspace-client.tsx');
 const ids = [...toolData.matchAll(/\bid:\s*'([^']+)'/g)].map(match => match[1]);
 const mapped = new Set([...workspace.matchAll(/'([^']+)':\s*dynamic/g)].map(match => match[1]));
+
+// R16: Merge PDF is deliberately direct-imported so initial route rendering
+// does not depend on a separate next/dynamic chunk.
+const directMergeMapped =
+  workspace.includes("import MergePdf from './MergePdf'") &&
+  workspace.includes("id === 'merge-pdf' ? MergePdf : TOOL_COMPONENTS[id]");
+
+if (directMergeMapped) mapped.add('merge-pdf');
 if (ids.length === new Set(ids).size) pass(`${ids.length} unique registered base tools`); else fail('Duplicate tool IDs found');
-for (const id of ids) if (!mapped.has(id)) fail(`${id} has no dynamic component mapping`);
+for (const id of ids) if (!mapped.has(id)) fail(`${id} has no component mapping`);
 if (!failed) pass('Every registered base tool has a component mapping');
 
 for (const id of ['pdf-ppt', 'ocr-searchable', 'pdf-a', 'pdf-ua', 'smart-read', 'upscale-image', 'remove-bg', 'blur-face']) {

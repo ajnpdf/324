@@ -2,11 +2,12 @@
 
 import React, { useState } from "react";
 import { ToolWorkspace, Drop, Btn, Done, Err, F, IS, Info, ToolFile, dl } from "./_shared";
-import { repairPdfOnServer } from "@/lib/pdf-backend";
+import { repairPdfOnServer, checkPdfBackendHealth } from "@/lib/pdf-backend";
 import { safeOutputName, validateFiles } from "@/lib/file-validation";
 import { BackendStatus, usePdfBackendStatus } from "./backend-status";
 import { useLanguage } from "@/lib/i18n/language-context";
 import { friendlyBackendError } from "@/lib/i18n/backend-errors";
+import { resolveBackendLimits } from "@/lib/tool-limits";
 
 export default function RepairPdf() {
   const { t } = useLanguage();
@@ -15,12 +16,16 @@ export default function RepairPdf() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<Blob | null>(null);
   const [error, setError] = useState("");
-  const { online } = usePdfBackendStatus();
+  const { online, health } = usePdfBackendStatus();
+  const liveLimits = resolveBackendLimits(health);
 
   const run = async () => {
-    const validation = validateFiles(files.map(item => item.file), { extensions: [".pdf"], minFiles: 1, maxFiles: 1, maxSizeMb: 50 });
+    const latestHealth = await checkPdfBackendHealth();
+    if (latestHealth.status !== "online") { setError("This tool is temporarily unavailable. Check live status and try again."); return; }
+    const latestLimits = resolveBackendLimits(latestHealth);
+    const effectiveMaxMb = Math.min(latestLimits.maxFileSizeMb, latestLimits.maxTotalSizeMb);
+    const validation = validateFiles(files.map(item => item.file), { extensions: [".pdf"], minFiles: 1, maxFiles: 1, maxSizeMb: effectiveMaxMb });
     if (validation) { setError(validation); return; }
-    if (!online) { setError("This tool is temporarily unavailable. Check live status and try again."); return; }
     setError(""); setLoading(true);
     try { setResult(await repairPdfOnServer(files[0].file, safeOutputName(outputName, "repaired", ".pdf"))); }
     catch (e: unknown) { setError(friendlyBackendError(t, e, "errors.processingFailed")); }
@@ -34,7 +39,7 @@ export default function RepairPdf() {
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           <BackendStatus />
-          <Drop files={files} onChange={setFiles} accept=".pdf,application/pdf" label="Select a damaged PDF" sub="PDF files · maximum 50 MB" />
+          <Drop files={files} onChange={setFiles} accept=".pdf,application/pdf" label="Select a damaged PDF" sub={`PDF files · live server limit ${liveLimits.maxFileSizeMb} MB`} />
           <F label="Output filename"><input style={IS} value={outputName} onChange={event => setOutputName(event.target.value)} /></F>
           <Info>Recovery rebuilds readable PDF structures when possible. Severely damaged documents may not be recoverable.</Info>
           <Err msg={error} />

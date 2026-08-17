@@ -11,8 +11,17 @@ const originalAttrs = new WeakMap<Element, Map<string, string>>();
 export function LiveTranslationBridge() {
   const { language, text } = useLanguage();
   const applying = useRef(false);
+  const firstHydrationPass = useRef(true);
 
   useEffect(() => {
+    // Server HTML and the first client render must remain byte-for-byte
+    // text-compatible. The legacy DOM bridge is only needed after the
+    // initial English hydration pass or after an actual language change.
+    if (firstHydrationPass.current) {
+      firstHydrationPass.current = false;
+      if (language === 'en') return;
+    }
+
     const translateNode = (node: Node) => {
       if (node.nodeType === Node.TEXT_NODE) {
         const parent = node.parentElement;
