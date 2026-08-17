@@ -1,4 +1,5 @@
 import { LegalPageShell } from '@/components/legal/legal-page-shell';
+import { AJN_BRAND } from '@/lib/brand';
 
 export default function DataDeletionPage() {
   return (
@@ -17,7 +18,7 @@ export default function DataDeletionPage() {
         },
         {
           title: 'Correspondence and support data',
-          paragraphs: ['Email anjanpatel325@gmail.com from the same address used to contact us and describe the information you want removed. We may retain limited records when required for security, fraud prevention, legal obligations or dispute resolution.'],
+          paragraphs: [`Email ${AJN_BRAND.contactEmail} from the same address used to contact us and describe the information you want removed. We may retain limited records when required for security, fraud prevention, legal obligations or dispute resolution.`],
         },
         {
           title: 'Browser preferences',

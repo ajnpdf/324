@@ -1,4 +1,5 @@
 import { LegalPageShell } from '@/components/legal/legal-page-shell';
+import { AJN_BRAND } from '@/lib/brand';
 
 export default function CopyrightPage() {
   return (
@@ -17,7 +18,7 @@ export default function CopyrightPage() {
         },
         {
           title: 'Copyright complaints',
-          paragraphs: ['A notice should identify the protected work, the allegedly infringing URL, the complainant’s contact information, a good-faith statement and a statement that the information is accurate and authorised. Send notices to anjanpatel325@gmail.com.'],
+          paragraphs: [`A notice should identify the protected work, the allegedly infringing URL, the complainant’s contact information, a good-faith statement and a statement that the information is accurate and authorised. Send notices to ${AJN_BRAND.contactEmail}.`],
         },
       ]}
     />

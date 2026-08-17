@@ -10,7 +10,7 @@ export const AJN_BRAND = {
   developerOgImage: '/images/anjan-developer-og.jpg',
   studioName: 'AJN Studio',
   productName: 'AJN PDF',
-  contactEmail: 'anjanpatel325@gmail.com',
+  contactEmail: 'anjandev325@gmail.com',
   country: 'India',
   social: {
     instagram: 'https://www.instagram.com/anjan__patel',

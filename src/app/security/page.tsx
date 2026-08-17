@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { LegalPageShell } from '@/components/legal/legal-page-shell';
 import { PROCESSING_DISCLOSURE } from '@/lib/processing-disclosure';
+import { AJN_BRAND } from '@/lib/brand';
 
 export const metadata: Metadata = {
   title: 'Security Practices',
@@ -43,7 +44,7 @@ export default function SecurityPage() {
         {
           title: 'Responsible disclosure',
           paragraphs: [
-            'Report a reproducible security issue privately to anjandev325@gmail.com. Do not access another user’s data, disrupt the service or publish sensitive exploit details before a reasonable remediation period.',
+            `Report a reproducible security issue privately to ${AJN_BRAND.contactEmail}. Do not access another user’s data, disrupt the service or publish sensitive exploit details before a reasonable remediation period.`,
           ],
         },
       ]}

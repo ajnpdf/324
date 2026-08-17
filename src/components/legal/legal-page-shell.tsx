@@ -4,6 +4,7 @@ import { MainFooter } from '@/components/landing/main-footer';
 import { NightSky } from '@/components/dashboard/night-sky';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { AJN_BRAND } from '@/lib/brand';
 
 export type LegalSection = {
   title: string;
@@ -95,8 +96,8 @@ export function LegalPageShell({
               <h2 className="mt-2 text-2xl font-black">Contact AJN PDF</h2>
               <p className="mt-2 text-sm text-slate-300">Policy, privacy, copyright and security requests are reviewed through our official contact email.</p>
             </div>
-            <a href="mailto:anjanpatel325@gmail.com" className="inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-6 py-4 text-xs font-black uppercase tracking-widest hover:opacity-90 transition-opacity">
-              <Mail className="w-4 h-4" /> anjanpatel325@gmail.com
+            <a href={`mailto:${AJN_BRAND.contactEmail}`} className="inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-6 py-4 text-xs font-black uppercase tracking-widest hover:opacity-90 transition-opacity">
+              <Mail className="w-4 h-4" /> {AJN_BRAND.contactEmail}
             </a>
           </div>
         </section>
