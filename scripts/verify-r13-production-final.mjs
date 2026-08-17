@@ -59,7 +59,7 @@ check('status exposes checking/operational/degraded/unavailable states', ['check
 check('status displays last-checked time and capability counts', status.includes('lastCheckedAt') && status.includes('availableConversionTools') && statusPage.includes('autoRefreshMs={30000}'));
 check('status uses icon + label + color state marker', status.includes('StateIcon') && status.includes('ajn-status-dot') && status.includes('data-state={displayState}'));
 
-check('tool workspace surfaces actual per-tool upload limits before controls', shared.includes('getToolLimitProfile') && shared.includes('aria-label="Upload limits"') && shared.includes('up to {effectiveMaxFile} MB each'));
+check('tool workspace keeps safety limits internal without common limit panels', shared.includes('getToolLimitProfile') && !shared.includes('ToolRuntimeFactsInline') && !shared.includes('aria-label="Upload limits"') && !shared.includes('effectiveMaxFile'));
 check('online tools are disabled before upload when service is unavailable', shared.includes('serviceBlocked') && shared.includes('<fieldset disabled={serviceBlocked}'));
 check('on-device tools remain independent from online availability', shared.includes('usePdfBackendStatus(serverMode ? 30000 : 0, serverMode)'));
 check('primary tool actions are normalized to AJN blue', shared.includes('linear-gradient(135deg,#2563EB,#1D4ED8)') && shared.includes('delete customStyle.background'));

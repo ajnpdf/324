@@ -8,8 +8,8 @@ const merge=read('src/components/junction/MergePdf.tsx'); const mergeEngine=read
 const audit=read('scripts/audit-r13-browser-layout.mjs'); const workflow=read('scripts/verify-backend-workflow.mjs'); const setup=read('R16_PRODUCTION_SETUP_AND_DEPLOY.ps1');
 const docker=read('backend/Dockerfile'); const engine=read('backend/app/conversion_engine.py');
 check('CSP and frontend use shared backend candidate resolver', next.includes('configuredPdfBackendCandidates') && backend.includes('configuredPdfBackendCandidates') && backendUrl.includes('NEXT_PUBLIC_AJN_PDF_API_URL') && backendUrl.includes('DEFAULT_PDF_BACKEND_URL'));
-check('server UI consumes live file/total limits', server.includes('resolveBackendLimits(backendHealth)') && server.includes('validateBackendSelection') && server.includes('latestHealth'));
-check('Protect/Unlock/Repair use and recheck live server limits', [protect,unlock,repair].every((s)=>s.includes('resolveBackendLimits(health)') && s.includes('checkPdfBackendHealth') && s.includes('effectiveMaxMb')));
+check('server UI enforces live file/total limits without common limit copy', server.includes('validateBackendSelection') && server.includes('backendHealth') && server.includes('latestHealth') && !server.includes('liveLimits.maxFileSizeMb'));
+check('Protect/Unlock/Repair recheck live server limits at action time', [protect,unlock,repair].every((s)=>s.includes('const latestHealth = await checkPdfBackendHealth()') && s.includes('resolveBackendLimits(latestHealth)') && s.includes('effectiveMaxMb') && s.includes('maxSizeMb: effectiveMaxMb')));
 const cap=JSON.parse(read('src/generated/backend-capabilities.json')); check('capability snapshot is 78/78 production fingerprint', cap.toolCount===78 && cap.availableCount===78 && cap.unavailableCount===0 && cap.capabilityFingerprint.startsWith('101746815cd9'));
 check('workflow verifier follows candidate /ready implementation', workflow.includes('SERVICE_CANDIDATES') || workflow.includes('candidate}/ready'));
 check('setup never changes PowerShell execution policy', !/Set-ExecutionPolicy/i.test(setup));

@@ -2,13 +2,12 @@
 import React, { useCallback, useId, useRef, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { AlertTriangle, Download, FileCheck2, Loader2, RefreshCcw, Share2, UploadCloud, X } from "lucide-react";
-import { ToolRuntimeFactsInline } from "@/components/ajn/tool-runtime-facts";
 import { cn } from "../../lib/utils";
 import { sendAjnAnalytics } from "../analytics/site-analytics";
 import { useLanguage } from "@/lib/i18n/language-context";
 import { ToolArtwork } from "@/components/ajn/tool-artwork";
 import { toolIdFromPathname } from "@/lib/tool-routes";
-import { getToolLimitProfile, resolveBackendLimits } from "@/lib/tool-limits";
+import { getToolLimitProfile } from "@/lib/tool-limits";
 import { usePdfBackendStatus } from "./backend-status";
 
 export interface ToolFile { file: File; name: string; size: number; }
@@ -146,16 +145,12 @@ export function ToolWorkspace({ title, description, accent = T.blue, children }:
   const localized = localizeTool(toolId, title, description, []);
   const limitProfile = getToolLimitProfile(toolId);
   const serverMode = limitProfile.executionMode === "server";
-  const { health, checking, online, refresh } = usePdfBackendStatus(serverMode ? 30000 : 0, serverMode);
-  const liveLimits = resolveBackendLimits(health);
-  const effectiveMaxFile = serverMode ? liveLimits.maxFileSizeMb : limitProfile.maxFileSizeMb;
-  const effectiveMaxTotal = serverMode ? liveLimits.maxTotalSizeMb : limitProfile.maxTotalSizeMb;
+  const { checking, online, refresh } = usePdfBackendStatus(serverMode ? 30000 : 0, serverMode);
   const serviceBlocked = serverMode && (checking || !online);
-  const fileCountText = limitProfile.maxFiles === 1 ? "1 file" : `up to ${limitProfile.maxFiles} files`;
 
   return (
     <div className="jn-workspace relative min-h-screen overflow-hidden" style={{ "--jn-accent": "#2563EB", background: "transparent", WebkitFontSmoothing: "antialiased" } as React.CSSProperties}>
-      <main className="relative z-10 mx-auto w-full max-w-5xl px-3 pb-12 pt-24 sm:px-5 sm:pt-28">
+      <main className="relative z-10 mx-auto w-full max-w-4xl px-3 pb-12 pt-24 sm:px-5 sm:pt-28">
         <div className="mx-auto mb-5 flex max-w-3xl items-center gap-3.5 text-left sm:mb-7 sm:gap-5">
           <ToolArtwork toolId={toolId} toolName={localized.name} priority className="h-[52px] w-[52px] sm:h-14 sm:w-14" />
           <div className="min-w-0 flex-1">
@@ -163,13 +158,7 @@ export function ToolWorkspace({ title, description, accent = T.blue, children }:
             <p className="mt-1.5 max-w-2xl text-sm font-medium leading-6 text-slate-600 sm:text-[15px]">{localized.desc}</p>
           </div>
         </div>
-        <ToolRuntimeFactsInline toolId={toolId} />
-        <section className="jn-card ajn-product-canvas rounded-2xl border border-slate-200 bg-white p-3 shadow-[0_20px_58px_rgba(30,62,130,.09)] sm:p-5">
-          <div className="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-blue-100 bg-blue-50/70 px-3 py-2.5 text-[11px] font-extrabold text-slate-700" aria-label="Upload limits">
-            <span>Upload: {fileCountText} • up to {effectiveMaxFile} MB each{effectiveMaxTotal ? ` • ${effectiveMaxTotal} MB total` : ""}</span>
-            <span className="text-blue-700">{serverMode ? "Online workflow" : "On-device workflow"}</span>
-          </div>
-          {serverMode && serviceBlocked && (
+        <section className="jn-card ajn-product-canvas rounded-[1.75rem] border border-slate-200 bg-white p-4 shadow-[0_18px_48px_rgba(30,62,130,.08)] sm:p-6">{serverMode && serviceBlocked && (
             <div role="status" aria-live="polite" className="mb-4 flex items-start justify-between gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-amber-950">
               <div className="flex min-w-0 gap-2.5">
                 {checking ? <Loader2 className="mt-0.5 h-4 w-4 shrink-0 animate-spin" /> : <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />}

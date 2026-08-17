@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { ToolWorkspace, Drop, Btn, Done, Err, F, G2, IS, Info, ToolFile, dl } from "./_shared";
 import { protectPdfOnServer, checkPdfBackendHealth } from "@/lib/pdf-backend";
 import { safeOutputName, validateFiles } from "@/lib/file-validation";
-import { BackendStatus, usePdfBackendStatus } from "./backend-status";
+
 import { useLanguage } from "@/lib/i18n/language-context";
 import { friendlyBackendError } from "@/lib/i18n/backend-errors";
 import { resolveBackendLimits } from "@/lib/tool-limits";
@@ -20,8 +20,6 @@ export default function ProtectPdf() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<Blob | null>(null);
   const [error, setError] = useState("");
-  const { online, health } = usePdfBackendStatus();
-  const liveLimits = resolveBackendLimits(health);
 
   const run = async () => {
     const latestHealth = await checkPdfBackendHealth();
@@ -59,8 +57,7 @@ export default function ProtectPdf() {
         <Done msg="PDF protected successfully" onDownload={() => dl(result, safeOutputName(outputName, "protected", ".pdf"))} shareFile={{ blob: result, name: safeOutputName(outputName, "protected", ".pdf") }} onReset={reset} />
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-          <BackendStatus />
-          <Drop files={files} onChange={setFiles} accept=".pdf,application/pdf" label="Select one PDF" sub={`PDF · live server limit ${liveLimits.maxFileSizeMb} MB`} />
+          <Drop files={files} onChange={setFiles} accept=".pdf,application/pdf" label="Select one PDF" />
           <G2><F label="Open password" hint="Minimum 8 characters recommended"><input style={IS} type="password" autoComplete="new-password" value={password} onChange={event => setPassword(event.target.value)} /></F><F label="Confirm password"><input style={IS} type="password" autoComplete="new-password" value={confirm} onChange={event => setConfirm(event.target.value)} /></F></G2>
           <G2><F label="Owner password" hint="Optional and not shown again"><input style={IS} type="password" autoComplete="new-password" value={ownerPassword} onChange={event => setOwnerPassword(event.target.value)} /></F><F label="Output filename"><input style={IS} value={outputName} onChange={event => setOutputName(event.target.value)} /></F></G2>
           <F label="Document permissions">
@@ -74,7 +71,7 @@ export default function ProtectPdf() {
           </F>
           <Info>Passwords are used only for this request and are not written to application logs. Temporary request workspace data is scheduled for cleanup after the response is returned.</Info>
           <Err msg={error} />
-          <Btn onClick={run} loading={loading} disabled={!files.length || !password || !confirm || !online} full style={{ background: "#2563EB" }}>Protect PDF</Btn>
+          <Btn onClick={run} loading={loading} disabled={!files.length || !password || !confirm} full style={{ background: "#2563EB" }}>Protect PDF</Btn>
         </div>
       )}
     </ToolWorkspace>

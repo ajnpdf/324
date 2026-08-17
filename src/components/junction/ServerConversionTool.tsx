@@ -5,7 +5,7 @@ import { FileOutput, Loader2 } from 'lucide-react';
 import { BUILD_PUBLIC_TOOLS } from '@/lib/build-public-tools';
 import { checkPdfBackendHealth, convertOnServer, getConversionToolManifest, getPdfBackendErrorCode, type ConversionToolManifest, type PdfBackendHealth } from '@/lib/pdf-backend';
 import { getToolPolicy } from '@/lib/tool-policy';
-import { resolveBackendLimits, validateBackendSelection } from '@/lib/tool-limits';
+import { validateBackendSelection } from '@/lib/tool-limits';
 import { Btn, Done, Drop, Err, F, G2, Info, IS, Pills, Range, ToolWorkspace, type ToolFile, dl } from './_shared';
 import { sendAjnAnalytics } from '@/components/analytics/site-analytics';
 import { useLanguage } from '@/lib/i18n/language-context';
@@ -86,8 +86,7 @@ export default function ServerConversionTool({ toolId }: { toolId: string }) {
   const isUrlTool = toolId === 'url-to-pdf';
   const multiple = manifest?.multiFile ?? policy.maxFiles > 1;
   const accept = extensionAccept(manifest?.inputExtensions);
-  const liveLimits = resolveBackendLimits(backendHealth);
-  const selectionSub = `${manifest?.inputExtensions?.join(', ') || t('conversion.supportedFormats')} • Up to ${liveLimits.maxFileSizeMb} MB each • ${liveLimits.maxTotalSizeMb} MB total`;
+  const selectionSub = manifest?.inputExtensions?.join(', ') || t('conversion.supportedFormats');
   const onFilesChange = (next: ToolFile[]) => {
     const validation = validateBackendSelection(next.map((item) => item.file), policy.maxFiles, backendHealth);
     if (validation) { setError(validation); return; }

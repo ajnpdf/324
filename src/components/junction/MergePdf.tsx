@@ -2,7 +2,7 @@
 
 import { useMemo, useRef, useState } from "react";
 import { ArrowDown, ArrowUp, Plus, Trash2 } from "lucide-react";
-import { ToolWorkspace, Btn, Done, Err, F, IS, type ToolFile, dl, fmtBytes, Info, T, beginToolProcessing, completeToolProcessing, failToolProcessing, updateToolProcessing } from "./_shared";
+import { ToolWorkspace, Btn, Done, Err, F, IS, type ToolFile, dl, fmtBytes, T, beginToolProcessing, completeToolProcessing, failToolProcessing, updateToolProcessing } from "./_shared";
 import { MERGE_PDF_LIMITS } from "@/lib/tool-limit-constants";
 import { hasPdfHeader, mergePdfFiles, normalizeMergeOutputName, validateMergeSelection } from "@/lib/merge-pdf-browser";
 
@@ -62,12 +62,11 @@ export default function MergePdf() {
   };
 
   return (
-    <ToolWorkspace title="Merge PDF" description="Combine PDF files in your chosen order — processing stays in this browser" accent={T.blue}>
+    <ToolWorkspace title="Merge PDF" description="Combine PDF files in your chosen order." accent={T.blue}>
       {result ? (
         <Done msg="PDFs merged successfully" onDownload={() => dl(result, normalizeMergeOutputName(outputName))} shareFile={{ blob: result, name: normalizeMergeOutputName(outputName) }} onReset={reset} />
       ) : (
         <div className="space-y-4">
-          <Info><strong>Browser-local:</strong> your selected PDFs are merged on this device. Up to {MERGE_PDF_LIMITS.maxFiles} PDFs, {MERGE_PDF_LIMITS.maxFileSizeMb} MB each, {MERGE_PDF_LIMITS.maxTotalSizeMb} MB total.</Info>
           <div className="jn-drop" role="button" tabIndex={0} onClick={() => inputRef.current?.click()} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); inputRef.current?.click(); } }}>
             <input ref={inputRef} type="file" accept=".pdf,application/pdf" multiple hidden onChange={(event) => { void addFiles(event.target.files); event.target.value = ""; }} />
             <div className="mx-auto mb-3 grid h-12 w-12 place-items-center rounded-2xl bg-white text-blue-600 shadow-sm"><Plus size={20} /></div>
