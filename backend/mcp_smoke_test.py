@@ -7,6 +7,8 @@ from app.mcp_server import _convert, _spec_payload, mcp
 
 
 def main() -> None:
+    # This test intentionally exercises the inner MCP registry/worker directly.
+    # Request authentication is covered separately by mcp_auth_smoke_test.py.
     assert mcp is not None
 
     spec = _spec_payload("txt-to-pdf")
