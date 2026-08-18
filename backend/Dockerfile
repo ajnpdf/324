@@ -47,8 +47,9 @@ RUN python -c "import fitz,pikepdf,pytesseract,docx,openpyxl,PIL,reportlab,ebook
     && pdftoppm -v
 
 COPY app ./app
-COPY smoke_test.py capability_audit.py full_acceptance_test.py ./
-RUN python -m compileall -q app
+COPY smoke_test.py capability_audit.py full_acceptance_test.py processing_quality_acceptance_test.py ./
+RUN python -m compileall -q app \
+    && python -m py_compile processing_quality_acceptance_test.py
 
 # Build preparation runs as root; acceptance and Cloud Run run unprivileged.
 RUN useradd --uid 10001 --user-group --create-home --home-dir /home/ajn --shell /usr/sbin/nologin ajn \
@@ -58,6 +59,7 @@ RUN useradd --uid 10001 --user-group --create-home --home-dir /home/ajn --shell 
 
 USER 10001
 RUN python -c "from app.main import app; assert app.title == 'AJN PDF Conversion API'; print('PASS: FastAPI application import')" \
-    && python full_acceptance_test.py
+    && python full_acceptance_test.py \
+    && python processing_quality_acceptance_test.py
 
 CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT} --workers 1 --proxy-headers"]
