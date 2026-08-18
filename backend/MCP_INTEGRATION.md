@@ -1,8 +1,8 @@
 # AJN PDF MCP Integration
 
-AJN PDF now includes a standalone remote Model Context Protocol (MCP) service for ChatGPT/OpenAI, Claude, and other MCP-compatible clients.
+AJN PDF includes a standalone remote Model Context Protocol (MCP) service for ChatGPT/OpenAI, Claude, and other MCP-compatible clients.
 
-The MCP service is intentionally isolated from the existing AJN PDF FastAPI production API. It reuses the same `app.conversion_engine` registry and `app.job_worker` process isolation, so conversion behavior stays aligned with the website/backend without coupling the MCP protocol lifecycle to the main API.
+The MCP service is isolated from the existing AJN PDF FastAPI production API. It reuses the same `app.conversion_engine` registry and `app.job_worker` process isolation, so conversion behavior stays aligned with the website/backend without coupling the MCP protocol lifecycle to the main API.
 
 ## What is exposed
 
@@ -20,11 +20,39 @@ The server currently exposes focused MCP tools:
 
 The generic conversion tools expose the existing AJN PDF conversion registry instead of duplicating every converter as separate implementation code.
 
+## MCP Auth V2
+
+Production traffic enters through `app.mcp_entrypoint`, which wraps the official MCP SDK ASGI application with fail-closed bearer authentication.
+
+Default behavior:
+
+- `AJN_MCP_REQUIRE_AUTH=true`
+- every non-`OPTIONS` HTTP request must send `Authorization: Bearer <token>`
+- the configured bearer token must contain at least 32 characters
+- missing/invalid bearer credentials return `401`
+- a missing or too-short server token returns `503` instead of silently exposing the service
+- bearer comparison uses constant-time comparison
+- the secret is never committed to source control
+- ASGI lifespan/non-HTTP scopes are forwarded unchanged to the official MCP server
+
+Environment variables:
+
+```text
+AJN_MCP_REQUIRE_AUTH=true
+AJN_MCP_BEARER_TOKEN=
+AJN_MCP_MIN_TOKEN_CHARS=32
+```
+
+`AJN_MCP_BEARER_TOKEN` must be injected only at deployment time (prefer a managed secret store). Never place a real token in `.env.example`, Dockerfile, GitHub source, CI logs, or documentation.
+
+For temporary local-only development, auth can be disabled explicitly with `AJN_MCP_REQUIRE_AUTH=false`. Do not use that setting for an internet-reachable production service.
+
 ## Security and processing model
 
 - MCP runs as a separate ASGI service.
-- MCP uses the official Python `mcp` SDK and Streamable HTTP.
-- The public endpoint is `/mcp`.
+- `app.mcp_entrypoint` provides application-level bearer authentication.
+- `app.mcp_server` remains the official Python `mcp` SDK Streamable HTTP application.
+- The MCP endpoint is `/mcp`.
 - MCP DNS-rebinding protection uses an explicit host allowlist.
 - Browser origins use an explicit origin allowlist.
 - File names are normalized before writing temporary files.
@@ -43,7 +71,7 @@ AJN_MCP_MAX_OUTPUT_MB=16
 AJN_MCP_PROCESSING_TIMEOUT_SECONDS=180
 ```
 
-These limits are intentionally smaller than the normal website/API limits because base64 is inefficient for large binary payloads. Keep large-file processing on the standard AJN PDF upload/API path until a dedicated client file-bridge is added.
+These limits are intentionally smaller than the normal website/API limits because base64 is inefficient for large binary payloads. Keep large-file processing on the standard AJN PDF upload/API path until a dedicated client file bridge is added.
 
 ## Local install
 
@@ -54,8 +82,15 @@ python -m venv .venv
 # Windows PowerShell
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
+python mcp_auth_smoke_test.py
 python mcp_smoke_test.py
-uvicorn app.mcp_server:app --host 127.0.0.1 --port 8080
+```
+
+Start locally with authentication enabled:
+
+```bash
+# Set a random 32+ character development token in your shell first.
+uvicorn app.mcp_entrypoint:app --host 127.0.0.1 --port 8080
 ```
 
 The local MCP URL is:
@@ -64,17 +99,19 @@ The local MCP URL is:
 http://127.0.0.1:8080/mcp
 ```
 
+Clients must send:
+
+```text
+Authorization: Bearer <AJN_MCP_BEARER_TOKEN>
+```
+
 ## MCP Inspector
 
 ```bash
 npx @modelcontextprotocol/inspector
 ```
 
-Choose **Streamable HTTP** and connect to:
-
-```text
-http://127.0.0.1:8080/mcp
-```
+Choose **Streamable HTTP**, connect to `http://127.0.0.1:8080/mcp`, and include the bearer Authorization header.
 
 Verify at minimum:
 
@@ -88,85 +125,77 @@ Verify at minimum:
 From `backend`:
 
 ```bash
-docker build -f Dockerfile.mcp -t ajn-pdf-mcp:1.0.0 .
-docker run --rm -p 8080:8080 \
-  -e AJN_MCP_ALLOWED_HOSTS=localhost,127.0.0.1 \
-  -e AJN_MCP_ALLOWED_ORIGINS=http://localhost:3000 \
-  ajn-pdf-mcp:1.0.0
+docker build -f Dockerfile.mcp -t ajn-pdf-mcp:2.0.0 .
 ```
 
-## Google Cloud Run deployment
-
-Example:
-
-```bash
-gcloud run deploy ajn-pdf-mcp \
-  --source . \
-  --region asia-south1 \
-  --allow-unauthenticated \
-  --port 8080 \
-  --set-env-vars "AJN_MCP_ALLOWED_HOSTS=YOUR_MCP_HOSTNAME,YOUR_MCP_HOSTNAME:*,AJN_MCP_ALLOWED_ORIGINS=https://ajnpdf.com,https://www.ajnpdf.com,AJN_MCP_MAX_FILE_MB=8,AJN_MCP_MAX_TOTAL_MB=16,AJN_MCP_MAX_OUTPUT_MB=16,AJN_MCP_PROCESSING_TIMEOUT_SECONDS=180"
-```
-
-When deploying from Cloud Build, explicitly select `Dockerfile.mcp`. If the final service URL is, for example, `https://ajn-pdf-mcp-xxxxx.a.run.app`, the MCP URL is:
+The Docker build runs both:
 
 ```text
-https://ajn-pdf-mcp-xxxxx.a.run.app/mcp
+mcp_auth_smoke_test.py
+mcp_smoke_test.py
 ```
 
-**Important:** set `AJN_MCP_ALLOWED_HOSTS` to the exact deployed hostname (and `hostname:*` where a proxy may preserve a port). The official MCP transport rejects unapproved hostnames by design.
+The runtime command serves `app.mcp_entrypoint:app`, not the unauthenticated inner MCP application directly.
 
-## OpenAI / ChatGPT / Responses API
+## Cloud deployment model
 
-Use the deployed HTTPS MCP URL as a remote MCP server. Example Responses API tool definition:
+The production service should have two separate security layers:
 
-```json
-{
-  "type": "mcp",
-  "server_label": "ajn_pdf",
-  "server_description": "AJN PDF document conversion, OCR, compression, protection, unlock and repair tools.",
-  "server_url": "https://YOUR_MCP_HOST/mcp",
-  "require_approval": "always"
-}
+1. internet-reachable HTTPS transport so standards-based MCP clients can reach `/mcp`
+2. AJN PDF application authentication using `AJN_MCP_BEARER_TOKEN`
+
+Configure at deployment time:
+
+```text
+AJN_MCP_REQUIRE_AUTH=true
+AJN_MCP_BEARER_TOKEN=<secret injected by deployment platform>
+AJN_MCP_ALLOWED_HOSTS=<exact deployed hostnames>
+AJN_MCP_ALLOWED_ORIGINS=https://ajnpdf.com,https://www.ajnpdf.com
 ```
 
-Start with approval enabled for file-changing operations. After production review, read-only discovery tools can be allowed more freely if desired.
+Do not make the service internet-reachable until the authenticated `app.mcp_entrypoint` image is deployed and the bearer secret is configured.
 
-## Claude API
+After deployment, verify all three cases:
 
-Claude's remote MCP connector requires an HTTPS server. Configure the same endpoint as a URL MCP server and enable its MCP toolset.
+1. no Authorization header -> `401`
+2. wrong bearer token -> `401`
+3. correct bearer token -> MCP discovery and `tools/list` return successfully
 
-Conceptual configuration:
+Also verify that the exact public/canonical proxy hostnames are included in `AJN_MCP_ALLOWED_HOSTS`; the MCP SDK intentionally returns `421` for unapproved Host headers.
 
-```json
-{
-  "mcp_servers": [
-    {
-      "type": "url",
-      "url": "https://YOUR_MCP_HOST/mcp",
-      "name": "ajn-pdf"
-    }
-  ],
-  "tools": [
-    {
-      "type": "mcp_toolset",
-      "mcp_server_name": "ajn-pdf"
-    }
-  ]
-}
+## Claude Code
+
+Configure the remote MCP endpoint using an Authorization header containing the AJN PDF bearer token. The token should come from the user's secret/configuration mechanism, not source control.
+
+Expected endpoint shape:
+
+```text
+https://YOUR_MCP_HOST/mcp
 ```
+
+Expected request header:
+
+```text
+Authorization: Bearer <AJN_MCP_BEARER_TOKEN>
+```
+
+## OpenAI / ChatGPT
+
+Use the deployed HTTPS MCP URL as a remote MCP server. For production distribution, OAuth should replace the shared bearer-token bootstrap so users receive revocable, scoped credentials rather than sharing one service-wide secret.
 
 ## Recommended production rollout
 
-1. Build `Dockerfile.mcp`.
-2. Run `python mcp_smoke_test.py` inside the image.
-3. Deploy the MCP image to a dedicated Cloud Run service.
-4. Set the exact Cloud Run/custom-domain host in `AJN_MCP_ALLOWED_HOSTS`.
-5. Test `/mcp` with MCP Inspector over HTTPS.
-6. Connect the deployed URL to OpenAI and Claude test environments.
-7. Verify discovery + `txt-to-pdf` + PDF compression + protect/unlock + repair with small fixtures.
-8. Add authentication/OAuth before exposing user-specific history, storage, billing, or private account data.
-9. Keep large-file document upload on the existing AJN PDF API until the client-native file bridge is implemented and tested.
+1. Build the authenticated `Dockerfile.mcp` image.
+2. Confirm both Docker smoke tests pass.
+3. Generate a strong deployment secret; never commit it.
+4. Deploy the authenticated image while keeping the service private.
+5. Inject `AJN_MCP_BEARER_TOKEN` and exact allowed hostnames.
+6. Verify unauthorized requests fail closed.
+7. Make the HTTPS endpoint reachable by MCP clients only after application auth is active.
+8. Test `server/discover`, `tools/list`, `list_ajn_pdf_tools`, `get_ajn_pdf_tool`, and `txt-to-pdf` using the AJN bearer token.
+9. Connect Claude Code and run a real conversion.
+10. Add OAuth for Claude.ai/ChatGPT production distribution.
+11. Keep large-file document upload on the existing AJN PDF API until the client-native file bridge is implemented and tested.
 
 ## Next production expansion
 
