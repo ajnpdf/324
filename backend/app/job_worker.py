@@ -7,7 +7,8 @@ from pathlib import Path
 
 import pikepdf
 
-from .conversion_engine import SPECS, convert
+from .conversion_engine import SPECS
+from .processing_quality import run_conversion
 
 
 def _write(payload: dict[str, object]) -> None:
@@ -31,7 +32,7 @@ def main() -> int:
             if not isinstance(options, dict):
                 raise ValueError("Conversion options must be a JSON object.")
             source_url = payload.get("source_url")
-            convert(spec, files, output, options, workdir, str(source_url) if source_url else None)
+            run_conversion(spec, files, output, options, workdir, str(source_url) if source_url else None)
         elif operation == "protect":
             source = Path(str(payload["source"]))
             target = Path(str(payload["target"]))
