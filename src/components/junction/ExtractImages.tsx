@@ -3,94 +3,80 @@
 import React,{useRef,useState} from "react";
 import * as pdfjsLib from "pdfjs-dist";
 import JSZip from "jszip";
-import {CheckCircle2,Download,FileText,ImageIcon,Loader2,RefreshCcw,Share2,Zap} from "lucide-react";
+import {Download,FileText,Image as ImageIcon,RefreshCcw,ShieldCheck} from "lucide-react";
 import {RuntimeImage} from "@/components/ui/runtime-image";
-import {Button} from "../ui/button";
-import {Card} from "../ui/card";
-import {Progress} from "../ui/progress";
-import {useToast} from "../../hooks/use-toast";
-import {ToolWorkspace,beginToolProcessing,completeToolProcessing,dl,failToolProcessing,fmtBytes,getFilesFromEvent,shareResult} from "./_shared";
+import {Button} from "@/components/ui/button";
+import {Card} from "@/components/ui/card";
+import {Progress} from "@/components/ui/progress";
+import {ToolWorkspace,beginToolProcessing,completeToolProcessing,dl,failToolProcessing,fmtBytes,getFilesFromEvent} from "./_shared";
 import {initPdfWorker} from "@/lib/pdfjs-worker";
+import {useToast} from "@/hooks/use-toast";
 
-const MAX_IMAGES=200;
+const MAX_IMAGES=500;
 const MAX_IMAGE_PIXELS=50_000_000;
-const MAX_TOTAL_PIXELS=120_000_000;
+const MAX_TOTAL_PIXELS=180_000_000;
 
-type PdfImageObject={
+type PdfImageData={
   width?:number;
   height?:number;
-  data?:Uint8Array|Uint8ClampedArray;
-  bitmap?:ImageBitmap;
+  data?:Uint8ClampedArray|Uint8Array;
+  bitmap?:ImageBitmap|HTMLCanvasElement|HTMLImageElement|OffscreenCanvas;
 };
 
-function safeBaseName(name:string):string{
-  return (name.replace(/\.pdf$/i,"").replace(/[^a-zA-Z0-9._ -]+/g,"_").trim().slice(0,90)||"AJN_PDF_Images");
-}
-
-function imageCanvas(obj:PdfImageObject):HTMLCanvasElement|null{
-  const width=Math.floor(Number(obj?.width)||0);
-  const height=Math.floor(Number(obj?.height)||0);
-  if(width<1||height<1||width*height>MAX_IMAGE_PIXELS) return null;
-  const canvas=document.createElement("canvas");
-  canvas.width=width;canvas.height=height;
-  const ctx=canvas.getContext("2d");
-  if(!ctx) return null;
-
-  if(obj.bitmap){
-    ctx.drawImage(obj.bitmap,0,0,width,height);
-    return canvas;
-  }
-
-  const raw=obj.data;
-  if(!raw) return null;
-  const data=raw instanceof Uint8ClampedArray?raw:new Uint8ClampedArray(raw);
-  const rgba=ctx.createImageData(width,height);
-  const pixels=width*height;
-
-  if(data.length===pixels*4){
-    rgba.data.set(data);
-  }else if(data.length===pixels*3){
-    for(let src=0,dst=0;src<data.length;src+=3,dst+=4){
-      rgba.data[dst]=data[src];
-      rgba.data[dst+1]=data[src+1];
-      rgba.data[dst+2]=data[src+2];
-      rgba.data[dst+3]=255;
-    }
-  }else if(data.length===pixels){
-    for(let src=0,dst=0;src<data.length;src++,dst+=4){
-      const value=data[src];
-      rgba.data[dst]=value;rgba.data[dst+1]=value;rgba.data[dst+2]=value;rgba.data[dst+3]=255;
-    }
-  }else{
-    return null;
-  }
-  ctx.putImageData(rgba,0,0);
-  return canvas;
+function safeBaseName(value:string){
+  return String(value||"AJN_PDF_Images").trim().replace(/\.pdf$/i,"").replace(/[<>:"/\\|?*\u0000-\u001F]/g,"_").replace(/[. ]+$/g,"").slice(0,90)||"AJN_PDF_Images";
 }
 
 function canvasPng(canvas:HTMLCanvasElement):Promise<Blob>{
-  return new Promise((resolve,reject)=>{
-    canvas.toBlob(blob=>{
-      if(!blob||blob.size<16||blob.type!=="image/png") reject(new Error("The browser could not encode an extracted image safely."));
-      else resolve(blob);
-    },"image/png");
-  });
+  return new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve(blob):reject(new Error("The embedded image could not be encoded as PNG.")),"image/png"));
 }
 
 async function digestBlob(blob:Blob):Promise<string>{
-  if(typeof crypto!=="undefined"&&crypto.subtle){
-    const hash=await crypto.subtle.digest("SHA-256",await blob.arrayBuffer());
-    return Array.from(new Uint8Array(hash)).map(v=>v.toString(16).padStart(2,"0")).join("");
-  }
-  return `${blob.size}:${blob.type}`;
+  const digest=await crypto.subtle.digest("SHA-256",await blob.arrayBuffer());
+  return Array.from(new Uint8Array(digest)).map(value=>value.toString(16).padStart(2,"0")).join("");
 }
 
-async function getPdfImage(page:any,id:string):Promise<PdfImageObject|null>{
+function imageCanvas(image:PdfImageData):HTMLCanvasElement|null{
+  const width=Math.max(0,Number(image.width||0));
+  const height=Math.max(0,Number(image.height||0));
+  if(!width||!height||width*height>MAX_IMAGE_PIXELS)return null;
+  const canvas=document.createElement("canvas");canvas.width=width;canvas.height=height;
+  const context=canvas.getContext("2d");if(!context)return null;
+  if(image.bitmap){
+    context.drawImage(image.bitmap as CanvasImageSource,0,0,width,height);
+    return canvas;
+  }
+  const raw=image.data;
+  if(!raw)return null;
+  const expected=width*height*4;
+  if(raw.length!==expected)return null;
+  const pixels=raw instanceof Uint8ClampedArray?raw:new Uint8ClampedArray(raw.buffer,raw.byteOffset,raw.byteLength);
+  context.putImageData(new ImageData(pixels,width,height),0,0);
+  return canvas;
+}
+
+function getPdfImage(page:any,imageId:string):Promise<PdfImageData|null>{
   return new Promise(resolve=>{
+    let settled=false;
+    const finish=(value:PdfImageData|null)=>{if(settled)return;settled=true;resolve(value);};
+    const timer=window.setTimeout(()=>finish(null),10000);
+    const onValue=(value:any)=>{window.clearTimeout(timer);finish(value&&typeof value==="object"?value as PdfImageData:null);};
     try{
-      page.objs.get(id,(value:PdfImageObject)=>resolve(value||null));
-    }catch{resolve(null);}
+      const direct=page.objs?.get?.(imageId,onValue);
+      if(direct)onValue(direct);
+    }catch{
+      window.clearTimeout(timer);finish(null);
+    }
   });
+}
+
+function pdfImageOperatorIds():Set<number>{
+  const ops=pdfjsLib.OPS as unknown as Record<string,number>;
+  return new Set(
+    ["paintImageXObject","paintImageXObjectRepeat","paintJpegXObject"]
+      .map(name=>ops[name])
+      .filter((value):value is number=>typeof value==="number")
+  );
 }
 
 export default function ExtractImages(){
@@ -138,7 +124,7 @@ export default function ExtractImages(){
       const zip=new JSZip();
       const seen=new Set<string>();
       let extracted=0;let totalPixels=0;
-      const imageOps=new Set<number>([pdfjsLib.OPS.paintImageXObject,pdfjsLib.OPS.paintJpegXObject].filter((v):v is number=>typeof v==="number"));
+      const imageOps=pdfImageOperatorIds();
 
       for(let pageNumber=1;pageNumber<=pdf.numPages;pageNumber++){
         const page=await pdf.getPage(pageNumber);
@@ -188,15 +174,26 @@ export default function ExtractImages(){
         <Card className="rounded-3xl p-6 border-black/5 bg-white/70 space-y-4">
           <div><p className="text-xs font-black uppercase tracking-wider text-slate-400">Source</p><p className="font-bold text-slate-900 break-all">{file.name}</p><p className="text-sm text-slate-500">{fmtBytes(file.size)}</p></div>
           <div><label className="text-xs font-black uppercase tracking-wider text-slate-400">Archive name</label><input value={outputName} onChange={e=>setOutputName(e.target.value)} maxLength={90} className="mt-2 w-full h-11 rounded-xl border border-black/10 bg-white px-3 font-semibold outline-none focus:border-pink-400"/></div>
-          <div className="rounded-2xl bg-pink-50 p-4 text-sm text-pink-900">Output images are PNG to avoid extra JPEG quality loss and preserve alpha when the decoded PDF asset includes transparency. Duplicate decoded images are removed.</div>
+          <div className="rounded-2xl border border-pink-100 bg-pink-50 p-4 text-xs leading-6 text-pink-950"><ShieldCheck className="inline w-4 h-4 mr-2"/>Embedded images are decoded by PDF.js and saved as PNG to avoid an additional lossy JPEG encode. Duplicate decoded assets are removed.</div>
         </Card>
-        <Button onClick={extract} className="w-full h-14 rounded-2xl font-black gap-2"><Zap className="w-4 h-4"/>Extract embedded images</Button>
-        <Button variant="outline" onClick={reset} className="w-full rounded-2xl"><RefreshCcw className="w-4 h-4 mr-2"/>Choose another PDF</Button>
+        <Button onClick={()=>void extract()} className="w-full h-14 rounded-2xl font-black">Extract embedded images</Button>
+        <Button variant="ghost" onClick={reset} className="w-full">Choose another PDF</Button>
       </div>
     </div>}
 
-    {phase==="processing"&&<div className="py-24 max-w-lg mx-auto text-center space-y-7"><Loader2 className="w-14 h-14 animate-spin text-pink-500 mx-auto"/><div><h3 className="text-2xl font-black">Extracting embedded images</h3><p className="text-sm text-slate-500 mt-2">Keeping each decoded image at its PDF object resolution.</p></div><Progress value={progress}/><p className="font-black text-pink-600">{progress}%</p></div>}
+    {phase==="processing"&&<div className="py-20 max-w-xl mx-auto space-y-5 text-center">
+      <div className="w-16 h-16 rounded-2xl bg-pink-50 flex items-center justify-center mx-auto"><ImageIcon className="w-8 h-8 text-pink-500 animate-pulse"/></div>
+      <h3 className="text-2xl font-black text-slate-950">Extracting real image objects</h3>
+      <p className="text-sm text-slate-500">Reading PDF image resources, removing duplicates, and packaging PNG files.</p>
+      <Progress value={progress}/><p className="text-xs font-bold text-slate-500">{progress}%</p>
+    </div>}
 
-    {phase==="done"&&result&&<div className="py-16 max-w-lg mx-auto text-center space-y-7"><div className="w-20 h-20 rounded-3xl bg-emerald-50 flex items-center justify-center mx-auto"><CheckCircle2 className="w-10 h-10 text-emerald-600"/></div><div><h3 className="text-3xl font-black">Images extracted</h3><p className="text-slate-500 mt-2">{count} unique embedded image{count===1?"":"s"} ready in one ZIP.</p></div><Card className="rounded-2xl p-5 flex items-center gap-3 text-left"><Download className="w-5 h-5 text-pink-500"/><div className="min-w-0"><p className="text-xs text-slate-400 uppercase font-black">Output</p><p className="font-bold truncate">{archiveName}</p></div></Card><Button onClick={()=>dl(result,archiveName)} className="w-full h-14 rounded-2xl font-black"><Download className="w-4 h-4 mr-2"/>Download ZIP</Button><Button variant="outline" onClick={()=>shareResult(result,archiveName)} className="w-full rounded-2xl"><Share2 className="w-4 h-4 mr-2"/>Share</Button><Button variant="ghost" onClick={reset} className="w-full"><RefreshCcw className="w-4 h-4 mr-2"/>Extract another PDF</Button></div>}
+    {phase==="done"&&result&&<div className="py-16 max-w-xl mx-auto space-y-5 text-center">
+      <div className="w-16 h-16 rounded-2xl bg-emerald-50 flex items-center justify-center mx-auto"><ImageIcon className="w-8 h-8 text-emerald-600"/></div>
+      <h3 className="text-3xl font-black text-slate-950">{count} image{count===1?"":"s"} extracted</h3>
+      <p className="text-sm text-slate-500">The ZIP contains decoded embedded raster images as PNG. Full-page rendering is intentionally a separate PDF to PNG/JPG workflow.</p>
+      <Button onClick={()=>dl(result,archiveName)} className="w-full h-14 rounded-2xl font-black"><Download className="w-4 h-4 mr-2"/>Download ZIP</Button>
+      <Button variant="outline" onClick={reset} className="w-full"><RefreshCcw className="w-4 h-4 mr-2"/>Extract another PDF</Button>
+    </div>}
   </ToolWorkspace>;
 }
