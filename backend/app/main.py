@@ -27,8 +27,8 @@ from .conversion_engine import SPECS, list_backend_tools, list_tools, tool_avail
 from .public_media import MEDIA_DB, MEDIA_ROOT, init_media_store, router as public_media_router
 
 VERSION = "3.1.0"
-MAX_FILE_BYTES = int(os.getenv("AJN_MAX_FILE_MB", "75")) * 1024 * 1024
-MAX_TOTAL_BYTES = int(os.getenv("AJN_MAX_TOTAL_MB", "150")) * 1024 * 1024
+MAX_FILE_BYTES = int(os.getenv("AJN_MAX_FILE_MB", "30")) * 1024 * 1024
+MAX_TOTAL_BYTES = int(os.getenv("AJN_MAX_TOTAL_MB", "30")) * 1024 * 1024
 MAX_UPLOAD_FILES = max(1, int(os.getenv("AJN_MAX_UPLOAD_FILES", "50")))
 RATE_LIMIT_PER_MINUTE = max(1, int(os.getenv("AJN_RATE_LIMIT_PER_MINUTE", "30")))
 ANALYTICS_RATE_LIMIT_PER_MINUTE = max(RATE_LIMIT_PER_MINUTE, int(os.getenv("AJN_ANALYTICS_RATE_LIMIT_PER_MINUTE", "120")))

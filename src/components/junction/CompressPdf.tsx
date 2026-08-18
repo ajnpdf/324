@@ -79,7 +79,7 @@ export default function CompressPdf() {
         </div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-          <Drop files={files} onChange={setFiles} accept=".pdf,application/pdf" label="Select one PDF" sub="Maximum 40 MB" />
+          <Drop files={files} onChange={setFiles} accept=".pdf,application/pdf" label="Select one PDF" />
           <F label="Compression level"><Pills opts={[{ label: "Higher quality", value: "quality" }, { label: "Balanced", value: "balanced" }, { label: "Strong", value: "strong" }]} val={level} onChange={setLevel} /></F>
           <G2><F label="Output filename"><input style={IS} value={outputName} onChange={event => setOutputName(event.target.value)} /></F><F label="Colour mode"><label className="jn-file-pill" style={{ height: 42, justifyContent: "flex-start" }}><input type="checkbox" checked={grayscale} onChange={event => setGrayscale(event.target.checked)} /><span style={{ fontSize: 10, fontWeight: 800 }}>Convert pages to grayscale</span></label></F></G2>
           

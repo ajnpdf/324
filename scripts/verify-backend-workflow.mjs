@@ -43,7 +43,7 @@ check('Client request references are sanitized before logging/echo', main.includ
 check('Frontend processing readiness uses candidate /ready endpoints', frontend.includes('SERVICE_CANDIDATES') && frontend.includes('`${candidate}/ready`') && !frontend.includes('`${candidate}/health`'));
 check('Frontend requires explicit live tool availability', serverTool.includes('backendReady') && serverTool.includes('manifest?.available === true'));
 check('Frontend rechecks readiness before processing', serverTool.includes('const latestHealth = await checkPdfBackendHealth()'));
-check('Frontend enforces live upload limits before upload', serverTool.includes('validateBackendSelection') && serverTool.includes('resolveBackendLimits') && serverTool.includes('latestHealth'));
+check('Frontend enforces live upload limits before upload and rechecks live limits at action time', serverTool.includes('validateBackendSelection(next.map((item) => item.file), policy.maxFiles, backendHealth)') && serverTool.includes('const latestHealth = await checkPdfBackendHealth()') && serverTool.includes('validateBackendSelection(files.map((item) => item.file), policy.maxFiles, latestHealth)'));
 check('Backend URL CSP/client parity has one source', read('next.config.ts').includes('configuredPdfBackendCandidates') && frontend.includes('configuredPdfBackendCandidates'));
 check('Live HTTP acceptance iterates registered conversion specs', httpAcceptance.includes('for tool_id, spec in sorted(SPECS.items())'));
 check('Live HTTP acceptance validates process-isolation and request headers', httpAcceptance.includes('X-AJN-Worker-Isolation') && httpAcceptance.includes('X-Request-ID'));

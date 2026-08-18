@@ -141,7 +141,7 @@ export function getToolEditorial(tool: ServiceTool): ToolEditorial {
     return conversionEditorial(tool, processing, policy.limitation || 'Conversion quality depends on the source format and the available processing engine.');
   }
 
-  const overview = custom.overview || `${tool.name} provides a focused workflow for this task. ${tool.desc} Review the available controls and limits before processing, then check the downloaded result before replacing the source file.`;
+  const overview = custom.overview || `${tool.name} provides a focused workflow for this task. ${tool.desc} Review the available controls before processing, then check the downloaded result before replacing the source file.`;
   const details = custom.details || `${processing} Follow the on-screen options, review the selected file and settings, then open the downloaded result in a trusted viewer before replacing the original.`;
   const limitations = custom.limitations || [
     policy.limitation || 'Complex documents can contain forms, scripts, embedded files, fonts, and viewer-specific features that may not be preserved by every browser-based operation.',
@@ -161,7 +161,7 @@ export function getToolEditorial(tool: ServiceTool): ToolEditorial {
     faqs: custom.faqs || [
       {
         question: `Is ${tool.name} free to use?`,
-        answer: `Yes. The current AJN PDF production version provides ${tool.name} without a subscription. This tool accepts up to ${policy.maxFiles} ${policy.maxFiles === 1 ? 'file' : 'files'} per selection and up to ${policy.maxFileSizeMb} MB per file.`,
+        answer: `Yes. The current AJN PDF production version provides ${tool.name} without a subscription. File safety requirements are enforced automatically by the workflow; the AJN PDF limits page documents the current processing policy.`,
       },
       {
         question: `Does AJN PDF store files used with ${tool.name}?`,

@@ -12,7 +12,7 @@ const principles = [
   {
     icon: Eye,
     title: 'Clear file handling',
-    text: 'Each tool explains the workflow, practical limits and result steps before you begin.',
+    text: 'Each tool explains the workflow, supported inputs and result steps without cluttering the workspace.',
     tone: 'blue',
   },
   {

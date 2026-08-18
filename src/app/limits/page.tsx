@@ -27,8 +27,8 @@ export default function LimitsPage() {
       <main className="mx-auto max-w-6xl px-4 pb-20 pt-28 md:px-8 md:pt-36">
         <section className="max-w-3xl">
           <span className="ajn-section-kicker">Processing policy</span>
-          <h1 className="mt-5 text-4xl font-black tracking-[-.045em] md:text-6xl">Clear file and processing limits.</h1>
-          <p className="mt-5 text-base font-medium leading-8 text-slate-600">AJN PDF shows the relevant limit on each tool screen. On-device tools use their own file policy; online workflows also follow the limits below. A deployment can enforce a lower live file or total-upload limit, and the tool screen takes precedence when a lower live limit is reported.</p>
+          <h1 className="mt-5 text-4xl font-black tracking-[-.045em] md:text-6xl">Current policy limits.</h1>
+          <p className="mt-5 text-base font-medium leading-8 text-slate-600">This page is the reference for AJN PDF processing limits. On-device workflows enforce their safety policy automatically; online workflows also follow the configured limits below and may enforce a lower live file or total-request limit when required.</p>
         </section>
 
         <section className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3" aria-labelledby="online-limits-title">
@@ -46,11 +46,11 @@ export default function LimitsPage() {
         <section className="mt-10 grid gap-5 lg:grid-cols-2">
           <article className="rounded-2xl border border-blue-100 bg-blue-50/55 p-6">
             <div className="flex items-center gap-3"><Monitor className="h-5 w-5 text-blue-700" /><h2 className="text-xl font-black">On-device tools</h2></div>
-            <p className="mt-4 text-sm font-medium leading-7 text-slate-700">Local tools keep supported files in the active browser session. Their visible per-file and file-count limits come from the same AJN PDF tool policy used by the interface. Browser memory and device capability can still become the practical ceiling for unusually complex files.</p>
+            <p className="mt-4 text-sm font-medium leading-7 text-slate-700">Local tools keep supported files in the active browser session. Safety limits are enforced automatically from the AJN PDF tool policy. Browser memory and device capability can still become the practical ceiling for unusually complex files.</p>
           </article>
           <article className="rounded-2xl border border-emerald-100 bg-emerald-50/55 p-6">
             <div className="flex items-center gap-3"><Globe2 className="h-5 w-5 text-emerald-700" /><h2 className="text-xl font-black">Online workflows</h2></div>
-            <p className="mt-4 text-sm font-medium leading-7 text-slate-700">Selected files are uploaded only for the active request. Temporary request data is scheduled for cleanup after the result is returned. The tool screen checks live availability and applies any lower limits reported for the current deployment.</p>
+            <p className="mt-4 text-sm font-medium leading-7 text-slate-700">Selected files are uploaded only for the active request. Temporary request data is scheduled for cleanup after the result is returned. The workflow checks live availability and automatically applies any lower limits reported for the current deployment.</p>
           </article>
         </section>
 

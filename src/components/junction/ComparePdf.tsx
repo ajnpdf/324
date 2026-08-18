@@ -13,6 +13,7 @@ import { useToast } from '../../hooks/use-toast';
 import { cn } from '../../lib/utils';
 import { ToolWorkspace, getFilesFromEvent, beginToolProcessing, completeToolProcessing, failToolProcessing} from './_shared';
 import { initPdfWorker } from "@/lib/pdfjs-worker";
+import { hasPdfHeader, validateFiles } from "@/lib/file-validation";
 
 interface DiffMark {
   type: 'added' | 'removed' | 'changed';
@@ -56,11 +57,19 @@ export default function ComparePdf() {
     setStats({ additions: 0, deletions: 0, totalPages: 0 });
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement> | React.DragEvent<HTMLElement>, side: 'a' | 'b') => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement> | React.DragEvent<HTMLElement>, side: 'a' | 'b') => {
     const f = getFilesFromEvent(e)?.[0];
-    if (f && f.type === 'application/pdf') {
-      if (side === 'a') setFileA(f); else setFileB(f);
+    if (!f) return;
+    const validation = validateFiles([f], { extensions: ['.pdf'], minFiles: 1, maxFiles: 1, maxSizeMb: 50 });
+    if (validation || !(await hasPdfHeader(f))) {
+      toast({
+        title: 'Invalid PDF',
+        description: validation || 'The selected file does not contain a readable PDF header.',
+        variant: 'destructive',
+      });
+      return;
     }
+    if (side === 'a') setFileA(f); else setFileB(f);
   };
 
   const executeComparison = async () => {
@@ -158,13 +167,13 @@ export default function ComparePdf() {
                   onClick={() => fileInputARef.current?.click()}
                   onDragOver={e => { e.preventDefault(); setIsDragging({ ...isDragging, a: true }); }}
                   onDragLeave={() => setIsDragging({ ...isDragging, a: false })}
-                  onDrop={e => { e.preventDefault(); setIsDragging({ ...isDragging, a: false }); handleFileUpload(e, 'a'); }}
+                  onDrop={e => { e.preventDefault(); setIsDragging({ ...isDragging, a: false }); void handleFileUpload(e, 'a'); }}
                   className={cn(
                     "group relative h-[280px] rounded-2xl border border-dashed transition-all duration-500 shadow-xl overflow-hidden flex flex-col items-center justify-center cursor-pointer",
                     isDragging.a ? "border-primary bg-primary/5" : fileA ? "border-emerald-500 bg-emerald-500/5" : "border-black/5 bg-white/20 backdrop-blur-md hover:border-primary/40"
                   )}
                 >
-                  <input type="file" accept=".pdf" ref={fileInputARef} className="hidden" onChange={e => handleFileUpload(e, 'a')} />
+                  <input type="file" accept=".pdf" ref={fileInputARef} className="hidden" onChange={e => { void handleFileUpload(e, 'a'); }} />
                   {fileA ? (
                     <div className="text-center space-y-4 animate-in zoom-in-95">
                       <div className="w-16 h-16 bg-emerald-500 rounded-2xl flex items-center justify-center mx-auto shadow-lg"><CheckCircle2 className="w-8 h-8 text-white" /></div>
@@ -185,13 +194,13 @@ export default function ComparePdf() {
                   onClick={() => fileInputBRef.current?.click()}
                   onDragOver={e => { e.preventDefault(); setIsDragging({ ...isDragging, b: true }); }}
                   onDragLeave={() => setIsDragging({ ...isDragging, b: false })}
-                  onDrop={e => { e.preventDefault(); setIsDragging({ ...isDragging, b: false }); handleFileUpload(e, 'b'); }}
+                  onDrop={e => { e.preventDefault(); setIsDragging({ ...isDragging, b: false }); void handleFileUpload(e, 'b'); }}
                   className={cn(
                     "group relative h-[280px] rounded-2xl border border-dashed transition-all duration-500 shadow-xl overflow-hidden flex flex-col items-center justify-center cursor-pointer",
                     isDragging.b ? "border-primary bg-primary/5" : fileB ? "border-emerald-500 bg-emerald-500/5" : "border-black/5 bg-white/20 backdrop-blur-md hover:border-primary/40"
                   )}
                 >
-                  <input type="file" accept=".pdf" ref={fileInputBRef} className="hidden" onChange={e => handleFileUpload(e, 'b')} />
+                  <input type="file" accept=".pdf" ref={fileInputBRef} className="hidden" onChange={e => { void handleFileUpload(e, 'b'); }} />
                   {fileB ? (
                     <div className="text-center space-y-4 animate-in zoom-in-95">
                       <div className="w-16 h-16 bg-emerald-500 rounded-2xl flex items-center justify-center mx-auto shadow-lg"><CheckCircle2 className="w-8 h-8 text-white" /></div>

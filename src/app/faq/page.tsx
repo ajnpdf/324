@@ -30,7 +30,7 @@ const groups = [
       },
       {
         q: 'What file-size limits apply?',
-        a: 'Limits depend on the tool and file type. AJN PDF shows relevant limits in the workflow so you can choose files that can be processed reliably.',
+        a: 'Limits depend on the tool, file type and active processing service. The current limits page documents the policy, while each workflow enforces safety requirements automatically and shows an actionable error only when needed.',
       },
       {
         q: 'Do public tools require an account?',

@@ -11,9 +11,9 @@ export const PROCESSING_DISCLOSURE = {
   storageTitle: 'Processing, not permanent storage',
   storage:
     'AJN PDF is designed as a file-processing service, not a permanent cloud-drive product. Online request workspaces are temporary and are subject to the active backend cleanup policy.',
-  limitsTitle: 'Limits shown by the tool',
+  limitsTitle: 'Safety limits are enforced',
   limits:
-    'The tool interface is the practical source of truth for file and request limits. Online workflows can apply lower live limits reported by the active backend.',
+    'File and request safety limits are enforced automatically by each workflow. Current policy details are published on the limits page, and online processing can enforce lower live limits when required.',
 } as const;
 
 export const TRUST_DESTINATIONS = [

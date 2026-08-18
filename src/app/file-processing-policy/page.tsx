@@ -31,13 +31,13 @@ export default function FileProcessingPolicyPage() {
             'When an advanced conversion, OCR, repair or security workflow requires online processing, the selected file and required options are transmitted over HTTPS for that active request.',
             'The processing service uses a request workspace to perform the selected operation and return the result.',
             'AJN PDF is a processing service rather than permanent cloud file storage. Temporary request workspaces are subject to the active backend cleanup policy.',
-            'The interface checks live availability and can apply lower live file or total-request limits before upload.',
+            'The service checks live availability and can enforce lower live file or total-request limits for the active request.',
           ],
         },
         {
           title: 'Current configured limits',
           paragraphs: [
-            `The current source default for server-backed conversion workflows is ${SERVER_LIMIT_DEFAULTS.maxFileSizeMb} MB per file and ${SERVER_LIMIT_DEFAULTS.maxTotalSizeMb} MB across one request. The live tool interface takes precedence when the active backend reports a lower limit.`,
+            `The configured production default for server-backed conversion workflows is ${SERVER_LIMIT_DEFAULTS.maxFileSizeMb} MB per file and ${SERVER_LIMIT_DEFAULTS.maxTotalSizeMb} MB across one request. The active backend can enforce a lower live limit when required.`,
             `Merge PDF is a browser-native workflow with a separate policy of up to ${MERGE_PDF_LIMITS.maxFiles} files, ${MERGE_PDF_LIMITS.maxFileSizeMb} MB per file and ${MERGE_PDF_LIMITS.maxTotalSizeMb} MB combined.`,
             'AJN PDF does not publish one universal file-size promise for every tool. Browser-native workflows also depend on RAM, page complexity, image resolution and device capability.',
           ],

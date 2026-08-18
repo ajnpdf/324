@@ -4,10 +4,18 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ajn-production-quality-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   source-and-frontend-gates:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
         with:
@@ -20,13 +28,23 @@ jobs:
         with:
           python-version: '3.12'
       - run: npm ci --no-audit --no-fund
-      - run: node scripts/verify-r16-consistency.mjs
-      - run: node scripts/verify-capability-manifest.mjs
-      - run: node scripts/verify-backend-workflow.mjs
+      - run: npm run verify:dependency-policy
+      - run: npm run verify:secrets
+      - run: npm run verify:r18-production
+      - run: npm run verify:r17-trust-seo
+      - run: npm run verify:r16-consistency
+      - run: npm run verify:tool-ux
+      - run: npm run verify:final-ui
+      - run: npm run verify:mobile-first
+      - run: npm run verify:i18n
+      - run: npm run verify:accessibility
+      - run: npm run verify:capabilities
+      - run: npm run verify:backend-workflow
       - run: npm run lint
       - run: npm run typecheck
       - run: npm run verify:r13-browser-pdf
       - run: npm run build
       - run: npm run verify:r13-runtime
       - run: python -m py_compile backend/app/main.py backend/app/conversion_engine.py backend/app/job_worker.py
+
 # Native LibreOffice/Tesseract/Calibre output acceptance remains a Docker/Cloud Run release gate.

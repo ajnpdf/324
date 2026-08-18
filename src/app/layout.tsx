@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     images: ['/og-image.jpg'],
   },
   verification: { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined },
-  other: { 'google-adsense-account': ADSENSE_PUBLISHER, 'ajn-release': '3.1.0-r13' },
+  other: { 'google-adsense-account': ADSENSE_PUBLISHER, 'ajn-release': '3.1.0-r18' },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
