@@ -14,13 +14,7 @@ from typing import Any
 from mcp.server import MCPServer
 from mcp.server.transport_security import TransportSecuritySettings
 
-from .conversion_engine import (
-    SPECS,
-    list_backend_tools,
-    tool_available,
-    validate_input_files,
-    validate_output_file,
-)
+from .conversion_engine import SPECS, tool_available, validate_input_files, validate_output_file
 
 MCP_VERSION = "1.0.0"
 MCP_MAX_FILE_BYTES = max(1, int(os.getenv("AJN_MCP_MAX_FILE_MB", "8"))) * 1024 * 1024
@@ -103,14 +97,11 @@ def _parse_options(options_json: str) -> dict[str, Any]:
     return value
 
 
-def _worker_root() -> Path:
-    return Path(__file__).resolve().parents[1]
-
-
 def _run_worker(payload: dict[str, Any]) -> None:
+    backend_root = Path(__file__).resolve().parents[1]
     process = subprocess.run(
         [sys.executable, "-m", "app.job_worker"],
-        cwd=str(_worker_root()),
+        cwd=str(backend_root),
         input=json.dumps(payload, ensure_ascii=False).encode("utf-8"),
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
@@ -234,14 +225,11 @@ async def _special_pdf_operation(operation: str, filename: str, content_base64: 
 
 @mcp.tool()
 def list_ajn_pdf_tools(query: str = "", category: str = "", available_only: bool = True) -> dict[str, Any]:
-    """List AJN PDF conversion/OCR/image/document tools. Use this before conversion when the exact tool_id is unknown."""
+    """List AJN PDF conversion, OCR, image and document tools. Call this when the exact conversion tool_id is unknown."""
     query_text = query.strip().lower()
     category_text = category.strip().lower()
     tools: list[dict[str, Any]] = []
-    for item in list_backend_tools():
-        tool_id = str(item.get("tool_id") or item.get("id") or "")
-        if not tool_id or tool_id not in SPECS:
-            continue
+    for tool_id in sorted(SPECS):
         payload = _spec_payload(tool_id)
         haystack = f"{payload['tool_id']} {payload['name']} {payload['category']}".lower()
         if query_text and query_text not in haystack:
@@ -256,7 +244,7 @@ def list_ajn_pdf_tools(query: str = "", category: str = "", available_only: bool
 
 @mcp.tool()
 def get_ajn_pdf_tool(tool_id: str) -> dict[str, Any]:
-    """Get the exact inputs, output type, availability, and limitations for one AJN PDF conversion tool."""
+    """Get exact inputs, output type, availability and limitations for one AJN PDF conversion tool."""
     return _spec_payload(tool_id.strip())
 
 
@@ -268,7 +256,7 @@ async def convert_ajn_pdf_file(
     options_json: str = "{}",
     output_name: str = "",
 ) -> dict[str, Any]:
-    """Convert one small inline file with an AJN PDF conversion tool. content_base64 must contain the file bytes encoded as base64."""
+    """Convert one small inline file with AJN PDF. content_base64 is the input file encoded as base64."""
     return await _convert(
         tool_id=tool_id.strip(),
         files=[{"filename": filename, "content_base64": content_base64}],
@@ -284,7 +272,7 @@ async def convert_ajn_pdf_files(
     options_json: str = "{}",
     output_name: str = "",
 ) -> dict[str, Any]:
-    """Convert multiple small inline files for AJN PDF tools that support batches, such as image-to-PDF. Each item needs filename and content_base64."""
+    """Convert multiple small inline files for AJN PDF batch tools. Each item needs filename and content_base64."""
     return await _convert(
         tool_id=tool_id.strip(),
         files=files,
@@ -295,7 +283,7 @@ async def convert_ajn_pdf_files(
 
 @mcp.tool()
 async def ajn_url_to_pdf(url: str, output_name: str = "web-page") -> dict[str, Any]:
-    """Create a readable PDF from a public HTTP/HTTPS web page using AJN PDF's URL-to-PDF safety checks."""
+    """Create a readable PDF from a public HTTP/HTTPS page using AJN PDF's URL safety checks."""
     return await _convert(
         tool_id="url-to-pdf",
         files=[],
@@ -303,6 +291,12 @@ async def ajn_url_to_pdf(url: str, output_name: str = "web-page") -> dict[str, A
         output_name=output_name,
         source_url=url.strip(),
     )
+
+
+@mcp.tool()
+async def compress_ajn_pdf(filename: str, content_base64: str) -> dict[str, Any]:
+    """Compress/rewrite a small PDF using AJN PDF's server-side PDF compression worker."""
+    return await _special_pdf_operation("compress", filename, content_base64)
 
 
 @mcp.tool()
@@ -349,7 +343,7 @@ async def unlock_ajn_pdf(filename: str, content_base64: str, password: str) -> d
 
 @mcp.tool()
 async def repair_ajn_pdf(filename: str, content_base64: str) -> dict[str, Any]:
-    """Repair/rewrite a damaged or structurally problematic small PDF using AJN PDF's repair worker."""
+    """Repair/rewrite a damaged or structurally problematic small PDF with AJN PDF."""
     return await _special_pdf_operation("repair", filename, content_base64)
 
 
@@ -358,6 +352,6 @@ security = TransportSecuritySettings(
     allowed_origins=MCP_ALLOWED_ORIGINS,
 )
 
-# Standalone ASGI application. The official SDK owns the MCP session-manager
-# lifespan when this app is served directly (for example with uvicorn).
+# Served directly, the official MCP SDK owns its session-manager lifespan.
+# Endpoint: /mcp
 app = mcp.streamable_http_app(transport_security=security)
