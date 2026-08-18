@@ -9,6 +9,7 @@ import { ToolArtwork } from "@/components/ajn/tool-artwork";
 import { toolIdFromPathname } from "@/lib/tool-routes";
 import { getToolLimitProfile } from "@/lib/tool-limits";
 import { usePdfBackendStatus } from "./backend-status";
+import { CloudImportActions, GoogleDriveExportAction } from "./CloudFileActions";
 
 export interface ToolFile { file: File; name: string; size: number; }
 
@@ -202,16 +203,19 @@ export function Drop({ files, onChange, accept="*", multiple=false, label, sub }
   const [drag, setDrag] = useState(false);
   const ref = useRef<HTMLInputElement>(null);
   const inputId = useId();
-  const add = useCallback((raw: FileList|null) => {
-    if (!raw) return;
-    const arr = Array.from(raw).filter(f => f.size > 0).map(f => ({ file: f, name: f.name, size: f.size }));
+  const addFiles = useCallback((rawFiles: File[]) => {
+    const arr = rawFiles.filter(f => f.size > 0).map(f => ({ file: f, name: f.name, size: f.size }));
     if (typeof window !== "undefined" && arr.length > 0) {
       const toolId = toolIdFromPathname(window.location.pathname);
       const countBucket = arr.length === 1 ? "one-file" : arr.length <= 5 ? "two-to-five-files" : "six-plus-files";
       sendAjnAnalytics({ event_name: "upload_selected", path: window.location.pathname, tool_id: toolId, element_id: countBucket });
     }
-    onChange(multiple ? [...files, ...arr] : arr);
+    onChange(multiple ? [...files, ...arr] : arr.slice(0, 1));
   }, [files,multiple,onChange]);
+  const add = useCallback((raw: FileList|null) => {
+    if (!raw) return;
+    addFiles(Array.from(raw));
+  }, [addFiles]);
   const openPicker = () => ref.current?.click();
   return <div>
     <div className={cn("jn-drop", drag && "active")} role="button" tabIndex={0} aria-label={multiple ? t("common.chooseFiles") : t("common.chooseFile")}
@@ -222,6 +226,7 @@ export function Drop({ files, onChange, accept="*", multiple=false, label, sub }
       <p className="m-0 text-sm font-extrabold text-slate-900">{drag ? t("upload.dropNow") : (label || (multiple ? t("common.chooseFiles") : t("common.chooseFile")))}</p>
       <p className="mt-1 text-xs font-medium text-slate-500">{sub || t("upload.drop")}</p>
     </div>
+    <CloudImportActions multiple={multiple} accept={accept} onImport={addFiles} />
     {files.length > 0 && <div className="mt-3 space-y-2" aria-live="polite">{files.map((f,i)=><div key={`${f.name}-${i}`} className="jn-file-pill">
       <div className="flex min-w-0 items-center gap-3"><div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-blue-600"><FileCheck2 size={16}/></div><div className="min-w-0"><p className="truncate text-sm font-bold text-slate-900">{f.name}</p><p className="text-xs font-medium text-slate-500">{fmtBytes(f.size)}</p></div></div>
       <button type="button" aria-label={`${t("common.remove")} ${f.name}`} onClick={()=>onChange(files.filter((_,j)=>j!==i))} className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-slate-500 transition hover:bg-red-50 hover:text-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"><X size={17}/></button>
@@ -250,6 +255,7 @@ export function Done({ msg, onDownload, dlLabel, onReset, shareFile }: { msg?:st
     <div className="mt-5 flex flex-wrap justify-center gap-2">
       {onDownload && <Btn onClick={onDownload} style={{background:"#0f172a"}}><Download size={16}/>{dlLabel || t("common.download")}</Btn>}
       {shareFile && <Btn variant="secondary" onClick={() => void share()}><Share2 size={15}/>{shareState === "copied-link" ? t("result.toolLinkCopied") : shareState === "unavailable" ? t("result.shareUnavailable") : t("result.shareFile")}</Btn>}
+      {shareFile && <GoogleDriveExportAction blob={shareFile.blob} name={shareFile.name} />}
       <Btn variant="secondary" onClick={()=>{if(typeof window!=="undefined"){const toolId=toolIdFromPathname(window.location.pathname);sendAjnAnalytics({event_name:"tool_reset",path:window.location.pathname,tool_id:toolId});}onReset();}}><RefreshCcw size={15}/>{t("common.processAnother")}</Btn>
     </div>
   </div>;
