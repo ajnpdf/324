@@ -9,6 +9,7 @@ import pikepdf
 
 from .conversion_engine import SPECS, convert as legacy_convert, validate_input_files, validate_output_file
 from .image_pdf_quality import images_to_pdf
+from .ocr_deep import analyze_document
 from .processing_quality import run_conversion
 
 
@@ -35,8 +36,6 @@ def main() -> int:
             source_url = payload.get("source_url")
             resolved_url = str(source_url) if source_url else None
 
-            # CairoSVG remains the dedicated SVG -> PDF implementation. Raster,
-            # HEIF and scanner image inputs use the fidelity-preserving PDF path.
             if spec.processor in {"images_to_pdf", "scan_images_pdf"}:
                 if any(path.suffix.lower() == ".svg" for path in files):
                     legacy_convert(spec, files, output, options, workdir, resolved_url)
@@ -46,6 +45,13 @@ def main() -> int:
                     validate_output_file(output, spec.output_extension)
             else:
                 run_conversion(spec, files, output, options, workdir, resolved_url)
+        elif operation == "ocr_analyze":
+            files = [Path(value) for value in payload.get("files", [])]
+            output = Path(str(payload["output"]))
+            options = payload.get("options") or {}
+            if not isinstance(options, dict):
+                raise ValueError("OCR analysis options must be a JSON object.")
+            analyze_document(files, output, options)
         elif operation == "protect":
             source = Path(str(payload["source"]))
             target = Path(str(payload["target"]))
