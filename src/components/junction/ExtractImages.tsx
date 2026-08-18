@@ -50,7 +50,8 @@ function imageCanvas(image:PdfImageData):HTMLCanvasElement|null{
   if(!raw)return null;
   const expected=width*height*4;
   if(raw.length!==expected)return null;
-  const pixels=raw instanceof Uint8ClampedArray?raw:new Uint8ClampedArray(raw.buffer,raw.byteOffset,raw.byteLength);
+  const pixels=new Uint8ClampedArray(expected);
+  pixels.set(raw);
   context.putImageData(new ImageData(pixels,width,height),0,0);
   return canvas;
 }
