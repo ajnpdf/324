@@ -9,6 +9,7 @@ from app.api_access import APIAccessError, authenticate_api_key, clear_api_key_c
 
 def main() -> None:
     secret = "ajn_live_" + "A" * 48
+    sign_secret = "ajn_live_" + "S" * 48
     os.environ["AJN_PUBLIC_API_ENABLED"] = "true"
     os.environ["AJN_PUBLIC_API_KEYS_JSON"] = json.dumps(
         [
@@ -17,7 +18,13 @@ def main() -> None:
                 "secret_sha256": hash_api_key(secret),
                 "scopes": ["read", "convert", "ocr"],
                 "rate_per_minute": 2,
-            }
+            },
+            {
+                "id": "signer",
+                "secret_sha256": hash_api_key(sign_secret),
+                "scopes": ["read", "sign"],
+                "rate_per_minute": 5,
+            },
         ]
     )
     clear_api_key_cache()
@@ -26,6 +33,9 @@ def main() -> None:
     assert principal.key_id == "acceptance"
     assert "convert" in principal.scopes
     assert principal.rate_per_minute == 2
+    signer = authenticate_api_key(sign_secret, "sign")
+    assert signer.key_id == "signer"
+    assert "sign" in signer.scopes
 
     try:
         authenticate_api_key("wrong-secret-that-is-long-enough-for-validation", "read")
@@ -69,6 +79,7 @@ def main() -> None:
         "/api/v1/ocr/analyze",
         "/api/v1/ocr/text",
         "/api/v1/ocr/searchable-pdf",
+        "/api/v1/sign/electronic",
         "/api/ocr/analyze",
     }
     missing = sorted(required.difference(paths))
