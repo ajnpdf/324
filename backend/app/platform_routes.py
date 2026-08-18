@@ -13,7 +13,7 @@ from fastapi.responses import FileResponse, JSONResponse, Response
 from starlette.background import BackgroundTask
 
 from .api_access import APIAccessError, APIPrincipal, APIRateState, authenticate_api_key, configuration_status, enforce_api_rate_limit
-from .conversion_engine import list_backend_tools, validate_input_file, validate_output_file
+from .conversion_engine import SPECS, list_backend_tools, validate_input_file, validate_output_file
 
 
 router = APIRouter()
@@ -152,6 +152,7 @@ async def _run_electronic_signature_package(
     evidence = workdir / "signature-evidence.json"
     package = workdir / "signed-package.zip"
     try:
+        original_filename = Path(pdf.filename or "document.pdf").name
         pdf_bytes = await main_api._save_pdf_upload(pdf, source)
         signature_bytes = await main_api._save_upload(signature, signature_path, max_bytes=8 * 1024 * 1024, limit_detail="The signature image is larger than 8 MB.")
         main_api._ensure_job_disk(pdf_bytes + signature_bytes)
@@ -165,7 +166,7 @@ async def _run_electronic_signature_package(
             "y": y,
             "width": width,
             "height": height,
-            "original_filename": Path(pdf.filename or "document.pdf").name,
+            "original_filename": original_filename,
             "signature_source": "upload",
         }
         async with main_api._PROCESSING_SEMAPHORE:
@@ -258,13 +259,21 @@ async def api_v1_capabilities(
     x_ajn_api_key: Annotated[str | None, Header(alias="X-AJN-API-Key")] = None,
 ):
     principal, rate = await _guard(x_ajn_api_key, "read")
-    tools = list_backend_tools()
+    tools: list[dict[str, Any]] = []
+    for raw_tool in list_backend_tools():
+        tool = dict(raw_tool)
+        tool_id = str(tool.get("id") or "")
+        generic_convertible = tool_id in SPECS
+        tool["api_v1_convertible"] = generic_convertible
+        tool["api_v1_route"] = f"/api/v1/convert/{tool_id}" if generic_convertible else None
+        tools.append(tool)
     return JSONResponse(
         {
             "version": "v1",
             "tools": tools,
-            "available": sum(1 for tool in tools if bool(tool.get("available"))),
-            "total": len(tools),
+            "available_conversion_tools": sum(1 for tool in tools if tool["api_v1_convertible"] and bool(tool.get("available"))),
+            "total_conversion_tools": sum(1 for tool in tools if tool["api_v1_convertible"]),
+            "website_only_capabilities": [tool["id"] for tool in tools if not tool["api_v1_convertible"]],
             "ocr_analysis": {
                 "languages": ["eng", "tel", "hin", "tam", "kan", "mal"],
                 "combined_languages": True,
@@ -274,6 +283,8 @@ async def api_v1_capabilities(
                 "page_ranges": True,
             },
             "electronic_signature": {
+                "route": "/api/v1/sign/electronic",
+                "scope": "sign",
                 "evidence_package": True,
                 "embedded_evidence": True,
                 "sha256_evidence": True,
