@@ -13,11 +13,10 @@ permissions:
 
 env:
   FLUTTER_VERSION: '3.44.7'
-  AJN_API_BASE_URL: ${{ vars.AJN_API_BASE_URL }}
+  AJN_API_BASE_URL: ${{ vars.AJN_API_BASE_URL || 'https://ajn-pdf-api-rswf5f4f3q-el.a.run.app' }}
 
 jobs:
   android:
-    if: ${{ vars.AJN_API_BASE_URL != '' }}
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -29,8 +28,11 @@ jobs:
           flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: stable
           cache: true
-      - name: Validate production API URL
-        run: echo "$AJN_API_BASE_URL" | grep -q '^https://'
+      - name: Verify production backend
+        run: |
+          echo "$AJN_API_BASE_URL" | grep -q '^https://'
+          curl --fail --silent --show-error --retry 3 --retry-all-errors "$AJN_API_BASE_URL/ready" > /dev/null
+          curl --fail --silent --show-error --retry 3 --retry-all-errors "$AJN_API_BASE_URL/api/tools" > /dev/null
       - run: python tool/bootstrap.py
       - run: flutter build apk --release --dart-define=AJN_API_BASE_URL="$AJN_API_BASE_URL"
       - run: flutter build appbundle --release --dart-define=AJN_API_BASE_URL="$AJN_API_BASE_URL"
@@ -42,7 +44,6 @@ jobs:
             mobile/build/app/outputs/bundle/release/app-release.aab
 
   windows:
-    if: ${{ vars.AJN_API_BASE_URL != '' }}
     runs-on: windows-latest
     defaults:
       run:
@@ -54,9 +55,12 @@ jobs:
           flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: stable
           cache: true
-      - name: Validate production API URL
+      - name: Verify production backend
         shell: pwsh
-        run: if (-not $env:AJN_API_BASE_URL.StartsWith('https://')) { throw 'AJN_API_BASE_URL must use HTTPS.' }
+        run: |
+          if (-not $env:AJN_API_BASE_URL.StartsWith('https://')) { throw 'AJN_API_BASE_URL must use HTTPS.' }
+          Invoke-RestMethod "$env:AJN_API_BASE_URL/ready" | Out-Null
+          Invoke-RestMethod "$env:AJN_API_BASE_URL/api/tools" | Out-Null
       - run: python tool/bootstrap.py
       - run: flutter build windows --release --dart-define=AJN_API_BASE_URL="$env:AJN_API_BASE_URL"
       - uses: actions/upload-artifact@v4
@@ -65,7 +69,6 @@ jobs:
           path: mobile/build/windows/x64/runner/Release/**
 
   ios-unsigned:
-    if: ${{ vars.AJN_API_BASE_URL != '' }}
     runs-on: macos-latest
     defaults:
       run:
@@ -77,8 +80,11 @@ jobs:
           flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: stable
           cache: true
-      - name: Validate production API URL
-        run: echo "$AJN_API_BASE_URL" | grep -q '^https://'
+      - name: Verify production backend
+        run: |
+          echo "$AJN_API_BASE_URL" | grep -q '^https://'
+          curl --fail --silent --show-error --retry 3 --retry-all-errors "$AJN_API_BASE_URL/ready" > /dev/null
+          curl --fail --silent --show-error --retry 3 --retry-all-errors "$AJN_API_BASE_URL/api/tools" > /dev/null
       - run: python3 tool/bootstrap.py
       - run: flutter build ios --release --no-codesign --dart-define=AJN_API_BASE_URL="$AJN_API_BASE_URL"
       - uses: actions/upload-artifact@v4
