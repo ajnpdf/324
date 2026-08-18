@@ -1,7 +1,7 @@
 "use client";
 
 import React,{useMemo,useState} from "react";
-import {Copy,Download,FileText,RefreshCcw,Share2} from "lucide-react";
+import {Copy,FileText,RefreshCcw,Share2} from "lucide-react";
 import {ToolWorkspace,Drop,Btn,Done,F,G2,Info,Err,IS,Range,ToolFile,dl,T,shareResult,beginToolProcessing,completeToolProcessing,failToolProcessing} from "./_shared";
 import {convertOnServer} from "@/lib/pdf-backend";
 
