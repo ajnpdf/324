@@ -7,7 +7,9 @@ from pathlib import Path
 
 import pikepdf
 
-from .conversion_engine import SPECS, convert
+from .conversion_engine import SPECS, convert as legacy_convert, validate_input_files, validate_output_file
+from .image_pdf_quality import images_to_pdf
+from .processing_quality import run_conversion
 
 
 def _write(payload: dict[str, object]) -> None:
@@ -31,7 +33,19 @@ def main() -> int:
             if not isinstance(options, dict):
                 raise ValueError("Conversion options must be a JSON object.")
             source_url = payload.get("source_url")
-            convert(spec, files, output, options, workdir, str(source_url) if source_url else None)
+            resolved_url = str(source_url) if source_url else None
+
+            # CairoSVG remains the dedicated SVG -> PDF implementation. Raster,
+            # HEIF and scanner image inputs use the fidelity-preserving PDF path.
+            if spec.processor in {"images_to_pdf", "scan_images_pdf"}:
+                if any(path.suffix.lower() == ".svg" for path in files):
+                    legacy_convert(spec, files, output, options, workdir, resolved_url)
+                else:
+                    validate_input_files(spec, files)
+                    images_to_pdf(files, output, options, scan=spec.processor == "scan_images_pdf")
+                    validate_output_file(output, spec.output_extension)
+            else:
+                run_conversion(spec, files, output, options, workdir, resolved_url)
         elif operation == "protect":
             source = Path(str(payload["source"]))
             target = Path(str(payload["target"]))

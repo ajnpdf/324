@@ -1,218 +1,48 @@
 "use client";
 
-import React, { useState } from "react";
-import { ToolWorkspace, Drop, ToolFile, dl, T, beginToolProcessing, completeToolProcessing, failToolProcessing, shareResult } from "./_shared";
-import { applyPipeline, DEFAULT_CONFIG } from "@/lib/ocr/pipeline";
-import { ocrEngine } from "@/lib/ocr/engine";
-import { cleanText, computeStats } from "@/lib/ocr/nlp";
-import { BrainCircuit, CheckCircle2, Copy, Loader2, Activity, RefreshCcw, Zap, Share2 } from 'lucide-react';
-import { motion, AnimatePresence } from "framer-motion";
+import React,{useMemo,useState} from "react";
+import {Copy,FileText,RefreshCcw,Share2} from "lucide-react";
+import {ToolWorkspace,Drop,Btn,Done,F,G2,Info,Err,IS,Range,ToolFile,dl,T,shareResult,beginToolProcessing,completeToolProcessing,failToolProcessing} from "./_shared";
+import {convertOnServer} from "@/lib/pdf-backend";
 
-import { Card } from '../ui/card';
-import { Button } from '../ui/button';
-import { Progress } from '../ui/progress';
-import { Label } from '../ui/label';
+const LANGUAGES=[
+  {value:"eng",label:"English"},{value:"tel",label:"Telugu"},{value:"hin",label:"Hindi"},
+  {value:"tam",label:"Tamil"},{value:"kan",label:"Kannada"},{value:"mal",label:"Malayalam"},
+];
 
-export default function OcrAdvanced() {
-  const [files, setF] = useState<ToolFile[]>([]);
-  const [phase, setPhase] = useState<'upload' | 'configure' | 'processing' | 'done'>('upload');
-  const [progress, setProgress] = useState(0);
-  const [status, setStatus] = useState("");
-  const [resultText, setText] = useState("");
-  const [stats, setStats] = useState<any>(null);
-  const [, setE] = useState("");
+export default function OcrAdvanced(){
+  const [files,setFiles]=useState<ToolFile[]>([]);const [language,setLanguage]=useState("eng");const [dpi,setDpi]=useState(240);
+  const [loading,setLoading]=useState(false);const [error,setError]=useState("");const [result,setResult]=useState<{blob:Blob;filename:string;text:string}|null>(null);
+  const selected=files[0]?.file;
+  const isPdf=Boolean(selected&&(selected.type==="application/pdf"||selected.name.toLowerCase().endsWith(".pdf")));
+  const wordCount=useMemo(()=>result?.text.trim()?result.text.trim().split(/\s+/).filter(Boolean).length:0,[result]);
 
-  const [config, setConfig] = useState(DEFAULT_CONFIG);
-
-  const runOcr = async () => {
-    if (!files.length) return;
-    setE(""); beginToolProcessing("OcrAdvanced");
-    setPhase('processing');
-    setProgress(5); setStatus("Loading the document…");
-
-    try {
-      const file = files[0].file;
-      const img = new Image();
-      const url = URL.createObjectURL(file);
-      
-      await new Promise((resolve) => { img.onload = resolve; img.src = url; });
-      URL.revokeObjectURL(url);
-
-      const canvas = document.createElement('canvas');
-      canvas.width = img.width; canvas.height = img.height;
-      canvas.getContext('2d')!.drawImage(img, 0, 0);
-
-      setProgress(20); setStatus("Recognizing text…");
-      const workCanvas = await applyPipeline(canvas, config);
-
-      setProgress(50); setStatus("Recognizing text…");
-      const result = await ocrEngine.recognize(workCanvas, { lang: 'eng' });
-      
-      const cleaned = cleanText(result.text);
-      setText(cleaned);
-      setStats(computeStats(result));
-      setPhase('done');
-      completeToolProcessing();
-    } catch (e: any) {
-      failToolProcessing();
-      setE(e.message || "Recognition interrupted.");
-      setPhase('configure');
-    }
+  const run=async()=>{
+    if(!selected){setError("Upload a PDF or document image.");return;}
+    setError("");setLoading(true);beginToolProcessing("OCR Text Extraction");
+    try{
+      const converted=await convertOnServer({toolId:isPdf?"scanned-pdf-to-text":"image-to-text",files:[selected],outputName:`${selected.name.replace(/\.[^/.]+$/,"")}-ocr`,options:{language,dpi,auto_rotate:true,deskew:true,denoise:true,contrast:1.35}});
+      const text=await converted.blob.text();
+      if(!text.trim())throw new Error("OCR completed but no readable text was found. Try a clearer scan or another language.");
+      setResult({...converted,text});completeToolProcessing();
+    }catch(e:any){failToolProcessing();setError(e?.message||"Text recognition could not be completed.");}
+    finally{setLoading(false);}
   };
 
-  const reset = () => { setF([]); setPhase('upload'); setText(""); setStats(null); };
+  const reset=()=>{setFiles([]);setResult(null);setError("");};
 
-  return (
-    <ToolWorkspace title="OCR Text Extraction" description="Extract text from document images and review the result" accent={T.purple}>
-      <div className="w-full">
-        <AnimatePresence mode="wait">
-          {phase === 'upload' && (
-            <motion.div key="upload" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} className="w-full">
-              <Drop files={files} onChange={setF} accept=".pdf,.png,.jpg,.jpeg,.webp" label="Drop Scan to Process" sub="PDF or image scans · clearer text gives better recognition" />
-            </motion.div>
-          )}
-
-          {phase === 'configure' && (
-            <motion.div key="configure" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col gap-10">
-              <div className="p-6 bg-white/40 rounded-2xl border border-black/5 flex items-center justify-between shadow-sm">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-purple-500/10 rounded-2xl flex items-center justify-center">
-                    <Activity className="w-6 h-6 text-purple-500" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-black text-slate-900 uppercase truncate max-w-[240px]">{files[0]?.name}</p>
-                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Ready to recognize text</p>
-                  </div>
-                </div>
-                <button onClick={reset} className="text-[10px] font-black uppercase text-red-500 hover:underline">Change Source</button>
-              </div>
-
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div className="lg:col-span-2 space-y-6">
-                   <Card className="bg-white/60 backdrop-blur-xl border-black/5 rounded-2xl p-10 space-y-10 shadow-xl border-2">
-                      <div className="grid grid-cols-2 gap-10">
-                        <div className="space-y-4">
-                          <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">OCR settings</Label>
-                          <div className="space-y-3">
-                            <label className="flex items-center justify-between p-3 bg-black/5 rounded-xl cursor-pointer">
-                              <span className="text-xs font-black uppercase">Straighten</span>
-                              <input type="checkbox" checked={config.deskew} onChange={e => setConfig({...config, deskew: e.target.checked})} />
-                            </label>
-                            <label className="flex items-center justify-between p-3 bg-black/5 rounded-xl cursor-pointer">
-                              <span className="text-xs font-black uppercase">Reduce noise</span>
-                              <input type="checkbox" checked={config.denoise} onChange={e => setConfig({...config, denoise: e.target.checked})} />
-                            </label>
-                            <label className="flex items-center justify-between p-3 bg-black/5 rounded-xl cursor-pointer">
-                              <span className="text-xs font-black uppercase">Text threshold</span>
-                              <input type="checkbox" checked={config.autoThreshold} onChange={e => setConfig({...config, autoThreshold: e.target.checked})} />
-                            </label>
-                          </div>
-                        </div>
-                        <div className="space-y-6">
-                           <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">OCR settings</Label>
-                           <div className="p-6 bg-purple-500/5 border border-purple-500/10 rounded-2xl">
-                             <p className="text-[11px] font-bold text-purple-700 leading-relaxed uppercase">Extra image cleanup can help OCR read low-quality scans.</p>
-                           </div>
-                        </div>
-                      </div>
-                   </Card>
-                </div>
-
-                <div className="space-y-6">
-                   <div className="p-8 bg-slate-900 text-white rounded-2xl shadow-md relative overflow-hidden group h-full flex flex-col justify-center">
-                    <div className="absolute top-0 right-0 p-12 opacity-10 rotate-12 group-hover:rotate-0 transition-transform duration-1000">
-                      <BrainCircuit className="w-32 h-32 text-purple-500" />
-                    </div>
-                    <div className="relative z-10 space-y-8">
-                      <div className="space-y-2">
-                        <h4 className="text-2xl font-black uppercase italic tracking-tighter">Start OCR</h4>
-                        <p className="text-[10px] font-bold opacity-60 uppercase tracking-widest leading-relaxed">Review and export recognized text when the scan is complete.</p>
-                      </div>
-                      <Button onClick={runOcr} className="w-full h-16 bg-purple-600 text-white font-black text-xs uppercase tracking-widest rounded-2xl hover:bg-purple-700 transition-all shadow-xl active:scale-95 gap-3 border-2 border-white/10">
-                        <Zap className="w-4 h-4" /> Recognize text
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          )}
-
-          {phase === 'processing' && (
-            <div className="py-32 flex flex-col items-center space-y-10 text-center">
-              <div className="relative">
-                <Loader2 className="w-20 h-20 text-purple-600 animate-spin" />
-                <BrainCircuit className="absolute inset-0 m-auto w-8 h-8 text-purple-600 animate-pulse" />
-              </div>
-              <div className="w-full max-w-sm space-y-4 mx-auto">
-                <div className="flex justify-between items-center px-2"><span className="text-[10px] font-black uppercase tracking-[0.3em] text-purple-600">{status}</span><span className="text-xl font-black text-purple-600 tracking-tighter">{progress}%</span></div>
-                <Progress value={progress} className="h-1.5 bg-black/5" />
-              </div>
-            </div>
-          )}
-
-          {phase === 'done' && (
-            <motion.div key="done" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="space-y-10 pb-32">
-              <div className="p-8 bg-white border-2 border-black/5 rounded-2xl shadow-xl flex flex-col md:flex-row items-center justify-between gap-8">
-                 <div className="flex items-center gap-6">
-                    <div className="w-14 h-14 bg-emerald-500/10 rounded-2xl flex items-center justify-center border border-emerald-500/10">
-                       <CheckCircle2 className="w-8 h-8 text-emerald-600" />
-                    </div>
-                    <div>
-                       <h3 className="text-2xl font-black uppercase tracking-tighter">Your files are ready</h3>
-                       <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{stats?.wordCount} words</p>
-                    </div>
-                 </div>
-                 <div className="flex items-center gap-4">
-                    <Button variant="outline" onClick={() => navigator.clipboard.writeText(resultText)} className="h-12 px-8 rounded-xl font-black text-[10px] uppercase gap-2 border-black/5 bg-white hover:bg-black/5 shadow-sm">
-                       <Copy className="w-4 h-4" /> Copy text
-                    </Button>
-                    <Button variant="outline" onClick={() => void shareResult(new Blob([resultText], {type: 'text/plain'}), "ocr-result.txt")} className="h-12 px-8 rounded-xl font-black text-[10px] uppercase gap-2 border-black/5 bg-white hover:bg-black/5 shadow-sm">
-                       <Share2 className="w-3.5 h-3.5" /> Share result
-                    </Button>
-                    <Button variant="outline" onClick={reset} className="h-12 px-8 rounded-xl font-black text-[10px] uppercase gap-2 border-black/5 bg-white hover:bg-black/5 shadow-sm">
-                       <RefreshCcw className="w-4 h-4" /> Process another file
-                    </Button>
-                 </div>
-              </div>
-
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                 <div className="lg:col-span-8">
-                    <Card className="bg-white/40 backdrop-blur-xl border-black/5 rounded-2xl shadow-md overflow-hidden min-h-[420px] flex flex-col border-2">
-                       <div className="p-6 bg-slate-50 border-b border-black/5 flex items-center justify-between">
-                          <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Result</span>
-                          <button onClick={() => dl(new Blob([resultText], {type: 'text/plain'}), "extraction.txt")} className="text-[10px] font-black uppercase text-primary hover:underline">Download .txt</button>
-                       </div>
-                       <textarea 
-                          readOnly 
-                          value={resultText} 
-                          className="flex-1 p-12 text-sm font-medium leading-relaxed bg-transparent resize-none focus:outline-none scrollbar-hide"
-                       />
-                    </Card>
-                 </div>
-                 <aside className="lg:col-span-4 space-y-6">
-                    <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Text details</Label>
-                    <Card className="bg-white/60 border-black/5 rounded-2xl p-8 space-y-8 shadow-xl border-2">
-                       {[
-                         { label: "Confidence", value: `${Math.round(stats?.avgConfidence || 0)}%`, status: "Recognition score" },
-                         { label: "Characters", value: resultText.length, status: "Text recognized" },
-                         { label: "Language", value: "English", status: "OCR engine" }
-                       ].map((s, i) => (
-                         <div key={i} className="space-y-1">
-                            <div className="flex justify-between text-[9px] font-black uppercase tracking-widest text-slate-400">
-                               <span>{s.label}</span>
-                               <span className="text-primary">{s.status}</span>
-                            </div>
-                            <p className="text-2xl font-black tabular-nums">{s.value}</p>
-                         </div>
-                       ))}
-                    </Card>
-                 </aside>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </ToolWorkspace>
-  );
+  return <ToolWorkspace title="OCR Text Extraction" description="Recognize printed text from PDFs and images with AJN PDF multilingual OCR." accent={T.purple}>
+    {result?<div className="space-y-5">
+      <Info bg="#ECFDF5" col="#065F46"><strong>{wordCount} words recognized.</strong> Review the text before using it for important records.</Info>
+      <textarea readOnly value={result.text} rows={16} className="w-full rounded-2xl border border-slate-200 bg-white p-5 text-sm leading-7 outline-none"/>
+      <G2><Btn variant="secondary" onClick={()=>void navigator.clipboard.writeText(result.text)}><Copy size={15}/>Copy text</Btn><Btn variant="secondary" onClick={()=>void shareResult(result.blob,result.filename)}><Share2 size={15}/>Share TXT</Btn></G2>
+      <Done msg="OCR text is ready" dlLabel="Download TXT" onDownload={()=>dl(result.blob,result.filename)} onReset={reset}/>
+    </div>:<div className="space-y-5">
+      <Drop files={files} onChange={setFiles} accept=".pdf,.png,.jpg,.jpeg,.webp,.bmp,.tif,.tiff,.heic,.heif" label="Choose a scan or document" sub="PDF, JPG, PNG, WebP, BMP, TIFF or HEIC where the backend supports it"/>
+      <G2><F label="OCR language"><select style={IS} value={language} onChange={e=>setLanguage(e.target.value)}>{LANGUAGES.map(item=><option key={item.value} value={item.value}>{item.label}</option>)}</select></F><F label="Recognition resolution"><Range label="DPI" value={dpi} min={150} max={400} step={10} onChange={setDpi} fmt={v=>`${v} DPI`}/></F></G2>
+      <Info bg="#F5F3FF" col="#5B21B6">AJN PDF auto-normalizes orientation, straightens small scan skew, improves contrast and uses native PDF text when it is better than OCR.</Info>
+      <Err msg={error}/><Btn onClick={run} loading={loading} disabled={!selected} full style={{background:T.purple}}><FileText size={16}/>Recognize text</Btn>
+      {selected&&<button type="button" onClick={reset} className="mx-auto flex items-center gap-2 text-xs font-bold text-slate-500"><RefreshCcw size={13}/>Choose another file</button>}
+    </div>}
+  </ToolWorkspace>;
 }

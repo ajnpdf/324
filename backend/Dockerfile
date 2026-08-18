@@ -27,8 +27,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libreoffice-writer libreoffice-calc libreoffice-impress \
     tesseract-ocr tesseract-ocr-eng tesseract-ocr-hin tesseract-ocr-tel \
     tesseract-ocr-tam tesseract-ocr-kan tesseract-ocr-mal tesseract-ocr-osd \
-    calibre \
-    imagemagick poppler-utils \
+    calibre imagemagick poppler-utils \
     libcairo2 libpango-1.0-0 libpangocairo-1.0-0 \
     fonts-dejavu-core fonts-liberation fonts-noto-core \
     ca-certificates curl \
@@ -39,7 +38,6 @@ COPY requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir -r requirements.txt
 
-# Fail image build when a critical native processor is absent.
 RUN python -c "import fitz,pikepdf,pytesseract,docx,openpyxl,PIL,reportlab,ebooklib,cairosvg" \
     && libreoffice --headless --version \
     && tesseract --version \
@@ -47,10 +45,10 @@ RUN python -c "import fitz,pikepdf,pytesseract,docx,openpyxl,PIL,reportlab,ebook
     && pdftoppm -v
 
 COPY app ./app
-COPY smoke_test.py capability_audit.py full_acceptance_test.py ./
-RUN python -m compileall -q app
+COPY smoke_test.py capability_audit.py conversion_contract_audit.py full_acceptance_test.py processing_quality_acceptance_test.py image_pdf_quality_acceptance_test.py hard_format_acceptance_test.py ocr_language_gate.py ocr_multilingual_acceptance_test.py ./
+RUN python -m compileall -q app \
+    && python -m py_compile capability_audit.py conversion_contract_audit.py full_acceptance_test.py processing_quality_acceptance_test.py image_pdf_quality_acceptance_test.py hard_format_acceptance_test.py ocr_language_gate.py ocr_multilingual_acceptance_test.py
 
-# Build preparation runs as root; acceptance and Cloud Run run unprivileged.
 RUN useradd --uid 10001 --user-group --create-home --home-dir /home/ajn --shell /usr/sbin/nologin ajn \
     && mkdir -p /tmp/public_media /tmp/ajn-work /tmp/runtime-ajn \
     && chown -R 10001:10001 /app /home/ajn /tmp/public_media /tmp/ajn-work /tmp/runtime-ajn \
@@ -58,6 +56,13 @@ RUN useradd --uid 10001 --user-group --create-home --home-dir /home/ajn --shell 
 
 USER 10001
 RUN python -c "from app.main import app; assert app.title == 'AJN PDF Conversion API'; print('PASS: FastAPI application import')" \
-    && python full_acceptance_test.py
+    && python conversion_contract_audit.py \
+    && python capability_audit.py \
+    && python ocr_language_gate.py \
+    && python ocr_multilingual_acceptance_test.py \
+    && python image_pdf_quality_acceptance_test.py \
+    && python hard_format_acceptance_test.py \
+    && python full_acceptance_test.py \
+    && python processing_quality_acceptance_test.py
 
 CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT} --workers 1 --proxy-headers"]
