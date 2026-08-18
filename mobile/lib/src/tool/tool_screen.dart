@@ -89,9 +89,12 @@ class _ToolWorkspaceState extends ConsumerState<_ToolWorkspace> {
       setState(() => _error = 'Choose ${tool.multiFile ? 'one or more files' : 'a file'} first.');
       return;
     }
-    if (tool.isUrlTool && !Uri.tryParse(_url.text.trim())!.hasScheme) {
-      setState(() => _error = 'Enter a valid https URL.');
-      return;
+    if (tool.isUrlTool) {
+      final sourceUri = Uri.tryParse(_url.text.trim());
+      if (sourceUri == null || !const <String>{'http', 'https'}.contains(sourceUri.scheme.toLowerCase()) || sourceUri.host.isEmpty) {
+        setState(() => _error = 'Enter a valid http or https URL.');
+        return;
+      }
     }
     if ((tool.isProtect || tool.isUnlock) && _password.text.length < (tool.isProtect ? 4 : 1)) {
       setState(() => _error = tool.isProtect ? 'Use a password with at least 4 characters.' : 'Enter the current PDF password.');
@@ -296,7 +299,7 @@ class _ToolWorkspaceState extends ConsumerState<_ToolWorkspace> {
             const SizedBox(height: 8),
             Text(
               progress.stage == TransferStage.processing
-                  ? 'No fake percentage — waiting for the real backend result.'
+                  ? 'Processing is live. The app will not invent a server percentage.'
                   : progress.fraction == null
                       ? 'Working…'
                       : '${(progress.fraction! * 100).round()}%',
@@ -325,6 +328,16 @@ class _ResultScreen extends StatelessWidget {
   }
 
   Future<void> _saveCopy(BuildContext context) async {
+    if (!Platform.isWindows) {
+      await SharePlus.instance.share(
+        ShareParams(
+          files: <XFile>[XFile(output.path)],
+          title: 'Save AJN PDF result',
+          text: 'Choose Files, Drive, or another destination to keep a copy.',
+        ),
+      );
+      return;
+    }
     final destination = await FilePicker.platform.saveFile(dialogTitle: 'Save AJN PDF result', fileName: output.fileName);
     if (destination == null) return;
     await File(output.path).copy(destination);
@@ -366,7 +379,11 @@ class _ResultScreen extends StatelessWidget {
                 const SizedBox(height: 24),
                 FilledButton.icon(onPressed: _share, icon: const Icon(Icons.share_rounded), label: const Text('Share result')),
                 const SizedBox(height: 10),
-                OutlinedButton.icon(onPressed: () => _saveCopy(context), icon: const Icon(Icons.save_alt_rounded), label: const Text('Save a copy')),
+                OutlinedButton.icon(
+                  onPressed: () => _saveCopy(context),
+                  icon: const Icon(Icons.save_alt_rounded),
+                  label: Text(Platform.isWindows ? 'Save a copy' : 'Save to Files / Drive'),
+                ),
                 if (Platform.isWindows) ...<Widget>[const SizedBox(height: 10), TextButton.icon(onPressed: _showInFolder, icon: const Icon(Icons.folder_open_rounded), label: const Text('Show in folder'))],
                 const SizedBox(height: 18),
                 TextButton(onPressed: () => Navigator.of(context).pop(), child: Text('Use ${tool.name} again')),
