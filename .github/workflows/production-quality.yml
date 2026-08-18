@@ -28,5 +28,5 @@ jobs:
       - run: npm run verify:r13-browser-pdf
       - run: npm run build
       - run: npm run verify:r13-runtime
-      - run: python -m py_compile backend/app/main.py backend/app/conversion_engine.py backend/app/job_worker.py backend/app/mcp_server.py backend/mcp_smoke_test.py
-# Native LibreOffice/Tesseract/Calibre and MCP output acceptance remain Docker/Cloud Run release gates.
+      - run: python -m py_compile backend/app/main.py backend/app/conversion_engine.py backend/app/job_worker.py backend/app/mcp_server.py backend/app/mcp_entrypoint.py backend/mcp_smoke_test.py backend/mcp_auth_smoke_test.py
+# Native LibreOffice/Tesseract/Calibre and authenticated MCP output acceptance remain Docker/Cloud Run release gates.
