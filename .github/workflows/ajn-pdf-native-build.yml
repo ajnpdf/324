@@ -1,0 +1,84 @@
+name: AJN PDF Native Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [feature/ajn-pdf-flutter]
+    paths:
+      - 'mobile/**'
+      - '.github/workflows/ajn-pdf-native-build.yml'
+
+permissions:
+  contents: read
+
+env:
+  FLUTTER_VERSION: '3.44.7'
+  AJN_API_BASE_URL: ${{ vars.AJN_API_BASE_URL }}
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      - name: Require production API URL
+        run: test -n "$AJN_API_BASE_URL" && echo "$AJN_API_BASE_URL" | grep -q '^https://'
+      - run: python tool/bootstrap.py
+      - run: flutter build apk --release --dart-define=AJN_API_BASE_URL="$AJN_API_BASE_URL"
+      - run: flutter build appbundle --release --dart-define=AJN_API_BASE_URL="$AJN_API_BASE_URL"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: AJN-PDF-Android
+          path: |
+            mobile/build/app/outputs/flutter-apk/app-release.apk
+            mobile/build/app/outputs/bundle/release/app-release.aab
+
+  windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      - name: Require production API URL
+        shell: pwsh
+        run: if (-not $env:AJN_API_BASE_URL.StartsWith('https://')) { throw 'Set repository variable AJN_API_BASE_URL to the HTTPS backend URL.' }
+      - run: python tool/bootstrap.py
+      - run: flutter build windows --release --dart-define=AJN_API_BASE_URL="$env:AJN_API_BASE_URL"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: AJN-PDF-Windows
+          path: mobile/build/windows/x64/runner/Release/**
+
+  ios-unsigned:
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      - name: Require production API URL
+        run: test -n "$AJN_API_BASE_URL" && echo "$AJN_API_BASE_URL" | grep -q '^https://'
+      - run: python3 tool/bootstrap.py
+      - run: flutter build ios --release --no-codesign --dart-define=AJN_API_BASE_URL="$AJN_API_BASE_URL"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: AJN-PDF-iOS-Unsigned
+          path: mobile/build/ios/iphoneos/Runner.app/**
