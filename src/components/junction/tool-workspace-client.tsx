@@ -32,8 +32,8 @@ const TOOL_COMPONENTS: Record<string, any> = {
   'compare-pdf': dynamic(() => import('./ComparePdf'), { ssr: false }),
   'add-text': dynamic(() => import('./AddText'), { ssr: false }),
   'add-image-to-pdf': dynamic(() => import('./AddImageToPdf'), { ssr: false }),
-  
-  // --- OFFICE SUITE ---
+
+  // --- LEGACY ALIASES / EXPLICITLY HIDDEN WORKSPACES ---
   'word-pdf': dynamic(() => import('./UnavailableTool'), { ssr: false }),
   'excel-pdf': dynamic(() => import('./UnavailableTool'), { ssr: false }),
   'ppt-pdf': dynamic(() => import('./UnavailableTool'), { ssr: false }),
@@ -41,7 +41,7 @@ const TOOL_COMPONENTS: Record<string, any> = {
   'pdf-excel': dynamic(() => import('./UnavailableTool'), { ssr: false }),
   'pdf-ppt': dynamic(() => import('./UnavailableTool'), { ssr: false }),
   'ppt-word': dynamic(() => import('./UnavailableTool'), { ssr: false }),
-  
+
   // --- MEDIA & DESIGN ---
   'jpg-pdf': dynamic(() => import('./JpgToPdf'), { ssr: false }),
   'png-to-pdf': dynamic(() => import('./PngToPdf'), { ssr: false }),
@@ -61,15 +61,15 @@ const TOOL_COMPONENTS: Record<string, any> = {
   'meme-generator': dynamic(() => import('./MemeMaker'), { ssr: false }),
   'image-reducer': dynamic(() => import('./ReduceImage'), { ssr: false }),
   'image-resizer': dynamic(() => import('./ResizeImage'), { ssr: false }),
-  
-  // --- INTELLIGENCE & OCR ---
+
+  // --- OCR ---
   'ocr-advanced': dynamic(() => import('./OcrAdvanced'), { ssr: false }),
   'ocr-scanner': dynamic(() => import('./OcrScanner'), { ssr: false }),
-  'ocr-searchable': dynamic(() => import('./UnavailableTool'), { ssr: false }),
+  'ocr-searchable': dynamic(() => import('./SearchablePdf'), { ssr: false }),
   'sign-pdf': dynamic(() => import('./SignPdf'), { ssr: false }),
   'smart-read': dynamic(() => import('./UnavailableTool'), { ssr: false }),
   'pdf-text': dynamic(() => import('./SmartRead'), { ssr: false }),
-  
+
   // --- TECHNICAL & ARCHIVAL ---
   'html-pdf': dynamic(() => import('./UnavailableTool'), { ssr: false }),
   'xml-pdf': dynamic(() => import('./XmlToPdf'), { ssr: false }),
@@ -80,40 +80,20 @@ const TOOL_COMPONENTS: Record<string, any> = {
   'pdf-zip-extract': dynamic(() => import('./PdfToZip'), { ssr: false }),
   'zip-extractor': dynamic(() => import('./ZipExtractor'), { ssr: false }),
   'pdf-metadata': dynamic(() => import('./PdfMetadata'), { ssr: false }),
-
-  // --- SRT TOOLS ---
   'subtitle-generator': dynamic(() => import('./SubtitleGenerator'), { ssr: false }),
 };
 
-interface ToolWorkspaceClientProps {
-  id: string;
-}
+interface ToolWorkspaceClientProps { id: string; }
 
 export function ToolWorkspaceClient({ id }: ToolWorkspaceClientProps) {
   const toolData = BUILD_PUBLIC_TOOLS.find(t => t.id === id);
   const ToolComponent = id === 'merge-pdf' ? MergePdf : TOOL_COMPONENTS[id];
+  if (!toolData) notFound();
 
-  if (!toolData) {
-    notFound();
-  }
-
+  // The canonical conversion registry always wins over hand-written aliases.
   if (SERVER_CONVERSION_IDS.has(id)) {
-    return (
-      <Suspense fallback={<PlatformLoader message="Preparing conversion workspace..." />}>
-        <div className="h-full flex flex-col"><ServerConversionTool toolId={id} /></div>
-      </Suspense>
-    );
+    return <Suspense fallback={<PlatformLoader message="Preparing conversion workspace..." />}><div className="h-full flex flex-col"><ServerConversionTool toolId={id} /></div></Suspense>;
   }
-
-  if (!ToolComponent) {
-    notFound();
-  }
-
-  return (
-    <Suspense fallback={<PlatformLoader message="Preparing tool workspace..." />}>
-      <div className="h-full flex flex-col">
-        <ToolComponent />
-      </div>
-    </Suspense>
-  );
+  if (!ToolComponent) notFound();
+  return <Suspense fallback={<PlatformLoader message="Preparing tool workspace..." />}><div className="h-full flex flex-col"><ToolComponent /></div></Suspense>;
 }
