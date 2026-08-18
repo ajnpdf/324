@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pikepdf
 
-from .conversion_engine import SPECS
+from .conversion_engine import SPECS, convert as legacy_convert
 from .processing_quality import run_conversion
 
 
@@ -32,7 +32,14 @@ def main() -> int:
             if not isinstance(options, dict):
                 raise ValueError("Conversion options must be a JSON object.")
             source_url = payload.get("source_url")
-            run_conversion(spec, files, output, options, workdir, str(source_url) if source_url else None)
+            resolved_url = str(source_url) if source_url else None
+
+            # CairoSVG already provides the safest SVG raster/vector path in the
+            # established engine. The quality image-PDF path is for raster/HEIF input.
+            if spec.processor in {"images_to_pdf", "scan_images_pdf"} and any(path.suffix.lower() == ".svg" for path in files):
+                legacy_convert(spec, files, output, options, workdir, resolved_url)
+            else:
+                run_conversion(spec, files, output, options, workdir, resolved_url)
         elif operation == "protect":
             source = Path(str(payload["source"]))
             target = Path(str(payload["target"]))
