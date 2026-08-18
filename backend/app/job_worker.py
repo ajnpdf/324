@@ -10,6 +10,7 @@ import pikepdf
 from .conversion_engine import SPECS, convert as legacy_convert, validate_input_files, validate_output_file
 from .image_pdf_quality import images_to_pdf
 from .ocr_deep import analyze_document
+from .ocr_selected import run_selected_pdf_ocr
 from .processing_quality import run_conversion
 
 
@@ -43,6 +44,12 @@ def main() -> int:
                     validate_input_files(spec, files)
                     images_to_pdf(files, output, options, scan=spec.processor == "scan_images_pdf")
                     validate_output_file(output, spec.output_extension)
+            elif spec.processor in {"ocr_pdf_text", "ocr_pdf_word", "ocr_pdf_searchable"}:
+                validate_input_files(spec, files)
+                if not files:
+                    raise ValueError("PDF OCR requires one PDF file.")
+                run_selected_pdf_ocr(spec.processor, files[0], output, options, workdir)
+                validate_output_file(output, spec.output_extension)
             else:
                 run_conversion(spec, files, output, options, workdir, resolved_url)
         elif operation == "ocr_analyze":
