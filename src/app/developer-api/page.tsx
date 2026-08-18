@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import type { LucideIcon } from 'lucide-react';
 import Link from 'next/link';
 import { Braces, FileKey2, FileSignature, ScanText, ShieldCheck } from 'lucide-react';
 import { AppFrame } from '@/components/app-frame';
@@ -17,6 +18,13 @@ const endpoints = [
   ['POST', '/api/v1/ocr/analyze', 'Return page text, line groups, word confidence, bounding boxes and orientation/script data.'],
   ['POST', '/api/v1/sign/electronic', 'Create an evidence-backed electronic-signature ZIP package.'],
 ] as const;
+
+const featureCards: { icon: LucideIcon; title: string; copy: string }[] = [
+  { icon: FileKey2, title: 'Scoped API keys', copy: 'read · convert · ocr · sign' },
+  { icon: ScanText, title: 'Deep OCR', copy: '6 languages · combined language models · layout JSON' },
+  { icon: FileSignature, title: 'Electronic signature', copy: 'Consent · evidence id · hashes · embedded manifest' },
+  { icon: ShieldCheck, title: 'Production guards', copy: 'Worker isolation · limits · timeouts · validation' },
+];
 
 const curl = `curl -X POST "$AJN_API_BASE/api/v1/ocr/text" \\
   -H "X-AJN-API-Key: $AJN_API_KEY" \\
@@ -52,15 +60,13 @@ export default function DeveloperApiPage() {
         </section>
 
         <section className="mt-6 grid gap-4 md:grid-cols-4">
-          {[
-            [FileKey2, 'Scoped API keys', 'read · convert · ocr · sign'],
-            [ScanText, 'Deep OCR', '6 languages · combined language models · layout JSON'],
-            [FileSignature, 'Electronic signature', 'Consent · evidence id · hashes · embedded manifest'],
-            [ShieldCheck, 'Production guards', 'Worker isolation · limits · timeouts · validation'],
-          ].map(([Icon,title,copy]) => {
-            const C = Icon as typeof FileKey2;
-            return <div key={String(title)} className="rounded-2xl border border-slate-200 bg-white p-5"><C className="h-5 w-5 text-blue-600"/><h2 className="mt-3 font-black text-slate-950">{String(title)}</h2><p className="mt-2 text-xs font-semibold leading-6 text-slate-500">{String(copy)}</p></div>;
-          })}
+          {featureCards.map(({ icon: Icon, title, copy }) => (
+            <div key={title} className="rounded-2xl border border-slate-200 bg-white p-5">
+              <Icon className="h-5 w-5 text-blue-600" />
+              <h2 className="mt-3 font-black text-slate-950">{title}</h2>
+              <p className="mt-2 text-xs font-semibold leading-6 text-slate-500">{copy}</p>
+            </div>
+          ))}
         </section>
 
         <section className="mt-8 rounded-3xl border border-slate-200 bg-white p-6 sm:p-8">
