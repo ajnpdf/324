@@ -24,6 +24,7 @@ type Result = {
 };
 
 function typedSignatureDataUrl(value: string): string {
+  if (typeof document === 'undefined') return '';
   const canvas = document.createElement('canvas');
   canvas.width = 1100;
   canvas.height = 280;
@@ -83,10 +84,20 @@ export default function SignPdfPro() {
   const [result, setResult] = useState<Result | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const engineRef = useRef<SignatureDrawingEngine | null>(null);
+  const engineCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
-    if (!canvasRef.current || source !== 'draw') return;
-    if (!engineRef.current) engineRef.current = new SignatureDrawingEngine(canvasRef.current);
+    if (source !== 'draw') {
+      engineRef.current = null;
+      engineCanvasRef.current = null;
+      return;
+    }
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    if (!engineRef.current || engineCanvasRef.current !== canvas) {
+      engineRef.current = new SignatureDrawingEngine(canvas);
+      engineCanvasRef.current = canvas;
+    }
     engineRef.current.setMode(mode);
   }, [source, mode, file]);
 
@@ -204,6 +215,7 @@ export default function SignPdfPro() {
     setError('');
     setHasDrawn(false);
     engineRef.current = null;
+    engineCanvasRef.current = null;
   };
 
   if (result) {
