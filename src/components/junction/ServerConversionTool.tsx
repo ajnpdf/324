@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FileOutput, Loader2 } from 'lucide-react';
 import { BUILD_PUBLIC_TOOLS } from '@/lib/build-public-tools';
 import { checkPdfBackendHealth, convertOnServer, getConversionToolManifest, getPdfBackendErrorCode, type ConversionToolManifest, type PdfBackendHealth } from '@/lib/pdf-backend';
+import { conversionQualityLimitation } from '@/lib/conversion-quality-copy';
 import { getToolPolicy } from '@/lib/tool-policy';
 import { validateBackendSelection } from '@/lib/tool-limits';
 import { Btn, Done, Drop, Err, F, G2, Info, IS, Pills, Range, ToolWorkspace, type ToolFile, dl } from './_shared';
@@ -72,6 +73,7 @@ export default function ServerConversionTool({ toolId }: { toolId: string }) {
   const selectionSub=manifest?.inputExtensions?.join(', ')||t('conversion.supportedFormats');
   const onFilesChange=(next:ToolFile[])=>{const validation=validateBackendSelection(next.map(item=>item.file),policy.maxFiles,backendHealth);if(validation){setError(validation);return;}setError('');setFiles(next);};
   const canProcess=Boolean(tool&&status!=='processing'&&backendReady&&manifest?.available===true&&(isUrlTool?/^https?:\/\//i.test(sourceUrl.trim()):files.length>0));
+  const qualityLimitation=conversionQualityLimitation(toolId,manifest?.limitation||policy.limitation);
 
   const optionSummary=useMemo(()=>{
     const parts:string[]=[];
@@ -128,7 +130,7 @@ export default function ServerConversionTool({ toolId }: { toolId: string }) {
         </div>
 
         {optionSummary&&<Info>{optionSummary}</Info>}
-        {(manifest?.limitation||policy.limitation)&&<Info bg="rgba(245,158,11,.09)" col="#92400E">{manifest?.limitation||policy.limitation}</Info>}
+        {qualityLimitation&&<Info bg="rgba(245,158,11,.09)" col="#92400E">{qualityLimitation}</Info>}
         <Err msg={error}/>
         {status==='processing'&&<div className="sr-only" role="status" aria-live="polite">{t(processingStage)}</div>}
         <Btn full onClick={process} disabled={!canProcess||status==='processing'} loading={status==='processing'}><FileOutput size={16}/>{t('processing.converting')}</Btn>
