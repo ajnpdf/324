@@ -28,5 +28,5 @@ jobs:
       - run: npm run verify:r13-browser-pdf
       - run: npm run build
       - run: npm run verify:r13-runtime
-      - run: python -m py_compile backend/app/main.py backend/app/conversion_engine.py backend/app/processing_quality.py backend/app/image_pdf_quality.py backend/app/job_worker.py backend/processing_quality_acceptance_test.py backend/ocr_language_gate.py backend/ocr_multilingual_acceptance_test.py backend/app/mcp_server.py backend/app/mcp_entrypoint.py backend/mcp_smoke_test.py backend/mcp_auth_smoke_test.py
+      - run: python -m py_compile backend/app/main.py backend/app/conversion_engine.py backend/app/processing_quality.py backend/app/image_pdf_quality.py backend/app/job_worker.py backend/capability_audit.py backend/conversion_contract_audit.py backend/full_acceptance_test.py backend/processing_quality_acceptance_test.py backend/ocr_language_gate.py backend/ocr_multilingual_acceptance_test.py backend/app/mcp_server.py backend/app/mcp_entrypoint.py backend/mcp_smoke_test.py backend/mcp_auth_smoke_test.py
 # Native LibreOffice/Tesseract/Calibre, six-language OCR and semantic processing output acceptance remain Docker/Cloud Run release gates.
