@@ -105,14 +105,11 @@ def images_to_pdf(
                     top = available.y0 + (available.height - draw_height) / 2
                     rect = fitz.Rect(left, top, left + draw_width, top + draw_height)
 
-                    payload, kind = _encoded_image(image, quality)
-                    page = pdf.new_page(width=page_width, height=page_height)
-                    # A white PDF page is intentional. Transparent source pixels remain
-                    # transparent in the embedded PNG instead of being converted to black.
-                    page.insert_image(rect, stream=payload, keep_proportion=True)
-                    page.set_metadata if False else None  # keep PyMuPDF page path explicit for static analyzers
-                    if not payload or kind not in {"png", "jpeg"}:
+                    encoded, kind = _encoded_image(image, quality)
+                    if not encoded or kind not in {"png", "jpeg"}:
                         raise RuntimeError("The image encoder returned an invalid payload.")
+                    page = pdf.new_page(width=page_width, height=page_height)
+                    page.insert_image(rect, stream=encoded, keep_proportion=True)
                 finally:
                     if image is not None:
                         image.close()
