@@ -69,12 +69,12 @@ class AjnApi {
           .whereType<Map<String, dynamic>>()
           .map(ToolDefinition.fromJson)
           .where((tool) => tool.id.isNotEmpty)
-          .toList(growable: false);
+          .toList(growable: true);
       tools.sort((a, b) {
         if (a.available != b.available) return a.available ? -1 : 1;
         return a.name.compareTo(b.name);
       });
-      return tools;
+      return List<ToolDefinition>.unmodifiable(tools);
     } on DioException catch (error) {
       throw await _mapDioException(error);
     }
@@ -107,6 +107,7 @@ class AjnApi {
       'protect-pdf' => '/api/pdf/protect',
       'unlock-pdf' => '/api/pdf/unlock',
       'repair-pdf' => '/api/pdf/repair',
+      'compress-pdf' => '/api/pdf/compress',
       _ => '/api/convert/${tool.id}',
     };
 
@@ -158,7 +159,11 @@ class AjnApi {
         await sink.close();
       }
       if (!await outputFile.exists() || await outputFile.length() == 0) {
-        await outputFile.delete().catchError((_) {});
+        try {
+          await outputFile.delete();
+        } catch (_) {
+          // Best-effort cleanup; preserve the original processing error.
+        }
         throw const AjnApiException('AJN PDF received an empty output file.');
       }
       onProgress(const TransferProgress(TransferStage.complete, fraction: 1));
@@ -202,7 +207,7 @@ class AjnApi {
         'output_name': outputName,
       });
     }
-    if (tool.isRepair) {
+    if (tool.isRepair || tool.id == 'compress-pdf') {
       return FormData.fromMap(<String, dynamic>{'file': files.first, 'output_name': outputName});
     }
     return FormData.fromMap(<String, dynamic>{
