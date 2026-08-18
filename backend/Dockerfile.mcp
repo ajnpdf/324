@@ -11,6 +11,8 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     QT_QUICK_BACKEND=software \
     QTWEBENGINE_CHROMIUM_FLAGS="--disable-gpu --disable-dev-shm-usage" \
     DEBIAN_FRONTEND=noninteractive \
+    AJN_MCP_REQUIRE_AUTH=true \
+    AJN_MCP_MIN_TOKEN_CHARS=32 \
     AJN_MCP_MAX_FILE_MB=8 \
     AJN_MCP_MAX_TOTAL_MB=16 \
     AJN_MCP_MAX_OUTPUT_MB=16 \
@@ -33,9 +35,11 @@ RUN pip install --no-cache-dir --upgrade pip \
 
 COPY app ./app
 COPY mcp_smoke_test.py ./mcp_smoke_test.py
+COPY mcp_auth_smoke_test.py ./mcp_auth_smoke_test.py
 
 RUN python -m compileall -q app \
-    && python -c "from app.mcp_server import app, mcp; assert app is not None; assert mcp is not None; print('PASS: AJN PDF MCP ASGI import')" \
+    && python -c "from app.mcp_server import mcp; from app.mcp_entrypoint import app; assert app is not None; assert mcp is not None; print('PASS: AJN PDF authenticated MCP ASGI import')" \
+    && python mcp_auth_smoke_test.py \
     && python mcp_smoke_test.py
 
 RUN useradd --uid 10001 --user-group --create-home --home-dir /home/ajn --shell /usr/sbin/nologin ajn \
@@ -45,4 +49,4 @@ RUN useradd --uid 10001 --user-group --create-home --home-dir /home/ajn --shell 
 
 USER 10001
 
-CMD ["sh", "-c", "uvicorn app.mcp_server:app --host 0.0.0.0 --port ${PORT} --workers 1 --proxy-headers"]
+CMD ["sh", "-c", "uvicorn app.mcp_entrypoint:app --host 0.0.0.0 --port ${PORT} --workers 1 --proxy-headers"]
