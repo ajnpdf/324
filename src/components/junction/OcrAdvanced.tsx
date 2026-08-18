@@ -106,7 +106,7 @@ export default function OcrAdvanced(){
       </G2>
 
       {isPdf&&<F label="PDF pages" hint="Use all, 2, 1-3, or 1,4,7-9"><input style={IS} value={pages} onChange={e=>setPages(e.target.value)} /></F>}
-      {mode==="layout"&&<Range label="Minimum word confidence" value={minimumConfidence} min={0} max={90} step={5} onChange={setMinimumConfidence} fmt={v=>v===0?"Keep all":`${v}%+`}/>} 
+      {mode==="layout"&&<Range label="Minimum word confidence" value={minimumConfidence} min={0} max={90} step={5} onChange={setMinimumConfidence} fmt={v=>v===0?"Keep all":`${v}%+`}/>}
 
       <div className="grid gap-2 sm:grid-cols-3">
         <label className="jn-file-pill justify-start"><input type="checkbox" checked={autoRotate} onChange={e=>setAutoRotate(e.target.checked)}/><span className="text-xs font-bold text-slate-700">Auto orientation</span></label>
