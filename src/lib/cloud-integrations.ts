@@ -46,14 +46,46 @@ let googleAccessTokenExpiresAt = 0;
 let googleTokenClient: GoogleTokenClient | null = null;
 let googlePickerLoaded = false;
 
-function loadScript(src: string, id: string, attributes: Record<string, string> = {}): Promise<void> {
+function loadScript(
+  src: string,
+  id: string,
+  attributes: Record<string, string> = {},
+  ready?: () => boolean,
+): Promise<void> {
   if (typeof document === 'undefined') return Promise.reject(new Error('Cloud files are available only in the browser.'));
+  if (ready?.()) return Promise.resolve();
   const existing = document.getElementById(id) as HTMLScriptElement | null;
-  if (existing?.dataset.ajnLoaded === 'true') return Promise.resolve();
+  if (existing?.dataset.ajnLoaded === 'true' && (!ready || ready())) return Promise.resolve();
   return new Promise((resolve, reject) => {
     const script = existing || document.createElement('script');
-    const done = () => { script.dataset.ajnLoaded = 'true'; resolve(); };
-    const failed = () => reject(new Error('The cloud provider library could not be loaded. Check your connection and provider configuration.'));
+    let settled = false;
+    const cleanup = () => {
+      script.removeEventListener('load', done);
+      script.removeEventListener('error', failed);
+    };
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      script.dataset.ajnLoaded = 'true';
+      cleanup();
+      resolve();
+    };
+    const done = () => {
+      if (!ready || ready()) finish();
+      else {
+        settled = true;
+        cleanup();
+        reject(new Error('The cloud provider library loaded but did not initialize.'));
+      }
+    };
+    const failed = () => {
+      if (settled) return;
+      settled = true;
+      cleanup();
+      reject(new Error('The cloud provider library could not be loaded. Check your connection and provider configuration.'));
+    };
+    script.addEventListener('load', done, { once: true });
+    script.addEventListener('error', failed, { once: true });
     if (!existing) {
       script.id = id;
       script.src = src;
@@ -61,10 +93,9 @@ function loadScript(src: string, id: string, attributes: Record<string, string> 
       script.defer = true;
       for (const [name, value] of Object.entries(attributes)) script.setAttribute(name, value);
       document.head.appendChild(script);
+    } else if (ready?.()) {
+      finish();
     }
-    script.addEventListener('load', done, { once: true });
-    script.addEventListener('error', failed, { once: true });
-    if (existing && (window as any)[id]) resolve();
   });
 }
 
@@ -95,13 +126,16 @@ async function responseToFile(response: Response, filename: string, declaredMime
 async function ensureGoogleLibraries(): Promise<void> {
   if (!GOOGLE_CLIENT_ID || !GOOGLE_API_KEY || !GOOGLE_APP_ID) throw new Error('Google Drive is not configured for this AJN PDF deployment.');
   await Promise.all([
-    loadScript('https://accounts.google.com/gsi/client', 'ajn-google-gis'),
-    loadScript('https://apis.google.com/js/api.js', 'ajn-google-api'),
+    loadScript('https://accounts.google.com/gsi/client', 'ajn-google-gis', {}, () => Boolean(window.google?.accounts?.oauth2)),
+    loadScript('https://apis.google.com/js/api.js', 'ajn-google-api', {}, () => Boolean(window.gapi)),
   ]);
   if (!window.google?.accounts?.oauth2 || !window.gapi) throw new Error('Google Drive libraries did not initialize correctly.');
   if (!googlePickerLoaded) {
     await new Promise<void>((resolve, reject) => {
-      window.gapi.load('picker', { callback: () => { googlePickerLoaded = true; resolve(); }, onerror: () => reject(new Error('Google Picker could not be loaded.')) });
+      window.gapi.load('picker', {
+        callback: () => { googlePickerLoaded = true; resolve(); },
+        onerror: () => reject(new Error('Google Picker could not be loaded.')),
+      });
     });
   }
   if (!googleTokenClient) {
@@ -137,9 +171,7 @@ function googleExportTarget(mimeType: string, name: string): { mime: string; ext
   if (mimeType === 'application/vnd.google-apps.spreadsheet') return { mime: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', extension: '.xlsx' };
   if (mimeType === 'application/vnd.google-apps.presentation') return { mime: 'application/vnd.openxmlformats-officedocument.presentationml.presentation', extension: '.pptx' };
   if (mimeType === 'application/vnd.google-apps.drawing') return { mime: 'application/pdf', extension: '.pdf' };
-  if (mimeType.startsWith('application/vnd.google-apps.')) {
-    throw new Error(`This Google Workspace file type cannot currently be exported into AJN PDF: ${name}.`);
-  }
+  if (mimeType.startsWith('application/vnd.google-apps.')) throw new Error(`This Google Workspace file type cannot currently be exported into AJN PDF: ${name}.`);
   return null;
 }
 
@@ -168,7 +200,7 @@ async function downloadGoogleFile(document: GooglePickerDocument, token: string)
 export async function importFromGoogleDrive(options: { multiple?: boolean } = {}): Promise<File[]> {
   const token = await googleToken();
   return new Promise<File[]>((resolve, reject) => {
-    const picker = new window.google.picker.PickerBuilder()
+    let builder = new window.google.picker.PickerBuilder()
       .addView(window.google.picker.ViewId.DOCS)
       .setOAuthToken(token)
       .setDeveloperKey(GOOGLE_API_KEY)
@@ -187,17 +219,23 @@ export async function importFromGoogleDrive(options: { multiple?: boolean } = {}
           for (const document of selected) files.push(await downloadGoogleFile(document, token));
           resolve(files);
         } catch (error) { reject(error); }
-      })
-      .build();
-    if (options.multiple && window.google.picker.Feature?.MULTISELECT_ENABLED) picker.enableFeature?.(window.google.picker.Feature.MULTISELECT_ENABLED);
-    picker.setVisible(true);
+      });
+    if (options.multiple && window.google.picker.Feature?.MULTISELECT_ENABLED) {
+      builder = builder.enableFeature(window.google.picker.Feature.MULTISELECT_ENABLED);
+    }
+    builder.build().setVisible(true);
   });
 }
 
 async function ensureDropbox(): Promise<void> {
   if (!DROPBOX_APP_KEY) throw new Error('Dropbox is not configured for this AJN PDF deployment.');
   if (window.Dropbox?.choose) return;
-  await loadScript('https://www.dropbox.com/static/api/2/dropins.js', 'dropboxjs', { 'data-app-key': DROPBOX_APP_KEY });
+  await loadScript(
+    'https://www.dropbox.com/static/api/2/dropins.js',
+    'dropboxjs',
+    { 'data-app-key': DROPBOX_APP_KEY },
+    () => Boolean(window.Dropbox?.choose),
+  );
   if (!window.Dropbox?.choose) throw new Error('Dropbox Chooser did not initialize correctly.');
 }
 
@@ -237,7 +275,7 @@ export async function exportToGoogleDrive(blob: Blob, filename: string): Promise
     `--${boundary}\r\nContent-Type: ${blob.type || 'application/octet-stream'}\r\n\r\n`,
     blob,
     `\r\n--${boundary}--`,
-  ], { type: `multipart/related; boundary=${boundary}` });
+  ]);
   const response = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name,webViewLink', {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}`, 'Content-Type': `multipart/related; boundary=${boundary}` },
