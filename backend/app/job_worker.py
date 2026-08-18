@@ -8,6 +8,7 @@ from pathlib import Path
 import pikepdf
 
 from .conversion_engine import SPECS, convert as legacy_convert, validate_input_files, validate_output_file
+from .e_signature_service import electronic_sign
 from .image_pdf_quality import images_to_pdf
 from .ocr_deep import analyze_document
 from .ocr_selected import run_selected_pdf_ocr
@@ -59,6 +60,16 @@ def main() -> int:
             if not isinstance(options, dict):
                 raise ValueError("OCR analysis options must be a JSON object.")
             analyze_document(files, output, options)
+        elif operation == "electronic_sign":
+            source = Path(str(payload["source"]))
+            signature = Path(str(payload["signature"]))
+            target = Path(str(payload["target"]))
+            evidence_output = Path(str(payload["evidence_output"]))
+            workdir = Path(str(payload["workdir"]))
+            options = payload.get("options") or {}
+            if not isinstance(options, dict):
+                raise ValueError("Electronic-signature options must be a JSON object.")
+            electronic_sign(source, signature, target, evidence_output, options, workdir)
         elif operation == "protect":
             source = Path(str(payload["source"]))
             target = Path(str(payload["target"]))
