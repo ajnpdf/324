@@ -11,12 +11,12 @@ export const metadata: Metadata = {
 
 const endpoints = [
   ['GET', '/api/v1/account', 'Inspect the authenticated key id, scopes and rate limit.'],
-  ['GET', '/api/v1/capabilities', 'Discover live conversion tools and deeper OCR/signing capabilities.'],
-  ['POST', '/api/v1/convert/{tool_id}', 'Run any available AJN PDF conversion through the production worker.'],
-  ['POST', '/api/v1/ocr/text', 'OCR a PDF or image into text with language, DPI and PDF page-range controls.'],
-  ['POST', '/api/v1/ocr/searchable-pdf', 'Create a searchable PDF with an OCR text layer.'],
-  ['POST', '/api/v1/ocr/analyze', 'Return page text, line groups, word confidence, bounding boxes and orientation/script data.'],
-  ['POST', '/api/v1/sign/electronic', 'Create an evidence-backed electronic-signature ZIP package.'],
+  ['GET', '/api/v1/capabilities', 'Discover live conversion tools, exact required scopes, and deeper OCR/signing capabilities.'],
+  ['POST', '/api/v1/convert/{tool_id}', 'Run a live AJN PDF conversion. Normal tools require convert; OCR-backed tool IDs require convert + ocr.'],
+  ['POST', '/api/v1/ocr/text', 'OCR a PDF or image into text with language, DPI and PDF page-range controls. Requires ocr.'],
+  ['POST', '/api/v1/ocr/searchable-pdf', 'Create a searchable PDF with an OCR text layer. Requires ocr.'],
+  ['POST', '/api/v1/ocr/analyze', 'Return page text, line groups, word confidence, bounding boxes and orientation/script data. Requires ocr.'],
+  ['POST', '/api/v1/sign/electronic', 'Create an evidence-backed electronic-signature ZIP package. Requires sign.'],
 ] as const;
 
 const featureCards: { icon: LucideIcon; title: string; copy: string }[] = [
@@ -71,7 +71,7 @@ export default function DeveloperApiPage() {
 
         <section className="mt-8 rounded-3xl border border-slate-200 bg-white p-6 sm:p-8">
           <h2 className="text-2xl font-black text-slate-950">Authentication</h2>
-          <p className="mt-3 max-w-3xl text-sm font-medium leading-7 text-slate-600">Send the plaintext secret only in the <code className="rounded bg-slate-100 px-1.5 py-0.5">X-AJN-API-Key</code> header over HTTPS. AJN PDF deployment configuration stores only the SHA-256 digest. Keys can have separate scopes and per-minute limits.</p>
+          <p className="mt-3 max-w-3xl text-sm font-medium leading-7 text-slate-600">Send the plaintext secret only in the <code className="rounded bg-slate-100 px-1.5 py-0.5">X-AJN-API-Key</code> header over HTTPS. AJN PDF deployment configuration stores only the SHA-256 digest. Keys can have separate scopes and per-minute limits. Generic non-OCR conversion needs <code className="rounded bg-slate-100 px-1.5 py-0.5">convert</code>; OCR-backed tool IDs on the generic conversion route require both <code className="rounded bg-slate-100 px-1.5 py-0.5">convert</code> and <code className="rounded bg-slate-100 px-1.5 py-0.5">ocr</code>.</p>
           <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-xs font-semibold leading-6 text-amber-950">Do not place API secrets in browser JavaScript, GitHub, Vercel public environment variables, screenshots, or support messages. Generate a key locally and inject the hashed configuration into the backend secret environment.</div>
         </section>
 
