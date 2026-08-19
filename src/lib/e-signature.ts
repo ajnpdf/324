@@ -142,7 +142,7 @@ export async function createElectronicSignature(
   let pdf: PDFDocument;
   try {
     pdf = await PDFDocument.load(originalBytes, { ignoreEncryption: false });
-  } catch (error) {
+  } catch {
     throw new Error('This PDF is encrypted, password protected, or structurally unreadable. Unlock it first, then sign it.');
   }
   if (pdf.isEncrypted) throw new Error('Encrypted PDFs must be unlocked before electronic signing.');
