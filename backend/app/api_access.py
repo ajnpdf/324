@@ -109,6 +109,12 @@ def configuration_status() -> dict[str, Any]:
     }
 
 
+def require_api_scope(principal: APIPrincipal, required_scope: str) -> None:
+    required = required_scope.strip().lower()
+    if required and required not in principal.scopes:
+        raise APIAccessError(403, f"This API key does not have the required '{required}' scope.", "API_SCOPE_REQUIRED")
+
+
 def authenticate_api_key(raw_secret: str | None, required_scope: str) -> APIPrincipal:
     if not _enabled():
         raise APIAccessError(503, "The AJN PDF public API is not enabled on this deployment.", "API_DISABLED")
@@ -129,15 +135,13 @@ def authenticate_api_key(raw_secret: str | None, required_scope: str) -> APIPrin
             break
     if matched is None:
         raise APIAccessError(401, "The AJN PDF API key is invalid.", "API_KEY_INVALID")
-    scopes = frozenset(str(scope) for scope in matched["scopes"])
-    required = required_scope.strip().lower()
-    if required and required not in scopes:
-        raise APIAccessError(403, f"This API key does not have the required '{required}' scope.", "API_SCOPE_REQUIRED")
-    return APIPrincipal(
+    principal = APIPrincipal(
         key_id=str(matched["id"]),
-        scopes=scopes,
+        scopes=frozenset(str(scope) for scope in matched["scopes"]),
         rate_per_minute=int(matched["rate_per_minute"]),
     )
+    require_api_scope(principal, required_scope)
+    return principal
 
 
 async def enforce_api_rate_limit(principal: APIPrincipal) -> APIRateState:
