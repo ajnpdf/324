@@ -25,6 +25,7 @@ from starlette.background import BackgroundTask
 
 from .conversion_engine import SPECS, list_backend_tools, list_tools, tool_available, validate_input_file, validate_input_files, validate_output_file
 from .public_media import MEDIA_DB, MEDIA_ROOT, init_media_store, router as public_media_router
+from .platform_routes import router as platform_router
 
 VERSION = "3.1.0"
 MAX_FILE_BYTES = int(os.getenv("AJN_MAX_FILE_MB", "30")) * 1024 * 1024
@@ -68,10 +69,11 @@ app.add_middleware(
     allow_origins=ALLOWED_ORIGINS,
     allow_credentials=False,
     allow_methods=["GET", "POST", "PATCH", "DELETE"],
-    allow_headers=["Content-Type", "X-Request-ID", "X-AJN-Admin-Token", "X-AJN-Confirm-Title"],
+    allow_headers=["Content-Type", "X-Request-ID", "X-AJN-Admin-Token", "X-AJN-Confirm-Title", "X-AJN-API-Key"],
     expose_headers=["X-Request-ID", "X-AJN-Temporary-Processing", "X-AJN-Tool-ID", "X-AJN-Worker-Isolation"],
 )
 app.include_router(public_media_router)
+app.include_router(platform_router)
 MEDIA_ROOT.mkdir(parents=True, exist_ok=True)
 app.mount("/media", StaticFiles(directory=str(MEDIA_ROOT)), name="public-media")
 

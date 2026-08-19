@@ -94,11 +94,21 @@ try {
   }
   if (!home?.response.ok) throw new Error(`Homepage did not become ready on ${origin}.\n${serverOutput.slice(-5000)}`);
   pass('production server became ready');
-  if (!/name=["']ajn-release["'][^>]+content=["']3\.1\.0-r13["']/i.test(home.text)
-      && !/content=["']3\.1\.0-r13["'][^>]+name=["']ajn-release["']/i.test(home.text)) {
-    fail('homepage is missing the AJN R13 release marker');
+  const releaseSource = fs.readFileSync(path.join(root, 'src', 'app', 'layout.tsx'), 'utf8');
+  const expectedRelease = releaseSource.match(/['"]ajn-release['"]\s*:\s*['"]([^'"]+)['"]/i)?.[1] || '';
+  const homepageRelease = (
+    home.text.match(/<meta[^>]+name=["']ajn-release["'][^>]+content=["']([^"']+)["']/i)
+    || home.text.match(/<meta[^>]+content=["']([^"']+)["'][^>]+name=["']ajn-release["']/i)
+  )?.[1] || '';
+
+  if (!expectedRelease) {
+    fail('source metadata is missing the AJN release marker');
+  } else if (!homepageRelease) {
+    fail(`homepage is missing the AJN ${expectedRelease} release marker`);
+  } else if (homepageRelease !== expectedRelease) {
+    fail(`homepage release marker mismatch: expected ${expectedRelease}, got ${homepageRelease}`);
   } else {
-    pass('homepage carries the AJN PDF 3.1.0-r13 release marker');
+    pass(`homepage carries the AJN PDF ${expectedRelease} release marker`);
   }
 
   const rootResults = [];

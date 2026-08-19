@@ -7,7 +7,13 @@ from pathlib import Path
 
 import pikepdf
 
-from .conversion_engine import SPECS, convert
+from .conversion_engine import SPECS, convert as legacy_convert, validate_input_files, validate_output_file
+from .e_signature_service import electronic_sign
+from .image_pdf_quality import images_to_pdf
+from .ocr_auto import resolve_ocr_options, validate_ocr_text_output
+from .ocr_deep import analyze_document
+from .ocr_selected import run_selected_pdf_ocr
+from .processing_quality import run_conversion
 
 
 def _write(payload: dict[str, object]) -> None:
@@ -31,7 +37,48 @@ def main() -> int:
             if not isinstance(options, dict):
                 raise ValueError("Conversion options must be a JSON object.")
             source_url = payload.get("source_url")
-            convert(spec, files, output, options, workdir, str(source_url) if source_url else None)
+            resolved_url = str(source_url) if source_url else None
+
+            if spec.processor.startswith("ocr_"):
+                options = resolve_ocr_options(files, options)
+
+            if spec.processor in {"images_to_pdf", "scan_images_pdf"}:
+                if any(path.suffix.lower() == ".svg" for path in files):
+                    legacy_convert(spec, files, output, options, workdir, resolved_url)
+                else:
+                    validate_input_files(spec, files)
+                    images_to_pdf(files, output, options, scan=spec.processor == "scan_images_pdf")
+                    validate_output_file(output, spec.output_extension)
+            elif spec.processor in {"ocr_pdf_text", "ocr_pdf_word", "ocr_pdf_searchable"}:
+                validate_input_files(spec, files)
+                if not files:
+                    raise ValueError("PDF OCR requires one PDF file.")
+                run_selected_pdf_ocr(spec.processor, files[0], output, options, workdir)
+                validate_output_file(output, spec.output_extension)
+            else:
+                run_conversion(spec, files, output, options, workdir, resolved_url)
+
+            if spec.processor in {"ocr_pdf_text", "ocr_image_text", "ocr_handwriting_text"}:
+                validate_ocr_text_output(output, options)
+
+        elif operation == "ocr_analyze":
+            files = [Path(value) for value in payload.get("files", [])]
+            output = Path(str(payload["output"]))
+            options = payload.get("options") or {}
+            if not isinstance(options, dict):
+                raise ValueError("OCR analysis options must be a JSON object.")
+            options = resolve_ocr_options(files, options)
+            analyze_document(files, output, options)
+        elif operation == "electronic_sign":
+            source = Path(str(payload["source"]))
+            signature = Path(str(payload["signature"]))
+            target = Path(str(payload["target"]))
+            evidence_output = Path(str(payload["evidence_output"]))
+            workdir = Path(str(payload["workdir"]))
+            options = payload.get("options") or {}
+            if not isinstance(options, dict):
+                raise ValueError("Electronic-signature options must be a JSON object.")
+            electronic_sign(source, signature, target, evidence_output, options, workdir)
         elif operation == "protect":
             source = Path(str(payload["source"]))
             target = Path(str(payload["target"]))

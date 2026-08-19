@@ -40,11 +40,12 @@ jobs:
       - run: npm run verify:accessibility
       - run: npm run verify:capabilities
       - run: npm run verify:backend-workflow
+      - run: npm run verify:r19-release
       - run: npm run lint
       - run: npm run typecheck
       - run: npm run verify:r13-browser-pdf
       - run: npm run build
       - run: npm run verify:r13-runtime
-      - run: python -m py_compile backend/app/main.py backend/app/conversion_engine.py backend/app/job_worker.py
+      - run: python -m py_compile backend/app/main.py backend/app/conversion_engine.py backend/app/processing_quality.py backend/app/r19_fidelity.py backend/app/image_pdf_quality.py backend/app/job_worker.py backend/app/ocr_auto.py backend/app/api_access.py backend/app/platform_routes.py backend/app/ocr_deep.py backend/app/ocr_selected.py backend/app/e_signature_service.py backend/app/public_media.py backend/capability_audit.py backend/conversion_contract_audit.py backend/full_acceptance_test.py backend/processing_quality_acceptance_test.py backend/image_pdf_quality_acceptance_test.py backend/hard_format_acceptance_test.py backend/ocr_language_gate.py backend/ocr_multilingual_acceptance_test.py backend/api_v1_contract_test.py backend/ocr_deep_acceptance_test.py backend/ocr_selected_acceptance_test.py backend/e_signature_acceptance_test.py backend/r19_conversion_fidelity_acceptance_test.py
 
 # Native LibreOffice/Tesseract/Calibre output acceptance remains a Docker/Cloud Run release gate.

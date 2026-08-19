@@ -11,6 +11,7 @@ const worker = read('backend/app/job_worker.py');
 const httpAcceptance = read('backend/http_acceptance_test.py');
 const frontend = read('src/lib/pdf-backend.ts');
 const serverTool = read('src/components/junction/ServerConversionTool.tsx');
+const toolLimits = read('src/lib/tool-limits.ts');
 const setup = read('R16_PRODUCTION_SETUP_AND_DEPLOY.ps1');
 const packageScript = read('PACKAGE_PRODUCTION.ps1');
 const secretScan = read('scripts/secret-scan.mjs');
@@ -41,9 +42,18 @@ check('Oversized and workload-limit failures return actionable codes', main.incl
 check('Errors include stable request references', main.includes('request.state.request_id') && main.includes('"request_id": request_id') && frontend.includes('requestId?: string'));
 check('Client request references are sanitized before logging/echo', main.includes('def _safe_request_id') && main.includes('[:64]') && main.includes('character.isalnum()'));
 check('Frontend processing readiness uses candidate /ready endpoints', frontend.includes('SERVICE_CANDIDATES') && frontend.includes('`${candidate}/ready`') && !frontend.includes('`${candidate}/health`'));
-check('Frontend requires explicit live tool availability', serverTool.includes('backendReady') && serverTool.includes('manifest?.available === true'));
-check('Frontend rechecks readiness before processing', serverTool.includes('const latestHealth = await checkPdfBackendHealth()'));
-check('Frontend enforces live upload limits before upload and rechecks live limits at action time', serverTool.includes('validateBackendSelection(next.map((item) => item.file), policy.maxFiles, backendHealth)') && serverTool.includes('const latestHealth = await checkPdfBackendHealth()') && serverTool.includes('validateBackendSelection(files.map((item) => item.file), policy.maxFiles, latestHealth)'));
+check('Frontend requires explicit live tool availability', serverTool.includes('backendReady') && /manifest\?\.available\s*===\s*true/.test(serverTool));
+check('Frontend rechecks readiness before processing', /const\s+latestHealth\s*=\s*await\s+checkPdfBackendHealth\(\)/.test(serverTool));
+check(
+  'Frontend enforces live upload limits before upload and rechecks live limits at action time',
+  /validateBackendSelection\(next\.map\(\s*\(?item\)?\s*=>\s*item\.file\s*\),\s*policy\.maxFiles,\s*backendHealth\)/.test(serverTool) &&
+  /const\s+latestHealth\s*=\s*await\s+checkPdfBackendHealth\(\)/.test(serverTool) &&
+  /validateBackendSelection\(files\.map\(\s*\(?item\)?\s*=>\s*item\.file\s*\),\s*policy\.maxFiles,\s*latestHealth\)/.test(serverTool) &&
+  toolLimits.includes('export function resolveBackendLimits') &&
+  toolLimits.includes('const limits = resolveBackendLimits(health)') &&
+  toolLimits.includes('live ${limits.maxFileSizeMb} MB server limit') &&
+  toolLimits.includes('live ${limits.maxTotalSizeMb} MB total server limit')
+);
 check('Backend URL CSP/client parity has one source', read('next.config.ts').includes('configuredPdfBackendCandidates') && frontend.includes('configuredPdfBackendCandidates'));
 check('Live HTTP acceptance iterates registered conversion specs', httpAcceptance.includes('for tool_id, spec in sorted(SPECS.items())'));
 check('Live HTTP acceptance validates process-isolation and request headers', httpAcceptance.includes('X-AJN-Worker-Isolation') && httpAcceptance.includes('X-Request-ID'));
