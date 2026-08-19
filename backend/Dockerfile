@@ -57,18 +57,35 @@ RUN useradd --uid 10001 --user-group --create-home --home-dir /home/ajn --shell 
     && chmod 700 /tmp/runtime-ajn
 
 USER 10001
-RUN python -c "from app.main import app; assert app.title == 'AJN PDF Conversion API'; print('PASS: FastAPI application import')" \
-    && python conversion_contract_audit.py \
-    && python capability_audit.py \
-    && python api_v1_contract_test.py \
-    && python ocr_language_gate.py \
-    && python ocr_multilingual_acceptance_test.py \
-    && python ocr_deep_acceptance_test.py \
-    && python ocr_selected_acceptance_test.py \
-    && python e_signature_acceptance_test.py \
-    && python image_pdf_quality_acceptance_test.py \
-    && python hard_format_acceptance_test.py \
-    && python full_acceptance_test.py \
-    && python processing_quality_acceptance_test.py
+RUN set -eu; \
+    python -c "from app.main import app; assert app.title == 'AJN PDF Conversion API'; print('PASS: FastAPI application import')"; \
+    python conversion_contract_audit.py; \
+    uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 1 --proxy-headers > /tmp/ajn-build-uvicorn.log 2>&1 & \
+    server_pid=$!; \
+    trap 'kill "$server_pid" 2>/dev/null || true' EXIT INT TERM; \
+    attempt=0; \
+    until curl --fail --silent http://127.0.0.1:8000/ready >/dev/null 2>&1; do \
+        attempt=$((attempt + 1)); \
+        if [ "$attempt" -ge 60 ]; then \
+            echo 'AJN PDF build-time FastAPI server did not become ready.'; \
+            cat /tmp/ajn-build-uvicorn.log; \
+            exit 1; \
+        fi; \
+        sleep 1; \
+    done; \
+    python capability_audit.py; \
+    kill "$server_pid"; \
+    wait "$server_pid" 2>/dev/null || true; \
+    trap - EXIT INT TERM; \
+    python api_v1_contract_test.py; \
+    python ocr_language_gate.py; \
+    python ocr_multilingual_acceptance_test.py; \
+    python ocr_deep_acceptance_test.py; \
+    python ocr_selected_acceptance_test.py; \
+    python e_signature_acceptance_test.py; \
+    python image_pdf_quality_acceptance_test.py; \
+    python hard_format_acceptance_test.py; \
+    python full_acceptance_test.py; \
+    python processing_quality_acceptance_test.py
 
 CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT} --workers 1 --proxy-headers"]
