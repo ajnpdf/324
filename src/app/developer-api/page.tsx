@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import type { LucideIcon } from 'lucide-react';
 import Link from 'next/link';
 import { Braces, FileKey2, FileSignature, ScanText, ShieldCheck } from 'lucide-react';
-import { AppFrame } from '@/components/app-frame';
+import { Navbar } from '@/components/landing/navbar';
+import { MainFooter } from '@/components/landing/main-footer';
 
 export const metadata: Metadata = {
   title: 'Developer API | AJN PDF',
@@ -46,7 +47,8 @@ const signCurl = `curl -X POST "$AJN_API_BASE/api/v1/sign/electronic" \\
 
 export default function DeveloperApiPage() {
   return (
-    <AppFrame>
+    <div className="ajn-page-shell">
+      <Navbar />
       <main className="mx-auto w-full max-w-6xl px-4 pb-20 pt-28 sm:px-6">
         <section className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-[0_20px_60px_rgba(30,62,130,.08)] sm:p-10">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
@@ -90,6 +92,7 @@ export default function DeveloperApiPage() {
           <p className="mt-3 text-sm font-semibold leading-7 text-violet-900">The R16 signing endpoint creates an evidence-backed <strong>electronic signature</strong>: visual mark, signer identity, explicit consent, intent, evidence ID, SHA-256 hashes and embedded evidence. It does not claim a certificate-backed PAdES digital signature, CA trust, Aadhaar eSign, or government identity verification.</p>
         </section>
       </main>
-    </AppFrame>
+      <MainFooter />
+    </div>
   );
 }
