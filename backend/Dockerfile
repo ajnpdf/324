@@ -74,7 +74,7 @@ RUN set -eu; \
         sleep 1; \
     done; \
     python capability_audit.py; \
-    kill "$server_pid"; \
+    kill "$server_pid" 2>/dev/null || true; \
     wait "$server_pid" 2>/dev/null || true; \
     trap - EXIT INT TERM; \
     python api_v1_contract_test.py; \
