@@ -3,13 +3,15 @@
 import React from 'react';
 import Link from 'next/link';
 import { CheckCircle2, Cloud, CloudDownload, CloudUpload, ShieldCheck, Wrench } from 'lucide-react';
-import { AppFrame } from '@/components/app-frame';
+import { Navbar } from '@/components/landing/navbar';
+import { MainFooter } from '@/components/landing/main-footer';
 import { cloudProviderStatuses } from '@/lib/cloud-integrations';
 
 export default function IntegrationsPage() {
   const providers = cloudProviderStatuses();
   return (
-    <AppFrame>
+    <div className="ajn-page-shell">
+      <Navbar />
       <main className="mx-auto w-full max-w-5xl px-4 pb-20 pt-28 sm:px-6">
         <section className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-[0_20px_60px_rgba(30,62,130,.08)] sm:p-10">
           <div className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1.5 text-xs font-black text-blue-700"><Cloud className="h-4 w-4" />Cloud files</div>
@@ -40,6 +42,7 @@ export default function IntegrationsPage() {
 
         <div className="mt-8 text-center"><Link href="/developer-api" className="text-sm font-black text-blue-700 hover:underline">Developer API documentation</Link></div>
       </main>
-    </AppFrame>
+      <MainFooter />
+    </div>
   );
 }
