@@ -51,7 +51,7 @@ def _make_image(path: Path, text: str, font: ImageFont.FreeTypeFont) -> None:
     image = Image.new("RGB", (2100, 520), "white")
     draw = ImageDraw.Draw(image)
     draw.text((90, 120), text, fill="black", font=font)
-    draw.line((90, 260), (2000, 260), fill=(230, 230, 230), width=2)
+    draw.line([(90, 260), (2000, 260)], fill=(230, 230, 230), width=2)
     image.save(path, "PNG", optimize=True)
     image.close()
 
