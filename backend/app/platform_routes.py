@@ -12,7 +12,7 @@ from fastapi import APIRouter, File, Form, Header, HTTPException, UploadFile
 from fastapi.responses import FileResponse, JSONResponse, Response
 from starlette.background import BackgroundTask
 
-from .api_access import APIAccessError, APIPrincipal, APIRateState, authenticate_api_key, configuration_status, enforce_api_rate_limit
+from .api_access import APIAccessError, APIPrincipal, APIRateState, authenticate_api_key, configuration_status, enforce_api_rate_limit, require_api_scope
 from .conversion_engine import SPECS, list_backend_tools, validate_input_file, validate_output_file
 
 
@@ -27,13 +27,29 @@ def _api_error(exc: APIAccessError) -> HTTPException:
     return HTTPException(status_code=exc.status_code, detail=exc.message, headers=headers)
 
 
-async def _guard(raw_key: str | None, scope: str) -> tuple[APIPrincipal, APIRateState]:
+async def _guard_scopes(raw_key: str | None, scopes: tuple[str, ...]) -> tuple[APIPrincipal, APIRateState]:
+    primary_scope = scopes[0] if scopes else ""
     try:
-        principal = authenticate_api_key(raw_key, scope)
+        principal = authenticate_api_key(raw_key, primary_scope)
+        for scope in scopes[1:]:
+            require_api_scope(principal, scope)
         state = await enforce_api_rate_limit(principal)
         return principal, state
     except APIAccessError as exc:
         raise _api_error(exc) from exc
+
+
+async def _guard(raw_key: str | None, scope: str) -> tuple[APIPrincipal, APIRateState]:
+    return await _guard_scopes(raw_key, (scope,))
+
+
+def _conversion_required_scopes(tool_id: str) -> tuple[str, ...]:
+    spec = SPECS.get(tool_id)
+    if spec is None:
+        return ("convert",)
+    if spec.processor.startswith("ocr_"):
+        return ("convert", "ocr")
+    return ("convert",)
 
 
 def _api_headers(principal: APIPrincipal, rate: APIRateState) -> dict[str, str]:
@@ -266,6 +282,7 @@ async def api_v1_capabilities(
         generic_convertible = tool_id in SPECS
         tool["api_v1_convertible"] = generic_convertible
         tool["api_v1_route"] = f"/api/v1/convert/{tool_id}" if generic_convertible else None
+        tool["api_v1_required_scopes"] = list(_conversion_required_scopes(tool_id)) if generic_convertible else []
         tools.append(tool)
     return JSONResponse(
         {
@@ -275,6 +292,8 @@ async def api_v1_capabilities(
             "total_conversion_tools": sum(1 for tool in tools if tool["api_v1_convertible"]),
             "website_only_capabilities": [tool["id"] for tool in tools if not tool["api_v1_convertible"]],
             "ocr_analysis": {
+                "route": "/api/v1/ocr/analyze",
+                "scope": "ocr",
                 "languages": ["eng", "tel", "hin", "tam", "kan", "mal"],
                 "combined_languages": True,
                 "layout_json": True,
@@ -304,7 +323,7 @@ async def api_v1_convert(
     source_url: Annotated[str, Form(max_length=2048)] = "",
     x_ajn_api_key: Annotated[str | None, Header(alias="X-AJN-API-Key")] = None,
 ):
-    principal, rate = await _guard(x_ajn_api_key, "convert")
+    principal, rate = await _guard_scopes(x_ajn_api_key, _conversion_required_scopes(tool_id))
     from .main import convert_file
     response = await convert_file(tool_id, files, options_json, output_name, source_url)
     return _apply_api_headers(response, principal, rate)
