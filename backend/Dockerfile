@@ -15,6 +15,8 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     AJN_ANALYTICS_DB=/tmp/ajn_analytics.sqlite3 \
     AJN_PUBLIC_MEDIA_DB=/tmp/ajn_public_media.sqlite3 \
     AJN_PUBLIC_MEDIA_ROOT=/tmp/public_media \
+    AJN_PUBLIC_API_ENABLED=false \
+    AJN_PUBLIC_API_RATE_PER_MINUTE=30 \
     XDG_RUNTIME_DIR=/tmp/runtime-ajn \
     QT_QPA_PLATFORM=offscreen \
     QT_QUICK_BACKEND=software \
@@ -45,9 +47,9 @@ RUN python -c "import fitz,pikepdf,pytesseract,docx,openpyxl,PIL,reportlab,ebook
     && pdftoppm -v
 
 COPY app ./app
-COPY smoke_test.py capability_audit.py conversion_contract_audit.py full_acceptance_test.py processing_quality_acceptance_test.py image_pdf_quality_acceptance_test.py hard_format_acceptance_test.py ocr_language_gate.py ocr_multilingual_acceptance_test.py ./
+COPY smoke_test.py capability_audit.py conversion_contract_audit.py full_acceptance_test.py processing_quality_acceptance_test.py image_pdf_quality_acceptance_test.py hard_format_acceptance_test.py ocr_language_gate.py ocr_multilingual_acceptance_test.py api_v1_contract_test.py ocr_deep_acceptance_test.py ocr_selected_acceptance_test.py e_signature_acceptance_test.py ./
 RUN python -m compileall -q app \
-    && python -m py_compile capability_audit.py conversion_contract_audit.py full_acceptance_test.py processing_quality_acceptance_test.py image_pdf_quality_acceptance_test.py hard_format_acceptance_test.py ocr_language_gate.py ocr_multilingual_acceptance_test.py
+    && python -m py_compile capability_audit.py conversion_contract_audit.py full_acceptance_test.py processing_quality_acceptance_test.py image_pdf_quality_acceptance_test.py hard_format_acceptance_test.py ocr_language_gate.py ocr_multilingual_acceptance_test.py api_v1_contract_test.py ocr_deep_acceptance_test.py ocr_selected_acceptance_test.py e_signature_acceptance_test.py
 
 RUN useradd --uid 10001 --user-group --create-home --home-dir /home/ajn --shell /usr/sbin/nologin ajn \
     && mkdir -p /tmp/public_media /tmp/ajn-work /tmp/runtime-ajn \
@@ -55,14 +57,35 @@ RUN useradd --uid 10001 --user-group --create-home --home-dir /home/ajn --shell 
     && chmod 700 /tmp/runtime-ajn
 
 USER 10001
-RUN python -c "from app.main import app; assert app.title == 'AJN PDF Conversion API'; print('PASS: FastAPI application import')" \
-    && python conversion_contract_audit.py \
-    && python capability_audit.py \
-    && python ocr_language_gate.py \
-    && python ocr_multilingual_acceptance_test.py \
-    && python image_pdf_quality_acceptance_test.py \
-    && python hard_format_acceptance_test.py \
-    && python full_acceptance_test.py \
-    && python processing_quality_acceptance_test.py
+RUN set -eu; \
+    python -c "from app.main import app; assert app.title == 'AJN PDF Conversion API'; print('PASS: FastAPI application import')"; \
+    python conversion_contract_audit.py; \
+    uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 1 --proxy-headers > /tmp/ajn-build-uvicorn.log 2>&1 & \
+    server_pid=$!; \
+    trap 'kill "$server_pid" 2>/dev/null || true' EXIT INT TERM; \
+    attempt=0; \
+    until curl --fail --silent http://127.0.0.1:8000/ready >/dev/null 2>&1; do \
+        attempt=$((attempt + 1)); \
+        if [ "$attempt" -ge 60 ]; then \
+            echo 'AJN PDF build-time FastAPI server did not become ready.'; \
+            cat /tmp/ajn-build-uvicorn.log; \
+            exit 1; \
+        fi; \
+        sleep 1; \
+    done; \
+    python capability_audit.py; \
+    kill "$server_pid" 2>/dev/null || true; \
+    wait "$server_pid" 2>/dev/null || true; \
+    trap - EXIT INT TERM; \
+    python api_v1_contract_test.py; \
+    python ocr_language_gate.py; \
+    python ocr_multilingual_acceptance_test.py; \
+    python ocr_deep_acceptance_test.py; \
+    python ocr_selected_acceptance_test.py; \
+    python e_signature_acceptance_test.py; \
+    python image_pdf_quality_acceptance_test.py; \
+    python hard_format_acceptance_test.py; \
+    python full_acceptance_test.py; \
+    python processing_quality_acceptance_test.py
 
 CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT} --workers 1 --proxy-headers"]

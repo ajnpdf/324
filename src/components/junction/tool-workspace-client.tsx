@@ -72,11 +72,11 @@ const TOOL_COMPONENTS: Record<string, any> = {
   'image-reducer': dynamic(() => import('./ReduceImage'), { ssr: false }),
   'image-resizer': dynamic(() => import('./ResizeImage'), { ssr: false }),
 
-  // OCR
+  // OCR and signing
   'ocr-advanced': dynamic(() => import('./OcrAdvanced'), { ssr: false }),
   'ocr-scanner': dynamic(() => import('./OcrScanner'), { ssr: false }),
   'ocr-searchable': dynamic(() => import('./SearchablePdf'), { ssr: false }),
-  'sign-pdf': dynamic(() => import('./SignPdf'), { ssr: false }),
+  'sign-pdf': dynamic(() => import('./SignPdfPro'), { ssr: false }),
 
   // Other local utilities
   'pdf-zip-extract': dynamic(() => import('./PdfToZip'), { ssr: false }),

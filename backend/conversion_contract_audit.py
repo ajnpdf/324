@@ -9,6 +9,7 @@ from app.processing_quality import run_conversion
 
 EXPECTED_RUNNER_PARAMETERS = ["spec", "files", "output", "options", "workdir", "source_url"]
 TOOL_ID_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+SOURCE_URL_PROCESSORS = {"url_to_pdf"}
 
 
 def _required_parameter_names(function) -> list[str]:
@@ -49,8 +50,14 @@ def main() -> None:
             errors.append(f"{registry_id}: key does not match spec.tool_id={spec.tool_id}")
         if not TOOL_ID_RE.fullmatch(registry_id):
             errors.append(f"{registry_id}: invalid public tool id")
-        if not spec.input_extensions:
+
+        processor = str(spec.processor or "").strip()
+        is_source_url_processor = processor in SOURCE_URL_PROCESSORS
+        if not spec.input_extensions and not is_source_url_processor:
             errors.append(f"{registry_id}: no input extensions")
+        if is_source_url_processor and spec.input_extensions:
+            errors.append(f"{registry_id}: source-URL processor must not require upload extensions")
+
         for extension in spec.input_extensions:
             if not extension.startswith(".") or extension != extension.lower():
                 errors.append(f"{registry_id}: malformed input extension {extension!r}")
@@ -58,7 +65,7 @@ def main() -> None:
             errors.append(f"{registry_id}: malformed output extension {spec.output_extension!r}")
         if "/" not in spec.output_mime:
             errors.append(f"{registry_id}: malformed output MIME {spec.output_mime!r}")
-        if not str(spec.processor or "").strip():
+        if not processor:
             errors.append(f"{registry_id}: empty processor")
         available, reason = legacy.tool_available(spec)
         if not isinstance(available, bool):

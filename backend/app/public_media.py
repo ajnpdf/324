@@ -169,3 +169,7 @@ def delete_post(post_id: int, x_ajn_admin_token: Annotated[str|None,Header()]=No
         db.execute('DELETE FROM public_posts WHERE id=?',(post_id,)); db.commit()
     (MEDIA_ROOT/row['image_filename']).unlink(missing_ok=True); (MEDIA_ROOT/row['thumbnail_filename']).unlink(missing_ok=True)
     return {'deleted':True,'id':post_id}
+
+
+from .platform_routes import router as platform_router  # noqa: E402
+router.include_router(platform_router)
