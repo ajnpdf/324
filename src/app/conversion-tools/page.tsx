@@ -4,11 +4,11 @@ import { CategoryDirectory } from '@/components/landing/category-directory';
 import { SITE_URL } from '@/lib/seo-config';
 
 export const metadata: Metadata = {
-  title: 'Free Online File Converter & OCR Tools',
-  description: 'Convert PDFs, office documents, images, eBooks, email files and scanned documents with clear requirements, OCR options and downloadable output.',
+  title: 'Free Online File Converter Tools',
+  description: 'Convert PDFs, office documents, images, eBooks, email files and supported documents with clear requirements and downloadable output.',
   alternates: { canonical: '/conversion-tools' },
-  keywords: ['file converter online', 'PDF converter', 'OCR online', 'document converter', 'scanned PDF converter'],
-  openGraph: { title: 'Free Online File Converter & OCR Tools | AJN PDF', description: 'Focused PDF, document, image and OCR conversion workflows.', url: '/conversion-tools', images: ['/og-image.jpg'] },
+  keywords: ['file converter online', 'PDF converter', 'document converter', 'document converter online'],
+  openGraph: { title: 'Free Online File Converter Tools | AJN PDF', description: 'Focused PDF, document and image conversion workflows.', url: '/conversion-tools', images: ['/og-image.jpg'] },
 };
 
 export default function Page() {

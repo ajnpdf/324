@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowRight, BookOpen, Clock, FileText, FileType2, ImageIcon, ScanText, ShieldCheck, Shrink, Accessibility } from 'lucide-react';
+import { ArrowRight, BookOpen, Clock, FileText, FileType2, ImageIcon, ShieldCheck, Shrink, Accessibility } from 'lucide-react';
 import { Navbar } from '@/components/landing/navbar';
 import { MainFooter } from '@/components/landing/main-footer';
 
@@ -28,24 +28,6 @@ const articles = [
     title: 'PDF vs DOCX: when to use each format',
     desc: 'Choose PDF for stable presentation and DOCX for active editing, with realistic conversion expectations.',
     tag: 'Formats', readTime: '5 min', icon: FileType2,
-  },
-  {
-    href: '/blog/how-ocr-works',
-    title: 'How OCR works on scanned PDFs and images',
-    desc: 'Understand text recognition, language selection, scan quality and why important OCR output needs review.',
-    tag: 'OCR', readTime: '6 min', icon: ScanText,
-  },
-  {
-    href: '/blog/improve-ocr-indian-languages',
-    title: 'Improve OCR for Telugu, Hindi and Indian-language scans',
-    desc: 'Use the correct script language, clearer source images and careful review for more useful OCR output.',
-    tag: 'OCR quality', readTime: '7 min', icon: ScanText,
-  },
-  {
-    href: '/blog/scanned-pdf-to-word',
-    title: 'Convert a scanned PDF to editable Word text',
-    desc: 'Learn why OCR is required for image-only pages and what to review after converting recognized text to Word.',
-    tag: 'Conversion', readTime: '6 min', icon: FileType2,
   },
   {
     href: '/blog/why-pdf-compression-limited',
@@ -76,12 +58,6 @@ const articles = [
     title: 'PDF passwords and AES-256 explained',
     desc: 'Learn about open passwords, owner permissions and authorized password removal without bypass claims.',
     tag: 'Security', readTime: '7 min', icon: ShieldCheck,
-  },
-  {
-    href: '/blog/ocr-digital-archiving',
-    title: 'OCR for scanned documents and archives',
-    desc: 'Improve scan quality, select a language and review extracted text before important archival use.',
-    tag: 'OCR', readTime: '6 min', icon: ScanText,
   },
   {
     href: '/blog/best-free-pdf-editor',

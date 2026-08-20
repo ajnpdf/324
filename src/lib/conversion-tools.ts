@@ -1,19 +1,4 @@
-import {
-  BookOpen,
-  Camera,
-  Code2,
-  FileArchive,
-  FileImage,
-  FileJson,
-  FileSpreadsheet,
-  FileText,
-  Globe2,
-  ImageIcon,
-  Mail,
-  PenTool,
-  Presentation,
-  Scan,
-} from 'lucide-react';
+import { BookOpen, Code2, FileArchive, FileImage, FileJson, FileSpreadsheet, FileText, Globe2, ImageIcon, Mail, Presentation } from 'lucide-react';
 import type { ServiceTool } from './tools-data';
 
 const commonBenefits = ['Clear input validation', 'Automatic output download', 'Temporary files deleted after processing'];
@@ -46,16 +31,6 @@ function tool(
 
 export const CONVERSION_TOOLS: ServiceTool[] = [
   // OCR and scanned-document conversions
-  tool('scanned-pdf-to-text', 'Scanned PDF to Text', 'Recognize text from scanned PDF pages and download a TXT file.', Scan, 'pdf', ['scanned pdf to text', 'ocr pdf', 'extract scan text'], 'OCR accuracy depends on scan quality, language and page layout.'),
-  tool('scanned-pdf-to-word', 'Scanned PDF to Word', 'Recognize scanned pages and create an editable DOCX document.', Scan, 'pdf', ['scanned pdf to word', 'ocr docx', 'scan to word'], 'Creates editable text and does not recreate every layout element.'),
-  tool('scanned-pdf-to-searchable-pdf', 'Scanned PDF to Searchable PDF', 'Add a searchable OCR text layer to scanned PDF pages.', Scan, 'pdf', ['searchable pdf', 'ocr searchable pdf', 'scan pdf ocr'], 'Review recognized text when scan quality is low.'),
-  tool('image-to-searchable-pdf', 'Image to Searchable PDF', 'Turn one or more document images into a searchable PDF.', Scan, 'img', ['image to searchable pdf', 'ocr image pdf', 'searchable scan'], 'OCR accuracy depends on image clarity and selected language.'),
-  tool('image-to-text', 'Image to Text', 'Extract printed text from JPG, PNG and other supported images.', ImageIcon, 'img', ['image to text', 'ocr image', 'photo text extraction'], 'OCR accuracy depends on image clarity and selected language.'),
-  tool('image-to-word', 'Image to Word', 'Recognize image text and create an editable DOCX document.', ImageIcon, 'img', ['image to word', 'ocr image docx', 'photo to word'], 'The result contains recognized text rather than a pixel-perfect layout.'),
-  tool('camera-scan-to-pdf', 'Camera Scan to PDF', 'Clean camera photos and combine them into a readable PDF.', Camera, 'img', ['camera scan to pdf', 'photo scanner pdf', 'mobile scan'], 'Automatic cleanup may not correct every perspective issue.'),
-  tool('receipt-to-pdf', 'Receipt to PDF', 'Improve receipt photos and combine them into a PDF record.', Camera, 'img', ['receipt to pdf', 'scan receipt', 'expense receipt pdf'], 'Best results require clear, well-lit receipt photos.'),
-  tool('document-scanner-to-pdf', 'Document Scanner to PDF', 'Create a clean PDF from photographed paper documents.', Scan, 'img', ['document scanner pdf', 'scan document online', 'photo document pdf'], 'Automatic cleanup is optimized for clear document photos.'),
-  tool('handwriting-image-to-text', 'Handwriting Image to Text', 'Attempt to recognize handwritten text from an image.', PenTool, 'img', ['handwriting to text', 'handwritten ocr', 'notes image text'], 'Handwriting recognition is best-effort and less accurate than printed-text OCR.'),
 
   // Image -> PDF
   tool('image-to-pdf', 'Image to PDF', 'Combine supported image formats into one PDF document.', FileImage, 'img', ['image to pdf', 'photos to pdf', 'multiple images pdf']),

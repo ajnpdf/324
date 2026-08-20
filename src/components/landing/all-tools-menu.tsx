@@ -15,12 +15,12 @@ import { scoreToolSearch } from '@/lib/tool-search';
 
 const POPULAR_IDS = [
   'merge-pdf', 'compress-pdf', 'pdf-to-word', 'word-to-pdf', 'jpg-to-pdf',
-  'pdf-to-jpg', 'split-pdf', 'scanned-pdf-to-text', 'image-to-pdf', 'protect-pdf',
+  'pdf-to-jpg', 'split-pdf', 'image-to-pdf', 'protect-pdf',
 ];
 
 const GROUP_ORDER = [
   'Popular', 'Organize PDF', 'Compress & Optimize', 'Convert from PDF', 'Convert to PDF',
-  'OCR & Scan', 'Image Tools', 'Edit & Sign', 'Security', 'Documents', 'More Tools',
+  'Image Tools', 'Edit & Sign', 'Security', 'Documents', 'More Tools',
 ] as const;
 
 type GroupName = (typeof GROUP_ORDER)[number];
@@ -31,7 +31,6 @@ function groupFor(tool: ServiceTool): GroupName {
   if (id === 'compress-pdf' || id === 'repair-pdf' || id.includes('reducer') || id.includes('resizer')) return 'Compress & Optimize';
   if (id.startsWith('pdf-to-') || id === 'pdf-text' || id === 'extract-images' || id === 'pdf-zip-extract') return 'Convert from PDF';
   if (id.endsWith('-to-pdf') || ['image-to-pdf', 'jpg-to-pdf', 'jpeg-to-pdf', 'png-to-pdf'].includes(id)) return 'Convert to PDF';
-  if (/(ocr|scan|searchable|handwriting|receipt)/.test(id)) return 'OCR & Scan';
   if (tool.cat === 'img' || /(image|photo|jpg|jpeg|png|webp|tiff|bmp|gif|svg|heic|avif)/.test(id)) return 'Image Tools';
   if (/(merge|split|organize|delete-pdf-pages|page-number|flatten|rotate-pdf|crop-pdf)/.test(id)) return 'Organize PDF';
   if (/(sign|watermark|add-text|add-image|metadata|compare)/.test(id)) return 'Edit & Sign';

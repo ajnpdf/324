@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Layout, Scissors, Trash2, LayoutGrid, ImageIcon, FileText, FileSpreadsheet, Code2, Presentation, FileDigit, Stamp, PenTool, BrainCircuit, Wrench, Search, Layers, FileEdit } from 'lucide-react';
+import { ChevronDown, Layout, Scissors, Trash2, LayoutGrid, ImageIcon, FileText, FileSpreadsheet, Code2, Presentation, FileDigit, Stamp, PenTool, Wrench, Layers, FileEdit } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '../../lib/utils';
 import { BUILD_PUBLIC_TOOL_IDS, BUILD_PUBLIC_TOOLS } from '@/lib/build-public-tools';
@@ -55,9 +55,7 @@ const pdfCategories = [
   {
     title: "INTELLIGENCE",
     tools: [
-      { name: "OCR Tools", href: "/ocr-advanced", icon: BrainCircuit, color: "text-purple-600" },
       { name: "Repair PDF", href: "/repair-pdf", icon: Wrench, color: "text-red-500" },
-      { name: "Make Searchable", href: "/scanned-pdf-to-searchable-pdf", icon: Search, color: "text-blue-500" },
     ]
   }
 ];

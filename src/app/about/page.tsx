@@ -42,7 +42,7 @@ export default function AboutPage() {
               A practical document toolkit built around clarity.
             </h1>
             <p className="mt-6 max-w-2xl text-lg font-medium leading-8 text-muted-foreground">
-              AJN PDF brings PDF, document, OCR and image workflows into one focused web workspace designed for fast everyday file tasks.
+              AJN PDF brings PDF, document and image workflows into one focused web workspace designed for fast everyday file tasks.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link href="/pdf-tools" className="ajn-primary-button">
@@ -95,7 +95,7 @@ export default function AboutPage() {
                 Practical guides for the workflows people use most.
               </h2>
               <p className="mt-4 max-w-3xl text-sm font-medium leading-7 text-muted-foreground">
-                Browse a curated guide library for PDF basics, document conversion, OCR and scans, image workflows, security, limits and troubleshooting.
+                Browse a curated guide library for PDF basics, document conversion and image workflows, security, limits and troubleshooting.
               </p>
             </div>
             <Link href="/discover/guides" className="ajn-primary-button">

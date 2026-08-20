@@ -1,4 +1,4 @@
-import { Layout, Shrink, FileText, Scissors, Maximize, Presentation, FileSpreadsheet, LayoutGrid, Trash2, RotateCw, Crop, ImageIcon, Stamp, Code2, FileDigit, FileArchive, FileEdit, Sparkles, ShieldCheck, Wrench, Diff, Layers, Scan, Search, FileCode, Wand2, Maximize2, Smartphone, ArchiveRestore, Repeat, TabletSmartphone, Smile, FileJson, Brain, Type, PenTool, FolderOpen, Camera, Tag, RefreshCcw, Captions } from 'lucide-react';
+import { Layout, Shrink, FileText, Scissors, Maximize, Presentation, FileSpreadsheet, LayoutGrid, Trash2, RotateCw, Crop, ImageIcon, Stamp, Code2, FileDigit, FileArchive, FileEdit, Sparkles, ShieldCheck, Wrench, Diff, Layers, FileCode, Wand2, Maximize2, Smartphone, ArchiveRestore, Repeat, TabletSmartphone, Smile, FileJson, Brain, Type, PenTool, FolderOpen, Tag, RefreshCcw, Captions } from 'lucide-react';
 import { isToolPublic } from './tool-policy';
 import { CONVERSION_TOOLS } from './conversion-tools';
 
@@ -365,31 +365,7 @@ export const ALL_TOOLS: ServiceTool[] = [
   },
 
   // --- 5. SMART & AI TOOLS ---
-  {
-    id: 'ocr-advanced', name: 'OCR Text Extraction', desc: 'Extract text from scanned PDFs and images with selectable OCR settings.',
-    icon: Scan, tag: 'ocr', cat: 'ai', mode: 'AI', color: 'text-purple-600', perfIndex: 'OCR',
-    benefits: ["6 OCR languages", "Instant copy"],
-    useCases: ["Digitizing notes"],
-    instructions: ["Upload file", "Identify", "Copy"],
-    keywords: ["ocr", "text recognition", "scanned", "handwriting", "read text"]
-  },
-  {
-    id: 'ocr-scanner', name: 'OCR Scanner', desc: 'Read text using your phone camera in real-time.',
-    icon: Camera, tag: 'ai', cat: 'ai', mode: 'AI', color: 'text-emerald-600', perfIndex: 'Live',
-    benefits: ["Live camera", "Mobile optimized"],
-    useCases: ["Scanning books"],
-    instructions: ["Point camera", "Capture", "Copy text"],
-    keywords: ["scan", "camera", "live ocr", "mobile scan"]
-  },
-  {
-    id: 'ocr-searchable', name: 'Make Searchable', desc: 'Make scanned PDFs searchable with a text layer.',
-    icon: Search, tag: 'ai', cat: 'ai', mode: 'AI', color: 'text-blue-500', perfIndex: 'Deep',
-    benefits: ["Enable Ctrl+F", "Preserve visual"],
-    useCases: ["Archiving docs"],
-    instructions: ["Upload scan", "Index", "Download"],
-    keywords: ["searchable", "index", "layer", "ctrl f"]
-  },
-  {
+        {
     id: 'sign-pdf', name: 'Sign PDF', desc: 'Place a visual electronic signature on a PDF document.',
     icon: PenTool, tag: 'edit', cat: 'pdf', mode: 'PDF', color: 'text-blue-600', perfIndex: 'Auth',
     benefits: ["Easy signatures", "Visual signing"],

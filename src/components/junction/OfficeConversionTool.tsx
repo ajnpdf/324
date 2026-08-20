@@ -38,10 +38,8 @@ export default function OfficeConversionTool({ toolId }: { toolId: string }) {
   const [exportNotes, setExportNotes] = useState(false);
   const [pptMode, setPptMode] = useState<'preserve'|'editable'>('preserve');
   const [dpi, setDpi] = useState(160);
-  const [scannedFallback, setScannedFallback] = useState(false);
   const [allowUnstructured, setAllowUnstructured] = useState(false);
   const [includeImages, setIncludeImages] = useState(true);
-  const [tableLanguage, setTableLanguage] = useState('eng');
 
   useEffect(() => {
     let active = true;
@@ -69,11 +67,11 @@ export default function OfficeConversionTool({ toolId }: { toolId: string }) {
     if (EXCEL_TO_PDF.has(toolId)) return fitMode === 'preserve' ? 'Preserve workbook print settings' : 'Fit each sheet to one PDF page';
     if (PPT_TO_PDF.has(toolId)) return exportNotes ? 'Slides plus notes pages' : 'Slides only';
     if (PDF_TO_PPT.has(toolId)) return pptMode === 'preserve' ? 'Preserve appearance · page image slides' : 'Editable reconstruction · text and images';
-    if (PDF_TO_TABLE.has(toolId)) return scannedFallback ? 'Structured table detection + OCR fallback' : 'Structured table detection only';
+    if (PDF_TO_TABLE.has(toolId)) return 'Structured table detection only';
     if (PDF_TO_WORD.has(toolId)) return includeImages ? 'Layout-aware Word with images' : 'Layout-aware Word without images';
     if (OFFICE_TO_PDF.has(toolId)) return 'Format-specific LibreOffice PDF export with post-conversion validation';
     return 'Fidelity-first conversion';
-  }, [toolId, fitMode, exportNotes, pptMode, scannedFallback, includeImages]);
+  }, [toolId, fitMode, exportNotes, pptMode, includeImages]);
 
   if (!tool) return null;
 
@@ -103,10 +101,9 @@ export default function OfficeConversionTool({ toolId }: { toolId: string }) {
           export_notes: exportNotes,
           ppt_mode: pptMode,
           dpi,
-          scanned_table_fallback: scannedFallback,
+          scanned_table_fallback: false,
           allow_unstructured: allowUnstructured,
           include_images: includeImages,
-          language: tableLanguage,
         },
       });
       if (!converted.blob.size) throw new Error('Converter returned an empty result.');
@@ -182,15 +179,7 @@ export default function OfficeConversionTool({ toolId }: { toolId: string }) {
 
           {PDF_TO_TABLE.has(toolId) && (
             <>
-              <F label="Scanned tables">
-                <Pills
-                  opts={[{ label:'Digital tables only', value:'off' }, { label:'Use OCR fallback', value:'on' }]}
-                  val={scannedFallback ? 'on' : 'off'}
-                  onChange={value => setScannedFallback(value === 'on')}
-                />
-              </F>
-              {scannedFallback && <F label="OCR language"><select value={tableLanguage} onChange={event=>setTableLanguage(event.target.value)} style={IS}><option value="eng">English</option><option value="hin">Hindi</option><option value="tel">Telugu</option><option value="tam">Tamil</option><option value="kan">Kannada</option><option value="mal">Malayalam</option></select></F>}
-              <F label="No table detected">
+<F label="No table detected">
                 <Pills
                   opts={[{ label:'Stop safely', value:'stop' }, { label:'Allow line fallback', value:'allow' }]}
                   val={allowUnstructured ? 'allow' : 'stop'}

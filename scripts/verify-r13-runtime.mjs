@@ -78,7 +78,6 @@ const aliases = {
   '/tools/txt-pdf': '/txt-to-pdf',
   '/tools/smart-read': '/pdf-text',
   '/tools/pdf-ppt': '/pdf-to-powerpoint',
-  '/tools/ocr-searchable': '/scanned-pdf-to-searchable-pdf',
   '/tools/psd-pdf': '/psd-pdf',
 };
 

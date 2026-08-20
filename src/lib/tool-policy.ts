@@ -34,8 +34,6 @@ const limitedBrowser: Record<string, string> = {
   'ppt-word': 'Extracts slide text and notes; it does not reproduce slide design.',
   'html-pdf': 'Supports basic HTML content; complex external CSS and scripts are not guaranteed.',
   'pdf-epub': 'Creates a basic text-focused eBook and may not preserve advanced layout.',
-  'ocr-advanced': 'OCR accuracy depends on scan quality and language selection.',
-  'ocr-scanner': 'OCR accuracy depends on image quality; review extracted text before use.',
 };
 
 const legacyAliasIds = new Set([
@@ -47,7 +45,7 @@ const conversionBackendIds = new Set(CONVERSION_TOOLS.map((tool) => tool.id));
 const backendIds = new Set(['protect-pdf', 'unlock-pdf', 'repair-pdf', ...conversionBackendIds]);
 
 const hiddenIds = new Set([
-  'pdf-ppt', 'ocr-searchable', 'pdf-a', 'pdf-ua', 'smart-read', 'psd-pdf',
+  'pdf-ppt', 'pdf-a', 'pdf-ua', 'smart-read', 'psd-pdf',
   'upscale-image', 'remove-bg', 'blur-face',
 ]);
 
@@ -65,7 +63,7 @@ export function getToolPolicy(id: string): ToolPolicy {
     };
   }
   if (id in limitedBrowser) {
-    const visibleLimited = new Set(['compress-pdf', 'extract-images', 'heic-pdf', 'ocr-advanced', 'ocr-scanner']);
+    const visibleLimited = new Set(['compress-pdf', 'extract-images', 'heic-pdf', ]);
     return {
       maturity: 'limited', processingMode: 'browser', maxFiles: 1, maxFileSizeMb: 40,
       publicByDefault: visibleLimited.has(id), limitation: limitedBrowser[id],
@@ -73,7 +71,6 @@ export function getToolPolicy(id: string): ToolPolicy {
   }
   if (backendIds.has(id)) {
     const multiFileConversionIds = new Set([
-      'image-to-searchable-pdf', 'camera-scan-to-pdf', 'receipt-to-pdf', 'document-scanner-to-pdf',
       'image-to-pdf', 'jpg-to-pdf', 'jpeg-to-pdf', 'webp-to-pdf', 'tiff-to-pdf', 'bmp-to-pdf',
       'gif-to-pdf', 'svg-to-pdf', 'heic-to-pdf',
     ]);

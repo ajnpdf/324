@@ -164,7 +164,6 @@ export function Navbar() {
               return <Link key={id} href={toolPath(id)} data-analytics-id={`nav-${id}`} className="inline-flex h-10 items-center rounded-xl px-2.5 text-[12px] font-extrabold text-slate-700 transition-colors duration-150 hover:bg-blue-50 hover:text-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600 xl:px-3">{localized.name}</Link>;
             })}
             <ConvertMenu />
-            <Link href={toolPath('scanned-pdf-to-text')} data-analytics-id="nav-ocr-scan" className="inline-flex h-10 items-center rounded-xl px-2.5 text-[12px] font-extrabold text-slate-700 transition-colors duration-150 hover:bg-blue-50 hover:text-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600 xl:px-3">OCR &amp; Scan</Link>
           </nav>
 
           <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-1.5">
@@ -189,7 +188,6 @@ export function Navbar() {
                   })}
                 </div>
                 <Link href="/conversion-tools" onClick={() => setMobileOpen(false)} className="mt-1 flex min-h-11 items-center justify-between rounded-xl px-3 text-sm font-extrabold text-slate-800 hover:bg-blue-50 hover:text-blue-700">Convert PDF <ArrowRight className="h-4 w-4" /></Link>
-                <Link href={toolPath('scanned-pdf-to-text')} onClick={() => setMobileOpen(false)} className="flex min-h-11 items-center justify-between rounded-xl px-3 text-sm font-extrabold text-slate-800 hover:bg-blue-50 hover:text-blue-700">OCR &amp; Scan <ArrowRight className="h-4 w-4" /></Link>
                 <div className="my-2 border-t border-slate-200" />
                 {infoLinks.map((link) => <Link key={link.href} href={link.href} onClick={() => setMobileOpen(false)} className="flex min-h-11 items-center justify-between rounded-xl px-3 text-sm font-extrabold text-slate-700 hover:bg-slate-50 hover:text-slate-950">{t(link.key)}<ArrowRight className="h-4 w-4" /></Link>)}
                 <div className="mt-2 flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 lg:hidden"><span className="text-xs font-black text-slate-500">{t('common.language')}</span><LanguageSwitcher /></div>

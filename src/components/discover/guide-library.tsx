@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, BookOpen, FileOutput, FileText, Image as ImageIcon, ScanText, ShieldCheck } from 'lucide-react';
+import { ArrowRight, BookOpen, FileOutput, FileText, Image as ImageIcon, ShieldCheck } from 'lucide-react';
 import { BUILD_PUBLIC_TOOLS } from '@/lib/build-public-tools';
 import { toolPath } from '@/lib/tool-routes';
 
@@ -15,12 +15,6 @@ const clusters = [
     title: 'Document conversion',
     description: 'Move between PDF and editable office formats with clear expectations about layout and fidelity.',
     ids: ['pdf-to-word', 'word-to-pdf', 'pdf-to-excel', 'excel-to-pdf', 'doc-to-pdf', 'pdf-to-powerpoint'],
-  },
-  {
-    icon: ScanText,
-    title: 'OCR and scanned documents',
-    description: 'Extract or add searchable text while accounting for language, scan quality, skew and complex layouts.',
-    ids: ['scanned-pdf-to-text', 'scanned-pdf-to-searchable-pdf', 'ocr-scanner', 'image-to-text'],
   },
   {
     icon: ImageIcon,

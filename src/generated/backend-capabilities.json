@@ -2,10 +2,10 @@
   "schemaVersion": 2,
   "generatedAt": "2026-08-16T17:00:41.181580Z",
   "backendVersion": "3.1.0",
-  "toolCount": 78,
-  "availableCount": 78,
+  "toolCount": 68,
+  "availableCount": 68,
   "unavailableCount": 0,
-  "capabilityFingerprint": "101746815cd9a18f34453375b9dce720a06f07fe4eda9b2beccc4566a541a766",
+  "capabilityFingerprint": "0dfb4d98b4c43b3a9790ba674b5486af47395bbfacdd96140510ada3238ab00c",
   "tools": [
     {
       "id": "azw3-to-pdf",
@@ -38,30 +38,6 @@
       "processingMode": "temporary-server"
     },
     {
-      "id": "camera-scan-to-pdf",
-      "name": "Camera Scan to PDF",
-      "category": "ocr",
-      "inputExtensions": [
-        ".jpg",
-        ".jpeg",
-        ".png",
-        ".webp",
-        ".tif",
-        ".tiff",
-        ".bmp",
-        ".gif",
-        ".heic",
-        ".heif"
-      ],
-      "outputExtension": ".pdf",
-      "available": true,
-      "unavailableReason": null,
-      "limitation": "Automatic cleanup improves readability but may not correct every perspective issue.",
-      "multiFile": true,
-      "ocrLanguages": [],
-      "processingMode": "temporary-server"
-    },
-    {
       "id": "csv-to-pdf",
       "name": "CSV to PDF",
       "category": "document-to-pdf",
@@ -88,30 +64,6 @@
       "unavailableReason": null,
       "limitation": "Requires LibreOffice for legacy DOC conversion.",
       "multiFile": false,
-      "ocrLanguages": [],
-      "processingMode": "temporary-server"
-    },
-    {
-      "id": "document-scanner-to-pdf",
-      "name": "Document Scanner to PDF",
-      "category": "ocr",
-      "inputExtensions": [
-        ".jpg",
-        ".jpeg",
-        ".png",
-        ".webp",
-        ".tif",
-        ".tiff",
-        ".bmp",
-        ".gif",
-        ".heic",
-        ".heif"
-      ],
-      "outputExtension": ".pdf",
-      "available": true,
-      "unavailableReason": null,
-      "limitation": "Automatic cleanup is best for clear, well-lit document photos.",
-      "multiFile": true,
       "ocrLanguages": [],
       "processingMode": "temporary-server"
     },
@@ -192,38 +144,6 @@
       "processingMode": "temporary-server"
     },
     {
-      "id": "handwriting-image-to-text",
-      "name": "Handwriting Image to Text",
-      "category": "ocr",
-      "inputExtensions": [
-        ".jpg",
-        ".jpeg",
-        ".png",
-        ".webp",
-        ".tif",
-        ".tiff",
-        ".bmp",
-        ".gif",
-        ".heic",
-        ".heif"
-      ],
-      "outputExtension": ".txt",
-      "available": true,
-      "unavailableReason": null,
-      "limitation": "Handwriting recognition is best-effort and usually less accurate than printed text OCR.",
-      "multiFile": false,
-      "ocrLanguages": [
-        "eng",
-        "hin",
-        "kan",
-        "mal",
-        "osd",
-        "tam",
-        "tel"
-      ],
-      "processingMode": "temporary-server"
-    },
-    {
       "id": "heic-to-pdf",
       "name": "HEIC to PDF",
       "category": "image-to-pdf",
@@ -278,102 +198,6 @@
       "limitation": null,
       "multiFile": true,
       "ocrLanguages": [],
-      "processingMode": "temporary-server"
-    },
-    {
-      "id": "image-to-searchable-pdf",
-      "name": "Image to Searchable PDF",
-      "category": "ocr",
-      "inputExtensions": [
-        ".jpg",
-        ".jpeg",
-        ".png",
-        ".webp",
-        ".tif",
-        ".tiff",
-        ".bmp",
-        ".gif",
-        ".heic",
-        ".heif"
-      ],
-      "outputExtension": ".pdf",
-      "available": true,
-      "unavailableReason": null,
-      "limitation": "OCR accuracy depends on image quality and selected language.",
-      "multiFile": true,
-      "ocrLanguages": [
-        "eng",
-        "hin",
-        "kan",
-        "mal",
-        "osd",
-        "tam",
-        "tel"
-      ],
-      "processingMode": "temporary-server"
-    },
-    {
-      "id": "image-to-text",
-      "name": "Image to Text",
-      "category": "ocr",
-      "inputExtensions": [
-        ".jpg",
-        ".jpeg",
-        ".png",
-        ".webp",
-        ".tif",
-        ".tiff",
-        ".bmp",
-        ".gif",
-        ".heic",
-        ".heif"
-      ],
-      "outputExtension": ".txt",
-      "available": true,
-      "unavailableReason": null,
-      "limitation": "OCR accuracy depends on image quality and selected language.",
-      "multiFile": false,
-      "ocrLanguages": [
-        "eng",
-        "hin",
-        "kan",
-        "mal",
-        "osd",
-        "tam",
-        "tel"
-      ],
-      "processingMode": "temporary-server"
-    },
-    {
-      "id": "image-to-word",
-      "name": "Image to Word",
-      "category": "ocr",
-      "inputExtensions": [
-        ".jpg",
-        ".jpeg",
-        ".png",
-        ".webp",
-        ".tif",
-        ".tiff",
-        ".bmp",
-        ".gif",
-        ".heic",
-        ".heif"
-      ],
-      "outputExtension": ".docx",
-      "available": true,
-      "unavailableReason": null,
-      "limitation": "The Word file contains recognized text, not a pixel-perfect recreation.",
-      "multiFile": false,
-      "ocrLanguages": [
-        "eng",
-        "hin",
-        "kan",
-        "mal",
-        "osd",
-        "tam",
-        "tel"
-      ],
       "processingMode": "temporary-server"
     },
     {
@@ -1024,30 +848,6 @@
       "processingMode": "temporary-server"
     },
     {
-      "id": "receipt-to-pdf",
-      "name": "Receipt to PDF",
-      "category": "ocr",
-      "inputExtensions": [
-        ".jpg",
-        ".jpeg",
-        ".png",
-        ".webp",
-        ".tif",
-        ".tiff",
-        ".bmp",
-        ".gif",
-        ".heic",
-        ".heif"
-      ],
-      "outputExtension": ".pdf",
-      "available": true,
-      "unavailableReason": null,
-      "limitation": "Receipt cleanup is optimized for contrast and readability.",
-      "multiFile": true,
-      "ocrLanguages": [],
-      "processingMode": "temporary-server"
-    },
-    {
       "id": "repair-pdf",
       "name": "Repair PDF",
       "category": "pdf-security",
@@ -1075,75 +875,6 @@
       "limitation": "Rich formatting is simplified for a consistent PDF output.",
       "multiFile": false,
       "ocrLanguages": [],
-      "processingMode": "temporary-server"
-    },
-    {
-      "id": "scanned-pdf-to-searchable-pdf",
-      "name": "Scanned PDF to Searchable PDF",
-      "category": "ocr",
-      "inputExtensions": [
-        ".pdf"
-      ],
-      "outputExtension": ".pdf",
-      "available": true,
-      "unavailableReason": null,
-      "limitation": "The searchable layer is generated from OCR and should be reviewed for accuracy.",
-      "multiFile": false,
-      "ocrLanguages": [
-        "eng",
-        "hin",
-        "kan",
-        "mal",
-        "osd",
-        "tam",
-        "tel"
-      ],
-      "processingMode": "temporary-server"
-    },
-    {
-      "id": "scanned-pdf-to-text",
-      "name": "Scanned PDF to Text",
-      "category": "ocr",
-      "inputExtensions": [
-        ".pdf"
-      ],
-      "outputExtension": ".txt",
-      "available": true,
-      "unavailableReason": null,
-      "limitation": "OCR accuracy depends on scan quality, language and page layout.",
-      "multiFile": false,
-      "ocrLanguages": [
-        "eng",
-        "hin",
-        "kan",
-        "mal",
-        "osd",
-        "tam",
-        "tel"
-      ],
-      "processingMode": "temporary-server"
-    },
-    {
-      "id": "scanned-pdf-to-word",
-      "name": "Scanned PDF to Word",
-      "category": "ocr",
-      "inputExtensions": [
-        ".pdf"
-      ],
-      "outputExtension": ".docx",
-      "available": true,
-      "unavailableReason": null,
-      "limitation": "The result is editable text and does not recreate every original layout element.",
-      "multiFile": false,
-      "ocrLanguages": [
-        "eng",
-        "hin",
-        "kan",
-        "mal",
-        "osd",
-        "tam",
-        "tel"
-      ],
       "processingMode": "temporary-server"
     },
     {

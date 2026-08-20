@@ -44,7 +44,14 @@ check(
   'No stale unrs-resolver approval remains',
   Object.keys(allow).filter((key) => key.startsWith('unrs-resolver@')).every((key) => key === `unrs-resolver@${unrsLock}`)
 );
-check('Non-essential donation/postinstall scripts are explicitly denied', allow['core-js'] === false && allow['tesseract.js'] === false);
+check(
+  'Non-essential postinstall policy is safe and retired tesseract.js is absent',
+  allow['core-js'] === false &&
+  !Object.prototype.hasOwnProperty.call(allow, 'tesseract.js') &&
+  !Object.prototype.hasOwnProperty.call(pkg.dependencies || {}, 'tesseract.js') &&
+  !Object.prototype.hasOwnProperty.call(pkg.devDependencies || {}, 'tesseract.js') &&
+  !Object.prototype.hasOwnProperty.call(lock.packages || {}, 'node_modules/tesseract.js')
+);
 
 if (failures.length) {
   console.error('FAIL: dependency policy verification failed:');

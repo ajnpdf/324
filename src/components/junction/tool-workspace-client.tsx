@@ -73,10 +73,7 @@ const TOOL_COMPONENTS: Record<string, any> = {
   'image-reducer': dynamic(() => import('./ReduceImage'), { ssr: false }),
   'image-resizer': dynamic(() => import('./ResizeImage'), { ssr: false }),
 
-  // OCR and signing
-  'ocr-advanced': dynamic(() => import('./OcrAdvanced'), { ssr: false }),
-  'ocr-scanner': dynamic(() => import('./OcrScanner'), { ssr: false }),
-  'ocr-searchable': dynamic(() => import('./SearchablePdf'), { ssr: false }),
+  // Signing
   'sign-pdf': dynamic(() => import('./SignPdfStudio'), { ssr: false }),
 
   // Other local utilities

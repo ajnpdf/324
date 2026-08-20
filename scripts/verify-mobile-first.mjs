@@ -11,7 +11,7 @@ const checks=[
  ['homepage contains one primary search id',(home.match(/id="home-tool-search"/g)||[]).length===1&&!home.includes('mobile-home-tool-search')],
  ['mobile category controls remain sticky',home.includes('sticky top-[64px]')],
  ['mobile category state is accessible',home.includes('aria-pressed={activeCategory === category.id}')],
- ['intent filters include OCR, Edit, Organize and Security',['filters.ocr','filters.edit','filters.organize','filters.security'].every(v=>home.includes(v))],
+ ['intent filters include Edit, Organize and Security while OCR filter is retired',['filters.edit','filters.organize','filters.security'].every(v=>home.includes(v))&&!home.includes('filters.ocr')],
  ['phone tool grid uses one full-width card per row',grid.includes("'grid-cols-1 max-w-6xl mx-auto'")&&grid.includes("'grid-cols-1 md:grid-cols-2'")],
  ['phone cards stay compact and readable',/min-h-\[(?:7[8-9]|8[0-9])px\]/.test(grid)&&grid.includes('h-11 w-11')&&grid.includes('line-clamp-1')],
  ['desktop layout controls use Comfortable, Compact and List labels',grid.includes("home.layoutComfortable")&&grid.includes("home.layoutCompact")&&grid.includes("home.layoutList")&&grid.includes("localStorage.setItem('ajn-tool-view'")],

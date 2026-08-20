@@ -26,7 +26,6 @@ const categories = [
   { id: 'conversion', key: 'filters.conversion' },
   { id: 'image', key: 'filters.image' },
   { id: 'pdf', key: 'filters.pdf' },
-  { id: 'ocr', key: 'filters.ocr' },
   { id: 'edit', key: 'filters.edit' },
   { id: 'organize', key: 'filters.organize' },
   { id: 'security', key: 'filters.security' },

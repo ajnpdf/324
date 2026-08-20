@@ -4,9 +4,9 @@ const root=process.cwd(); const read=(f)=>fs.readFileSync(path.join(root,f),'utf
 const pass=(m)=>console.log(`PASS: ${m}`); const fail=(m)=>{failed=true;console.error(`FAIL: ${m}`)};
 const home=read('src/app/page.tsx'),hero=read('src/components/landing/hero.tsx'),mobile=read('src/components/landing/mobile-home-hero.tsx'),grid=read('src/components/landing/services-grid.tsx'),navbar=read('src/components/landing/navbar.tsx'),css=read('src/app/globals.css'),logic=read('src/lib/all-tools-logic.ts'),pkg=JSON.parse(read('package.json'));
 const en=JSON.parse(read('src/i18n/locales/en.json'));
-for(const id of ['all','conversion','image','pdf','ocr','edit','organize','security']) home.includes(`id: '${id}'`)?pass(`Category/intent ${id} wired`):fail(`Category/intent ${id} missing`);
+for(const id of ['all','conversion','image','pdf','edit','organize','security']) home.includes(`id: '${id}'`)?pass(`Category/intent ${id} wired`):fail(`Category/intent ${id} missing`);
 hero.includes("t('home.title1')")&&hero.includes("t('home.title2')")&&hero.includes("t('home.subtitle')")?pass('Localized hero heading/copy'):fail('Localized hero copy missing');
-String(en['home.title1']||'').includes('Free PDF Tools Online') && String(en['home.subtitle']||'').includes('100+ tools') ? pass('SEO-targeted PDF tools H1 and 100+ supporting value proposition present') : fail('R11 homepage value proposition missing');
+String(en['home.title1']||'').includes('Free PDF Tools Online') && String(en['home.subtitle']||'').includes('90+ tools') ? pass('SEO-targeted PDF tools H1 and truthful 90+ supporting value proposition present') : fail('Homepage value proposition missing');
 const marketing=String(en['home.subtitle']||'');
 !/browser|temporary processing|server mode/i.test(marketing)?pass('Hero avoids internal processing architecture language'):fail('Hero exposes internal processing architecture');
 const responsive=css+'\n'+hero+'\n'+mobile+'\n'+grid;
@@ -16,7 +16,7 @@ for(const label of ['Comfortable','Compact','List']) grid.includes(label)?pass(`
 grid.includes('SEARCH_EXPANSIONS')&&grid.includes('distanceAtMostTwo')?pass('Search aliases and typo tolerance present'):fail('Smart search ranking missing');
 for(const id of ['merge-pdf','split-pdf','compress-pdf']) navbar.includes(`id: '${id}'`)?pass(`Header quick tool ${id}`):fail(`Header quick tool missing ${id}`);
 navbar.includes('function ConvertMenu()')&&navbar.includes('Convert to PDF')&&navbar.includes('Convert from PDF')?pass('Header professional Convert menu'):fail('Header Convert menu missing');
-navbar.includes("toolPath('scanned-pdf-to-text')")?pass('Header OCR & Scan shortcut'):fail('Header OCR & Scan shortcut missing');
+!navbar.includes("scanned-pdf-to-text")&&!navbar.includes('OCR &amp; Scan')?pass('Retired OCR header shortcut is absent'):fail('Retired OCR header shortcut remains');
 navbar.includes('<AllToolsMenu')?pass('Header nine-dot All Tools launcher'):fail('Header All Tools launcher missing');
 for(const key of ['common.guides','common.about']) navbar.includes(`key: '${key}'`)?pass(`Header/mobile info ${key}`):fail(`Header/mobile info missing ${key}`);
 logic.includes('const selectedLevel: CompressionLevel')&&logic.includes('level: selectedLevel')?pass('Compression typing fixed'):fail('Compression typing missing');

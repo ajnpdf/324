@@ -27,7 +27,7 @@ export function CapabilitySummary({ toolCount }: { toolCount: number }) {
       <div className="rounded-3xl border border-blue-100 bg-gradient-to-br from-blue-50 via-white to-violet-50 p-6 text-slate-950 sm:col-span-2">
         <p className="text-[10px] font-black tracking-[.15em] text-blue-700">AJN PDF TOOL DIRECTORY</p>
         <p className="mt-3 text-4xl font-black">{toolCount} focused tools</p>
-        <p className="mt-2 text-sm font-medium leading-6 text-slate-600">PDF, document, image, OCR and conversion workflows in one clear workspace.</p>
+        <p className="mt-2 text-sm font-medium leading-6 text-slate-600">PDF, document, image and conversion workflows in one clear workspace.</p>
       </div>
       <div className="rounded-3xl border border-blue-100 bg-blue-50 p-5 ">
         {tools === null ? <Cloud className="h-5 w-5 animate-pulse text-blue-600" /> : error ? <CloudOff className="h-5 w-5 text-amber-600" /> : <Cloud className="h-5 w-5 text-blue-600" />}

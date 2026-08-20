@@ -5,9 +5,9 @@ import { SITE_URL } from '@/lib/seo-config';
 
 export const metadata: Metadata = {
   title: 'Free Image Converter & Image to PDF Tools',
-  description: 'Convert JPG, PNG, WEBP, TIFF, BMP, GIF, SVG and HEIC files; export PDF pages as images; and run OCR on document photos.',
+  description: 'Convert JPG, PNG, WEBP, TIFF, BMP, GIF, SVG and HEIC files; export PDF pages as images.',
   alternates: { canonical: '/image-tools' },
-  keywords: ['image converter online', 'image to PDF', 'PDF to image', 'JPG to PDF', 'image OCR'],
+  keywords: ['image converter online', 'image to PDF', 'PDF to image', 'JPG to PDF'],
   openGraph: { title: 'Free Image Converter & Image to PDF Tools | AJN PDF', description: 'Image conversion, PDF export and scan preparation tools.', url: '/image-tools', images: ['/og-image.jpg'] },
 };
 

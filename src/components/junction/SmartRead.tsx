@@ -41,7 +41,7 @@ export default function SmartRead() {
       <div className="flex flex-wrap gap-2"><Btn onClick={() => dl(resultBlob, "extracted-text.txt")}><Download size={16}/>Download TXT</Btn><Btn variant="secondary" onClick={reset}>Process another file</Btn></div>
     </div> : <div className="space-y-4">
       <Drop files={files} onChange={setFiles} accept=".pdf,application/pdf" label="Choose a PDF" sub="Select one PDF with a text layer" />
-      {files.length > 0 && <Info>AJN PDF will extract the selectable text already present in the document. Scanned pages may need an OCR tool instead.</Info>}
+      {files.length > 0 && <Info>AJN PDF will extract the selectable text already present in the document. Image-only pages are not supported by this text extractor.</Info>}
       <Err msg={error}/>
       <Btn onClick={run} loading={loading} disabled={!files.length} full style={{background:T.purple}}>Extract text</Btn>
     </div>}

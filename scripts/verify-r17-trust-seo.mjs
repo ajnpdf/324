@@ -146,14 +146,13 @@ check(
 
 
 check(
-  'guide library covers priority crawl paths',
+  'guide library covers priority non-OCR crawl paths',
   [
     'merge-pdf',
     'split-pdf',
     'compress-pdf',
     'pdf-to-word',
     'word-to-pdf',
-    'scanned-pdf-to-text',
     'protect-pdf',
     'repair-pdf',
     'image-resizer',

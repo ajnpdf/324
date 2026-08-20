@@ -22,7 +22,7 @@ const legacyToolAliases: Record<string, string> = {
   'word-pdf': 'word-to-pdf', 'pdf-word': 'pdf-to-word', 'excel-pdf': 'excel-to-pdf', 'pdf-excel': 'pdf-to-excel',
   'ppt-pdf': 'ppt-to-pdf', 'jpg-pdf': 'jpg-to-pdf', 'pdf-jpg': 'pdf-to-jpg', 'heic-pdf': 'heic-to-pdf',
   'html-pdf': 'html-to-pdf', 'xml-pdf': 'xml-to-pdf', 'json-pdf': 'json-to-pdf', 'txt-pdf': 'txt-to-pdf',
-  'smart-read': 'pdf-text', 'pdf-ppt': 'pdf-to-powerpoint', 'ocr-searchable': 'scanned-pdf-to-searchable-pdf', 'psd-pdf': 'psd-pdf',
+  'smart-read': 'pdf-text', 'pdf-ppt': 'pdf-to-powerpoint', 'psd-pdf': 'psd-pdf',
 };
 const directLegacyToolRedirects = Object.entries(legacyToolAliases).map(([source, destination]) => ({ source: `/tools/${source}`, destination: `/${destination}`, permanent: true }));
 const rootLegacyToolRedirects = Object.entries(legacyToolAliases)
