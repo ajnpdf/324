@@ -30,12 +30,11 @@ function tool(
 }
 
 export const CONVERSION_TOOLS: ServiceTool[] = [
-  //  and scanned-document conversions
-
   // Image -> PDF
   tool('image-to-pdf', 'Image to PDF', 'Combine supported image formats into one PDF document.', FileImage, 'img', ['image to pdf', 'photos to pdf', 'multiple images pdf']),
   tool('jpg-to-pdf', 'JPG to PDF', 'Convert one or more JPG images into a PDF document.', FileImage, 'img', ['jpg to pdf', 'photo to pdf', 'jpeg pdf']),
   tool('jpeg-to-pdf', 'JPEG to PDF', 'Convert one or more JPEG images into a PDF document.', FileImage, 'img', ['jpeg to pdf', 'jpeg image pdf']),
+  tool('png-to-pdf', 'PNG to PDF', 'Convert one or more PNG images into a PDF document.', FileImage, 'img', ['png to pdf', 'transparent image pdf', 'png document']),
   tool('webp-to-pdf', 'WEBP to PDF', 'Convert WEBP images into a shareable PDF document.', FileImage, 'img', ['webp to pdf', 'web image pdf']),
   tool('tiff-to-pdf', 'TIFF to PDF', 'Convert single-page or multipage TIFF files into PDF.', FileImage, 'img', ['tiff to pdf', 'tif pdf', 'multipage tiff pdf']),
   tool('bmp-to-pdf', 'BMP to PDF', 'Convert bitmap images into a PDF document.', FileImage, 'img', ['bmp to pdf', 'bitmap pdf']),
@@ -44,22 +43,22 @@ export const CONVERSION_TOOLS: ServiceTool[] = [
   tool('heic-to-pdf', 'HEIC to PDF', 'Convert HEIC and HEIF photos into PDF pages.', FileImage, 'img', ['heic to pdf', 'iphone photo pdf'], 'HEIC support depends on the HEIF converter available for the current deployment.'),
 
   // PDF -> image
-  tool('pdf-to-image', 'PDF to Image', 'Render PDF pages as PNG images and download them together.', ImageIcon, 'img', ['pdf to image', 'pdf pages images']),
-  tool('pdf-to-jpg', 'PDF to JPG', 'Render every PDF page as a JPG image.', ImageIcon, 'img', ['pdf to jpg', 'pdf jpeg']),
-  tool('pdf-to-jpeg', 'PDF to JPEG', 'Render every PDF page as a JPEG image.', ImageIcon, 'img', ['pdf to jpeg', 'pdf jpg']),
-  tool('pdf-to-png', 'PDF to PNG', 'Render every PDF page as a high-quality PNG image.', ImageIcon, 'img', ['pdf to png', 'pdf transparent image']),
-  tool('pdf-to-webp', 'PDF to WEBP', 'Render PDF pages as compact WEBP images.', ImageIcon, 'img', ['pdf to webp', 'web image from pdf']),
+  tool('pdf-to-image', 'PDF to Image', 'Render PDF pages as PNG images. Multi-page results are downloaded together as a ZIP.', ImageIcon, 'img', ['pdf to image', 'pdf pages images']),
+  tool('pdf-to-jpg', 'PDF to JPG', 'Render PDF pages as JPG images. Multi-page results are downloaded together as a ZIP.', ImageIcon, 'img', ['pdf to jpg', 'pdf jpeg']),
+  tool('pdf-to-jpeg', 'PDF to JPEG', 'Render PDF pages as JPEG images. Multi-page results are downloaded together as a ZIP.', ImageIcon, 'img', ['pdf to jpeg', 'pdf jpg']),
+  tool('pdf-to-png', 'PDF to PNG', 'Render PDF pages as high-quality PNG images. Multi-page results are downloaded together as a ZIP.', ImageIcon, 'img', ['pdf to png', 'pdf image']),
+  tool('pdf-to-webp', 'PDF to WEBP', 'Render PDF pages as compact WEBP images. Multi-page results are downloaded together as a ZIP.', ImageIcon, 'img', ['pdf to webp', 'web image from pdf']),
   tool('pdf-to-tiff', 'PDF to TIFF', 'Convert PDF pages into a multipage TIFF file.', ImageIcon, 'img', ['pdf to tiff', 'pdf tif']),
-  tool('pdf-to-bmp', 'PDF to BMP', 'Render PDF pages as bitmap images.', ImageIcon, 'img', ['pdf to bmp', 'pdf bitmap']),
+  tool('pdf-to-bmp', 'PDF to BMP', 'Render PDF pages as BMP images. Multi-page results are downloaded together as a ZIP.', ImageIcon, 'img', ['pdf to bmp', 'pdf bitmap']),
   tool('pdf-to-gif', 'PDF to GIF', 'Convert PDF pages into an animated GIF.', ImageIcon, 'img', ['pdf to gif', 'pdf animation']),
-  tool('pdf-to-svg', 'PDF to SVG', 'Export each PDF page as an SVG file.', Code2, 'img', ['pdf to svg', 'pdf vector export'], 'Vector fidelity depends on the original PDF content.'),
-  tool('pdf-to-avif', 'PDF to AVIF', 'Render PDF pages as modern AVIF images.', ImageIcon, 'img', ['pdf to avif', 'avif from pdf'], 'AVIF output requires an available AVIF encoder.'),
-  tool('pdf-to-heic', 'PDF to HEIC', 'Render PDF pages as HEIC images.', ImageIcon, 'img', ['pdf to heic', 'heic from pdf'], 'HEIC output requires an available HEIF encoder.'),
+  tool('pdf-to-svg', 'PDF to SVG', 'Export PDF pages as SVG files. Multi-page results are downloaded together as a ZIP.', Code2, 'img', ['pdf to svg', 'pdf vector export'], 'Vector fidelity depends on the original PDF content.'),
+  tool('pdf-to-avif', 'PDF to AVIF', 'Render PDF pages as AVIF images. Multi-page results are downloaded together as a ZIP.', ImageIcon, 'img', ['pdf to avif', 'avif from pdf'], 'AVIF output requires an available AVIF encoder.'),
+  tool('pdf-to-heic', 'PDF to HEIC', 'Render PDF pages as HEIC images. Multi-page results are downloaded together as a ZIP.', ImageIcon, 'img', ['pdf to heic', 'heic from pdf'], 'HEIC output requires an available HEIF encoder.'),
   tool('pdf-pages-to-zip', 'PDF Pages to ZIP', 'Split a PDF into individual one-page PDFs inside a ZIP archive.', FileArchive, 'pdf', ['pdf pages zip', 'split pdf zip', 'individual pdf pages']),
 
   // PDF -> document
-  tool('pdf-to-word', 'PDF to Word', 'Extract PDF text into an editable DOCX document.', FileText, 'pdf', ['pdf to word', 'pdf docx', 'editable pdf'], 'Complex layouts, columns and embedded objects may change.'),
-  tool('pdf-to-docx', 'PDF to DOCX', 'Create an editable DOCX document from PDF text.', FileText, 'pdf', ['pdf to docx', 'pdf word conversion'], 'Complex layouts, columns and embedded objects may change.'),
+  tool('pdf-to-word', 'PDF to Word', 'Reconstruct selectable PDF text, tables, basic formatting and optional embedded images into an editable DOCX document.', FileText, 'pdf', ['pdf to word', 'pdf docx', 'editable pdf'], 'Complex layouts, uncommon fonts and advanced embedded objects may still require editing.'),
+  tool('pdf-to-docx', 'PDF to DOCX', 'Reconstruct selectable PDF text, tables, basic formatting and optional embedded images into an editable DOCX document.', FileText, 'pdf', ['pdf to docx', 'pdf word conversion'], 'Complex layouts, uncommon fonts and advanced embedded objects may still require editing.'),
   tool('pdf-to-txt', 'PDF to TXT', 'Extract selectable text from PDF pages into a TXT file.', FileText, 'pdf', ['pdf to txt', 'extract pdf text']),
   tool('pdf-to-rtf', 'PDF to RTF', 'Convert PDF text into a Rich Text Format document.', FileText, 'pdf', ['pdf to rtf', 'rich text pdf'], 'Preserves text rather than exact page design.'),
   tool('pdf-to-odt', 'PDF to ODT', 'Create an editable OpenDocument text file from PDF text.', FileText, 'pdf', ['pdf to odt', 'open document pdf'], 'Complex layouts may require editing.'),
@@ -67,11 +66,11 @@ export const CONVERSION_TOOLS: ServiceTool[] = [
   tool('pdf-to-markdown', 'PDF to Markdown', 'Extract PDF text into a Markdown document.', Code2, 'pdf', ['pdf to markdown', 'pdf md']),
   tool('pdf-to-xml', 'PDF to XML', 'Export PDF page text in a structured XML document.', Code2, 'pdf', ['pdf to xml', 'structured pdf text']),
   tool('pdf-to-json', 'PDF to JSON', 'Export PDF page text and line data as JSON.', FileJson, 'pdf', ['pdf to json', 'pdf data json']),
-  tool('pdf-to-csv', 'PDF to CSV', 'Export extracted PDF lines into a CSV table.', FileSpreadsheet, 'pdf', ['pdf to csv', 'pdf table csv'], 'This is line-based extraction, not advanced table recognition.'),
-  tool('pdf-to-excel', 'PDF to Excel', 'Export PDF text lines into an XLSX workbook.', FileSpreadsheet, 'pdf', ['pdf to excel', 'pdf spreadsheet'], 'Complex tables may require correction.'),
-  tool('pdf-to-xlsx', 'PDF to XLSX', 'Export PDF text lines into an XLSX workbook.', FileSpreadsheet, 'pdf', ['pdf to xlsx', 'pdf excel'], 'Complex tables may require correction.'),
-  tool('pdf-to-powerpoint', 'PDF to PowerPoint', 'Place each PDF page as a full-slide image in a PPTX file.', Presentation, 'pdf', ['pdf to powerpoint', 'pdf pptx'], 'Slides preserve page appearance but their text is not independently editable.'),
-  tool('pdf-to-pptx', 'PDF to PPTX', 'Place each PDF page as a full-slide image in a PPTX file.', Presentation, 'pdf', ['pdf to pptx', 'pdf powerpoint'], 'Slides preserve page appearance but their text is not independently editable.'),
+  tool('pdf-to-csv', 'PDF to CSV', 'Export detected PDF tables into CSV.', FileSpreadsheet, 'pdf', ['pdf to csv', 'pdf table csv'], 'If no structured table is detected, the conversion stops instead of fabricating a table.'),
+  tool('pdf-to-excel', 'PDF to Excel', 'Export detected PDF tables into an XLSX workbook.', FileSpreadsheet, 'pdf', ['pdf to excel', 'pdf spreadsheet'], 'Complex tables may require correction; unstructured fallback is optional.'),
+  tool('pdf-to-xlsx', 'PDF to XLSX', 'Export detected PDF tables into an XLSX workbook.', FileSpreadsheet, 'pdf', ['pdf to xlsx', 'pdf excel'], 'Complex tables may require correction; unstructured fallback is optional.'),
+  tool('pdf-to-powerpoint', 'PDF to PowerPoint', 'Convert PDF pages into PPTX with preserve-appearance or editable reconstruction modes.', Presentation, 'pdf', ['pdf to powerpoint', 'pdf pptx'], 'Editable reconstruction is best effort for complex page layouts.'),
+  tool('pdf-to-pptx', 'PDF to PPTX', 'Convert PDF pages into PPTX with preserve-appearance or editable reconstruction modes.', Presentation, 'pdf', ['pdf to pptx', 'pdf powerpoint'], 'Editable reconstruction is best effort for complex page layouts.'),
   tool('pdf-to-epub', 'PDF to EPUB', 'Create a reflowable EPUB eBook from extracted PDF text.', BookOpen, 'pdf', ['pdf to epub', 'pdf ebook'], 'Complex page designs become a simpler reflowable reading layout.'),
   tool('pdf-to-mobi', 'PDF to MOBI', 'Create a MOBI eBook from extracted PDF text.', BookOpen, 'pdf', ['pdf to mobi', 'kindle mobi pdf'], 'Requires the Calibre converter to be available for the current deployment.'),
   tool('pdf-to-azw3', 'PDF to AZW3', 'Create an AZW3 Kindle eBook from extracted PDF text.', BookOpen, 'pdf', ['pdf to azw3', 'kindle pdf conversion'], 'Requires the Calibre converter to be available for the current deployment.'),
@@ -102,4 +101,5 @@ export const CONVERSION_TOOLS: ServiceTool[] = [
   tool('azw3-to-pdf', 'AZW3 to PDF', 'Convert an AZW3 Kindle eBook into PDF.', BookOpen, 'pdf', ['azw3 to pdf', 'kindle ebook pdf'], 'Requires the Calibre converter to be available for the current deployment.'),
   tool('eml-to-pdf', 'EML to PDF', 'Convert an email message into a readable PDF.', Mail, 'pdf', ['eml to pdf', 'email pdf'], 'Attachments are listed but are not embedded automatically.'),
   tool('msg-to-pdf', 'MSG to PDF', 'Convert an Outlook MSG email into a readable PDF.', Mail, 'pdf', ['msg to pdf', 'outlook email pdf'], 'Attachments are listed but are not embedded automatically.'),
-  tool('xps-to-pdf', 'XPS to PDF', 'Convert an XPS document into PDF.', FileArchive, 'pdf', ['xps to pdf', 'microsoft xps pdf'], 'Requires a compatible XPS converter to be available for the current deployment.')];
+  tool('xps-to-pdf', 'XPS to PDF', 'Convert an XPS document into PDF.', FileArchive, 'pdf', ['xps to pdf', 'microsoft xps pdf'], 'Requires a compatible XPS converter to be available for the current deployment.'),
+];
