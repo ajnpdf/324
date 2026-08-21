@@ -40,7 +40,7 @@ const legacyAliasIds = new Set([
   'pdf-jpg', 'heic-pdf', 'html-pdf', 'xml-pdf', 'json-pdf', 'txt-pdf']);
 
 const conversionBackendIds = new Set(CONVERSION_TOOLS.map((tool) => tool.id));
-const backendIds = new Set(['protect-pdf', 'unlock-pdf', 'repair-pdf', ...conversionBackendIds]);
+const backendIds = new Set(['protect-pdf', 'unlock-pdf', 'repair-pdf', 'png-to-pdf', ...conversionBackendIds]);
 
 const hiddenIds = new Set([
   'pdf-ppt', 'pdf-a', 'pdf-ua', 'smart-read', 'psd-pdf',
@@ -75,7 +75,7 @@ export function getToolPolicy(id: string): ToolPolicy {
       maxFiles: multiFileConversionIds.has(id) ? 30 : 1,
       maxFileSizeMb: SERVER_LIMIT_DEFAULTS.maxFileSizeMb,
       publicByDefault: true,
-      limitation: conversionBackendIds.has(id)
+      limitation: conversionBackendIds.has(id) || id === 'png-to-pdf'
         ? 'Selected files are uploaded only for the requested action. Temporary request files are scheduled for cleanup after the result is returned.'
         : 'This advanced workflow uses a temporary online request. Temporary request files are scheduled for cleanup after the result is returned.',
     };
