@@ -9,26 +9,28 @@ const workspace = read('src/components/junction/tool-workspace-client.tsx');
 const quoted = (block) => [...block.matchAll(/'([^']+)'/g)].map((match) => match[1]);
 
 function setBlock(name) {
-  const match = new RegExp(`const ${name} = new Set\\(\\[([\\s\\S]*?)\\]\\);`).exec(policy);
+  const match = new RegExp(`(?:export\\s+)?const ${name} = new Set\\(\\[([\\s\\S]*?)\\]\\);`).exec(policy);
   return match ? quoted(match[1]) : [];
 }
 
-const stable = setBlock('stableBrowserIds');
+const productionPublic = setBlock('PRODUCTION_PUBLIC_TOOL_IDS');
 const policyLegacy = setBlock('legacyAliasIds');
 const backendExplicit = setBlock('backendIds');
-const visibleMatch = /const visibleLimited = new Set\(\[([\s\S]*?)\]\);/.exec(policy);
-const visibleLimited = visibleMatch ? quoted(visibleMatch[1]) : [];
 const conversionIds = [...conversions.matchAll(/tool\('([^']+)'/g)].map((match) => match[1]);
 const aliasBlock = /const SERVER_ALIASES:\s*Record<string,\s*string>\s*=\s*\{([\s\S]*?)\};/.exec(workspace);
 const workspaceAliasPairs = aliasBlock ? [...aliasBlock[1].matchAll(/'([^']+)'\s*:\s*'([^']+)'/g)].map((match) => [match[1], match[2]]) : [];
 const workspaceAliases = new Map(workspaceAliasPairs);
 
-// backendIds contains explicit backend-only public routes plus a spread of the
-// conversion registry. Include its literal IDs here so a public route can move
-// from browser processing to backend processing without disappearing from the
-// release inventory.
+if (!productionPublic.length) {
+  console.error('FAIL: PRODUCTION_PUBLIC_TOOL_IDS allowlist is empty or unreadable.');
+  process.exit(1);
+}
+
+// Backend processors remain in source even when not public. Release accounting
+// follows only the explicit production allowlist so unaccepted conversions do
+// not leak back into navigation, sitemap or canonical route counts.
 const backendRouteIds = [...new Set([...backendExplicit, ...conversionIds])];
-const publicRouteIds = [...new Set([...stable, ...visibleLimited, ...conversionIds, ...backendExplicit])]
+const publicRouteIds = [...new Set(productionPublic)]
   .filter((id) => !policyLegacy.includes(id))
   .sort();
 const canonicalIds = publicRouteIds.filter((id) => !workspaceAliases.has(id)).sort();
@@ -69,7 +71,7 @@ const output = {
   canonicalTools,
 };
 fs.writeFileSync(path.join(root, 'reports/AJN_PUBLIC_RELEASE_INVENTORY.json'), JSON.stringify(output, null, 2));
-console.log(`AJN R19 public routes: ${output.publicRouteCount}`);
-console.log(`AJN R19 canonical processors: ${output.canonicalProcessorCount}`);
-console.log(`AJN R19 public workspace aliases: ${output.publicWorkspaceAliases.length}`);
+console.log(`AJN public routes: ${output.publicRouteCount}`);
+console.log(`AJN canonical processors: ${output.canonicalProcessorCount}`);
+console.log(`AJN public workspace aliases: ${output.publicWorkspaceAliases.length}`);
 console.log('Wrote reports/AJN_PUBLIC_RELEASE_INVENTORY.json');
