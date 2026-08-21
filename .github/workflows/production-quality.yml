@@ -33,6 +33,7 @@ jobs:
       - run: npm run verify:r18-production
       - run: npm run verify:r17-trust-seo
       - run: node scripts/verify-r20-focused-seo.mjs
+      - run: node scripts/verify-r21-product-ecosystem.mjs
       - run: npm run verify:r16-consistency
       - run: npm run verify:tool-ux
       - run: npm run verify:final-ui
@@ -71,3 +72,19 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build production backend image and run embedded public acceptance
         run: docker build --pull --progress=plain -t ajn-pdf-backend-ci ./backend
+
+  package-r21-source:
+    needs: [source-and-frontend-gates, backend-container-gate]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create clean R21 source ZIP
+        run: |
+          zip -rq AJN-PDF-R21-PRODUCT-ECOSYSTEM.zip . \
+            -x '.git/*' 'node_modules/*' '.next/*' 'mobile-android/.gradle/*' 'mobile-android/build/*' '*.log'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: AJN-PDF-R21-source
+          path: AJN-PDF-R21-PRODUCT-ECOSYSTEM.zip
+          if-no-files-found: error
+          retention-days: 14
