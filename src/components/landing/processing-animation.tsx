@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
+import { useReducedMotion } from 'framer-motion';
 import { CheckCircle2, Download, FileText, Settings2, UploadCloud } from 'lucide-react';
 
 const STEPS = [
@@ -11,12 +12,17 @@ const STEPS = [
 ] as const;
 
 export function ProcessingAnimation() {
+  const reduceMotion = useReducedMotion();
   const [active, setActive] = useState(0);
 
   useEffect(() => {
+    if (reduceMotion) {
+      setActive(STEPS.length - 1);
+      return;
+    }
     const timer = window.setInterval(() => setActive((value) => (value + 1) % STEPS.length), 1800);
     return () => window.clearInterval(timer);
-  }, []);
+  }, [reduceMotion]);
 
   return (
     <div className="flex w-full items-center justify-center overflow-hidden py-10 md:py-16">
@@ -35,7 +41,7 @@ export function ProcessingAnimation() {
             </div>;
           })}
         </div>
-        <div className="mt-5 h-1.5 overflow-hidden rounded-full bg-slate-100"><div className="h-full rounded-full bg-violet-600 transition-all duration-500" style={{ width: `${((active + 1) / STEPS.length) * 100}%` }} /></div>
+        <div className="mt-5 h-1.5 overflow-hidden rounded-full bg-slate-100"><div className="h-full rounded-full bg-violet-600 transition-all duration-500 motion-reduce:transition-none" style={{ width: `${((active + 1) / STEPS.length) * 100}%` }} /></div>
       </div>
     </div>
   );
