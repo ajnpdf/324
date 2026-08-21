@@ -2,14 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FileText, Home, Image as ImageIcon, LayoutGrid } from "lucide-react";
+import { FileSignature, Home, LayoutGrid, UserRound } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/lib/auth-context";
 
-const items = [
+const baseItems = [
   { label: "Home", href: "/", icon: Home },
   { label: "Tools", href: "/pdf-tools", icon: LayoutGrid },
-  { label: "PDF", href: "/pdf-utilities", icon: FileText },
-  { label: "Images", href: "/image-tools", icon: ImageIcon },
+  { label: "Sign", href: "/sign-pdf", icon: FileSignature },
 ] as const;
 
 function isActive(pathname: string, href: string) {
@@ -19,7 +19,9 @@ function isActive(pathname: string, href: string) {
 
 export function MobileBottomNav() {
   const pathname = usePathname();
-  if (pathname.startsWith("/admin")) return null;
+  const auth = useAuth();
+  if (["/admin", "/login", "/signup", "/forgot-password"].some((prefix) => pathname.startsWith(prefix))) return null;
+  const items = [...baseItems, { label: auth.session ? "Account" : "Login", href: auth.session ? "/account" : "/login", icon: UserRound }];
 
   return (
     <nav className="ajn-mobile-bottom-nav md:hidden" aria-label="Quick navigation">
