@@ -12,23 +12,18 @@ export interface ToolPolicy {
   limitation?: string;
 }
 
-// Production allowlist: only workflows already accepted as the current
-// trustworthy baseline are public. Other processors remain in source so they
-// can be repaired and re-enabled deliberately after real acceptance testing.
+// R21 production allowlist: AJN PDF is deliberately PDF-only. Image utilities
+// remain in source for migration to the AJN image/Buzz product but are not
+// public AJN PDF routes, navigation items or sitemap entries.
 export const PRODUCTION_PUBLIC_TOOL_IDS = new Set([
   'add-image-to-pdf',
   'add-text',
   'compare-pdf',
   'compress-pdf',
-  'convert-image',
-  'crop-image',
   'crop-pdf',
   'delete-pdf-pages',
   'extract-images',
   'flatten-pdf',
-  'flip-image',
-  'image-reducer',
-  'image-resizer',
   'merge-pdf',
   'organize-pdf',
   'page-number',
@@ -36,23 +31,21 @@ export const PRODUCTION_PUBLIC_TOOL_IDS = new Set([
   'pdf-zip-extract',
   'protect-pdf',
   'repair-pdf',
-  'rotate-image',
   'rotate-pdf',
   'sign-pdf',
   'split-pdf',
   'unlock-pdf',
-  'watermark-image',
   'watermark-pdf',
 ]);
 
 const stableBrowserIds = new Set([
   'merge-pdf', 'split-pdf', 'rotate-pdf', 'delete-pdf-pages', 'organize-pdf',
   'crop-pdf', 'watermark-pdf', 'page-number', 'flatten-pdf', 'compare-pdf',
-  'add-text', 'add-image-to-pdf', 'pdf-metadata', 'jpg-pdf',
-  'pdf-jpg', 'image-reducer', 'image-resizer', 'crop-image', 'rotate-image',
-  'watermark-image', 'flip-image', 'convert-image', 'meme-generator',
-  'photo-editor', 'pdf-text', 'xml-pdf', 'json-pdf', 'txt-pdf',
-  'pdf-zip-extract', 'zip-extractor', 'subtitle-generator', 'sign-pdf']);
+  'add-text', 'add-image-to-pdf', 'pdf-metadata', 'pdf-zip-extract', 'sign-pdf',
+  // Source-only image processors retained for AJN IMG/Buzz migration.
+  'image-reducer', 'image-resizer', 'crop-image', 'rotate-image', 'watermark-image',
+  'flip-image', 'convert-image', 'meme-generator', 'photo-editor',
+]);
 
 const limitedBrowser: Record<string, string> = {
   'compress-pdf': 'Strong compression rasterizes pages and can reduce text searchability, links, and accessibility.',
@@ -86,7 +79,7 @@ export function getToolPolicy(id: string): ToolPolicy {
       publicByDefault: false,
       limitation: hiddenIds.has(id)
         ? 'Hidden until its output and claims pass production validation.'
-        : 'Removed from the public catalog until this workflow passes real production acceptance.',
+        : 'Not part of the current AJN PDF public catalog.',
     };
   }
   if (legacyAliasIds.has(id)) {
@@ -97,29 +90,24 @@ export function getToolPolicy(id: string): ToolPolicy {
   }
   if (stableBrowserIds.has(id)) {
     return {
-      maturity: 'stable', processingMode: 'browser', maxFiles: id === 'merge-pdf' ? MERGE_PDF_LIMITS.maxFiles : id === 'jpg-pdf' ? 30 : 1,
+      maturity: 'stable', processingMode: 'browser', maxFiles: id === 'merge-pdf' ? MERGE_PDF_LIMITS.maxFiles : 1,
       maxFileSizeMb: id === 'merge-pdf' ? MERGE_PDF_LIMITS.maxFileSizeMb : 50, publicByDefault: true,
     };
   }
   if (id in limitedBrowser) {
-    const visibleLimited = new Set(['compress-pdf', 'extract-images', 'heic-pdf']);
+    const visibleLimited = new Set(['compress-pdf', 'extract-images']);
     return {
       maturity: 'limited', processingMode: 'browser', maxFiles: 1, maxFileSizeMb: 40,
       publicByDefault: visibleLimited.has(id), limitation: limitedBrowser[id],
     };
   }
   if (backendIds.has(id)) {
-    const multiFileConversionIds = new Set([
-      'image-to-pdf', 'jpg-to-pdf', 'jpeg-to-pdf', 'png-to-pdf', 'webp-to-pdf', 'tiff-to-pdf', 'bmp-to-pdf',
-      'gif-to-pdf', 'svg-to-pdf', 'heic-to-pdf']);
     return {
       maturity: 'backend', processingMode: 'temporary-server',
-      maxFiles: multiFileConversionIds.has(id) ? 30 : 1,
+      maxFiles: 1,
       maxFileSizeMb: SERVER_LIMIT_DEFAULTS.maxFileSizeMb,
       publicByDefault: true,
-      limitation: conversionBackendIds.has(id) || id === 'png-to-pdf'
-        ? 'Selected files are uploaded only for the requested action. Temporary request files are scheduled for cleanup after the result is returned.'
-        : 'This advanced workflow uses a temporary online request. Temporary request files are scheduled for cleanup after the result is returned.',
+      limitation: 'This advanced workflow uses a temporary online request. Temporary request files are scheduled for cleanup after the result is returned.',
     };
   }
   return {
