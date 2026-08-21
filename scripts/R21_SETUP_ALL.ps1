@@ -41,10 +41,10 @@ Require-Command npm
 Require-Command npx
 Push-Location $Root
 try {
-  Write-Host '============================================================' -ForegroundColor DarkViolet
+  Write-Host '============================================================' -ForegroundColor DarkMagenta
   Write-Host ' AJN PDF R21 :: PRODUCT ECOSYSTEM SETUP' -ForegroundColor Magenta
   Write-Host ' PDF-only + Firebase + Premium + API + Admin + Android' -ForegroundColor Magenta
-  Write-Host '============================================================' -ForegroundColor DarkViolet
+  Write-Host '============================================================' -ForegroundColor DarkMagenta
 
   Set-DotEnvValue 'NEXT_PUBLIC_FIREBASE_PROJECT_ID' $FirebaseProjectId
   Set-DotEnvValue 'FIREBASE_PROJECT_ID' $FirebaseProjectId
