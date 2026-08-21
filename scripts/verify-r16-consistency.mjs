@@ -123,13 +123,15 @@ check(
   'browser audit includes all canonical public route IDs',
   audit.includes('r13-public-tool-ids.json') && audit.includes('allToolRoutes')
 );
+const convertBody = engine.slice(engine.indexOf('def convert('));
+const xpsBranchIndex = convertBody.indexOf("if spec.processor == 'xps_to_pdf':");
+const availabilityIndex = convertBody.indexOf('available, reason = tool_available(spec)');
 check(
   'XPS uses the internal PyMuPDF conversion path before external availability checks',
-  /\('xps-to-pdf',\s*'XPS to PDF',[^\n]+\sNone\)\]/.test(engine) &&
-  engine.includes("if spec.processor == 'xps_to_pdf':") &&
+  engine.includes("('xps-to-pdf', 'XPS to PDF', ('.xps',), 'xps_to_pdf'") &&
   engine.includes('import pymupdf as _ajn_pymupdf') &&
   engine.includes('_ajn_xps_doc.convert_to_pdf()') &&
-  engine.indexOf("if spec.processor == 'xps_to_pdf':") < engine.indexOf('available, reason = tool_available(spec)')
+  xpsBranchIndex >= 0 && availabilityIndex >= 0 && xpsBranchIndex < availabilityIndex
 );
 check(
   'Docker acceptance remains non-root with headless ebook sandbox settings',
