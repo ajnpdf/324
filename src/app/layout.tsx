@@ -15,13 +15,14 @@ import { ThemeProvider } from '../components/theme/theme-provider';
 import { ProcessingActivityProvider } from '../components/ajnpdf/processing-activity-provider';
 import { MobileBottomNav } from '../components/landing/mobile-bottom-nav';
 import { AJN_BRAND, AJN_CONFIRMED_SOCIAL_LINKS, AJN_PRODUCT_ALTERNATE_NAMES, AJN_STUDIO_ALTERNATE_NAMES } from '../lib/brand';
+import { AuthProvider } from '../lib/auth-context';
 
 const manrope = Manrope({ subsets: ['latin'], variable: '--font-syne', display: 'swap' });
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' });
 const jetBrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-jetbrains-mono', display: 'swap' });
 
-const HOME_TITLE = 'Free PDF Tools Online - Merge, Compress, Edit & Sign | AJN PDF';
-const HOME_DESCRIPTION = 'Use AJN PDF to merge, split, compress, organize, edit, sign, protect and repair PDFs, plus focused image tools with clear file controls.';
+const HOME_TITLE = 'Free Online PDF Tools - Merge, Compress, Edit & Sign | AJN PDF';
+const HOME_DESCRIPTION = 'Free online PDF tools to merge, split, compress, organize, edit, sign, protect, unlock and repair PDF files.';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -41,91 +42,43 @@ export const metadata: Metadata = {
     url: '/',
     siteName: SITE_NAME,
     type: 'website',
-    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'AJN PDF online PDF and image tools' }],
+    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'AJN PDF free online PDF tools' }],
   },
-  twitter: {
-    card: 'summary_large_image',
-    title: HOME_TITLE,
-    description: HOME_DESCRIPTION,
-    images: ['/og-image.jpg'],
-  },
+  twitter: { card: 'summary_large_image', title: HOME_TITLE, description: HOME_DESCRIPTION, images: ['/og-image.jpg'] },
   verification: { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined },
-  other: { 'google-adsense-account': ADSENSE_PUBLISHER, 'ajn-release': '3.1.0-r18' },
+  other: { 'google-adsense-account': ADSENSE_PUBLISHER, 'ajn-release': '3.2.0-r21' },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@graph': [
-      {
-        '@type': 'Organization',
-        '@id': `${SITE_URL}/ajn-studio#organization`,
-        name: AJN_BRAND.studioName,
-        alternateName: AJN_STUDIO_ALTERNATE_NAMES,
-        url: `${SITE_URL}/ajn-studio`,
-        logo: `${SITE_URL}/brand/ajn-logo-transparent.png`,
-        founder: { '@id': `${SITE_URL}/developer#anjan` },
-      },
-      {
-        '@type': 'Person',
-        '@id': `${SITE_URL}/developer#anjan`,
-        name: AJN_BRAND.developerName,
-        alternateName: AJN_BRAND.developerDisplayName,
-        url: `${SITE_URL}/developer`,
-        image: `${SITE_URL}${AJN_BRAND.developerImageJpeg}`,
-        jobTitle: AJN_BRAND.developerRole,
-        worksFor: { '@id': `${SITE_URL}/ajn-studio#organization` },
-        sameAs: AJN_CONFIRMED_SOCIAL_LINKS,
-      },
-      {
-        '@type': 'Brand',
-        '@id': `${SITE_URL}/#brand`,
-        name: AJN_BRAND.productName,
-        alternateName: AJN_PRODUCT_ALTERNATE_NAMES,
-        url: SITE_URL,
-        logo: `${SITE_URL}/brand/ajn-logo-transparent.png`,
-      },
-      {
-        '@type': 'WebSite',
-        '@id': `${SITE_URL}/#website`,
-        url: SITE_URL,
-        name: AJN_BRAND.productName,
-        alternateName: AJN_PRODUCT_ALTERNATE_NAMES,
-        publisher: { '@id': `${SITE_URL}/ajn-studio#organization` },
-      },
-      {
-        '@type': 'SoftwareApplication',
-        '@id': `${SITE_URL}/#application`,
-        name: AJN_BRAND.productName,
-        alternateName: AJN_PRODUCT_ALTERNATE_NAMES,
-        url: SITE_URL,
-        applicationCategory: 'UtilitiesApplication',
-        operatingSystem: 'Web',
-        isAccessibleForFree: true,
-        offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-        description: 'Focused online tools for merging, splitting, compressing, organizing, editing, signing, protecting and repairing PDFs, with practical image utilities.',
-        featureList: ['Merge PDF', 'Split PDF', 'Compress PDF', 'Organize PDF', 'Sign PDF', 'Protect PDF', 'Unlock PDF', 'Repair PDF', 'Image tools'],
-        author: { '@id': `${SITE_URL}/developer#anjan` },
-        publisher: { '@id': `${SITE_URL}/ajn-studio#organization` },
-        brand: { '@id': `${SITE_URL}/#brand` },
-      }],
+      { '@type': 'Organization', '@id': `${SITE_URL}/ajn-studio#organization`, name: AJN_BRAND.studioName, alternateName: AJN_STUDIO_ALTERNATE_NAMES, url: `${SITE_URL}/ajn-studio`, logo: `${SITE_URL}/brand/ajn-logo-transparent.png`, founder: { '@id': `${SITE_URL}/developer#anjan` } },
+      { '@type': 'Person', '@id': `${SITE_URL}/developer#anjan`, name: AJN_BRAND.developerName, alternateName: AJN_BRAND.developerDisplayName, url: `${SITE_URL}/developer`, image: `${SITE_URL}${AJN_BRAND.developerImageJpeg}`, jobTitle: AJN_BRAND.developerRole, worksFor: { '@id': `${SITE_URL}/ajn-studio#organization` }, sameAs: AJN_CONFIRMED_SOCIAL_LINKS },
+      { '@type': 'Brand', '@id': `${SITE_URL}/#brand`, name: AJN_BRAND.productName, alternateName: AJN_PRODUCT_ALTERNATE_NAMES, url: SITE_URL, logo: `${SITE_URL}/brand/ajn-logo-transparent.png` },
+      { '@type': 'WebSite', '@id': `${SITE_URL}/#website`, url: SITE_URL, name: AJN_BRAND.productName, alternateName: AJN_PRODUCT_ALTERNATE_NAMES, publisher: { '@id': `${SITE_URL}/ajn-studio#organization` } },
+      { '@type': 'SoftwareApplication', '@id': `${SITE_URL}/#application`, name: AJN_BRAND.productName, alternateName: AJN_PRODUCT_ALTERNATE_NAMES, url: SITE_URL, applicationCategory: 'UtilitiesApplication', operatingSystem: 'Web', isAccessibleForFree: true, offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }, description: 'Free online tools for merging, splitting, compressing, organizing, editing, signing, protecting, unlocking and repairing PDF files.', featureList: ['Merge PDF','Split PDF','Compress PDF','Organize PDF','Edit PDF','Sign PDF','Protect PDF','Unlock PDF','Repair PDF'], author: { '@id': `${SITE_URL}/developer#anjan` }, publisher: { '@id': `${SITE_URL}/ajn-studio#organization` }, brand: { '@id': `${SITE_URL}/#brand` } },
+    ],
   };
 
   return (
     <html lang="en" data-theme="light" className={`${manrope.variable} ${inter.variable} ${jetBrainsMono.variable}`} style={{ colorScheme: 'light' }}>
       <body className="font-sans antialiased">
         <Script id="json-ld" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} strategy="afterInteractive" />
+        <Script src="https://accounts.google.com/gsi/client" strategy="afterInteractive" />
         <ThemeProvider>
           <LanguageProvider>
-          <ProcessingActivityProvider />
-          <LiveTranslationBridge />
-          {children}
-          <GoogleAnalytics />
-          <SiteAnalytics />
-          <AdSenseScriptLoader />
-          <CookieConsent />
-          <Toaster />
-          <MobileBottomNav />
+            <AuthProvider>
+              <ProcessingActivityProvider />
+              <LiveTranslationBridge />
+              {children}
+              <GoogleAnalytics />
+              <SiteAnalytics />
+              <AdSenseScriptLoader />
+              <CookieConsent />
+              <Toaster />
+              <MobileBottomNav />
+            </AuthProvider>
           </LanguageProvider>
         </ThemeProvider>
       </body>
