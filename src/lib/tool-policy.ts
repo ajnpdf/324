@@ -12,6 +12,39 @@ export interface ToolPolicy {
   limitation?: string;
 }
 
+// Production allowlist: only workflows already accepted as the current
+// trustworthy baseline are public. Other processors remain in source so they
+// can be repaired and re-enabled deliberately after real acceptance testing.
+export const PRODUCTION_PUBLIC_TOOL_IDS = new Set([
+  'add-image-to-pdf',
+  'add-text',
+  'compare-pdf',
+  'compress-pdf',
+  'convert-image',
+  'crop-image',
+  'crop-pdf',
+  'delete-pdf-pages',
+  'extract-images',
+  'flatten-pdf',
+  'flip-image',
+  'image-reducer',
+  'image-resizer',
+  'merge-pdf',
+  'organize-pdf',
+  'page-number',
+  'pdf-metadata',
+  'pdf-zip-extract',
+  'protect-pdf',
+  'repair-pdf',
+  'rotate-image',
+  'rotate-pdf',
+  'sign-pdf',
+  'split-pdf',
+  'unlock-pdf',
+  'watermark-image',
+  'watermark-pdf',
+]);
+
 const stableBrowserIds = new Set([
   'merge-pdf', 'split-pdf', 'rotate-pdf', 'delete-pdf-pages', 'organize-pdf',
   'crop-pdf', 'watermark-pdf', 'page-number', 'flatten-pdf', 'compare-pdf',
@@ -47,6 +80,15 @@ const hiddenIds = new Set([
   'upscale-image', 'remove-bg', 'blur-face']);
 
 export function getToolPolicy(id: string): ToolPolicy {
+  if (!PRODUCTION_PUBLIC_TOOL_IDS.has(id)) {
+    return {
+      maturity: 'hidden', processingMode: 'browser', maxFiles: 1, maxFileSizeMb: 25,
+      publicByDefault: false,
+      limitation: hiddenIds.has(id)
+        ? 'Hidden until its output and claims pass production validation.'
+        : 'Removed from the public catalog until this workflow passes real production acceptance.',
+    };
+  }
   if (legacyAliasIds.has(id)) {
     return {
       maturity: 'hidden', processingMode: 'browser', maxFiles: 1, maxFileSizeMb: 75,
@@ -82,7 +124,7 @@ export function getToolPolicy(id: string): ToolPolicy {
   }
   return {
     maturity: 'hidden', processingMode: 'browser', maxFiles: 1, maxFileSizeMb: 25,
-    publicByDefault: false, limitation: hiddenIds.has(id) ? 'Hidden until its output and claims pass production validation.' : 'Not included in the Phase 1 public tool set.',
+    publicByDefault: false, limitation: hiddenIds.has(id) ? 'Hidden until its output and claims pass production validation.' : 'Not included in the public tool set.',
   };
 }
 
