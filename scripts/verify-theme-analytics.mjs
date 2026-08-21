@@ -62,5 +62,3 @@ expect(
 
 console.log(checks.join('\n'));
 console.log('Light-only theme, animation, analytics, privacy and PowerShell compatibility verification completed successfully.');
-
-const conversionEngine = fs.readFileSync('backend/app/conversion_engine.py', 'utf8');
