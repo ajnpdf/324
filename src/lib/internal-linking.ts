@@ -4,35 +4,34 @@ import { BUILD_PUBLIC_TOOLS } from './build-public-tools';
 const GUIDE_MAP: Record<string, { href: string; title: string }[]> = {
   conversion: [
     { href: '/blog/pdf-vs-docx', title: 'PDF vs DOCX: when to use each format' },
-{ href: '/blog/browser-native-architecture', title: 'How online conversion processing works' }],
+    { href: '/blog/browser-native-architecture', title: 'How online conversion processing works' }
+  ],
   image: [
     { href: '/blog/image-to-pdf-jpg-vs-png', title: 'Image to PDF: JPG vs PNG' },
-    { href: title: 'How  works on images and scans' },
-    { href: title: 'Improve  for Indian-language scans' }],
+    { href: '/blog/pdf-accessibility-basics', title: 'PDF accessibility basics' }
+  ],
   pdf: [
     { href: '/blog/how-to-merge-pdfs-online-safely', title: 'How to merge PDFs safely' },
     { href: '/blog/reduce-pdf-size-keep-quality', title: 'Reduce PDF size while keeping text readable' },
-    { href: '/blog/document-security-aes256', title: 'PDF passwords and AES-256 explained' }],
+    { href: '/blog/document-security-aes256', title: 'PDF passwords and AES-256 explained' }
+  ],
 };
 
 const TOOL_GUIDES: Record<string, { href: string; title: string }[]> = {
   'compress-pdf': [
     { href: '/blog/reduce-pdf-size-keep-quality', title: 'Reduce PDF size while keeping text readable' },
-    { href: '/blog/why-pdf-compression-limited', title: 'Why some PDFs barely shrink' }],
+    { href: '/blog/why-pdf-compression-limited', title: 'Why some PDFs barely shrink' }
+  ],
   'pdf-to-word': [
     { href: '/blog/pdf-vs-docx', title: 'PDF vs DOCX: when to use each format' },
-],
-{ href: title: 'How  works on scans' }],
-    { href: title: 'How  works on scans' },
-    { href: title: 'Improve  for Indian-language scans' }],
-    { href: title: 'How  works on images' },
-    { href: title: 'Improve  for Indian-language scans' }],
+    { href: '/blog/pdf-accessibility-basics', title: 'PDF accessibility basics' }
+  ],
   'jpg-to-pdf': [
-    { href: '/blog/image-to-pdf-jpg-vs-png', title: 'Image to PDF: JPG vs PNG' }],
+    { href: '/blog/image-to-pdf-jpg-vs-png', title: 'Image to PDF: JPG vs PNG' }
+  ],
   'png-to-pdf': [
-    { href: '/blog/image-to-pdf-jpg-vs-png', title: 'Image to PDF: JPG vs PNG' }],
-    { href: '/blog/pdf-accessibility-basics', title: 'PDF accessibility basics' },
-    { href: title: 'How  works on scans' }],
+    { href: '/blog/image-to-pdf-jpg-vs-png', title: 'Image to PDF: JPG vs PNG' }
+  ],
 };
 
 function keywordSet(tool: ServiceTool): Set<string> {

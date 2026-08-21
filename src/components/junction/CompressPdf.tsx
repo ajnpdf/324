@@ -18,7 +18,7 @@ export default function CompressPdf() {
   const [level, setLevel] = useState<Level>("balanced");
   const [grayscale, setGrayscale] = useState(false);
   const [outputName, setOutputName] = useState("compressed.pdf");
-  const [ setProgress] = useState(0);
+  const [, setProgress] = useState(0);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<{ blob: Blob; original: number; output: number } | null>(null);
   const [error, setError] = useState("");

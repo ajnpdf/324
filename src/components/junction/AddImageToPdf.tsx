@@ -29,7 +29,7 @@ export default function AddImageToPdf() {
   const [status, setStatus] = useState("");
   const [outputName, setOutputName] = useState("");
   const [resultBlob, setResultBlob] = useState<Blob | null>(null);
-  const [ setIsDragging] = useState(false);
+  const [, setIsDragging] = useState(false);
   const [pageCount, setPageCount] = useState(0);
   const [pageSize, setPageSize] = useState({ width: 595, height: 842 });
   const [imagePreview, setImagePreview] = useState("");

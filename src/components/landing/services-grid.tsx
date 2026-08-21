@@ -17,14 +17,13 @@ const INITIAL_VISIBLE_TOOLS = 18;
 const VISIBLE_STEP = 18;
 
 const INTENT_IDS: Record<string, string[]> = {
-  : ['','scan','searchable','handwriting','scanned-pdf'],
   edit: ['add-text','add-image','watermark','crop','rotate','page-number','flatten','sign','metadata','compare','remove-pages'],
   organize: ['merge-pdf','split-pdf','organize-pdf','remove-pages','extract-images','pdf-to-zip','pdf-pages-to-zip'],
   security: ['protect-pdf','unlock-pdf','repair-pdf'],
 };
 const SEARCH_EXPANSIONS: Record<string,string[]> = {
   reduce:['compress','smaller','optimize'], smaller:['compress','reduce'], photo:['image','jpg','jpeg'], picture:['image','jpg','png'],
-  scan:['','scanner','searchable'], text:['','txt','read'], word:['doc','docx'], slides:['ppt','pptx','powerpoint'], sheet:['xls','xlsx','excel'],
+  text:['txt','read'], word:['doc','docx'], slides:['ppt','pptx','powerpoint'], sheet:['xls','xlsx','excel'],
   secure:['protect','lock'], password:['protect','unlock'], combine:['merge'], separate:['split'], reorder:['organize'], remove:['delete'],
 };
 
