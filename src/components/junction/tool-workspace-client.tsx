@@ -60,8 +60,7 @@ const TOOL_COMPONENTS: Record<string, any> = {
   'smart-read': dynamic(() => import('./UnavailableTool'), { ssr: false }),
   'pdf-a': dynamic(() => import('./UnavailableTool'), { ssr: false }),
 
-  // Image tools
-  'png-to-pdf': dynamic(() => import('./PngToPdf'), { ssr: false }),
+  // Image tools that are intentionally browser-native.
   'extract-images': dynamic(() => import('./ExtractImages'), { ssr: false }),
   'photo-editor': dynamic(() => import('./PhotoEditor'), { ssr: false }),
   'crop-image': dynamic(() => import('./CropImage'), { ssr: false }),
