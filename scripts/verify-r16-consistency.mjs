@@ -120,11 +120,17 @@ check(
   xpsBranchIndex >= 0 && availabilityIndex >= 0 && xpsBranchIndex < availabilityIndex
 );
 check(
-  'Docker acceptance remains non-root with headless ebook sandbox settings',
+  'production Docker acceptance is non-root and tests current public server workflows',
   docker.includes('USER 10001') &&
-  docker.lastIndexOf('USER 10001') < docker.lastIndexOf('python full_acceptance_test.py') &&
-  docker.includes('QT_QPA_PLATFORM=offscreen') && docker.includes('QT_QUICK_BACKEND=software') &&
-  docker.includes('--disable-gpu') && !docker.includes('--no-sandbox') && !docker.includes('QTWEBENGINE_DISABLE_SANDBOX')
+  docker.lastIndexOf('USER 10001') < docker.lastIndexOf('python public_backend_acceptance_test.py') &&
+  docker.includes('QT_QPA_PLATFORM=offscreen') &&
+  docker.includes('QT_QUICK_BACKEND=software') &&
+  docker.includes('--disable-gpu') &&
+  docker.includes('public_backend_acceptance_test.py') &&
+  !docker.includes('recognition_language_gate.py') &&
+  !docker.includes('recognition_multilingual_acceptance_test.py') &&
+  !docker.includes('--no-sandbox') &&
+  !docker.includes('QTWEBENGINE_DISABLE_SANDBOX')
 );
 
 if (failures.length) {
