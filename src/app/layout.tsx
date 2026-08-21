@@ -20,11 +20,14 @@ const manrope = Manrope({ subsets: ['latin'], variable: '--font-syne', display: 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' });
 const jetBrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-jetbrains-mono', display: 'swap' });
 
+const HOME_TITLE = 'Free PDF Tools Online - Merge, Compress, Edit & Sign | AJN PDF';
+const HOME_DESCRIPTION = 'Use AJN PDF to merge, split, compress, organize, edit, sign, protect and repair PDFs, plus focused image tools with clear file controls.';
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   applicationName: SITE_NAME,
-  title: { default: 'Free PDF Tools Online - Convert, Merge, Compress & Edit | AJN PDF', template: '%s | AJN PDF' },
-  description: 'Use AJN PDF to convert, merge, compress, edit and sign PDF, document and image files online with simple, powerful tools.',
+  title: { default: HOME_TITLE, template: '%s | AJN PDF' },
+  description: HOME_DESCRIPTION,
   alternates: { canonical: '/', types: { 'application/rss+xml': `${SITE_URL}/feed.xml` } },
   authors: [{ name: AJN_BRAND.developerName, url: `${SITE_URL}/developer` }],
   creator: AJN_BRAND.developerName,
@@ -33,17 +36,17 @@ export const metadata: Metadata = {
   icons: { icon: [{ url: '/favicon.ico', rel: 'shortcut icon' }], apple: [{ url: '/favicon.ico' }] },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1, 'max-video-preview': -1 } },
   openGraph: {
-    title: 'Free PDF Tools Online - Convert, Merge, Compress & Edit | AJN PDF',
-    description: 'Use AJN PDF to convert, merge, compress, edit and sign PDF, document and image files online with simple, powerful tools.',
+    title: HOME_TITLE,
+    description: HOME_DESCRIPTION,
     url: '/',
     siteName: SITE_NAME,
     type: 'website',
-    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'AJN PDF professional document toolkit interface' }],
+    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'AJN PDF online PDF and image tools' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Free PDF Tools Online - Convert, Merge, Compress & Edit | AJN PDF',
-    description: 'Use AJN PDF to convert, merge, compress, edit and sign PDF, document and image files online with simple, powerful tools.',
+    title: HOME_TITLE,
+    description: HOME_DESCRIPTION,
     images: ['/og-image.jpg'],
   },
   verification: { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined },
@@ -100,7 +103,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         operatingSystem: 'Web',
         isAccessibleForFree: true,
         offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-        description: '90+ tools for PDF, document and image conversion, editing, organization and everyday file work.',
+        description: 'Focused online tools for merging, splitting, compressing, organizing, editing, signing, protecting and repairing PDFs, with practical image utilities.',
+        featureList: ['Merge PDF', 'Split PDF', 'Compress PDF', 'Organize PDF', 'Sign PDF', 'Protect PDF', 'Unlock PDF', 'Repair PDF', 'Image tools'],
         author: { '@id': `${SITE_URL}/developer#anjan` },
         publisher: { '@id': `${SITE_URL}/ajn-studio#organization` },
         brand: { '@id': `${SITE_URL}/#brand` },
