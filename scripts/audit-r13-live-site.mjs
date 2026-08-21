@@ -91,7 +91,7 @@ const aliases = {
   '/tools/word-pdf': '/word-to-pdf', '/tools/pdf-word': '/pdf-to-word', '/tools/excel-pdf': '/excel-to-pdf', '/tools/pdf-excel': '/pdf-to-excel',
   '/tools/ppt-pdf': '/ppt-to-pdf', '/tools/jpg-pdf': '/jpg-to-pdf', '/tools/pdf-jpg': '/pdf-to-jpg', '/tools/heic-pdf': '/heic-to-pdf',
   '/tools/html-pdf': '/html-to-pdf', '/tools/xml-pdf': '/xml-to-pdf', '/tools/json-pdf': '/json-to-pdf', '/tools/txt-pdf': '/txt-to-pdf',
-  '/tools/smart-read': '/pdf-text', '/tools/pdf-ppt': '/pdf-to-powerpoint', : '/psd-pdf',
+  '/tools/smart-read': '/pdf-text', '/tools/pdf-ppt': '/pdf-to-powerpoint',
 };
 for (const [source, target] of Object.entries(aliases)) {
   try {
