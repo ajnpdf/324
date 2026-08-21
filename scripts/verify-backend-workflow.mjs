@@ -26,7 +26,6 @@ check('Multi-frame and in-memory image batches are bounded', engine.includes('MA
 check('PDF page ZIP extraction respects the global page ceiling', engine.includes('def _pdf_pages_zip') && engine.includes('doc.page_count > MAX_PDF_PAGES'));
 check('Unlock accepts valid encrypted PDFs without weakening other PDF validation', main.includes('allow_encrypted=True') && engine.includes('allow_encrypted_pdf: bool = False') && engine.includes('if document.needs_pass'));
 check('Structured outputs are validated by format', engine.includes('generated JSON is invalid') && engine.includes('generated XML is invalid') && engine.includes('missing required document data'));
-
 check('Archive expanded-size and entry limits exist', engine.includes('len(names) > 20000') && engine.includes('512 * 1024 * 1024'));
 check('PDF render workloads are bounded', engine.includes('MAX_PDF_PAGES') && engine.includes('MAX_RENDER_PIXELS') && engine.includes('_pdf_render_workload'));
 check('Normal PDF rendering is page-by-page', engine.includes('def _iter_pdf_rendered_pages') && engine.includes('for index, image in _iter_pdf_rendered_pages'));
@@ -66,7 +65,7 @@ check('HTTP acceptance results cannot ship in production packages', packageScrip
 
 if (failures.length) {
   console.error('FAIL: backend workflow verification failed:');
-  for (const item of failures) console.error(`- ${item}`));
+  for (const item of failures) console.error(`- ${item}`);
   process.exit(1);
 }
 console.log('AJN PDF backend workflow verification completed successfully.');
