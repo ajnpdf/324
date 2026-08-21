@@ -19,6 +19,7 @@ const conversionTools = read('src/lib/conversion-tools.ts');
 const toolsData = read('src/lib/tools-data.ts');
 const toolPolicy = read('src/lib/tool-policy.ts');
 const workspace = read('src/components/junction/tool-workspace-client.tsx');
+const serverWorkspace = read('src/components/junction/ServerConversionTool.tsx');
 const officeWorkspace = read('src/components/junction/OfficeConversionTool.tsx');
 const backendEngine = read('backend/app/conversion_engine.py');
 const processingQuality = read('backend/app/processing_quality.py');
@@ -41,6 +42,8 @@ requireText(toolPolicy, "'repair-pdf', 'png-to-pdf', ...conversionBackendIds", '
 requireText(toolPolicy, "'image-to-pdf', 'jpg-to-pdf', 'jpeg-to-pdf', 'png-to-pdf'", 'PNG to PDF uses the canonical multi-file backend policy');
 requireText(workspace, "...CONVERSION_TOOLS.map((tool) => tool.id), 'png-to-pdf'", 'PNG public card is routed to the canonical server processor');
 forbidText(workspace, "'png-to-pdf': dynamic(() => import('./PngToPdf')", 'PNG to PDF has no competing local workspace route');
+requireText(serverWorkspace, "'image-to-pdf','jpg-to-pdf','jpeg-to-pdf','png-to-pdf'", 'Server image-to-PDF controls include PNG');
+requireText(serverWorkspace, "'gif-to-pdf','svg-to-pdf','heic-to-pdf'", 'Server image-to-PDF controls include SVG and other supported formats');
 
 requireText(workspace, "'pdf-to-word','pdf-to-docx'", 'PDF to Word/DOCX are included in the fidelity workspace route');
 requireText(workspace, '<OfficeConversionTool toolId={serverToolId} />', 'Fidelity conversion IDs render through OfficeConversionTool');
@@ -64,6 +67,9 @@ for (const id of ['pdf-to-image','pdf-to-jpg','pdf-to-jpeg','pdf-to-png','pdf-to
 }
 requireText(backendEngine, "direct = fmt in {'gif', 'tiff'}", 'GIF and TIFF retain direct multi-page output contracts');
 requireText(backendEngine, "f'.{fmt}' if direct else '.zip'", 'Other PDF-to-image formats retain ZIP backend contracts');
+requireText(serverWorkspace, 'Input: {inputFormats} → Output: {outputFormat}', 'Server workspace shows the real input/output contract');
+requireText(serverWorkspace, 'unexpected output format', 'Server workspace rejects an unexpected returned extension');
+requireText(serverWorkspace, "manifest?.outputExtension==='.zip'", 'Server workspace explains ZIP-wrapped PDF-to-image results');
 
 for (const id of ['psd-pdf','upscale-image','remove-bg','blur-face','smart-read','pdf-a']) {
   requireText(toolPolicy, `'${id}'`, `${id} remains explicitly hidden until a proven processor exists`);
