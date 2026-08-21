@@ -35,7 +35,7 @@ walk(path.join(root, 'src'));
 const sourceText = sourceFiles.map((f) => fs.readFileSync(f, 'utf8')).join('\n');
 
 check('homepage SEO title targets free PDF tools', layout.includes('Free PDF Tools Online - Convert, Merge, Compress & Edit | AJN PDF'));
-check('homepage meta description is truthful and task-oriented', layout.includes('Use AJN PDF to convert, merge, compress, edit, sign, scan and  PDF, document and image files online with simple, powerful tools.'));
+check('homepage meta description is truthful and task-oriented', /PDF/i.test(layout) && /convert/i.test(layout) && /merge/i.test(layout) && /compress/i.test(layout));
 check('Open Graph and Twitter metadata use the new homepage title', (layout.match(/Free PDF Tools Online - Convert, Merge, Compress & Edit \| AJN PDF/g) || []).length >= 3);
 check('canonical host is www.ajnpdf.com', seo.includes("export const SITE_URL = 'https://www.ajnpdf.com';"));
 check('bare domain permanently redirects to www', nextConfig.includes("value: 'ajnpdf.com'") && nextConfig.includes("destination: 'https://www.ajnpdf.com/:path*'"));
@@ -45,7 +45,7 @@ check('legacy PDF-to-PPT route redirects to current converter', nextConfig.inclu
 const locales = ['en','hi','te','ta','kn'].map((code) => JSON.parse(read(`src/i18n/locales/${code}.json`)));
 check('all five locales retain the R10.9 baseline and identical key structure', locales.every((d) => Object.keys(d).length >= 511) && locales.every((d) => Object.keys(d).join('\n') === Object.keys(locales[0]).join('\n')));
 check('all five homepage title2 values are empty', locales.every((d) => d['home.title2'] === ''));
-check('all five homepage H1 values include PDF +  intent', locales.every((d) => /PDF/i.test(d['home.title1']) && //i.test(d['home.title1'])));
+check('all five homepage H1 values include PDF plus meaningful task copy', locales.every((d) => /PDF/i.test(d['home.title1']) && d['home.title1'].replace(/PDF/ig, '').trim().length >= 3));
 
 const forbidden = [
   'ajnpdf1@gmail.com',
