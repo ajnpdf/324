@@ -25,8 +25,8 @@ check(
   'frontend and backend fallback server limits are aligned at 30/30 MB',
   /maxFileSizeMb:\s*30/.test(constants) &&
   /maxTotalSizeMb:\s*30/.test(constants) &&
-  /AJN_MAX_FILE_MB", "30"/.test(backend) &&
-  /AJN_MAX_TOTAL_MB", "30"/.test(backend)
+  /AJN_MAX_FILE_MB['"],\s*['"]30['"]/.test(backend) &&
+  /AJN_MAX_TOTAL_MB['"],\s*['"]30['"]/.test(backend)
 );
 
 const staleLimitCopy = [

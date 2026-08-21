@@ -12,10 +12,43 @@ export interface ToolPolicy {
   limitation?: string;
 }
 
+// Production allowlist: only workflows already accepted as the current
+// trustworthy baseline are public. Other processors remain in source so they
+// can be repaired and re-enabled deliberately after real acceptance testing.
+export const PRODUCTION_PUBLIC_TOOL_IDS = new Set([
+  'add-image-to-pdf',
+  'add-text',
+  'compare-pdf',
+  'compress-pdf',
+  'convert-image',
+  'crop-image',
+  'crop-pdf',
+  'delete-pdf-pages',
+  'extract-images',
+  'flatten-pdf',
+  'flip-image',
+  'image-reducer',
+  'image-resizer',
+  'merge-pdf',
+  'organize-pdf',
+  'page-number',
+  'pdf-metadata',
+  'pdf-zip-extract',
+  'protect-pdf',
+  'repair-pdf',
+  'rotate-image',
+  'rotate-pdf',
+  'sign-pdf',
+  'split-pdf',
+  'unlock-pdf',
+  'watermark-image',
+  'watermark-pdf',
+]);
+
 const stableBrowserIds = new Set([
   'merge-pdf', 'split-pdf', 'rotate-pdf', 'delete-pdf-pages', 'organize-pdf',
   'crop-pdf', 'watermark-pdf', 'page-number', 'flatten-pdf', 'compare-pdf',
-  'add-text', 'add-image-to-pdf', 'pdf-metadata', 'jpg-pdf', 'png-to-pdf',
+  'add-text', 'add-image-to-pdf', 'pdf-metadata', 'jpg-pdf',
   'pdf-jpg', 'image-reducer', 'image-resizer', 'crop-image', 'rotate-image',
   'watermark-image', 'flip-image', 'convert-image', 'meme-generator',
   'photo-editor', 'pdf-text', 'xml-pdf', 'json-pdf', 'txt-pdf',
@@ -40,13 +73,22 @@ const legacyAliasIds = new Set([
   'pdf-jpg', 'heic-pdf', 'html-pdf', 'xml-pdf', 'json-pdf', 'txt-pdf']);
 
 const conversionBackendIds = new Set(CONVERSION_TOOLS.map((tool) => tool.id));
-const backendIds = new Set(['protect-pdf', 'unlock-pdf', 'repair-pdf', ...conversionBackendIds]);
+const backendIds = new Set(['protect-pdf', 'unlock-pdf', 'repair-pdf', 'png-to-pdf', ...conversionBackendIds]);
 
 const hiddenIds = new Set([
   'pdf-ppt', 'pdf-a', 'pdf-ua', 'smart-read', 'psd-pdf',
   'upscale-image', 'remove-bg', 'blur-face']);
 
 export function getToolPolicy(id: string): ToolPolicy {
+  if (!PRODUCTION_PUBLIC_TOOL_IDS.has(id)) {
+    return {
+      maturity: 'hidden', processingMode: 'browser', maxFiles: 1, maxFileSizeMb: 25,
+      publicByDefault: false,
+      limitation: hiddenIds.has(id)
+        ? 'Hidden until its output and claims pass production validation.'
+        : 'Removed from the public catalog until this workflow passes real production acceptance.',
+    };
+  }
   if (legacyAliasIds.has(id)) {
     return {
       maturity: 'hidden', processingMode: 'browser', maxFiles: 1, maxFileSizeMb: 75,
@@ -55,7 +97,7 @@ export function getToolPolicy(id: string): ToolPolicy {
   }
   if (stableBrowserIds.has(id)) {
     return {
-      maturity: 'stable', processingMode: 'browser', maxFiles: id === 'merge-pdf' ? MERGE_PDF_LIMITS.maxFiles : id === 'jpg-pdf' || id === 'png-to-pdf' ? 30 : 1,
+      maturity: 'stable', processingMode: 'browser', maxFiles: id === 'merge-pdf' ? MERGE_PDF_LIMITS.maxFiles : id === 'jpg-pdf' ? 30 : 1,
       maxFileSizeMb: id === 'merge-pdf' ? MERGE_PDF_LIMITS.maxFileSizeMb : 50, publicByDefault: true,
     };
   }
@@ -68,21 +110,21 @@ export function getToolPolicy(id: string): ToolPolicy {
   }
   if (backendIds.has(id)) {
     const multiFileConversionIds = new Set([
-      'image-to-pdf', 'jpg-to-pdf', 'jpeg-to-pdf', 'webp-to-pdf', 'tiff-to-pdf', 'bmp-to-pdf',
+      'image-to-pdf', 'jpg-to-pdf', 'jpeg-to-pdf', 'png-to-pdf', 'webp-to-pdf', 'tiff-to-pdf', 'bmp-to-pdf',
       'gif-to-pdf', 'svg-to-pdf', 'heic-to-pdf']);
     return {
       maturity: 'backend', processingMode: 'temporary-server',
       maxFiles: multiFileConversionIds.has(id) ? 30 : 1,
       maxFileSizeMb: SERVER_LIMIT_DEFAULTS.maxFileSizeMb,
       publicByDefault: true,
-      limitation: conversionBackendIds.has(id)
+      limitation: conversionBackendIds.has(id) || id === 'png-to-pdf'
         ? 'Selected files are uploaded only for the requested action. Temporary request files are scheduled for cleanup after the result is returned.'
         : 'This advanced workflow uses a temporary online request. Temporary request files are scheduled for cleanup after the result is returned.',
     };
   }
   return {
     maturity: 'hidden', processingMode: 'browser', maxFiles: 1, maxFileSizeMb: 25,
-    publicByDefault: false, limitation: hiddenIds.has(id) ? 'Hidden until its output and claims pass production validation.' : 'Not included in the Phase 1 public tool set.',
+    publicByDefault: false, limitation: hiddenIds.has(id) ? 'Hidden until its output and claims pass production validation.' : 'Not included in the public tool set.',
   };
 }
 

@@ -22,13 +22,13 @@ const MainFooter = dynamic(() => import('../components/landing/main-footer').the
 const AdSenseUnit = dynamic(() => import('../components/adsense-unit').then((module) => module.AdSenseUnit), { ssr: false });
 
 const categories = [
-  { id: 'all', key: 'filters.all' },
-  { id: 'conversion', key: 'filters.conversion' },
-  { id: 'image', key: 'filters.image' },
-  { id: 'pdf', key: 'filters.pdf' },
-  { id: 'edit', key: 'filters.edit' },
-  { id: 'organize', key: 'filters.organize' },
-  { id: 'security', key: 'filters.security' }];
+  { id: 'all', label: 'All' },
+  { id: 'pdf', label: 'PDF' },
+  { id: 'edit', label: 'Edit & Sign' },
+  { id: 'organize', label: 'Organize' },
+  { id: 'security', label: 'Security' },
+  { id: 'image', label: 'Image' },
+] as const;
 
 export default function HomePage() {
   const { t } = useLanguage();
@@ -69,14 +69,16 @@ export default function HomePage() {
         <Hero />
 
         <section className="relative mx-auto max-w-7xl scroll-mt-[72px] px-4 pb-10 pt-4 md:px-8 md:pb-20 md:pt-12" id="public-tools">
-          <div className="border-b border-slate-200 pb-4 md:pb-7">
-            <span className="ajn-section-kicker hidden md:inline-flex">{t('home.directoryKicker')}</span>
+          <div className="border-b border-slate-200 pb-5 md:pb-7">
+            <span className="ajn-section-kicker hidden md:inline-flex">Focused AJN PDF toolkit</span>
             <div className="mt-0 flex items-end justify-between gap-4 md:mt-5">
               <div className="max-w-3xl">
-                <h2 className="text-[1.65rem] font-black leading-tight tracking-[-.045em] text-slate-950 md:text-5xl">{t('home.chooseTool')}</h2>
-                <p className="mt-3 hidden text-sm font-medium leading-6 text-slate-600 md:block">{t('home.directoryDesc')}</p>
+                <h2 className="text-[1.65rem] font-black leading-tight tracking-[-.045em] text-slate-950 md:text-5xl">Choose the right tool.</h2>
+                <p className="mt-3 hidden text-sm font-medium leading-6 text-slate-600 md:block">
+                  {BUILD_PUBLIC_TOOLS.length} approved PDF and image workflows with clear inputs, focused controls and direct result actions.
+                </p>
               </div>
-              <span className="shrink-0 text-[11px] font-black text-blue-700">{BUILD_PUBLIC_TOOLS.length} {t('common.available')}</span>
+              <span className="shrink-0 rounded-full bg-blue-50 px-3 py-1.5 text-[11px] font-black text-blue-700">{BUILD_PUBLIC_TOOLS.length} {t('common.available')}</span>
             </div>
           </div>
 
@@ -89,13 +91,13 @@ export default function HomePage() {
                   id="home-tool-search"
                   value={search}
                   onChange={(event) => setSearch(event.target.value)}
-                  placeholder={t('common.searchTools')}
+                  placeholder={`Search ${BUILD_PUBLIC_TOOLS.length} tools — merge, compress, sign, image…`}
                   enterKeyHint="search"
                   autoComplete="off"
                   className="h-11 rounded-xl border-slate-200 bg-white pl-10 pr-3 text-sm font-semibold text-slate-950 shadow-sm focus-visible:ring-blue-500/30 md:h-12"
                 />
               </div>
-              <div className="flex gap-2 overflow-x-visible flex-wrap pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label={t('home.filterAria')}>
+              <div className="flex gap-2 overflow-x-auto pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label="Filter tools">
                 {categories.map((category) => (
                   <button
                     type="button"
@@ -109,14 +111,14 @@ export default function HomePage() {
                         : 'border-slate-200 bg-white text-slate-700 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-800',
                     )}
                   >
-                    {t(category.key)}
+                    {category.label}
                   </button>
                 ))}
               </div>
             </div>
           </div>
 
-          <div className="mt-4 md:mt-8"><ServicesGrid query={search} category={activeCategory} /></div>
+          <div className="mt-5 md:mt-8"><ServicesGrid query={search} category={activeCategory} /></div>
         </section>
 
         <AdSenseUnit slot={ADSENSE_SLOTS.homePrimary} width={400} height={80} className="ajn-ad-zone my-8 min-h-[80px] md:my-12" label={t('common.advertisement')} />

@@ -1,10 +1,4 @@
 FROM python:3.12-slim
-# AJN PDF R16 - production Calibre + headless Qt runtime
-RUN apt-get update \
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends calibre \
-    && command -v ebook-convert \
-    && ebook-convert --version \
-    && rm -rf /var/lib/apt/lists/*
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
@@ -23,36 +17,44 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     QTWEBENGINE_CHROMIUM_FLAGS="--disable-gpu --disable-dev-shm-usage" \
     DEBIAN_FRONTEND=noninteractive
 
-# Native engines for server-assisted workflows. XPS is handled internally by
-# PyMuPDF and does not require Ghostscript/mutool.
-#
-# --all is intentional: Auto Detect can choose from installed
-# language and script models instead of pretending six hard-coded languages
-# are universal  support.
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libreoffice-writer libreoffice-calc libreoffice-impress \
-    - --all \
-    calibre imagemagick poppler-utils \
-    libcairo2 libpango-1.0-0 libpangocairo-1.0-0 \
-    fonts-dejavu-core fonts-liberation fonts-noto-core \
-    ca-certificates curl \
+# Keep the native document/image engines available for preserved backend
+# processors while the public release exposes only accepted workflows.
+# OCR/Tesseract packages are intentionally absent because recognition tools
+# are retired from the current production catalog.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        libreoffice-writer \
+        libreoffice-calc \
+        libreoffice-impress \
+        calibre \
+        imagemagick \
+        poppler-utils \
+        libcairo2 \
+        libpango-1.0-0 \
+        libpangocairo-1.0-0 \
+        fonts-dejavu-core \
+        fonts-liberation \
+        fonts-noto-core \
+        ca-certificates \
+        curl \
+    && command -v libreoffice \
+    && command -v ebook-convert \
+    && command -v pdftoppm \
+    && libreoffice --headless --version \
+    && ebook-convert --version \
+    && pdftoppm -v \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 COPY requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir -r requirements.txt
-
-RUN python -c "import fitz,pikepdf,docx,openpyxl,PIL,reportlab,ebooklib,cairosvg" \
-    && libreoffice --headless --version \
-    &&  --version \
-    && ebook-convert --version \
-    && pdftoppm -v
+    && pip install --no-cache-dir -r requirements.txt \
+    && python -c "import fitz,pikepdf,docx,openpyxl,PIL,reportlab,ebooklib,cairosvg; print('PASS: backend Python runtime imports')"
 
 COPY app ./app
-COPY smoke_test.py capability_audit.py conversion_contract_audit.py full_acceptance_test.py processing_quality_acceptance_test.py image_pdf_quality_acceptance_test.py hard_format_acceptance_test.py recognition_language_gate.py recognition_multilingual_acceptance_test.py api_v1_contract_test.py recognition_deep_acceptance_test.py recognition_selected_acceptance_test.py e_signature_acceptance_test.py r19_conversion_fidelity_acceptance_test.py ./
+COPY public_backend_acceptance_test.py ./public_backend_acceptance_test.py
 RUN python -m compileall -q app \
-    && python -m py_compile capability_audit.py conversion_contract_audit.py full_acceptance_test.py processing_quality_acceptance_test.py image_pdf_quality_acceptance_test.py hard_format_acceptance_test.py recognition_language_gate.py recognition_multilingual_acceptance_test.py api_v1_contract_test.py recognition_deep_acceptance_test.py recognition_selected_acceptance_test.py e_signature_acceptance_test.py r19_conversion_fidelity_acceptance_test.py
+    && python -m py_compile public_backend_acceptance_test.py
 
 RUN useradd --uid 10001 --user-group --create-home --home-dir /home/ajn --shell /usr/sbin/nologin ajn \
     && mkdir -p /tmp/public_media /tmp/ajn-work /tmp/runtime-ajn \
@@ -60,9 +62,11 @@ RUN useradd --uid 10001 --user-group --create-home --home-dir /home/ajn --shell 
     && chmod 700 /tmp/runtime-ajn
 
 USER 10001
+
+# Build the exact image only if the FastAPI application starts and the three
+# public temporary-server workflows produce valid results end to end.
 RUN set -eu; \
     python -c "from app.main import app; assert app.title == 'AJN PDF Conversion API'; print('PASS: FastAPI application import')"; \
-    python conversion_contract_audit.py; \
     uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 1 --proxy-headers > /tmp/ajn-build-uvicorn.log 2>&1 & \
     server_pid=$!; \
     trap 'kill "$server_pid" 2>/dev/null || true' EXIT INT TERM; \
@@ -76,20 +80,9 @@ RUN set -eu; \
         fi; \
         sleep 1; \
     done; \
-    python capability_audit.py; \
+    python public_backend_acceptance_test.py; \
     kill "$server_pid" 2>/dev/null || true; \
     wait "$server_pid" 2>/dev/null || true; \
-    trap - EXIT INT TERM; \
-    python api_v1_contract_test.py; \
-    python recognition_language_gate.py; \
-    python recognition_multilingual_acceptance_test.py; \
-    python recognition_deep_acceptance_test.py; \
-    python recognition_selected_acceptance_test.py; \
-    python e_signature_acceptance_test.py; \
-    python image_pdf_quality_acceptance_test.py; \
-    python hard_format_acceptance_test.py; \
-    python full_acceptance_test.py; \
-    python r19_conversion_fidelity_acceptance_test.py; \
-    python processing_quality_acceptance_test.py
+    trap - EXIT INT TERM
 
 CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT} --workers 1 --proxy-headers"]

@@ -16,44 +16,40 @@ export type ToolSeoProfile = {
 
 const CATEGORY_TERMS = {
   conversion: ['online file converter', 'convert files online', 'document converter online'],
-  image: ['online image converter', 'image tools online', 'convert image files'],
+  image: ['online image tools', 'edit images online', 'image utility tools'],
   pdf: ['online PDF tools', 'edit PDF online', 'PDF utility tools'],
 } as const;
 
-const RETIRED_MARKERS = ['', 'scanned', 'scan', 'searchable'];
+const RECOGNITION_MARKERS = ['ocr', 'scanned', 'searchable', 'image-to-text', 'image-to-word', 'handwriting'];
 
 const PRIORITY_TITLES: Record<string, string> = {
   'merge-pdf': 'Merge PDF Online - Combine PDF Files | AJN PDF',
   'split-pdf': 'Split PDF Online - Extract PDF Pages | AJN PDF',
   'compress-pdf': 'Compress PDF Online - Reduce PDF Size | AJN PDF',
-  'pdf-to-word': 'PDF to Word Online - Convert PDF to DOCX | AJN PDF',
-  'word-to-pdf': 'Word to PDF Online - Convert DOCX to PDF | AJN PDF',
-  'pdf-to-jpg': 'PDF to JPG Online - Convert PDF Pages | AJN PDF',
-  'jpg-to-pdf': 'JPG to PDF Online - Convert Images to PDF | AJN PDF',
-  'pdf-to-excel': 'PDF to Excel Online - Convert PDF Tables | AJN PDF',
-  'excel-to-pdf': 'Excel to PDF Online - Convert Spreadsheets | AJN PDF',
-  'pdf-to-powerpoint': 'PDF to PowerPoint Online - Convert Slides | AJN PDF',
   'protect-pdf': 'Protect PDF Online - Add a PDF Password | AJN PDF',
   'unlock-pdf': 'Unlock PDF Online - Remove PDF Password | AJN PDF',
   'organize-pdf': 'Organize PDF Online - Reorder PDF Pages | AJN PDF',
   'add-text': 'Edit PDF Online - Add Text to PDF | AJN PDF',
+  'sign-pdf': 'Sign PDF Online - Add an Electronic Signature | AJN PDF',
+  'repair-pdf': 'Repair PDF Online - Recover a Damaged PDF | AJN PDF',
+  'rotate-pdf': 'Rotate PDF Online - Rotate PDF Pages | AJN PDF',
+  'crop-pdf': 'Crop PDF Online - Trim PDF Pages | AJN PDF',
+  'watermark-pdf': 'Watermark PDF Online - Add Text Watermark | AJN PDF',
 };
 
 const PRIORITY_DESCRIPTIONS: Record<string, string> = {
   'merge-pdf': 'Combine multiple PDF files in the order you choose, remove files before processing, and download one merged PDF.',
   'split-pdf': 'Split a PDF into smaller files, extract selected pages, or separate sections of a document with clear page controls.',
   'compress-pdf': 'Reduce PDF file size with practical compression controls. Already optimized PDFs may shrink only slightly.',
-  'pdf-to-word': 'Convert PDF content to an editable Word document. Complex layouts, scans and tables may need review after conversion.',
-  'word-to-pdf': 'Convert Word documents to PDF for consistent sharing and printing, using the available document conversion workflow.',
-  'pdf-to-jpg': 'Render PDF pages as JPG images for previews, sharing and image-based workflows, with selectable output settings.',
-  'jpg-to-pdf': 'Turn one or more JPG images into a PDF in the order you choose, with practical page size and image-fit controls.',
-  'pdf-to-excel': 'Convert supported PDF table content to an Excel workbook. Review complex tables and scanned pages after conversion.',
-  'excel-to-pdf': 'Convert Excel spreadsheets to PDF for easier sharing and printing with the available document conversion workflow.',
-  'pdf-to-powerpoint': 'Convert supported PDF content to a PowerPoint presentation. Review complex layouts after conversion.',
   'protect-pdf': 'Add password protection to an authorized PDF and download a protected copy.',
   'unlock-pdf': 'Remove PDF encryption when you know the valid password and are authorized to create an unlocked copy.',
   'organize-pdf': 'Reorder, rotate, remove or duplicate PDF pages with a visual workspace, then download the updated document.',
   'add-text': 'Add text directly to PDF pages, position it visually, and download a new copy without changing the original file.',
+  'sign-pdf': 'Place a visual electronic signature on a PDF, position it on the page, and download a new signed copy.',
+  'repair-pdf': 'Attempt safe recovery of a PDF with minor structural damage and download a separate repaired copy.',
+  'rotate-pdf': 'Rotate all or selected PDF pages clockwise, counter-clockwise or 180 degrees and download a new copy.',
+  'crop-pdf': 'Trim PDF page margins or crop selected pages with visual controls while keeping the original file unchanged.',
+  'watermark-pdf': 'Add a visible text watermark to selected PDF pages with position, rotation, size and opacity controls.',
 };
 
 function normalize(value: string): string {
@@ -64,15 +60,29 @@ function unique(values: string[]): string[] {
   return [...new Set(values.map(normalize).filter(Boolean))];
 }
 
+function isRecognitionTool(tool: ServiceTool): boolean {
+  const id = tool.id.toLowerCase();
+  const name = normalize(tool.name);
+  return RECOGNITION_MARKERS.some((marker) => id.includes(marker) || name.includes(marker.replace(/-/g, ' ')));
+}
+
+function isConversionTool(tool: ServiceTool): boolean {
+  return tool.id.includes('-to-') || tool.tag === 'convert' || getPublicToolCategory(tool) === 'conversion';
+}
+
 function buildTitle(tool: ServiceTool): string {
   const priority = PRIORITY_TITLES[tool.id];
   if (priority) return priority;
+
   const base = `${tool.name} Online`;
-  const suffix = tool.id.includes('') || RETIRED_MARKERS.some((marker) => tool.id.includes(marker))
-    ? ' Tool'
-    : tool.id.includes('-to-') || tool.tag === 'convert'
+  const category = getPublicToolCategory(tool);
+  const suffix = isRecognitionTool(tool)
+    ? 'OCR Tool'
+    : isConversionTool(tool)
       ? 'File Converter'
-      : 'PDF Tool';
+      : category === 'image'
+        ? 'Image Tool'
+        : 'PDF Tool';
   const candidate = `${base} - ${suffix} | AJN PDF`;
   return candidate.length <= 62 ? candidate : `${base} | AJN PDF`;
 }
@@ -80,48 +90,44 @@ function buildTitle(tool: ServiceTool): string {
 function buildNaturalDescription(tool: ServiceTool, isRecognition: boolean, isConversion: boolean): string {
   const priority = PRIORITY_DESCRIPTIONS[tool.id];
   if (priority) return priority;
+
   const cleanDesc = tool.desc.trim().replace(/\s+/g, ' ').replace(/\.$/, '');
-  const useCase = isRecognition
-    ? 'extract usable text from supported scanned documents and images'
+  const task = isRecognition
+    ? 'recognize visible text in supported scanned files'
     : isConversion
       ? 'convert supported files into the requested output format'
       : `complete the ${tool.name.toLowerCase()} workflow with clear file controls`;
-  const benefit = isRecognition
-    ? 'Review  output before using it in important work.'
-    : isConversion
-      ? 'Download and review the result when processing is complete.'
-      : 'Practical limits and result controls are shown before processing.';
-  if (isRecognition) return `${tool.name} helps you ${useCase}. ${cleanDesc}. ${benefit}`;
-  if (isConversion) return `${tool.name} helps you ${useCase}. ${cleanDesc}. ${benefit}`;
-  return `${cleanDesc}. ${tool.name} lets you ${useCase}. ${benefit}`;
+  const review = isRecognition
+    ? 'Review recognized text before using it in important work.'
+    : 'Review the downloaded result before replacing the source file.';
+  return `${cleanDesc}. ${tool.name} helps you ${task}. ${review}`;
 }
 
 export function getToolSeoProfile(tool: ServiceTool): ToolSeoProfile {
   const category = getPublicToolCategory(tool);
   const normalizedName = normalize(tool.name);
-  const isRecognition = RETIRED_MARKERS.some((marker) => tool.id.includes(marker) || normalizedName.includes(marker));
-  const isConversion = tool.id.includes('-to-') || tool.tag === 'convert' || category === 'conversion';
-  const intent: SearchIntent = 'transactional';
+  const isRecognition = isRecognitionTool(tool);
+  const isConversion = isConversionTool(tool);
   const categoryLabel = category === 'conversion' ? 'File Conversion' : category === 'image' ? 'Image Tools' : 'PDF Tools';
   const primaryKeyword = `${normalizedName} online`;
   const secondaryKeywords = unique([
     `free ${normalizedName}`,
     `${normalizedName} without signup`,
-    `${normalizedName} converter`,
     `${normalizedName} tool`,
     ...tool.keywords,
     ...CATEGORY_TERMS[category],
-    ...(isRecognition ? ['online  tool', 'extract text from scanned document', 'scanned document converter'] : [])]).slice(0, 18);
+    ...(isConversion ? [`${normalizedName} converter`] : []),
+    ...(isRecognition ? ['online OCR tool', 'extract text from scanned document'] : []),
+  ]).slice(0, 18);
   const questionKeywords = unique([
     `how to ${normalizedName} online`,
-    `how do I ${normalizedName}`,
+    `how do i ${normalizedName}`,
     `best way to ${normalizedName}`,
-    isRecognition ? 'how to extract text from a scanned file' : `how to use ${normalizedName}`]);
-  const audience = isRecognition
-    ? ['students', 'offices', 'researchers', 'archives', 'small businesses']
-    : category === 'image'
-      ? ['creators', 'students', 'marketing teams', 'small businesses']
-      : ['students', 'professionals', 'business teams', 'legal and finance users'];
+    `how to use ${normalizedName}`,
+  ]);
+  const audience = category === 'image'
+    ? ['creators', 'students', 'marketing teams', 'small businesses']
+    : ['students', 'professionals', 'business teams', 'legal and finance users'];
   const description = buildNaturalDescription(tool, isRecognition, isConversion).replace(/\s+/g, ' ').slice(0, 158).trim();
 
   return {
@@ -129,7 +135,7 @@ export function getToolSeoProfile(tool: ServiceTool): ToolSeoProfile {
     secondaryKeywords,
     questionKeywords,
     audience,
-    intent,
+    intent: 'transactional',
     title: buildTitle(tool),
     description,
     categoryLabel,
@@ -140,32 +146,34 @@ export const ICP_SEGMENTS = [
   {
     id: 'students',
     label: 'Students and applicants',
-    jobs: ['merge assignments', 'compress application files', 'convert scans to editable text', 'prepare image files as PDF'],
-    priorityQueries: ['merge pdf online', 'compress pdf for application', 'scanned pdf to word', 'jpg to pdf online'],
+    jobs: ['merge assignments', 'compress application files', 'organize pages', 'sign forms'],
+    priorityQueries: ['merge pdf online', 'compress pdf for application', 'organize pdf pages', 'sign pdf online'],
   },
   {
     id: 'professionals',
     label: 'Professionals and office teams',
-    jobs: ['convert office files', 'extract tables and text', 'protect confidential PDFs', 'repair or reorganize documents'],
-    priorityQueries: ['word to pdf online', 'pdf to excel', 'protect pdf with password', 'organize pdf pages'],
+    jobs: ['protect confidential PDFs', 'repair damaged PDFs', 'compare document versions', 'edit PDF metadata'],
+    priorityQueries: ['protect pdf with password', 'repair pdf online', 'compare pdf online', 'edit pdf metadata'],
   },
   {
     id: 'small-business',
     label: 'Small businesses and operations teams',
-    jobs: ['prepare invoices and receipts', 'convert email attachments', 'create searchable archives', 'reduce document size'],
-    priorityQueries: ['receipt to pdf', 'eml to pdf', ' searchable pdf', 'compress pdf online'],
+    jobs: ['compress documents', 'watermark distributed PDFs', 'protect files', 'extract images'],
+    priorityQueries: ['compress pdf online', 'watermark pdf online', 'protect pdf online', 'extract images from pdf'],
   },
   {
     id: 'creators',
     label: 'Creators and marketing teams',
-    jobs: ['convert images', 'export PDF pages', 'prepare campaign assets', 'combine visuals into PDFs'],
-    priorityQueries: ['png to pdf', 'pdf to png', 'webp to pdf', 'images to pdf'],
-  }] as const;
+    jobs: ['resize images', 'reduce image size', 'crop images', 'watermark image assets'],
+    priorityQueries: ['resize image online', 'reduce image size', 'crop image online', 'watermark image online'],
+  },
+] as const;
 
 export const SEARCH_INTENT_CLUSTERS = [
   { cluster: 'Core PDF actions', intent: 'transactional', examples: ['merge pdf', 'split pdf', 'compress pdf', 'organize pdf'] },
-  { cluster: 'PDF conversion', intent: 'transactional', examples: ['pdf to word', 'pdf to excel', 'pdf to jpg', 'word to pdf'] },
-  { cluster: ' and scanned documents', intent: 'transactional', examples: ['scanned pdf to text', 'image to text', 'searchable pdf'] },
+  { cluster: 'PDF editing and signing', intent: 'transactional', examples: ['add text to pdf', 'sign pdf', 'watermark pdf', 'crop pdf'] },
   { cluster: 'Document security', intent: 'transactional', examples: ['protect pdf', 'unlock pdf', 'repair pdf'] },
-  { cluster: 'How-to guidance', intent: 'informational', examples: ['how to merge pdf safely', 'how  works', 'how to reduce pdf size'] },
-  { cluster: 'Tool evaluation', intent: 'comparison', examples: ['best free pdf tools', 'online pdf converter comparison', 'PDF tool comparison'] }] as const;
+  { cluster: 'Image workflows', intent: 'transactional', examples: ['resize image', 'reduce image size', 'crop image', 'convert image'] },
+  { cluster: 'How-to guidance', intent: 'informational', examples: ['how to merge pdf safely', 'how to compress pdf', 'how to sign a pdf online'] },
+  { cluster: 'Tool evaluation', intent: 'comparison', examples: ['best free pdf tools', 'online pdf tool comparison', 'pdf editor comparison'] },
+] as const;

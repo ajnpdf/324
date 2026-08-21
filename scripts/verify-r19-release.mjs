@@ -1,63 +1,63 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-const file=path.join(process.cwd(),'reports/AJN_PUBLIC_RELEASE_INVENTORY.json');
-
-if(!fs.existsSync(file)){
+const file = path.join(process.cwd(), 'reports/AJN_PUBLIC_RELEASE_INVENTORY.json');
+if (!fs.existsSync(file)) {
   console.error('FAIL: Run generate-r19-release-inventory.mjs first.');
   process.exit(1);
 }
 
-const data=JSON.parse(fs.readFileSync(file,'utf8'));
-const routes=data.publicRoutes||[];
-const canonical=data.canonicalTools||[];
-const aliases=data.publicWorkspaceAliases||[];
+const data = JSON.parse(fs.readFileSync(file, 'utf8'));
+const routes = data.publicRoutes || [];
+const canonical = data.canonicalTools || [];
+const aliases = data.publicWorkspaceAliases || [];
 
-const retired=new Set(["-scanner"]);
-const duplicates=(items)=>{
-  const ids=items.map(x=>x.id);
-  return ids.filter((id,i)=>ids.indexOf(id)!==i);
+const duplicates = (items) => {
+  const ids = items.map((item) => item.id);
+  return ids.filter((id, index) => ids.indexOf(id) !== index);
 };
-
-const routeDup=duplicates(routes);
-const canonicalDup=duplicates(canonical);
-
-if(routeDup.length||canonicalDup.length){
-  console.error('FAIL: duplicate release IDs',{routeDup,canonicalDup});
+const routeDup = duplicates(routes);
+const canonicalDup = duplicates(canonical);
+if (routeDup.length || canonicalDup.length) {
+  console.error('FAIL: duplicate release IDs', { routeDup, canonicalDup });
   process.exit(1);
 }
 
-const leakedRoutes=routes.filter(x=>retired.has(x.id));
-const leakedCanonical=canonical.filter(x=>retired.has(x.id));
-
-if(leakedRoutes.length||leakedCanonical.length){
-  console.error('FAIL: retired /scanner tools remain public',{
-    routes: leakedRoutes.map(x=>x.id),
-    canonical: leakedCanonical.map(x=>x.id),
-  });
+if (routes.length !== 27) {
+  console.error(`FAIL: expected exactly 27 validated public routes; got ${routes.length}.`);
   process.exit(1);
 }
-
-if(routes.length!==97){
-  console.error(`FAIL: expected exactly 97 public routes after  retirement; got ${routes.length}.`);
+if (canonical.length !== 27) {
+  console.error(`FAIL: expected exactly 27 canonical public processors; got ${canonical.length}.`);
   process.exit(1);
 }
-
-if(canonical.length!==96){
-  console.error(`FAIL: expected exactly 96 canonical processors after  retirement; got ${canonical.length}.`);
+if (aliases.length !== 0) {
+  console.error(`FAIL: expected no public workspace aliases in the validated baseline; got ${aliases.length}.`);
   process.exit(1);
 }
-
-if(aliases.length!==1){
-  console.error(`FAIL: expected exactly 1 public workspace alias; got ${aliases.length}.`);
-  process.exit(1);
-}
-
-if(routes.length!==canonical.length+aliases.length){
+if (routes.length !== canonical.length + aliases.length) {
   console.error('FAIL: route/canonical/alias accounting mismatch.');
   process.exit(1);
 }
+if (data.publicRouteCount !== routes.length || data.canonicalProcessorCount !== canonical.length) {
+  console.error('FAIL: generated count fields do not match inventory arrays.');
+  process.exit(1);
+}
 
-console.log(`PASS: no- R19 release inventory — ${routes.length} public routes, ${canonical.length} canonical processors, ${aliases.length} alias.`);
-console.log('PASS: retired /scanner IDs are absent from the public release inventory.');
-console.log('NOTE: Inventory integrity is NOT all-tool semantic/visual E2E proof.');
+const required = [
+  'merge-pdf','split-pdf','compress-pdf','rotate-pdf','delete-pdf-pages','organize-pdf','crop-pdf','watermark-pdf',
+  'page-number','flatten-pdf','protect-pdf','unlock-pdf','repair-pdf','compare-pdf','add-text','add-image-to-pdf',
+  'pdf-metadata','extract-images','image-reducer','image-resizer','crop-image','rotate-image','watermark-image',
+  'flip-image','convert-image','sign-pdf','pdf-zip-extract',
+];
+const actual = new Set(routes.map((item) => item.id));
+for (const id of required) {
+  if (!actual.has(id)) {
+    console.error(`FAIL: validated public baseline is missing ${id}.`);
+    process.exit(1);
+  }
+}
+
+console.log(`PASS: release inventory — ${routes.length} validated public routes, ${canonical.length} canonical processors, ${aliases.length} aliases.`);
+console.log('PASS: unaccepted conversion processors remain out of the public release accounting.');
+console.log('NOTE: Backend/source processors may remain available for repair work without being public.');
