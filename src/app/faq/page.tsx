@@ -13,13 +13,12 @@ const groups = [
       },
       {
         q: 'Which tools use an online workflow?',
-        a: 'Advanced conversion, OCR, protection, unlocking and repair workflows may temporarily upload the selected file when an additional conversion engine is required.',
+        a: 'Advanced conversion, protection, unlocking and repair workflows may temporarily upload the selected file when an additional conversion engine is required.',
       },
       {
         q: 'Are temporary files deleted?',
         a: 'Online requests use an isolated temporary work area that is scheduled for cleanup after the result is delivered. On-device tools keep their working state in the active page.',
-      },
-    ],
+      }],
   },
   {
     title: 'Tools and limits',
@@ -35,8 +34,7 @@ const groups = [
       {
         q: 'Do public tools require an account?',
         a: 'No account is required for the current public tool directory. Prototype account and dashboard surfaces are not part of this release.',
-      },
-    ],
+      }],
   },
   {
     title: 'Security and authorization',
@@ -52,8 +50,7 @@ const groups = [
       {
         q: 'Does AJN PDF claim external security certification?',
         a: 'No external badge, audit grade or uptime score is claimed unless it can be independently verified and linked from the relevant page.',
-      },
-    ],
+      }],
   },
   {
     title: 'Advertisements',
@@ -69,10 +66,8 @@ const groups = [
       {
         q: 'Can I change my advertising choice?',
         a: 'Yes. Use the Privacy choices button in the footer. Regional Google-certified consent messages must also be configured in the publisher’s AdSense account where required.',
-      },
-    ],
-  },
-];
+      }],
+  }];
 
 export default function FAQPage() {
   return (

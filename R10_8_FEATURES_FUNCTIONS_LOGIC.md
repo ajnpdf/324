@@ -17,7 +17,7 @@
 
 ## Trust/limits logic
 - `/limits` documents current package defaults while clearly stating that live deployment values may be lower.
-- `/ocr` lists supported language packs and quality factors but does not claim a universal recognition percentage.
+- `/` lists supported language packs and quality factors but does not claim a universal recognition percentage.
 - Fair-use text explains that unusually high automated volume may be limited without publishing abuse-sensitive thresholds.
 
 ## Security-header logic

@@ -7,7 +7,7 @@
 5. Confirm `/sitemap.xml`, `/image-sitemap.xml`, `/robots.txt`, `/feed.xml` return 200 and use the www canonical host.
 6. Confirm `/admin/media` and `/admin/analytics` send `X-Robots-Tag: noindex` and `Cache-Control: no-store`.
 7. Confirm CSP, nosniff, Referrer-Policy and Permissions-Policy headers are present.
-8. Test one browser-only tool, one temporary-server conversion, OCR, Protect PDF, Unlock PDF and Repair PDF with real files.
+8. Test one browser-only tool, one temporary-server conversion, Protect PDF, Unlock PDF and Repair PDF with real files.
 9. Test Chrome and Edge hard refresh and route navigation with zero hydration/chunk errors.
 10. Test mobile widths 360/390/430 and 200% text zoom.
 11. In Search Console, inspect homepage, `/privacy`, `/about`, `/faq`, `/transparency`, `/pdf-tools` and the formerly stale tool URLs; request indexing only after live tests pass.

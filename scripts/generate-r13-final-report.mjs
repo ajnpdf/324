@@ -36,14 +36,13 @@ const lines = [
   '- Vercel R13 marker: checked by the live audit; remains PENDING until the deployed homepage exposes `ajn-release=3.1.0-r13`.',
   '', '## Manual / field gates',
   '- 100/110/125/150/200% visual zoom review: **PENDING until rendered browser audit/manual confirmation**',
-  '- Merge/Protect/Unlock + six-language server OCR production workflows: **PENDING until live backend files are tested**',
+  '- Merge/Protect/Unlock + six-language server  production workflows: **PENDING until live backend files are tested**',
   '- Field Core Web Vitals (LCP/CLS/INP): **PENDING**',
   '- CMP / AdSense / CSP visual behavior: **PENDING**',
   '- Search Console sitemap/priority inspections and recrawl: **PENDING**',
   '- Chrome Web Store external review: **PENDING**',
   '- Durable long-lived media/analytics migration, if still needed: **PENDING / non-blocking web release infrastructure work**',
   '', '## Production-final rule',
-  'Do not label AJN PDF “Production Final” solely from this source/build report. The deployed release marker, live redirects/canonicals and critical real workflows must also pass.',
-];
+  'Do not label AJN PDF “Production Final” solely from this source/build report. The deployed release marker, live redirects/canonicals and critical real workflows must also pass.'];
 fs.writeFileSync(output, `${lines.join('\n')}\n`);
 console.log(`R13 final report: ${output}`);

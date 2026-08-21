@@ -26,8 +26,7 @@ const CORE_PAGE_DEFINITIONS: CorePageDefinition[] = [
   { path: '/dmca', changeFrequency: 'yearly', priority: 0.3 }, { path: '/disclaimer', changeFrequency: 'yearly', priority: 0.3 },
   { path: '/acceptable-use', changeFrequency: 'yearly', priority: 0.3 }, { path: '/file-processing-policy', changeFrequency: 'yearly', priority: 0.4 },
   { path: '/data-deletion', changeFrequency: 'yearly', priority: 0.3 }, { path: '/unlock-authorization-policy', changeFrequency: 'yearly', priority: 0.3 },
-  { path: '/status', changeFrequency: 'daily', priority: 0.4 },
-];
+  { path: '/status', changeFrequency: 'daily', priority: 0.4 }];
 function coreEntry(definition: CorePageDefinition): MetadataRoute.Sitemap[number] {
   return { url: `${SITE_URL}${definition.path === '/' ? '/' : definition.path}`, lastModified: getSitemapLastModified(definition.path), changeFrequency: definition.changeFrequency, priority: definition.priority };
 }

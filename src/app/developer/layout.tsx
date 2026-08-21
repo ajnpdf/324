@@ -3,7 +3,7 @@ import { AJN_BRAND } from '@/lib/brand';
 
 export const metadata: Metadata = {
   title: { absolute: 'Anjan — Developer of AJN PDF' },
-  description: 'Meet Anjan, developer of AJN PDF and AJN Studio, and learn about the product approach behind its PDF, OCR, image and document tools.',
+  description: 'Meet Anjan, developer of AJN PDF and AJN Studio, and learn about the product approach behind its PDF, image and document tools.',
   alternates: { canonical: '/developer' },
   openGraph: {
     type: 'profile',

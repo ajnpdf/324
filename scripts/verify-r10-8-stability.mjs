@@ -48,9 +48,9 @@ check('backend readiness client exposes live limits and available conversion cou
 check('status UI surfaces live backend capacity facts', status.includes('health.maxFileMb') && status.includes('health.availableConversionTools'));
 check('status page auto-refreshes the live readiness check every 30 seconds', status.includes('window.setInterval') && statusPage.includes('autoRefreshMs={30000}'));
 check('/limits production information page exists', exists('src/app/limits/page.tsx') && read('src/app/limits/page.tsx').includes('Fair-use and abuse protection'));
-check('/ocr guide exists without fabricated universal accuracy percentage', exists('src/app/ocr/page.tsx') && read('src/app/ocr/page.tsx').includes('does not publish an unsupported universal accuracy percentage'));
+check('/ guide exists without fabricated universal accuracy percentage', exists('src/app//page.tsx') && read('src/app//page.tsx').includes('does not publish an unsupported universal accuracy percentage'));
 check('product footer does not publish personal social handles as AJN PDF brand channels', !footer.includes('AJN_BRAND.social.instagram') && !footer.includes('AJN_BRAND.social.youtube'));
-check('limits and OCR pages are linked from footer and sitemap', footer.includes("'/limits'") && footer.includes("'/ocr'") && sitemap.includes('/limits') && sitemap.includes('/ocr'));
+check('limits and  pages are linked from footer and sitemap', footer.includes("'/limits'") && footer.includes("'/'") && sitemap.includes('/limits') && sitemap.includes('/'));
 check('security header set includes CSP, HSTS, nosniff, referrer, permissions and COOP', ['Content-Security-Policy','Strict-Transport-Security','X-Content-Type-Options','Referrer-Policy','Permissions-Policy','Cross-Origin-Opener-Policy'].every((v) => nextConfig.includes(v)));
 check('HSTS is production-default but preload remains explicit opt-in', nextConfig.includes("process.env.AJN_ENABLE_HSTS !== 'false'") && nextConfig.includes("process.env.AJN_HSTS_PRELOAD === 'true'"));
 check('Trusted Types is not forced before ad/analytics compatibility QA', !nextConfig.includes("require-trusted-types-for"));

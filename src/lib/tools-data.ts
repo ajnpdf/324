@@ -333,7 +333,7 @@ export const ALL_TOOLS: ServiceTool[] = [
   },
   {
     id: 'remove-bg', name: 'Remove Background', desc: 'Remove photo backgrounds automatically.',
-    icon: Sparkles, tag: 'smart', cat: 'img', mode: 'Image', badge: 'Smart', color: 'text-blue-600', perfIndex: 'OCR',
+    icon: Sparkles, tag: 'smart', cat: 'img', mode: 'Image', badge: 'Smart', color: 'text-blue-600', perfIndex: '',
     benefits: ["Isolate subject", "Save as PNG"],
     useCases: ["Products"],
     instructions: ["Upload photo", "Isolate", "Save"],

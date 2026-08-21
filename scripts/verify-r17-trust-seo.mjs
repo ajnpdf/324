@@ -146,7 +146,7 @@ check(
 
 
 check(
-  'guide library covers priority non-OCR crawl paths',
+  'guide library covers priority non- crawl paths',
   [
     'merge-pdf',
     'split-pdf',
@@ -156,8 +156,7 @@ check(
     'protect-pdf',
     'repair-pdf',
     'image-resizer',
-    'image-reducer',
-  ].every(
+    'image-reducer'].every(
     (id) => guides.includes(`'${id}'`)
   )
 );
@@ -215,36 +214,28 @@ const trustBundle = [
   transparency,
   security,
   policy,
-  limits,
-].join('\n');
+  limits].join('\n');
 
 
 const banned = [
   [
     '55+ tools marketing claim',
-    /\b55\+\b/i,
-  ],
+    /\b55\+\b/i],
   [
     'blanket 200 MB marketing claim',
-    /\b200\s*MB\b/i,
-  ],
+    /\b200\s*MB\b/i],
   [
     '100% local universal claim',
-    /100%\s*(?:local|locally)/i,
-  ],
+    /100%\s*(?:local|locally)/i],
   [
     'zero-server-transit claim',
-    /zero[-\s]server[-\s]transit/i,
-  ],
+    /zero[-\s]server[-\s]transit/i],
   [
     'files never leave universal claim',
-    /files?\s+never\s+leave/i,
-  ],
+    /files?\s+never\s+leave/i],
   [
     'no servers universal claim',
-    /\bno\s+servers\b/i,
-  ],
-];
+    /\bno\s+servers\b/i]];
 
 
 for (const [label, pattern] of banned) {

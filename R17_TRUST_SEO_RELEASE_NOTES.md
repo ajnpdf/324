@@ -10,7 +10,7 @@ Base production commit: `085ee7250d4b753d49f0a53397c2c00a3fe7f342`
 - Updates the public security contact to `anjandev325@gmail.com`.
 - Adds one shared hybrid-processing disclosure so future trust copy has a single wording source.
 - Adds a modern processing-model section to About.
-- Adds `/discover/guides`, a curated internal-linking and documentation hub for priority PDF, conversion, OCR, image, security and trust workflows.
+- Adds `/discover/guides`, a curated internal-linking and documentation hub for priority PDF, conversion, image, security and trust workflows.
 - Keeps the R16 sitemap core-page invariant unchanged; the guide hub is discovered through strong internal links from About and every canonical tool editorial page.
 - Adds a link from every tool editorial section back to the Discover guide library.
 - Adds `verify:r17-trust-seo` and wires it into the existing `npm check`.

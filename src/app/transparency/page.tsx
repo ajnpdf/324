@@ -5,8 +5,7 @@ import { MainFooter } from '@/components/landing/main-footer';
 
 const modes = [
   { icon: Monitor, title: 'On-device workflows', tag: 'In your browser', accent: 'bg-blue-50 text-blue-600 border-blue-100', body: 'Many everyday PDF and image actions work inside the active browser session. Supported files are validated automatically, with policy details available on the dedicated limits page.' },
-  { icon: Globe2, title: 'Online workflows', tag: 'When needed', accent: 'bg-violet-50 text-violet-700 border-violet-100', body: 'Advanced conversion, OCR and security actions may temporarily upload the selected file only for the requested task. Temporary request files are scheduled for cleanup after the result is returned or a handled error occurs.' },
-];
+  { icon: Globe2, title: 'Online workflows', tag: 'When needed', accent: 'bg-violet-50 text-violet-700 border-violet-100', body: 'Advanced conversion,  and security actions may temporarily upload the selected file only for the requested task. Temporary request files are scheduled for cleanup after the result is returned or a handled error occurs.' }];
 
 export default function TransparencyPage() {
   return (

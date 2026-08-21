@@ -22,8 +22,7 @@ const pdfCategories = [
       { name: "Split PDF", href: "/split-pdf", icon: Scissors, color: "text-purple-500" },
       { name: "Remove Pages", href: "/delete-pdf-pages", icon: Trash2, color: "text-red-500" },
       { name: "Organize PDF", href: "/organize-pdf", icon: LayoutGrid, color: "text-orange-500" },
-      { name: "Flatten PDF", href: "/flatten-pdf", icon: Layers, color: "text-indigo-500" },
-    ]
+      { name: "Flatten PDF", href: "/flatten-pdf", icon: Layers, color: "text-indigo-500" }]
   },
   {
     title: "CONVERT TO",
@@ -31,8 +30,7 @@ const pdfCategories = [
       { name: "WORD to PDF", href: "/word-to-pdf", icon: FileText, color: "text-blue-600" },
       { name: "EXCEL to PDF", href: "/excel-to-pdf", icon: FileSpreadsheet, color: "text-emerald-700" },
       { name: "JPG to PDF", href: "/jpg-to-pdf", icon: ImageIcon, color: "text-amber-500" },
-      { name: "HTML to PDF", href: "/html-to-pdf", icon: Code2, color: "text-indigo-600" },
-    ]
+      { name: "HTML to PDF", href: "/html-to-pdf", icon: Code2, color: "text-indigo-600" }]
   },
   {
     title: "CONVERT FROM",
@@ -40,8 +38,7 @@ const pdfCategories = [
       { name: "PDF to WORD", href: "/pdf-to-word", icon: FileEdit, color: "text-blue-600" },
       { name: "PDF to EXCEL", href: "/pdf-to-excel", icon: FileSpreadsheet, color: "text-emerald-700" },
       { name: "PDF to PPT", href: "/pdf-to-pptx", icon: Presentation, color: "text-orange-500" },
-      { name: "PDF to JPG", href: "/pdf-to-jpg", icon: ImageIcon, color: "text-amber-500" },
-    ]
+      { name: "PDF to JPG", href: "/pdf-to-jpg", icon: ImageIcon, color: "text-amber-500" }]
   },
   {
     title: "EDIT & SIGN",
@@ -49,14 +46,12 @@ const pdfCategories = [
       { name: "Sign PDF", href: "/sign-pdf", icon: PenTool, color: "text-blue-600" },
       { name: "Watermark", href: "/watermark-pdf", icon: Stamp, color: "text-slate-600" },
       { name: "Page Numbers", href: "/page-number", icon: FileDigit, color: "text-indigo-500" },
-      { name: "Edit Metadata", href: "/pdf-metadata", icon: FileEdit, color: "text-slate-500" },
-    ]
+      { name: "Edit Metadata", href: "/pdf-metadata", icon: FileEdit, color: "text-slate-500" }]
   },
   {
     title: "INTELLIGENCE",
     tools: [
-      { name: "Repair PDF", href: "/repair-pdf", icon: Wrench, color: "text-red-500" },
-    ]
+      { name: "Repair PDF", href: "/repair-pdf", icon: Wrench, color: "text-red-500" }]
   }
 ];
 

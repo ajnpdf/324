@@ -14,7 +14,7 @@ $Text = Get-Content -LiteralPath $Target -Raw
 $Old = @'
     windows_candidates = {
         "calibre": [Path(r"C:\Program Files\Calibre2\ebook-convert.exe")],
-        "tesseract": [Path(r"C:\Program Files\Tesseract-OCR\tesseract.exe")],
+        "": [Path(r"C:\Program Files\-\.exe")],
         "mutool": [Path(r"C:\Program Files\MuPDF\mutool.exe")],
     }.get(name, [])
     if name == "mutool":
@@ -33,7 +33,7 @@ $New = @'
     if os.name == "nt":
         windows_candidates = {
             "calibre": [Path(r"C:\Program Files\Calibre2\ebook-convert.exe")],
-            "tesseract": [Path(r"C:\Program Files\Tesseract-OCR\tesseract.exe")],
+            "": [Path(r"C:\Program Files\-\.exe")],
             "mutool": [Path(r"C:\Program Files\MuPDF\mutool.exe")],
         }.get(name, [])
 

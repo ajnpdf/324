@@ -45,7 +45,7 @@ Implementation:
 - Tool names/descriptions/aliases localized separately from stable tool IDs/routes.
 - Shared navigation, search, upload, customization, processing, result, error, consent and accessibility wording translated.
 - Legacy-screen compatibility bridge translates known older UI phrases while those screens are progressively migrated to direct keys.
-- Technical format identifiers such as PDF, JPG, PNG, DOCX, XLSX, PPTX, OCR, MB and DPI remain recognizable.
+- Technical format identifiers such as PDF, JPG, PNG, DOCX, XLSX, PPTX, MB and DPI remain recognizable.
 
 ### Backend production hardening
 - Backend version synchronized to 3.0.6.
@@ -77,7 +77,7 @@ PASS:
 - Trust/content verifier.
 - Internal link verifier.
 - Final UI verifier.
-- Conversion/OCR registry verifier (74 conversion/OCR tools registered).
+- Conversion/ registry verifier (74 conversion/ tools registered).
 - SEO growth verifier.
 - Theme/analytics/privacy verifier.
 - Brand/media verifier.
@@ -100,7 +100,7 @@ That setup performs the gates that could not be truthfully completed in this pac
 - semantic TypeScript typecheck,
 - Next.js optimized production build,
 - target Windows Python dependencies,
-- target Windows Tesseract/LibreOffice conversion smoke and full acceptance,
+- target Windows /LibreOffice conversion smoke and full acceptance,
 - live capability export from the actual machine,
 - backend `/health`, real `/ready`, `/api/tools`, and frontend runtime checks.
 

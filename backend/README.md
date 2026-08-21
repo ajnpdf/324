@@ -1,6 +1,6 @@
 # AJN PDF FastAPI Conversion Service
 
-The backend provides temporary PDF security, OCR, image, office-document, eBook, email and XPS conversions.
+The backend provides temporary PDF security, image, office-document, eBook, email and XPS conversions.
 
 ## Main endpoints
 

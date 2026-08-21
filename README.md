@@ -1,6 +1,6 @@
 # AJN PDF 3.1.0
 
-AJN PDF is a Next.js + FastAPI document platform for PDF, image, OCR, Office, eBook and structured-data workflows.
+AJN PDF is a Next.js + FastAPI document platform for PDF, image, Office, eBook and structured-data workflows.
 
 ## R11 live-trust production focus
 
@@ -14,9 +14,9 @@ The Windows production gate now runs both the direct converter acceptance suite 
 
 - R11 retains the R10.8 stability/mobile/trust pass: one responsive homepage hero, one primary search, progressive tool rendering and built-production SSR/header smoke before release commit.
 - Per-tool processing transparency with concrete policy limits and live `/ready` overrides for server workflows.
-- Live `/status` readiness view with 30-second refresh plus dedicated `/limits` and `/ocr` information pages.
+- Live `/status` readiness view with 30-second refresh plus dedicated `/limits` and `/` information pages.
 - Production security header configuration including CSP and HSTS controls, with Trusted Types intentionally deferred until compatibility QA.
-- 74 live conversion/OCR icon assets, 75 catalog assets and 5 source sheets integrated into the 107-tool experience.
+- 74 live conversion/ icon assets, 75 catalog assets and 5 source sheets integrated into the 107-tool experience.
 - Five UI languages with 511 matching shared translation keys.
 - R7 polished light-only homepage with compact professional horizontal tool cards.
 - Lightweight source-driven vector icon system covering all 107 production tools without repeated card artwork.
@@ -25,13 +25,13 @@ The Windows production gate now runs both the direct converter acceptance suite 
 - Direct visual placement for Add Text, Add Image and Sign PDF.
 - Strict zero-warning ESLint and semantic TypeScript build gates.
 - Capability-aware backend tools and hardened `/ready` checks.
-- OCR languages installed locally by Windows setup.
+-  languages installed locally by Windows setup.
 
 ## R11 release contract
 
 - Canonical public host: `https://www.ajnpdf.com`.
 - Bare-domain requests redirect permanently to the `www` host.
-- Homepage H1/metadata target free PDF tools, conversion, merge, compression, editing and OCR without removing the supporting 100+ workflow message.
+- Homepage H1/metadata target free PDF tools, conversion, merge, compression, editing and  without removing the supporting 100+ workflow message.
 - Browser-local and server-assisted tools use separate, truthful processing language.
 - Admin analytics/media pages remain `noindex` and `no-store`.
 - Build-time capability filtering prevents known unavailable backend tools from being advertised as available.
@@ -39,7 +39,7 @@ The Windows production gate now runs both the direct converter acceptance suite 
 
 ## Local Windows setup
 
-Run `SETUP_FULL_PRODUCTION.ps1`. It verifies converter dependencies, OCR data, backend readiness, capability availability, direct acceptance, live HTTP acceptance, frontend dependencies, security-maintenance versions, all source guards, zero-warning lint, TypeScript and the optimized Next.js production build.
+Run `SETUP_FULL_PRODUCTION.ps1`. It verifies converter dependencies,  data, backend readiness, capability availability, direct acceptance, live HTTP acceptance, frontend dependencies, security-maintenance versions, all source guards, zero-warning lint, TypeScript and the optimized Next.js production build.
 
 Success marker:
 

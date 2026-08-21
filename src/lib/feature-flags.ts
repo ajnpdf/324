@@ -10,7 +10,6 @@ export type FeatureKey =
   | 'sharing' 
   | 'ai_assistant' 
   | 'batch_processing' 
-  | 'ocr_vision' 
   | 'advanced_retouching';
 
 class FeatureFlagSystem {
@@ -18,7 +17,6 @@ class FeatureFlagSystem {
     'sharing': true,
     'ai_assistant': true,
     'batch_processing': true,
-    'ocr_vision': true,
     'advanced_retouching': true
   };
 

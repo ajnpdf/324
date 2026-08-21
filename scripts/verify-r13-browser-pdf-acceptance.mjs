@@ -83,8 +83,7 @@ try {
     await makeSingle('B.pdf', 402),
     await makeSingle('C.pdf', 403),
     await makeSingle('D.pdf', 404),
-    await makeSingle('E.pdf', 405),
-  ];
+    await makeSingle('E.pdf', 405)];
 
   const mergeQueue = [files[2], files[0], files[4], files[1], files[3]];
   expect(validateMergeSelection(mergeQueue) === null, 'real Merge helper rejected a valid five-file queue');

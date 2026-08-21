@@ -12,14 +12,12 @@ const publicFiles = [
   'src/app/blog/page.tsx','src/app/status/page.tsx','src/app/transparency/page.tsx',
   'src/components/landing/hero.tsx','src/components/landing/main-footer.tsx',
   'src/components/landing/trust-security.tsx','src/components/landing/how-it-works.tsx',
-  'src/components/landing/feature-showcase.tsx',
-].map(read).join('\n');
+  'src/components/landing/feature-showcase.tsx'].map(read).join('\n');
 
 const prohibited = [
   /100%\s*(private|local|secure)/i,/50,?000\+?\s*files/i,/safe browsing verified/i,/ssl a\+ rated/i,
   /standard compliant/i,/99\.9%\s*(uptime|network)/i,/zero server uploads/i,/trusted by (millions|thousands)/i,
-  /gdpr.*compliant/i,/soc 2.*compliant/i,/zero access to your files/i,/free forever/i,/no limits/i,
-];
+  /gdpr.*compliant/i,/soc 2.*compliant/i,/zero access to your files/i,/free forever/i,/no limits/i];
 for (const pattern of prohibited) pattern.test(publicFiles) ? fail(`Public content contains unsupported claim: ${pattern}`) : pass(`No unsupported public claim matching ${pattern}`);
 
 const home = read('src/app/page.tsx');
@@ -55,10 +53,10 @@ for (const dead of ['src/lib/placeholder-images.json','src/lib/placeholder-image
 }
 
 const blog = read('src/app/blog/page.tsx');
-for (const route of ['best-free-pdf-editor', 'browser-native-architecture', 'document-security-aes256', 'how-to-merge-pdfs-online-safely', 'ocr-digital-archiving']) {
+for (const route of ['best-free-pdf-editor', 'browser-native-architecture', 'document-security-aes256', 'how-to-merge-pdfs-online-safely', '-digital-archiving']) {
   blog.includes(`/blog/${route}`) ? pass(`Blog links to real guide ${route}`) : fail(`Blog missing real guide ${route}`);
 }
-if (/browser-native-pdf-merging|pdf-compression-guide-2026|neural-ocr-deep-dive/.test(blog)) fail('Blog still links to non-existent prototype articles');
+if (/browser-native-pdf-merging|pdf-compression-guide-2026|neural--deep-dive/.test(blog)) fail('Blog still links to non-existent prototype articles');
 else pass('Blog contains no prototype article routes');
 
 const nextConfig = read('next.config.ts');

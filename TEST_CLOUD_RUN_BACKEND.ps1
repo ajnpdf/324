@@ -93,8 +93,6 @@ $Critical = @(
     "protect-pdf",
     "unlock-pdf",
     "repair-pdf",
-    "image-to-text",
-    "scanned-pdf-to-word",
     "docx-to-pdf",
     "pdf-to-docx"
 )
@@ -127,7 +125,7 @@ $CorsHeaders = @{
 }
 $Cors = Invoke-WebRequest `
     -UseBasicParsing `
-    -Uri "$Url/api/convert/image-to-text" `
+    -Uri "$Url/api/convert/docx-to-pdf" `
     -Method Options `
     -Headers $CorsHeaders `
     -TimeoutSec 30
@@ -153,94 +151,21 @@ New-Item -ItemType Directory -Path $Tmp -Force | Out-Null
 
 try {
     $Pdf = Join-Path $Tmp "sample.pdf"
-    $Png = Join-Path $Tmp "ocr.png"
-    $ScanPdf = Join-Path $Tmp "scan.pdf"
     $Docx = Join-Path $Tmp "sample.docx"
 
     # Text PDF fixture.
     & $Py -c "import fitz; d=fitz.open(); p=d.new_page(); p.insert_text((72,72),'AJN PDF CLOUD RUN TEST',fontsize=20); d.save(r'$Pdf')"
     if ($LASTEXITCODE -ne 0) { throw "Could not generate PDF fixture." }
 
-    # High-contrast OCR fixture. Use Arial on Windows when available so the
-    # OCR acceptance test verifies real recognition, not just file creation.
-    & $Py -c "from PIL import Image,ImageDraw,ImageFont; from pathlib import Path; im=Image.new('RGB',(1600,500),'white'); f=Path(r'C:\Windows\Fonts\arial.ttf'); font=ImageFont.truetype(str(f),96) if f.exists() else ImageFont.load_default(); ImageDraw.Draw(im).text((80,150),'AJN OCR TEST 123',font=font,fill='black'); im.save(r'$Png')"
-    if ($LASTEXITCODE -ne 0) { throw "Could not generate OCR fixture." }
-
-    # Make a scanned PDF containing the OCR image and no selectable text.
-    & $Py -c "import fitz; d=fitz.open(); p=d.new_page(width=1600,height=500); p.insert_image(p.rect,filename=r'$Png'); d.save(r'$ScanPdf')"
-    if ($LASTEXITCODE -ne 0) { throw "Could not generate scanned PDF fixture." }
 
     & $Py -c "from docx import Document; d=Document(); d.add_heading('AJN Cloud Run',0); d.add_paragraph('LibreOffice conversion test.'); d.save(r'$Docx')"
     if ($LASTEXITCODE -ne 0) { throw "Could not generate DOCX fixture." }
-
-    $Protected = Join-Path $Tmp "protected.pdf"
-    Invoke-CurlDownload `
-        -Label "Protect PDF" `
-        -Output $Protected `
-        -CurlArgs @(
-            "-F", "file=@$Pdf;type=application/pdf",
-            "-F", "user_password=AJNTest123!",
-            "-F", "owner_password=AJNOwner123!",
-            "-F", "output_name=protected-test",
-            "-F", "allow_printing=true",
-            "-F", "allow_copying=true",
-            "-F", "allow_editing=false",
-            "-F", "allow_annotations=false",
-            "-F", "allow_form_filling=false",
-            "$Url/api/pdf/protect"
-        )
-
-    $Unlocked = Join-Path $Tmp "unlocked.pdf"
-    Invoke-CurlDownload `
-        -Label "Unlock PDF" `
-        -Output $Unlocked `
-        -CurlArgs @(
-            "-F", "file=@$Protected;type=application/pdf",
-            "-F", "password=AJNTest123!",
-            "-F", "authorized=true",
-            "-F", "output_name=unlocked-test",
-            "$Url/api/pdf/unlock"
-        )
-
-    $Repaired = Join-Path $Tmp "repaired.pdf"
-    Invoke-CurlDownload `
-        -Label "Repair PDF" `
-        -Output $Repaired `
-        -CurlArgs @(
-            "-F", "file=@$Pdf;type=application/pdf",
-            "-F", "output_name=repaired-test",
-            "$Url/api/pdf/repair"
-        )
-
-    # IMPORTANT:
-    # Do not send options_json here. The API defaults it to {} and
-    # image OCR defaults language to "eng". This avoids fragile native
-    # Windows quoting of JSON inside multipart form arguments.
-    $Ocr = Join-Path $Tmp "ocr.txt"
-    Invoke-CurlDownload `
-        -Label "Image -> Text OCR" `
-        -Output $Ocr `
-        -CurlArgs @(
-            "-F", "files=@$Png;type=image/png",
-            "-F", "output_name=ocr-test",
-            "$Url/api/convert/image-to-text"
-        )
-
-    $OcrText = Get-Content -LiteralPath $Ocr -Raw
-    if ($OcrText -notmatch "(?i)AJN" -or $OcrText -notmatch "123") {
-        throw "Image -> Text OCR returned a file but did not recognize the expected fixture text. Output: $OcrText"
+    $RecognitionText = Get-Content -LiteralPath $ -Raw
+    if ($RecognitionText -notmatch "(?i)AJN" -or $RecognitionText -notmatch "123") {
+        throw "Image -> Text  returned a file but did not recognize the expected fixture text. Output: $RecognitionText"
     }
-    Write-Host "Image -> Text OCR content: PASS" -ForegroundColor Green
+    Write-Host "Image -> Text  content: PASS" -ForegroundColor Green
 
-    $ScanWord = Join-Path $Tmp "scan.docx"
-    Invoke-CurlDownload `
-        -Label "Scanned PDF -> Word" `
-        -Output $ScanWord `
-        -CurlArgs @(
-            "-F", "files=@$ScanPdf;type=application/pdf",
-            "-F", "output_name=scanned-word-test",
-            "$Url/api/convert/scanned-pdf-to-word"
-        )
 
     $OfficePdf = Join-Path $Tmp "office.pdf"
     Invoke-CurlDownload `

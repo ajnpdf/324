@@ -33,13 +33,13 @@ For every public tool record PASS, LIMITED or FAIL.
 - Reduced-motion setting
 - No advertisement overlap or layout shift
 
-## Security/OCR checks
+## Security/ checks
 
 - Protect PDF user and owner passwords
 - Printing/copy/edit permissions in Adobe Reader
 - Unlock correct password
 - Unlock wrong password rejection
 - Already-encrypted input
-- OCR English, Hindi, Telugu, Tamil, Kannada and Malayalam samples
+-  English, Hindi, Telugu, Tamil, Kannada and Malayalam samples
 - Handwriting result labelled best-effort
 - URL-to-PDF rejects localhost and private-network targets

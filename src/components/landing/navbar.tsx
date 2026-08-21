@@ -16,24 +16,21 @@ import { AllToolsMenu } from './all-tools-menu';
 const quickTools = [
   { id: 'merge-pdf', fallback: 'Merge PDF' },
   { id: 'split-pdf', fallback: 'Split PDF' },
-  { id: 'compress-pdf', fallback: 'Compress PDF' },
-];
+  { id: 'compress-pdf', fallback: 'Compress PDF' }];
 
 const convertTo = [
   ['jpg-to-pdf', 'JPG to PDF'],
   ['word-to-pdf', 'Word to PDF'],
   ['excel-to-pdf', 'Excel to PDF'],
   ['powerpoint-to-pdf', 'PowerPoint to PDF'],
-  ['html-to-pdf', 'HTML to PDF'],
-] as const;
+  ['html-to-pdf', 'HTML to PDF']] as const;
 
 const convertFrom = [
   ['pdf-to-word', 'PDF to Word'],
   ['pdf-to-jpg', 'PDF to JPG'],
   ['pdf-to-excel', 'PDF to Excel'],
   ['pdf-to-powerpoint', 'PDF to PowerPoint'],
-  ['pdf-to-png', 'PDF to PNG'],
-] as const;
+  ['pdf-to-png', 'PDF to PNG']] as const;
 
 const infoLinks = [
   { key: 'common.allTools', href: '/pdf-tools' },
@@ -41,8 +38,7 @@ const infoLinks = [
   { key: 'common.image', href: '/image-tools' },
   { key: 'common.chromeExtension', href: '/chrome-extension' },
   { key: 'common.guides', href: '/blog' },
-  { key: 'common.about', href: '/about' },
-];
+  { key: 'common.about', href: '/about' }];
 
 function ConvertMenu() {
   const [open, setOpen] = useState(false);

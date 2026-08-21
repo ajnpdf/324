@@ -18,8 +18,7 @@ import { cn } from '@/lib/utils';
 const CONSENT = 'I intend to sign this document electronically and agree that my electronic signature is associated with this document.';
 const FONTS = [
   ['Script', 'cursive'], ['Serif', 'Georgia,serif'], ['Classic', 'Times New Roman,serif'],
-  ['Modern', 'Trebuchet MS,sans-serif'], ['Rounded', 'Comic Sans MS,cursive'], ['Elegant', 'Brush Script MT,cursive'],
-] as const;
+  ['Modern', 'Trebuchet MS,sans-serif'], ['Rounded', 'Comic Sans MS,cursive'], ['Elegant', 'Brush Script MT,cursive']] as const;
 
 type Mark = SignaturePlacementInput & { id: string; dataUrl: string };
 type Result = { pdfBlob: Blob; evidence: ElectronicSignatureEvidence; evidenceBlob: Blob };
@@ -200,8 +199,7 @@ export default function SignPdfStudio() {
         height: kind === 'date' ? 34 : 78,
         rotation:0,
         dataUrl:data,
-      },
-    ]);
+      }]);
     setError('');
   };
 

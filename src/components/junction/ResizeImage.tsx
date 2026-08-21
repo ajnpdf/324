@@ -8,8 +8,7 @@ import {preferredImageExtension,safeImageOutputName} from "@/lib/image-output";
 
 const PRESETS=[
   {label:"HD 720p",value:"1280x720"},{label:"Full HD",value:"1920x1080"},
-  {label:"Square",value:"1080x1080"},{label:"Thumbnail",value:"300x300"},
-];
+  {label:"Square",value:"1080x1080"},{label:"Thumbnail",value:"300x300"}];
 
 export default function ResizeImage(){
   const [files,setFiles]=useState<ToolFile[]>([]);

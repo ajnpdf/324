@@ -21,7 +21,7 @@ Included local quick actions:
 - Resize an image while preserving its aspect ratio.
 - Convert an image to JPG, PNG or WEBP.
 
-The popup also searches the AJN PDF public workflow catalog so you can open the right PDF, conversion, OCR, image, editing or security workflow without browsing a long directory.
+The popup also searches the AJN PDF public workflow catalog so you can open the right PDF, conversion, image, editing or security workflow without browsing a long directory.
 
 The native quick actions use only files you explicitly select. Their processing logic is packaged with the extension. The extension does not contain content scripts or remotely hosted JavaScript.
 

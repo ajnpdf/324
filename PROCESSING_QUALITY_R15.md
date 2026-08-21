@@ -1,6 +1,6 @@
 # AJN PDF Processing Quality R15
 
-This release hardens AJN PDF's user-facing OCR, PDF/document conversion, and image processing paths. MCP is deliberately outside this scope and no MCP source file is modified by this branch.
+This release hardens AJN PDF's user-facing , PDF/document conversion, and image processing paths. MCP is deliberately outside this scope and no MCP source file is modified by this branch.
 
 ## Product rule
 
@@ -16,17 +16,17 @@ A tool is not considered successful merely because a file was created. A product
 
 ## Implemented in R15
 
-### OCR
+### 
 
-- English, Telugu, Hindi, Tamil, Kannada and Malayalam continue to use installed Tesseract language packs.
-- Requested OCR languages are validated before processing.
+- English, Telugu, Hindi, Tamil, Kannada and Malayalam continue to use installed  language packs.
+- Requested  languages are validated before processing.
 - EXIF orientation normalization.
-- Tesseract orientation/script detection when enough text is present.
+-  orientation/script detection when enough text is present.
 - Projection-based small-angle deskew.
 - Auto contrast, optional denoise, sharpen and configurable contrast.
-- OCR confidence aggregation.
-- Very-low-information OCR results fail with a useful scan-quality message instead of fake success.
-- Digital PDF pages use native text; low-text/scanned pages automatically fall back to OCR for PDF-to-text/Word quality paths.
+-  confidence aggregation.
+- Very-low-information  results fail with a useful scan-quality message instead of fake success.
+- Digital PDF pages use native text; low-text/scanned pages automatically fall back to  for PDF-to-text/Word quality paths.
 - Searchable PDF creation uses orientation/deskew preparation and validates the final PDF/text layer in acceptance tests.
 
 ### PDF to Word
@@ -37,7 +37,7 @@ A tool is not considered successful merely because a file was created. A product
 - Centered blocks are detected conservatively.
 - Page breaks are preserved.
 - Embedded images are carried into Word when useful and bounded by a safe count.
-- Scanned/low-text pages automatically use OCR instead of producing empty Word files.
+- Scanned/low-text pages automatically use  instead of producing empty Word files.
 
 ### PDF to Excel / CSV
 
@@ -62,7 +62,7 @@ A tool is not considered successful merely because a file was created. A product
 - Orientation options: `auto`, `portrait`, `landscape`.
 - Configurable margin (`margin_mm`), DPI and quality.
 - Images are fitted proportionally and centered.
-- Scan workflows use the OCR preparation pipeline for readability.
+- Scan workflows use the  preparation pipeline for readability.
 - Multi-frame/image workloads are bounded.
 - SVG continues through the established CairoSVG-safe legacy path.
 
@@ -104,8 +104,8 @@ The local `_imageUtils.ts` engine now:
 - PDF -> Word is a real DOCX with expected editable text.
 - PDF -> Excel contains actual detected table values.
 - Image -> PDF is valid and sized sanely.
-- OCR output contains expected words/numbers.
-- Searchable PDF contains a searchable/selectable OCR text layer.
+-  output contains expected words/numbers.
+- Searchable PDF contains a searchable/selectable  text layer.
 - PDF -> PNG page-range selection exports only requested pages.
 - PDF -> Excel refuses prose-only PDFs by default.
 
@@ -128,7 +128,7 @@ No converter can guarantee pixel-perfect editability for arbitrary PDFs. AJN PDF
 - PDF -> Word prioritizes editable structure and readable layout.
 - PDF -> Excel only claims structured extraction when a table is detected.
 - PDF -> PowerPoint keeps each PDF page as a slide image to preserve appearance.
-- Searchable PDF preserves a rendered page appearance while adding OCR searchability; OCR accuracy still depends on scan quality and language data.
+- Searchable PDF preserves a rendered page appearance while adding  searchability;  accuracy still depends on scan quality and language data.
 - Browser Canvas cannot reliably encode HEIC/AVIF across supported browsers, so local image conversion never pretends to do so. Server capability should be used where an actual codec is available.
 
 ## MCP scope

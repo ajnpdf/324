@@ -40,8 +40,7 @@ const expectedIds = new Set([
   'png-to-pdf',
   'protect-pdf',
   'unlock-pdf',
-  'repair-pdf',
-]);
+  'repair-pdf']);
 
 const expectedCount = expectedIds.size;
 
@@ -76,8 +75,7 @@ function canonical(value) {
         .sort()
         .map(key => [
           key,
-          canonical(value[key]),
-        ])
+          canonical(value[key])])
     );
   }
 
@@ -189,8 +187,7 @@ function validate(payload, label) {
         'outputExtension',
         'available',
         'multiFile',
-        'processingMode',
-      ]
+        'processingMode']
     ) {
       if (!(key in tool)) {
         fail(

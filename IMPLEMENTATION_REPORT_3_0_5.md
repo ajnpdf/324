@@ -15,7 +15,7 @@
 ## Existing production protections retained
 
 - 78 backend capability records with build-time fail-closed manifest validation.
-- OCR/LibreOffice Windows hardening, capability export, backend smoke tests and full acceptance suite.
+- /LibreOffice Windows hardening, capability export, backend smoke tests and full acceptance suite.
 - Consent-aware AdSense, security headers, privacy-minimized analytics, source secret scan and clean packaging.
 - Accessibility guardrails, reduced motion, dark/light theme, SEO schemas and canonical routes.
 

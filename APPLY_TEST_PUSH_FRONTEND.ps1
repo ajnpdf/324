@@ -125,7 +125,7 @@ if ($BackendConflicts.Count -gt 0) {
 $Accidental = @(
     "Online - Convert, Merge, Compress",
     "Online - Convert, Merge, Compress, Edit",
-    "s, edit, sign, scan and OCR PDF, document and image files online with simple, powerful tools."
+    "s, edit, sign, scan and  PDF, document and image files online with simple, powerful tools."
 )
 foreach ($Name in $Accidental) {
     $Full = Join-Path $RepoPath $Name
@@ -208,8 +208,7 @@ $RequiredInstalledAuditFiles = @(
     "src/app/image-licensing/page.tsx",
     "src/app/layout.tsx",
     "src/app/limits/page.tsx",
-    "src/app/ocr/page.tsx",
-    "src/app/page.tsx",
+"src/app/page.tsx",
     "src/app/privacy/page.tsx",
     "src/app/robots.ts",
     "src/app/sitemap.ts",

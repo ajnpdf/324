@@ -57,10 +57,8 @@ export function GuideArticle({ slug, eyebrow, title, summary, readTime, sections
         itemListElement: [
           { '@type': 'ListItem', position: 1, name: 'AJN PDF', item: SITE_URL },
           { '@type': 'ListItem', position: 2, name: 'Guides', item: `${SITE_URL}/blog` },
-          { '@type': 'ListItem', position: 3, name: title, item: canonical },
-        ],
-      },
-    ],
+          { '@type': 'ListItem', position: 3, name: title, item: canonical }],
+      }],
   };
 
   return (

@@ -9,8 +9,7 @@ const EXCLUDED_PREFIXES = [
   '/privacy', '/terms', '/cookies', '/copyright', '/dmca', '/disclaimer',
   '/acceptable-use', '/file-processing-policy', '/data-deletion',
   '/unlock-authorization-policy', '/security', '/status', '/transparency',
-  '/contact', '/about', '/login', '/dashboard', '/admin', '/view', '/api',
-];
+  '/contact', '/about', '/login', '/dashboard', '/admin', '/view', '/api'];
 
 export function isAdEligiblePath(pathname: string): boolean {
   return !EXCLUDED_PREFIXES.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`));

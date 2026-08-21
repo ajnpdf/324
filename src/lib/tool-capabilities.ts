@@ -10,7 +10,7 @@ export type BuildCapability = {
   unavailableReason?: string | null;
   outputExtension?: string;
   inputExtensions?: string[];
-  ocrLanguages?: string[];
+  recognitionLanguages?: string[];
   processingMode?: 'browser' | 'temporary-server' | string;
 };
 

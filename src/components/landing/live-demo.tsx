@@ -8,14 +8,12 @@ import { Button } from '@/components/ui/button';
 const browserSteps = [
   'The file is read into the current browser session.',
   'The selected browser processor performs the supported operation.',
-  'The result is prepared for download without intentional AJN PDF upload.',
-];
+  'The result is prepared for download without intentional AJN PDF upload.'];
 
 const serverSteps = [
   'The page confirms that temporary server processing is required.',
   'The file is sent to the configured Python service and validated.',
-  'A unique temporary folder is removed after the response is delivered.',
-];
+  'A unique temporary folder is removed after the response is delivered.'];
 
 export function LiveDemo() {
   return (

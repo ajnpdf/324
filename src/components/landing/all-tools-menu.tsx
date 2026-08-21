@@ -15,13 +15,11 @@ import { scoreToolSearch } from '@/lib/tool-search';
 
 const POPULAR_IDS = [
   'merge-pdf', 'compress-pdf', 'pdf-to-word', 'word-to-pdf', 'jpg-to-pdf',
-  'pdf-to-jpg', 'split-pdf', 'image-to-pdf', 'protect-pdf',
-];
+  'pdf-to-jpg', 'split-pdf', 'image-to-pdf', 'protect-pdf'];
 
 const GROUP_ORDER = [
   'Popular', 'Organize PDF', 'Compress & Optimize', 'Convert from PDF', 'Convert to PDF',
-  'Image Tools', 'Edit & Sign', 'Security', 'Documents', 'More Tools',
-] as const;
+  'Image Tools', 'Edit & Sign', 'Security', 'Documents', 'More Tools'] as const;
 
 type GroupName = (typeof GROUP_ORDER)[number];
 

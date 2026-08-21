@@ -6,7 +6,7 @@ This patch converts AJN PDF into a production hybrid architecture:
 
 - **Vercel:** Next.js frontend only.
 - **Browser:** local PDF/image utilities where practical.
-- **Google Cloud Run:** temporary server-assisted PDF security, OCR, Office, OpenDocument, eBook, image/document conversion workflows.
+- **Google Cloud Run:** temporary server-assisted PDF security, Office, OpenDocument, eBook, image/document conversion workflows.
 - **No paid conversion APIs:** processing uses the existing open-source/native engine stack.
 - **Free-first controls:** Cloud Run scales to zero, request-based CPU throttling is enabled, concurrency is 1, and maximum instances defaults to 1.
 
@@ -17,7 +17,7 @@ This patch converts AJN PDF into a production hybrid architecture:
 - Unlock PDF — requires the current valid password and explicit authorization.
 - Repair PDF — attempts structural recovery of readable PDFs.
 
-### OCR / scanning
+###  / scanning
 - Scanned PDF -> Text
 - Scanned PDF -> Word
 - Scanned PDF -> Searchable PDF
@@ -29,14 +29,14 @@ This patch converts AJN PDF into a production hybrid architecture:
 - Document Scanner -> PDF
 - Handwriting Image -> Text (best effort)
 
-OCR languages installed in the container:
+ languages installed in the container:
 - English
 - Hindi
 - Telugu
 - Tamil
 - Kannada
 - Malayalam
-- Tesseract orientation/script detection
+-  orientation/script detection
 
 ### Microsoft Office / OpenDocument
 - DOC/DOCX -> PDF
@@ -93,7 +93,7 @@ Default deployment:
 - request timeout: 300 seconds
 - processing worker timeout: 270 seconds
 - analytics disabled initially
-- no Cloud SQL / Redis / GPU / paid OCR API
+- no Cloud SQL / Redis / GPU / paid  API
 
 ## File limits
 
@@ -137,7 +137,7 @@ Temporary work directory
 Isolated worker process
         |
         +--> pikepdf/PyMuPDF
-        +--> Tesseract OCR
+        +-->  
         +--> LibreOffice
         +--> Calibre
         +--> Poppler/ImageMagick/Cairo

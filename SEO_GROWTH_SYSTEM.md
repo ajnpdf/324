@@ -1,7 +1,7 @@
 # AJN PDF SEO Growth System
 
 ## Objective
-Build sustainable organic discovery for working PDF, document, image and OCR workflows. This system does not promise a first-place ranking. Google decides crawling, indexing and ranking, and deployment quality plus real authority are still required.
+Build sustainable organic discovery for working PDF, document, image and  workflows. This system does not promise a first-place ranking. Google decides crawling, indexing and ranking, and deployment quality plus real authority are still required.
 
 ## 1. ICP and job mapping
 
@@ -53,7 +53,7 @@ Recommended cadence after launch:
 
 ## 6. Authority and backlinks
 
-Backlinks cannot be created automatically in source code. The included authority plan focuses on legitimate assets: conversion compatibility reports, OCR language test sets, public output-quality methodology, developer documentation and useful guides. Avoid purchased links, automated directory spam and fake mentions.
+Backlinks cannot be created automatically in source code. The included authority plan focuses on legitimate assets: conversion compatibility reports,  language test sets, public output-quality methodology, developer documentation and useful guides. Avoid purchased links, automated directory spam and fake mentions.
 
 ## 7. Technical and UX SEO
 

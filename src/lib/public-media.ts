@@ -24,7 +24,7 @@ export const FEATURED_MEDIA_POST: PublicMediaPost = {
   slug: 'anjan-developer-of-ajn-pdf',
   title: 'Anjan — Developer of AJN PDF',
   caption:
-    'Meet Anjan, the developer building AJN PDF and AJN Studio with a focus on practical PDF, OCR, image and document tools.',
+    'Meet Anjan, the developer building AJN PDF and AJN Studio with a focus on practical PDF, image and document tools.',
   alt_text: 'Portrait of Anjan, developer of AJN PDF, wearing a black hoodie against a light background',
   tags: ['AJN', 'AJN PDF', 'AJN Studio', 'developer', 'India'],
   image_url: AJN_BRAND.developerImage,

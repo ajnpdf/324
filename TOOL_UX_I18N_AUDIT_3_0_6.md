@@ -41,4 +41,4 @@ Source verification cannot replace real-device testing. After Windows setup pass
 - NVDA/VoiceOver representative workflows
 
 Representative tools:
-Merge PDF, Split PDF, Compress PDF, Protect PDF, OCR, PDF→JPG, Add Text, Add Image, Sign PDF, Watermark PDF, Crop Image, ZIP Extractor and one server Office conversion.
+Merge PDF, Split PDF, Compress PDF, Protect PDF, PDF→JPG, Add Text, Add Image, Sign PDF, Watermark PDF, Crop Image, ZIP Extractor and one server Office conversion.

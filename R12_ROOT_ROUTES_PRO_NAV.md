@@ -13,7 +13,6 @@ Canonical tool URLs now use the site root:
 - `/compress-pdf`
 - `/pdf-to-word`
 - `/jpg-to-pdf`
-- `/scanned-pdf-to-text`
 
 The Next.js source stays organized with the URL-neutral route group `src/app/(tool-pages)/[id]`.
 
@@ -21,7 +20,7 @@ All historical `/tools/<id>` URLs permanently redirect to their root equivalents
 
 ## Header and all-tools navigation
 
-The global header now provides one-click desktop access to Merge PDF, Split PDF and Compress PDF, a focused Convert menu, an OCR & Scan shortcut, Search, Language and a nine-dot All Tools launcher.
+The global header now provides one-click desktop access to Merge PDF, Split PDF and Compress PDF, a focused Convert menu, an  & Scan shortcut, Search, Language and a nine-dot All Tools launcher.
 
 The All Tools launcher opens a responsive searchable mega-menu over the current public tool registry. Results are grouped by workflow family and support intent-style searches such as `combine pdf`, `make pdf smaller`, `scan text`, `photo pdf`, `word`, `spreadsheet`, `slides`, `password`, and `reorder pages`.
 
@@ -49,7 +48,6 @@ The Windows updater creates a safety patch/status snapshot before changing files
 
 After a successful build the R12 runtime verifier checks:
 
-- `/merge-pdf`, `/pdf-to-word`, and `/scanned-pdf-to-text` return 200.
 - `/tools` permanently redirects to `/pdf-tools`.
 - `/tools/merge-pdf` permanently redirects to `/merge-pdf`.
 - `/tools/pdf-jpg` permanently redirects directly to `/pdf-to-jpg`.

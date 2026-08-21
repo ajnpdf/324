@@ -16,8 +16,7 @@ import { Btn, Done, Drop, Err, F, Info, IS, Pills, Range, ToolWorkspace, type To
 
 const OFFICE_TO_PDF = new Set([
   'word-to-pdf','doc-to-pdf','docx-to-pdf','excel-to-pdf','xls-to-pdf','xlsx-to-pdf',
-  'powerpoint-to-pdf','ppt-to-pdf','pptx-to-pdf','odt-to-pdf','ods-to-pdf','odp-to-pdf',
-]);
+  'powerpoint-to-pdf','ppt-to-pdf','pptx-to-pdf','odt-to-pdf','ods-to-pdf','odp-to-pdf']);
 const EXCEL_TO_PDF = new Set(['excel-to-pdf','xls-to-pdf','xlsx-to-pdf','ods-to-pdf']);
 const PPT_TO_PDF = new Set(['powerpoint-to-pdf','ppt-to-pdf','pptx-to-pdf','odp-to-pdf']);
 const PDF_TO_PPT = new Set(['pdf-to-powerpoint','pdf-to-pptx']);

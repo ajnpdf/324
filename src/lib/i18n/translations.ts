@@ -12,8 +12,7 @@ export const languages: { code: LanguageCode; name: string; native: string }[] =
   { code: 'hi', name: 'Hindi', native: 'हिन्दी' },
   { code: 'te', name: 'Telugu', native: 'తెలుగు' },
   { code: 'ta', name: 'Tamil', native: 'தமிழ்' },
-  { code: 'kn', name: 'Kannada', native: 'ಕನ್ನಡ' },
-];
+  { code: 'kn', name: 'Kannada', native: 'ಕನ್ನಡ' }];
 
 export const translations: Record<LanguageCode, Record<string, string>> = { en, hi, te, ta, kn };
 
@@ -154,7 +153,7 @@ const legacyPhraseToKey: Record<string, string> = {
   'Ready to Purge': 'common.ready',
   'Engine Standby': 'common.ready',
   'Unit Active': 'common.ready',
-  'OCR workspace ready': 'common.ready',
+  ' workspace ready': 'common.ready',
   'Extraction Ready': 'result.ready',
   'Extraction Success': 'result.ready',
   'Conversion complete': 'result.ready',

@@ -25,8 +25,7 @@ const quickTools = [
   ['Image to PDF', 'Combine multiple browser-supported images into one PDF directly in the extension.', ImageDown],
   ['Reduce Image', 'Create a smaller JPG or WEBP copy with a quality level you choose.', Sparkles],
   ['Resize Image', 'Change image width while preserving its aspect ratio.', ImageDown],
-  ['Convert Image', 'Convert a selected image to JPG, PNG or WEBP.', ArrowRight],
-] as const;
+  ['Convert Image', 'Convert a selected image to JPG, PNG or WEBP.', ArrowRight]] as const;
 
 export default function ChromeExtensionPage() {
   const jsonLd = {
@@ -60,7 +59,7 @@ export default function ChromeExtensionPage() {
         <section className="border-y border-slate-200 bg-slate-50/70">
           <div className="mx-auto grid max-w-7xl gap-4 px-4 py-8 md:grid-cols-3 md:px-8">
             <div className="rounded-[18px] border border-slate-200 bg-white p-5"><ShieldCheck className="h-5 w-5 text-emerald-600" /><h2 className="mt-3 text-sm font-black text-slate-950">No page-reading permission</h2><p className="mt-2 text-xs font-medium leading-6 text-slate-600">The extension manifest requests no page, browsing-history, tab-content or host permissions.</p></div>
-            <div className="rounded-[18px] border border-slate-200 bg-white p-5"><Search className="h-5 w-5 text-blue-600" /><h2 className="mt-3 text-sm font-black text-slate-950">Search {BUILD_PUBLIC_TOOLS.length} workflows</h2><p className="mt-2 text-xs font-medium leading-6 text-slate-600">Find PDF, conversion, image, OCR, edit and security workflows without scrolling through the full catalog.</p></div>
+            <div className="rounded-[18px] border border-slate-200 bg-white p-5"><Search className="h-5 w-5 text-blue-600" /><h2 className="mt-3 text-sm font-black text-slate-950">Search {BUILD_PUBLIC_TOOLS.length} workflows</h2><p className="mt-2 text-xs font-medium leading-6 text-slate-600">Find PDF, conversion, image, edit and security workflows without scrolling through the full catalog.</p></div>
             <div className="rounded-[18px] border border-slate-200 bg-white p-5"><ImageDown className="h-5 w-5 text-violet-600" /><h2 className="mt-3 text-sm font-black text-slate-950">Real local quick actions</h2><p className="mt-2 text-xs font-medium leading-6 text-slate-600">Image to PDF, reduce image, resize image and image conversion are implemented inside extension pages instead of being link-only shortcuts.</p></div>
           </div>
         </section>

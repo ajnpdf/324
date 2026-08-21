@@ -211,8 +211,6 @@ $Unavailable = @($Tools.tools | Where-Object { $_.available -ne $true })
 
 $CriticalIds = @(
     "protect-pdf", "unlock-pdf", "repair-pdf",
-    "scanned-pdf-to-text", "scanned-pdf-to-word", "scanned-pdf-to-searchable-pdf",
-    "image-to-text", "image-to-word", "image-to-searchable-pdf",
     "docx-to-pdf", "xlsx-to-pdf", "pptx-to-pdf",
     "odt-to-pdf", "ods-to-pdf", "odp-to-pdf",
     "pdf-to-docx", "pdf-to-xlsx", "pdf-to-pptx",

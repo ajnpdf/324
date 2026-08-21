@@ -4,10 +4,9 @@ export const RESERVED_ROOT_ROUTES = new Set([
   '', 'about', 'acceptable-use', 'admin', 'ajn-studio', 'blog', 'chrome-extension',
   'contact', 'conversion-tools', 'cookies', 'copyright', 'data-deletion', 'developer',
   'disclaimer', 'discover', 'dmca', 'faq', 'feed.xml', 'file-processing-policy',
-  'image-licensing', 'image-sitemap.xml', 'image-tools', 'limits', 'ocr', 'pdf-tools',
+  'image-licensing', 'image-sitemap.xml', 'image-tools', 'limits', '', 'pdf-tools',
   'pdf-utilities', 'privacy', 'psd-pdf', 'public-media', 'robots.txt', 'security', 'sitemap.xml',
-  'status', 'terms', 'transparency', 'unlock-authorization-policy',
-]);
+  'status', 'terms', 'transparency', 'unlock-authorization-policy']);
 
 export function toolPath(id: string): string {
   const normalized = id.trim().toLowerCase();

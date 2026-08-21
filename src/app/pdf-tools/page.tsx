@@ -17,8 +17,7 @@ import { sendAjnAnalytics } from '@/components/analytics/site-analytics';
 
 const categories: Array<{ id: 'all' | PublicToolCategory; label: string; icon: typeof Layers }> = [
   { id: 'all', label: 'All tools', icon: Layers }, { id: 'conversion', label: 'Conversion', icon: ArrowLeftRight },
-  { id: 'image', label: 'Image', icon: FileImage }, { id: 'pdf', label: 'PDF', icon: FileText },
-];
+  { id: 'image', label: 'Image', icon: FileImage }, { id: 'pdf', label: 'PDF', icon: FileText }];
 
 function queryBucket(value: string): string { const n=value.trim().length; return n===0?'empty':n<=3?'1-3':n<=8?'4-8':n<=20?'9-20':'21+'; }
 

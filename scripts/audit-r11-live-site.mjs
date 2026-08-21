@@ -12,7 +12,7 @@ async function fetchText(url, init = {}) {
 function hasAny(text, values) { return values.some((v) => text.toLowerCase().includes(v.toLowerCase())); }
 
 const publicPages = [
-  '/', '/about', '/privacy', '/faq', '/transparency', '/pdf-tools', '/conversion-tools', '/image-tools', '/pdf-utilities', '/limits', '/ocr', '/image-licensing', '/discover', '/merge-pdf', '/compress-pdf', '/pdf-to-word', '/scanned-pdf-to-text', '/image-to-pdf'
+  '/', '/about', '/privacy', '/faq', '/transparency', '/pdf-tools', '/conversion-tools', '/image-tools', '/pdf-utilities', '/limits', '/image-licensing', '/discover', '/merge-pdf', '/compress-pdf', '/pdf-to-word', '/image-to-pdf'
 ];
 const staleClaims = [
   'zero-server-transit',
@@ -36,7 +36,7 @@ for (const pathname of publicPages) {
     if (hasAny(text, staleClaims)) fail(`${pathname} still contains stale trust/error copy`); else pass(`${pathname} stale-copy scan`);
     if (pathname === '/') {
       if (text.includes('Free PDF Tools Online - Convert, Merge, Compress')) pass('homepage contains new SEO title'); else fail('homepage new SEO title not found');
-      if (text.includes('Free PDF Tools Online - Convert, Merge, Compress, Edit &amp; OCR') || text.includes('Free PDF Tools Online - Convert, Merge, Compress, Edit & OCR')) pass('homepage contains new H1'); else fail('homepage new H1 not found');
+      if (text.includes('Free PDF Tools Online - Convert, Merge, Compress, Edit &amp; ') || text.includes('Free PDF Tools Online - Convert, Merge, Compress, Edit & ')) pass('homepage contains new H1'); else fail('homepage new H1 not found');
     }
   } catch (error) {
     fail(`${pathname} fetch failed: ${error.message}`);
@@ -55,8 +55,7 @@ for (const [oldPath, newPath] of [
   ['/tools/json-pdf','/json-to-pdf'],
   ['/tools/smart-read','/pdf-text'],
   ['/tools/pdf-ppt','/pdf-to-powerpoint'],
-  ['/tools/ocr-searchable','/scanned-pdf-to-searchable-pdf'],
-]) {
+  ['/tools/-searchable']]) {
   try {
     const { response } = await fetchText(`${base}${oldPath}`);
     const location = response.headers.get('location') || '';

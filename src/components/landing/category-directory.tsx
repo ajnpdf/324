@@ -15,8 +15,8 @@ const descriptions = {
   pdf: 'Merge, split, organize, edit, sign, protect, unlock, repair and optimize PDF documents from one consistent workspace.',
 };
 const intentContent = {
-  conversion:{outcomes:['Convert PDFs to editable document formats','Create PDFs from documents and structured data','Run OCR on scans and document photos'],workflows:[{href:'/pdf-to-docx',label:'PDF to Word'},{href:'/docx-to-pdf',label:'Word to PDF'},{href:'/pdf-to-xlsx',label:'PDF to Excel'}]},
-  image:{outcomes:['Combine images into a PDF','Export PDF pages into image files','Prepare scans, receipts and searchable documents'],workflows:[{href:'/jpg-to-pdf',label:'JPG to PDF'},{href:'/png-to-pdf',label:'PNG to PDF'},{href:'/pdf-to-png',label:'PDF to PNG'},]},
+  conversion:{outcomes:['Convert PDFs to editable document formats','Create PDFs from documents and structured data','Run  on scans and document photos'],workflows:[{href:'/pdf-to-docx',label:'PDF to Word'},{href:'/docx-to-pdf',label:'Word to PDF'},{href:'/pdf-to-xlsx',label:'PDF to Excel'}]},
+  image:{outcomes:['Combine images into a PDF','Export PDF pages into image files','Prepare scans, receipts and searchable documents'],workflows:[{href:'/jpg-to-pdf',label:'JPG to PDF'},{href:'/png-to-pdf',label:'PNG to PDF'},{href:'/pdf-to-png',label:'PDF to PNG'}]},
   pdf:{outcomes:['Combine, split and organize pages','Protect, unlock and repair authorized files','Compress, crop, rotate and prepare documents'],workflows:[{href:'/merge-pdf',label:'Merge PDF'},{href:'/split-pdf',label:'Split PDF'},{href:'/compress-pdf',label:'Compress PDF'},{href:'/protect-pdf',label:'Protect PDF'}]},
 } as const;
 

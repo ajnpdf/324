@@ -26,12 +26,12 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 # Native engines for server-assisted workflows. XPS is handled internally by
 # PyMuPDF and does not require Ghostscript/mutool.
 #
-# tesseract-ocr-all is intentional: Auto Detect can choose from installed
+# --all is intentional: Auto Detect can choose from installed
 # language and script models instead of pretending six hard-coded languages
-# are universal OCR support.
+# are universal  support.
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libreoffice-writer libreoffice-calc libreoffice-impress \
-    tesseract-ocr tesseract-ocr-all \
+    - --all \
     calibre imagemagick poppler-utils \
     libcairo2 libpango-1.0-0 libpangocairo-1.0-0 \
     fonts-dejavu-core fonts-liberation fonts-noto-core \
@@ -43,16 +43,16 @@ COPY requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir -r requirements.txt
 
-RUN python -c "import fitz,pikepdf,pytesseract,docx,openpyxl,PIL,reportlab,ebooklib,cairosvg" \
+RUN python -c "import fitz,pikepdf,docx,openpyxl,PIL,reportlab,ebooklib,cairosvg" \
     && libreoffice --headless --version \
-    && tesseract --version \
+    &&  --version \
     && ebook-convert --version \
     && pdftoppm -v
 
 COPY app ./app
-COPY smoke_test.py capability_audit.py conversion_contract_audit.py full_acceptance_test.py processing_quality_acceptance_test.py image_pdf_quality_acceptance_test.py hard_format_acceptance_test.py ocr_language_gate.py ocr_multilingual_acceptance_test.py api_v1_contract_test.py ocr_deep_acceptance_test.py ocr_selected_acceptance_test.py e_signature_acceptance_test.py r19_conversion_fidelity_acceptance_test.py ./
+COPY smoke_test.py capability_audit.py conversion_contract_audit.py full_acceptance_test.py processing_quality_acceptance_test.py image_pdf_quality_acceptance_test.py hard_format_acceptance_test.py recognition_language_gate.py recognition_multilingual_acceptance_test.py api_v1_contract_test.py recognition_deep_acceptance_test.py recognition_selected_acceptance_test.py e_signature_acceptance_test.py r19_conversion_fidelity_acceptance_test.py ./
 RUN python -m compileall -q app \
-    && python -m py_compile capability_audit.py conversion_contract_audit.py full_acceptance_test.py processing_quality_acceptance_test.py image_pdf_quality_acceptance_test.py hard_format_acceptance_test.py ocr_language_gate.py ocr_multilingual_acceptance_test.py api_v1_contract_test.py ocr_deep_acceptance_test.py ocr_selected_acceptance_test.py e_signature_acceptance_test.py r19_conversion_fidelity_acceptance_test.py
+    && python -m py_compile capability_audit.py conversion_contract_audit.py full_acceptance_test.py processing_quality_acceptance_test.py image_pdf_quality_acceptance_test.py hard_format_acceptance_test.py recognition_language_gate.py recognition_multilingual_acceptance_test.py api_v1_contract_test.py recognition_deep_acceptance_test.py recognition_selected_acceptance_test.py e_signature_acceptance_test.py r19_conversion_fidelity_acceptance_test.py
 
 RUN useradd --uid 10001 --user-group --create-home --home-dir /home/ajn --shell /usr/sbin/nologin ajn \
     && mkdir -p /tmp/public_media /tmp/ajn-work /tmp/runtime-ajn \
@@ -81,10 +81,10 @@ RUN set -eu; \
     wait "$server_pid" 2>/dev/null || true; \
     trap - EXIT INT TERM; \
     python api_v1_contract_test.py; \
-    python ocr_language_gate.py; \
-    python ocr_multilingual_acceptance_test.py; \
-    python ocr_deep_acceptance_test.py; \
-    python ocr_selected_acceptance_test.py; \
+    python recognition_language_gate.py; \
+    python recognition_multilingual_acceptance_test.py; \
+    python recognition_deep_acceptance_test.py; \
+    python recognition_selected_acceptance_test.py; \
     python e_signature_acceptance_test.py; \
     python image_pdf_quality_acceptance_test.py; \
     python hard_format_acceptance_test.py; \

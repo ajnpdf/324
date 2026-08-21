@@ -5,9 +5,9 @@
 3. Verify `/developer`, `/ajn-studio`, `/discover` and a published image detail page.
 4. Confirm admin routes are noindex and excluded from AdSense.
 5. Publish one original image through `/admin/media`, verify same-domain public-media delivery, then delete a test post.
-6. Run Protect, Unlock, Repair, OCR, DOCX-to-PDF, PDF-to-DOCX, image-to-PDF and PDF-to-image real-file tests.
+6. Run Protect, Unlock, Repair, DOCX-to-PDF, PDF-to-DOCX, image-to-PDF and PDF-to-image real-file tests.
 7. Confirm temporary conversion files disappear and public media persists.
-8. Confirm analytics receives only consented aggregate events and stores no filenames, OCR text or IP addresses.
+8. Confirm analytics receives only consented aggregate events and stores no filenames,  text or IP addresses.
 9. Configure Search Console, submit both sitemaps and inspect core URLs.
 10. Configure Google Privacy & Messaging/CMP where required and test accept/reject/manage choices.
 11. Verify ad placement does not touch upload, processing, result, download, admin or legal interfaces.

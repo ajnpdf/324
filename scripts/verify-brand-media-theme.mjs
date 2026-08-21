@@ -46,4 +46,3 @@ check(
 );
 check('Setup remains PowerShell 5.1 compatible',!setup.includes('Join-String')&&!setup.includes('RandomNumberGenerator]::Fill'));
 console.log(passed.join('\n')); console.log('Brand, developer, public media, image SEO, light theme and setup verification completed successfully.');
-const conversionEngine=fs.readFileSync('backend/app/conversion_engine.py','utf8'); check('Tesseract searchable PDF uses stdout',conversionEngine.includes('"stdout"')&&conversionEngine.includes('pdf_bytes.startswith(b"%PDF-")'));

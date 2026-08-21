@@ -9,7 +9,7 @@ R9 is a frontend-only production update built from the R8.3 source line. It does
 - Plain-white tool icon surfaces remain; mobile cards are compact horizontal rows.
 - Desktop directory offers Comfortable, Compact and List layouts, and remembers the selection.
 - Search adds intent aliases, token scoring and small typo tolerance.
-- OCR & Scan, Edit, Organize and Security intent filters supplement the primary categories.
+-  & Scan, Edit, Organize and Security intent filters supplement the primary categories.
 - Legacy giant tool radii and excessive drop-zone treatments were reduced to the shared product surface system.
 - Older legal-page wave artwork and unused legacy decorative CSS were flattened to simple neutral backdrops.
 - Unused legacy product/architecture visuals with outdated processing wording were removed; the social preview now uses the current Work Smarter / 100+ positioning.
@@ -17,7 +17,7 @@ R9 is a frontend-only production update built from the R8.3 source line. It does
 
 ## Processing and workflow logic
 - Merge, Split, Compress, Images to PDF and PDF to JPG use the shared full-page processing lifecycle.
-- Additional local image/OCR/archive tools dispatch the same lifecycle around final processing work.
+- Additional local image//archive tools dispatch the same lifecycle around final processing work.
 - Remaining timer-simulated progress in Smart Read, Meme Maker, Resize Image and Reduce Image is removed.
 - Real progress percentages are displayed only when a tool reports measurable progress; otherwise the status is indeterminate.
 - Server requests can be aborted when the request owns its AbortController; engine jobs expose Cancel when a real job ID exists.

@@ -12,7 +12,7 @@ This release is based on the 3.0.6 R2 premium UX/i18n source and the real Window
 - Lint now uses `--max-warnings 0`; any future warning fails production setup.
 - Fixed a real Add Image to PDF bug: shared helper coordinates and requested width/height are now applied to the exported PDF.
 - Kept the stronger `/ready` fix from 3.0.6 R2.
-- Preserved five-language UI, premium mobile-first tools, OCR/LibreOffice hardening, capability gating, SEO, analytics privacy and secret scanning.
+- Preserved five-language UI, premium mobile-first tools, /LibreOffice hardening, capability gating, SEO, analytics privacy and secret scanning.
 
 ## Validation performed in packaging environment
 

@@ -15,20 +15,18 @@ const CONVERSION_IDS = new Set(CONVERSION_TOOLS.map((tool) => tool.id));
 
 function conversionEditorial(tool: ServiceTool, processing: string, limitation: string): ToolEditorial {
   const [sourceLabel, outputLabel] = tool.name.includes(' to ') ? tool.name.split(' to ', 2) : ['source file', 'result'];
-  const isOcr = /OCR|Scanned|Image to Text|Image to Word|Handwriting/i.test(tool.name);
+  const isRecognition = /|Scanned|Image to Text|Image to Word|Handwriting/i.test(tool.name);
   const isImage = tool.cat === 'img' || /JPG|JPEG|PNG|WEBP|TIFF|BMP|GIF|SVG|HEIC|AVIF|Image/i.test(tool.name);
   const isOffice = /Word|DOCX?|Excel|XLSX?|PowerPoint|PPTX?|ODT|RTF/i.test(tool.name);
   const overview = `${tool.name} converts ${sourceLabel.toLowerCase()} content into ${outputLabel.toLowerCase()} through a guided AJN PDF workflow. It is intended for users who need a clear download, format validation and an honest explanation of what may change during conversion.`;
-  const details = `${processing} AJN PDF validates the selected format, applies the available conversion options, creates a separate output and returns it without replacing the source. ${isOcr ? 'OCR processing recognizes visible characters and should be reviewed when scans are faint, skewed or handwritten.' : isImage ? 'Resolution and quality settings can affect clarity, processing time and file size.' : isOffice ? 'Fonts, advanced layout objects, macros, formulas and animations may not translate exactly between document formats.' : 'Structured content is converted into a readable representation that may simplify advanced layout.'}`;
+  const details = `${processing} AJN PDF validates the selected format, applies the available conversion options, creates a separate output and returns it without replacing the source. ${isRecognition ? ' processing recognizes visible characters and should be reviewed when scans are faint, skewed or handwritten.' : isImage ? 'Resolution and quality settings can affect clarity, processing time and file size.' : isOffice ? 'Fonts, advanced layout objects, macros, formulas and animations may not translate exactly between document formats.' : 'Structured content is converted into a readable representation that may simplify advanced layout.'}`;
   const tips = [
     `Use a clear ${sourceLabel} source and keep the original until the ${outputLabel} result has been checked.`,
-    isOcr ? 'Select the correct OCR language and use a sharp, high-contrast scan.' : isImage ? 'Choose a moderate resolution first, then increase it only when the output needs more detail.' : 'Open the result in the application that will be used by the recipient.',
-    'Use a descriptive output filename and verify the downloaded file before sharing it.',
-  ];
+    isRecognition ? 'Select the correct  language and use a sharp, high-contrast scan.' : isImage ? 'Choose a moderate resolution first, then increase it only when the output needs more detail.' : 'Open the result in the application that will be used by the recipient.',
+    'Use a descriptive output filename and verify the downloaded file before sharing it.'];
   const limitations = [
     limitation,
-    isOcr ? 'Recognition accuracy depends on language data, scan quality, handwriting, tables and page structure.' : isOffice ? 'The conversion prioritizes a usable result but cannot guarantee pixel-perfect editing fidelity for every file.' : 'Unusual embedded objects, damaged files and unsupported codecs can prevent conversion.',
-  ];
+    isRecognition ? 'Recognition accuracy depends on language data, scan quality, handwriting, tables and page structure.' : isOffice ? 'The conversion prioritizes a usable result but cannot guarantee pixel-perfect editing fidelity for every file.' : 'Unusual embedded objects, damaged files and unsupported codecs can prevent conversion.'];
   return {
     overview,
     details,
@@ -38,8 +36,7 @@ function conversionEditorial(tool: ServiceTool, processing: string, limitation: 
       { question: `What files can I use with ${tool.name}?`, answer: `The upload control lists the extensions accepted by ${tool.name}. Files that do not match the selected converter are rejected before processing.` },
       { question: `Are files stored after ${tool.name} finishes?`, answer: processing },
       { question: `Will ${tool.name} preserve the exact original layout?`, answer: limitations[1] },
-      { question: `What should I check after using ${tool.name}?`, answer: `Open the downloaded ${outputLabel} file, confirm that every expected page or section is present, and compare important text, images, tables and formatting with the source.` },
-    ],
+      { question: `What should I check after using ${tool.name}?`, answer: `Open the downloaded ${outputLabel} file, confirm that every expected page or section is present, and compare important text, images, tables and formatting with the source.` }],
   };
 }
 
@@ -90,7 +87,7 @@ const CUSTOM: Record<string, Partial<ToolEditorial>> = {
     overview: 'JPG to PDF converts one or more images into a PDF in your chosen order. It is useful for scanned receipts, photographs of documents, portfolios, forms, and image-based submissions.',
     details: 'Choose page size, orientation, margins, image fit, background colour, and output quality. Each image can be placed on its own page, and the final PDF follows the order shown in the file list.',
     tips: ['Rotate phone photos before conversion.', 'Use contain mode to avoid cropping image edges.', 'Choose A4 or Letter when the PDF will be printed.'],
-    limitations: ['Image-based PDFs do not contain searchable text unless OCR is applied separately.', 'Very large photos may use significant browser memory during conversion.'],
+    limitations: ['Image-based PDFs do not contain searchable text unless  is applied separately.', 'Very large photos may use significant browser memory during conversion.'],
   },
   'pdf-jpg': {
     overview: 'PDF to JPG or PNG renders selected PDF pages as image files. This is useful for previews, slides, social posts, thumbnails, and systems that do not accept PDF uploads.',
@@ -101,8 +98,8 @@ const CUSTOM: Record<string, Partial<ToolEditorial>> = {
   'pdf-text': {
     overview: 'PDF to Text extracts text that already exists inside a PDF. It is useful for copying paragraphs, searching document content, creating notes, and moving text into another editor.',
     details: 'The tool reads the PDF text layer and keeps basic line breaks where possible. It does not perform optical character recognition on photographed or scanned pages that contain no embedded text.',
-    tips: ['Use OCR for scanned documents with no selectable text.', 'Review columns, tables, and headers after extraction.', 'Do not assume the extracted reading order is perfect in complex layouts.'],
-    limitations: ['Scanned image-only PDFs require OCR.', 'Tables, columns, equations, and decorative layouts may not preserve their original order.'],
+    tips: ['Use  for scanned documents with no selectable text.', 'Review columns, tables, and headers after extraction.', 'Do not assume the extracted reading order is perfect in complex layouts.'],
+    limitations: ['Scanned image-only PDFs require .', 'Tables, columns, equations, and decorative layouts may not preserve their original order.'],
   },
   'sign-pdf': {
     overview: 'Sign PDF places a visual electronic signature, typed name, initials, or uploaded signature image onto a PDF. It is intended for documents that accept a visible electronic signature.',
@@ -145,13 +142,11 @@ export function getToolEditorial(tool: ServiceTool): ToolEditorial {
   const details = custom.details || `${processing} Follow the on-screen options, review the selected file and settings, then open the downloaded result in a trusted viewer before replacing the original.`;
   const limitations = custom.limitations || [
     policy.limitation || 'Complex documents can contain forms, scripts, embedded files, fonts, and viewer-specific features that may not be preserved by every browser-based operation.',
-    'Always keep the source file until the downloaded result has been checked.',
-  ];
+    'Always keep the source file until the downloaded result has been checked.'];
 
   const tips = custom.tips || [
     ...tool.instructions.map((item) => `${item}.`),
-    'Use a clear output filename and verify the downloaded result.',
-  ];
+    'Use a clear output filename and verify the downloaded result.'];
 
   return {
     overview,
@@ -170,7 +165,6 @@ export function getToolEditorial(tool: ServiceTool): ToolEditorial {
       {
         question: `Will ${tool.name} preserve every PDF feature?`,
         answer: limitations[0],
-      },
-    ],
+      }],
   };
 }

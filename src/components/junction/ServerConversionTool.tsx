@@ -12,19 +12,12 @@ import { sendAjnAnalytics } from '@/components/analytics/site-analytics';
 import { useLanguage } from '@/lib/i18n/language-context';
 import { friendlyBackendError } from '@/lib/i18n/backend-errors';
 
-const OCR_IDS = new Set([
-  'scanned-pdf-to-text','scanned-pdf-to-word','scanned-pdf-to-searchable-pdf',
-  'image-to-searchable-pdf','image-to-text','image-to-word','handwriting-image-to-text',
-]);
 const PDF_IMAGE_IDS = new Set([
   'pdf-to-image','pdf-to-jpg','pdf-to-jpeg','pdf-to-png','pdf-to-webp',
-  'pdf-to-tiff','pdf-to-bmp','pdf-to-gif','pdf-to-svg','pdf-to-avif','pdf-to-heic',
-]);
-const SCAN_IDS = new Set(['camera-scan-to-pdf','receipt-to-pdf','document-scanner-to-pdf']);
+  'pdf-to-tiff','pdf-to-bmp','pdf-to-gif','pdf-to-svg','pdf-to-avif','pdf-to-heic']);
 const IMAGE_PDF_IDS = new Set([
   'image-to-pdf','jpg-to-pdf','jpeg-to-pdf','webp-to-pdf','tiff-to-pdf','bmp-to-pdf','gif-to-pdf','heic-to-pdf',
-  ...SCAN_IDS,
-]);
+  ...SCAN_IDS]);
 
 function extensionAccept(extensions: string[] | undefined): string {
   return extensions?.length ? extensions.join(',') : '*/*';
@@ -41,10 +34,9 @@ export default function ServerConversionTool({ toolId }: { toolId: string }) {
   const [files,setFiles]=useState<ToolFile[]>([]);
   const [sourceUrl,setSourceUrl]=useState('');
   const [outputName,setOutputName]=useState(toolId);
-  const [language,setLanguage]=useState('eng');
-  const [dpi,setDpi]=useState(180);
+const [dpi,setDpi]=useState(180);
   const [quality,setQuality]=useState(92);
-  const [grayscale,setGrayscale]=useState(SCAN_IDS.has(toolId));
+  const [grayscale,setGrayscale]=useState(false);
   const [pageRange,setPageRange]=useState('all');
   const [pageSize,setPageSize]=useState<'auto'|'a4'|'letter'>('auto');
   const [orientation,setOrientation]=useState<'auto'|'portrait'|'landscape'>('auto');
@@ -64,7 +56,7 @@ export default function ServerConversionTool({ toolId }: { toolId: string }) {
   },[toolId]);
 
   useEffect(()=>{const controller=new AbortController();void refreshAvailability(controller.signal);return()=>controller.abort();},[refreshAvailability]);
-  useEffect(()=>{if(manifest?.ocrLanguages?.length&&!manifest.ocrLanguages.includes(language))setLanguage(manifest.ocrLanguages.includes('eng')?'eng':manifest.ocrLanguages[0]);},[language,manifest]);
+  useEffect(()=>{if(manifest?.recognitionLanguages?.length&&!manifest.recognitionLanguages.includes(language))setLanguage(manifest.recognitionLanguages.includes('eng')?'eng':manifest.recognitionLanguages[0]);},[language,manifest]);
   useEffect(()=>{setFiles([]);setSourceUrl('');setOutputName(toolId);setResult(null);setError('');setPageRange('all');setPageSize('auto');setOrientation('auto');setMarginMm(0);setProcessingStage('processing.preparing');},[toolId]);
 
   const isUrlTool=toolId==='url-to-pdf';
@@ -77,12 +69,11 @@ export default function ServerConversionTool({ toolId }: { toolId: string }) {
 
   const optionSummary=useMemo(()=>{
     const parts:string[]=[];
-    if(OCR_IDS.has(toolId))parts.push(`${t('ocr.language')}: ${language.toUpperCase()}`);
-    if(OCR_IDS.has(toolId)||PDF_IMAGE_IDS.has(toolId))parts.push(`${dpi} DPI`);
+    if(RETIRED_IDS.has(toolId)||PDF_IMAGE_IDS.has(toolId))parts.push(`${dpi} DPI`);
     if(PDF_IMAGE_IDS.has(toolId)||IMAGE_PDF_IDS.has(toolId))parts.push(`${quality}% quality`);
     if(PDF_IMAGE_IDS.has(toolId))parts.push(pageRange.trim().toLowerCase()==='all'?'All pages':`Pages ${pageRange}`);
     if(IMAGE_PDF_IDS.has(toolId))parts.push(`${pageSize.toUpperCase()} · ${orientation} · ${marginMm} mm margin`);
-    if(SCAN_IDS.has(toolId))parts.push(grayscale?t('conversion.documentCleanup'):t('conversion.colourMode'));
+    if(false)parts.push(grayscale?t('conversion.documentCleanup'):t('conversion.colourMode'));
     return parts.join(' • ');
   },[dpi,grayscale,language,marginMm,orientation,pageRange,pageSize,quality,toolId,t]);
 
@@ -120,13 +111,13 @@ export default function ServerConversionTool({ toolId }: { toolId: string }) {
 
         <div className="rounded-2xl border border-border bg-muted/45 p-4 space-y-4">
           <G2><F label={t('common.outputName')} hint={t('conversion.outputExtensionHint',{extension:manifest?.outputExtension||''})}><input value={outputName} onChange={e=>setOutputName(e.target.value)} maxLength={100} style={IS}/></F>
-          {OCR_IDS.has(toolId)?<F label={t('ocr.language')} hint={t('tool.recommended')}><select value={language} onChange={e=>setLanguage(e.target.value)} style={IS}>{(manifest?.ocrLanguages?.length?manifest.ocrLanguages:['eng']).map(code=><option key={code} value={code}>{({eng:t('ocr.english'),hin:t('ocr.hindi'),tel:t('ocr.telugu'),tam:t('ocr.tamil'),kan:t('ocr.kannada'),mal:t('ocr.malayalam')} as Record<string,string>)[code]||code.toUpperCase()}</option>)}</select></F>:<F label={t('common.output')}><div className="flex min-h-11 items-center gap-2 rounded-xl border border-border bg-card px-3 text-xs font-black"><FileOutput className="h-4 w-4 text-blue-600"/>{manifest?.outputExtension||t('conversion.resultFile')}</div></F>}</G2>
+          {RETIRED_IDS.has(toolId)?<F label={t('.language')} hint={t('tool.recommended')}><select value={language} onChange={e=>setLanguage(e.target.value)} style={IS}>{(manifest?.recognitionLanguages?.length?manifest.recognitionLanguages:['eng']).map(code=><option key={code} value={code}>{({eng:t('.english'),hin:t('.hindi'),tel:t('.telugu'),tam:t('.tamil'),kan:t('.kannada'),mal:t('.malayalam')} as Record<string,string>)[code]||code.toUpperCase()}</option>)}</select></F>:<F label={t('common.output')}><div className="flex min-h-11 items-center gap-2 rounded-xl border border-border bg-card px-3 text-xs font-black"><FileOutput className="h-4 w-4 text-blue-600"/>{manifest?.outputExtension||t('conversion.resultFile')}</div></F>}</G2>
 
-          {(OCR_IDS.has(toolId)||PDF_IMAGE_IDS.has(toolId))&&<Range label={t('conversion.resolution')} min={72} max={400} step={10} value={dpi} onChange={setDpi} fmt={v=>`${v} DPI`}/>}
+          {(RETIRED_IDS.has(toolId)||PDF_IMAGE_IDS.has(toolId))&&<Range label={t('conversion.resolution')} min={72} max={400} step={10} value={dpi} onChange={setDpi} fmt={v=>`${v} DPI`}/>}
           {(PDF_IMAGE_IDS.has(toolId)||IMAGE_PDF_IDS.has(toolId))&&<Range label={t('common.quality')} min={45} max={100} step={5} value={quality} onChange={setQuality} fmt={v=>`${v}%`}/>}
           {PDF_IMAGE_IDS.has(toolId)&&<F label="Pages" hint="Use all, 2, 1-3, or 1,4,7-9"><input value={pageRange} onChange={e=>setPageRange(e.target.value)} style={IS}/></F>}
           {IMAGE_PDF_IDS.has(toolId)&&<><G2><F label="Page size"><Pills opts={[{label:'Auto',value:'auto'},{label:'A4',value:'a4'},{label:'Letter',value:'letter'}]} val={pageSize} onChange={(v:any)=>setPageSize(v)}/></F><F label="Orientation"><Pills opts={[{label:'Auto',value:'auto'},{label:'Portrait',value:'portrait'},{label:'Landscape',value:'landscape'}]} val={orientation} onChange={(v:any)=>setOrientation(v)}/></F></G2><Range label="Page margin" min={0} max={30} step={1} value={marginMm} onChange={setMarginMm} fmt={v=>`${v} mm`}/></>}
-          {SCAN_IDS.has(toolId)&&<F label={t('common.appearance')}><Pills opts={[{label:t('conversion.documentCleanup'),value:'clean'},{label:t('conversion.colourMode'),value:'colour'}]} val={grayscale?'clean':'colour'} onChange={value=>setGrayscale(value==='clean')}/></F>}
+          {false&&<F label={t('common.appearance')}><Pills opts={[{label:t('conversion.documentCleanup'),value:'clean'},{label:t('conversion.colourMode'),value:'colour'}]} val={grayscale?'clean':'colour'} onChange={value=>setGrayscale(value==='clean')}/></F>}
         </div>
 
         {optionSummary&&<Info>{optionSummary}</Info>}

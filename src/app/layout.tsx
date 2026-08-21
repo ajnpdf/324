@@ -104,8 +104,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         author: { '@id': `${SITE_URL}/developer#anjan` },
         publisher: { '@id': `${SITE_URL}/ajn-studio#organization` },
         brand: { '@id': `${SITE_URL}/#brand` },
-      },
-    ],
+      }],
   };
 
   return (

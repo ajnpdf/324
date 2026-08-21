@@ -12,22 +12,19 @@ export default function UnlockAuthorizationPolicyPage() {
           bullets: [
             'You must know and enter the document’s current valid password.',
             'You must own the document or have explicit permission from the owner or authorised administrator.',
-            'You must confirm authorisation before processing begins.',
-          ],
+            'You must confirm authorisation before processing begins.'],
         },
         {
           title: 'What AJN PDF does not do',
           bullets: [
             'No password dictionaries, guessing, brute force or cryptographic bypass.',
             'No removal of encryption without successful password validation.',
-            'No retention or logging of the submitted password.',
-          ],
+            'No retention or logging of the submitted password.'],
         },
         {
           title: 'User responsibility',
           paragraphs: ['You are responsible for confirming that unlocking the file is lawful and permitted by any contract, workplace policy, confidentiality obligation or licence that applies to the document.'],
-        },
-      ]}
+        }]}
     />
   );
 }

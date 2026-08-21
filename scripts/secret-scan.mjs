@@ -12,8 +12,7 @@ const patterns = [
   /(?:password|passwd|secret|api[_-]?key)\s*[:=]\s*["']?[A-Za-z0-9_\-+/=]{24,}["']?/i,
   /postgres(?:ql)?:\/\/[^\s:]+:[^\s@]+@/i,
   /redis:\/\/[^\s:]+:[^\s@]+@/i,
-  /vercel_blob_rw_[A-Za-z0-9_\-]{20,}/i,
-];
+  /vercel_blob_rw_[A-Za-z0-9_\-]{20,}/i];
 const findings = [];
 function walk(dir) {
   for (const ent of fs.readdirSync(dir, {withFileTypes:true})) {

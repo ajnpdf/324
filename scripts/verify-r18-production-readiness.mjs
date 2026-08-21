@@ -30,8 +30,7 @@ check(
 );
 
 const staleLimitCopy = [
-  disclosure, about, faq, transparency, limits, policy, editorial, compress,
-].join('\n');
+  disclosure, about, faq, transparency, limits, policy, editorial, compress].join('\n');
 const stalePhrases = [
   /Limits shown by the tool/i,
   /tool page shows practical file limits/i,
@@ -41,8 +40,7 @@ const stalePhrases = [
   /live tool interface takes precedence/i,
   /Review the available controls and limits before processing/i,
   /This tool accepts up to \$\{policy\.maxFiles\}/,
-  /Maximum 40 MB/i,
-];
+  /Maximum 40 MB/i];
 check('removed common/numerical processing-limit copy stays removed', stalePhrases.every((pattern) => !pattern.test(staleLimitCopy)));
 check('dedicated limits page remains the policy source', limits.includes('Current policy limits') && limits.includes('SERVER_LIMIT_DEFAULTS'));
 check('meaningful fidelity limitations remain in tool editorial', editorial.includes('limitations') && editorial.includes('Conversion quality depends on the source format'));
@@ -82,8 +80,7 @@ const requiredCiGates = [
   'verify:i18n',
   'verify:accessibility',
   'verify:r13-browser-pdf',
-  'verify:r13-runtime',
-];
+  'verify:r13-runtime'];
 check('GitHub production CI contains the hardened regression gates', requiredCiGates.every((gate) => workflow.includes(gate)));
 check('GitHub production CI cancels stale runs', workflow.includes('cancel-in-progress: true') && workflow.includes('concurrency:'));
 check('release metadata identifies R18', layout.includes("'ajn-release': '3.1.0-r18'"));

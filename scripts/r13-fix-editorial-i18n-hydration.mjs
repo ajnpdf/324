@@ -1,4 +1,4 @@
-﻿import fs from "node:fs";
+import fs from "node:fs";
 
 const componentPath = "src/components/junction/tool-editorial-content.tsx";
 const translationsPath = "src/lib/i18n/translations.ts";

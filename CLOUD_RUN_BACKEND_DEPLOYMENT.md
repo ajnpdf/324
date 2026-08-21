@@ -1,11 +1,11 @@
 # AJN PDF Cloud Run backend deployment patch
 
 ## Why this patch exists
-AJN PDF browser/local tools can stay on Vercel. Server-assisted PDF security, OCR, Office, eBook and conversion tools require a long-running container with native binaries. Vercel Functions are not a reliable fit for the AJN PDF processing contract because file payloads and native engines exceed the practical serverless-function model.
+AJN PDF browser/local tools can stay on Vercel. Server-assisted PDF security, Office, eBook and conversion tools require a long-running container with native binaries. Vercel Functions are not a reliable fit for the AJN PDF processing contract because file payloads and native engines exceed the practical serverless-function model.
 
 ## Production split
 - Vercel: Next.js frontend only
-- Google Cloud Run: FastAPI + LibreOffice + Tesseract + Calibre + Poppler + ImageMagick
+- Google Cloud Run: FastAPI + LibreOffice +  + Calibre + Poppler + ImageMagick
 - XPS/PostScript remains dependency-gated until its external-engine licensing decision is made.
 
 ## Cloud Run first-release file limit

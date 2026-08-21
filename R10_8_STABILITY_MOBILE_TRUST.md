@@ -28,7 +28,7 @@ Current packaged server defaults documented by the existing AJN PDF 3.1.0 backen
 
 ## New information pages
 - `/limits` explains upload, page/image, output, timeout and fair-use behavior.
-- `/ocr` documents supported OCR languages, scan-quality guidance and accuracy limitations without fabricated accuracy percentages.
+- `/` documents supported  languages, scan-quality guidance and accuracy limitations without fabricated accuracy percentages.
 - Footer and sitemap include both pages.
 
 ## Security headers
@@ -52,8 +52,8 @@ The updater does not replace backend source, `package.json`, `package-lock.json`
 - Confirm no React hydration error appears in the console.
 - Run mobile PageSpeed/Lighthouse and measure LCP, INP/interaction responsiveness and CLS with ads enabled under realistic conditions.
 - Test CSP with consent, AdSense, Analytics and representative local/server tools.
-- Test representative real files for PDF, image, OCR, Office and security workflows.
-- Verify `/status`, `/limits` and `/ocr` against the deployed service.
+- Test representative real files for PDF, image, Office and security workflows.
+- Verify `/status`, `/limits` and `/` against the deployed service.
 
 ## Brand-channel cleanup
 - Product footer no longer presents personal Instagram/YouTube accounts as AJN PDF brand channels.

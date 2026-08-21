@@ -8,15 +8,13 @@ const backendOrigins = [...new Set(configuredPdfBackendCandidates(isProduction).
 
 const connectSources = [
   "'self'", ...backendOrigins, 'https://www.google-analytics.com', 'https://region1.google-analytics.com',
-  'https://*.google-analytics.com', 'https://pagead2.googlesyndication.com', 'https://*.googlesyndication.com', 'https://*.doubleclick.net',
-];
+  'https://*.google-analytics.com', 'https://pagead2.googlesyndication.com', 'https://*.googlesyndication.com', 'https://*.doubleclick.net'];
 const contentSecurityPolicy = [
   "default-src 'self'", "base-uri 'self'", "object-src 'none'", "frame-ancestors 'self'", "form-action 'self'",
   "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://pagead2.googlesyndication.com https://*.googlesyndication.com",
   "style-src 'self' 'unsafe-inline'", "img-src 'self' data: blob: https:", "font-src 'self' data:",
   `connect-src ${connectSources.join(' ')}`, "frame-src 'self' https://*.googlesyndication.com https://*.doubleclick.net",
-  "worker-src 'self' blob:", "media-src 'self' blob:", isProduction ? 'upgrade-insecure-requests' : '',
-].filter(Boolean).join('; ');
+  "worker-src 'self' blob:", "media-src 'self' blob:", isProduction ? 'upgrade-insecure-requests' : ''].filter(Boolean).join('; ');
 
 const legacyToolAliases: Record<string, string> = {
   'word-pdf': 'word-to-pdf', 'pdf-word': 'pdf-to-word', 'excel-pdf': 'excel-to-pdf', 'pdf-excel': 'pdf-to-excel',
@@ -45,8 +43,7 @@ const nextConfig: NextConfig = {
       { source: '/junction', destination: '/pdf-tools', permanent: true }, { source: '/junction/:path*', destination: '/pdf-tools', permanent: true },
       { source: '/view/:path*', destination: '/pdf-tools', permanent: true }, { source: '/tools', destination: '/pdf-tools', permanent: true },
       ...rootLegacyToolRedirects,
-      { source: '/tools/:id', destination: '/:id', permanent: true },
-    ];
+      { source: '/tools/:id', destination: '/:id', permanent: true }];
   },
   async headers() {
     return [
@@ -57,9 +54,7 @@ const nextConfig: NextConfig = {
         { key: 'Permissions-Policy', value: 'camera=(self), microphone=(), geolocation=(), payment=(), usb=()' },
         { key: 'Cross-Origin-Opener-Policy', value: 'same-origin-allow-popups' }, { key: 'Cross-Origin-Resource-Policy', value: 'same-site' },
         { key: 'X-DNS-Prefetch-Control', value: 'on' },
-        ...(enableHsts ? [{ key: 'Strict-Transport-Security', value: `max-age=63072000; includeSubDomains${enableHstsPreload ? '; preload' : ''}` }] : []),
-      ] },
-    ];
+        ...(enableHsts ? [{ key: 'Strict-Transport-Security', value: `max-age=63072000; includeSubDomains${enableHstsPreload ? '; preload' : ''}` }] : [])] }];
   },
 };
 export default nextConfig;

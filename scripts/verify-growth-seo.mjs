@@ -18,8 +18,7 @@ const requiredFiles = [
   'CONTENT_ENGINE_CALENDAR.csv',
   'BACKLINK_AUTHORITY_PLAN.md',
   'CRO_MEASUREMENT_PLAN.md',
-  'SEO_SETUP_CHECKLIST.md',
-];
+  'SEO_SETUP_CHECKLIST.md'];
 for (const file of requiredFiles) fs.existsSync(path.join(root, file)) ? pass(`SEO system file ${file}`) : fail(`Missing ${file}`);
 
 const seo = read('src/lib/seo-config.ts');
@@ -44,7 +43,6 @@ robots.includes("'/admin/'") ? pass('Private admin routes excluded from crawling
 analytics.includes('useReportWebVitals') && analytics.includes("event_name: 'page_view'") ? pass('Core Web Vitals and page funnel tracking enabled after consent') : fail('Web Vitals or funnel analytics missing');
 backend.includes('/api/analytics/event') && backend.includes('CREATE TABLE IF NOT EXISTS site_events') && backend.includes('metric_rating') ? pass('Privacy-minimized backend analytics storage enabled') : fail('Backend SEO/CRO analytics missing');
 backend.includes('filename TEXT') || backend.includes('ip_address TEXT') ? fail('Site analytics stores filenames or IP addresses') : pass('Site analytics excludes filenames and stored IP addresses');
-installer.includes("Install-ChocoPackage 'tesseract'") && installer.includes('Tesseract OCR') ? pass('Tesseract fallback installer configured for systems without WinGet') : fail('Tesseract fallback installer missing');
 env.includes('NEXT_PUBLIC_GA4_MEASUREMENT_ID') && env.includes('NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION') ? pass('Analytics and Search verification environment keys documented') : fail('SEO environment keys missing');
 
 const keywordLines = read('SEO_KEYWORD_INTENT_MAP.csv').trim().split(/\r?\n/).length - 1;
@@ -58,4 +56,3 @@ for (const page of pages) {
 }
 
 if (failed) process.exit(1);
-console.log('AJN PDF SEO growth, analytics and Tesseract fallback verification completed successfully.');

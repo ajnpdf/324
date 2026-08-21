@@ -30,7 +30,7 @@ function tool(
 }
 
 export const CONVERSION_TOOLS: ServiceTool[] = [
-  // OCR and scanned-document conversions
+  //  and scanned-document conversions
 
   // Image -> PDF
   tool('image-to-pdf', 'Image to PDF', 'Combine supported image formats into one PDF document.', FileImage, 'img', ['image to pdf', 'photos to pdf', 'multiple images pdf']),
@@ -102,5 +102,4 @@ export const CONVERSION_TOOLS: ServiceTool[] = [
   tool('azw3-to-pdf', 'AZW3 to PDF', 'Convert an AZW3 Kindle eBook into PDF.', BookOpen, 'pdf', ['azw3 to pdf', 'kindle ebook pdf'], 'Requires the Calibre converter to be available for the current deployment.'),
   tool('eml-to-pdf', 'EML to PDF', 'Convert an email message into a readable PDF.', Mail, 'pdf', ['eml to pdf', 'email pdf'], 'Attachments are listed but are not embedded automatically.'),
   tool('msg-to-pdf', 'MSG to PDF', 'Convert an Outlook MSG email into a readable PDF.', Mail, 'pdf', ['msg to pdf', 'outlook email pdf'], 'Attachments are listed but are not embedded automatically.'),
-  tool('xps-to-pdf', 'XPS to PDF', 'Convert an XPS document into PDF.', FileArchive, 'pdf', ['xps to pdf', 'microsoft xps pdf'], 'Requires a compatible XPS converter to be available for the current deployment.'),
-];
+  tool('xps-to-pdf', 'XPS to PDF', 'Convert an XPS document into PDF.', FileArchive, 'pdf', ['xps to pdf', 'microsoft xps pdf'], 'Requires a compatible XPS converter to be available for the current deployment.')];

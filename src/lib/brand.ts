@@ -3,7 +3,7 @@ export const AJN_BRAND = {
   developerDisplayName: 'ANJAN',
   developerRole: 'Developer of AJN PDF',
   developerBio:
-    'Anjan Kumar is the developer behind AJN PDF and AJN Studio. He builds practical PDF, OCR, image and document workflows with Next.js, React, TypeScript and Python, with an emphasis on clear interfaces, transparent file handling and useful results.',
+    'Anjan Kumar is the developer behind AJN PDF and AJN Studio. He builds practical PDF, image and document workflows with Next.js, React, TypeScript and Python, with an emphasis on clear interfaces, transparent file handling and useful results.',
   developerImage: '/images/anjan-kumar-developer.webp',
   developerImageJpeg: '/images/anjan-kumar-developer.jpg',
   developerImageThumb: '/images/anjan-kumar-developer-thumb.webp',

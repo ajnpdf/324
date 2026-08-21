@@ -37,7 +37,7 @@ ok(Array.isArray(tools), 'Extension tool catalog did not initialize.');
 ok(tools.length === 107, `Expected 107 audited workflows, found ${tools.length}.`);
 ok(new Set(tools.map((tool) => tool.id)).size === 107, 'Extension tool IDs must be unique.');
 ok(!tools.some((tool) => ['pdf-to-avif','xps-to-pdf'].includes(tool.id)), 'Known unavailable capability routes must not appear in extension catalog.');
-for (const required of ['merge-pdf','compress-pdf','ocr-advanced','image-to-pdf','pdf-to-word','word-to-pdf','msg-to-pdf']) {
+for (const required of ['merge-pdf','compress-pdf','image-to-pdf','pdf-to-word','word-to-pdf','msg-to-pdf']) {
   ok(tools.some((tool) => tool.id === required), `Extension catalog is missing required workflow ${required}.`);
 }
 

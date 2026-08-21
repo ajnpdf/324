@@ -21,7 +21,7 @@
   const recentList = document.getElementById('recentList');
   const clearRecent = document.getElementById('clearRecent');
   document.getElementById('toolCount').textContent = String(tools.length);
-  const categoryOrder = ['All','PDF','Convert','Image','OCR','Edit','Security'];
+  const categoryOrder = ['All','PDF','Convert','Image','Edit','Security'];
   let activeCategory = 'All';
   let activeIndex = -1;
 
@@ -86,7 +86,7 @@
     if (!list.length) { const empty=document.createElement('div'); empty.className='empty'; empty.textContent=msg('noResults'); results.replaceChildren(empty); return; }
     results.replaceChildren(...list.map((tool,index)=>{
       const button=document.createElement('button'); button.type='button'; button.className='result-row'; button.setAttribute('role','option'); button.setAttribute('aria-selected',String(index===activeIndex));
-      const icon=document.createElement('span'); icon.className='result-icon'; icon.textContent=tool.category==='Security'?'SEC':tool.category==='OCR'?'OCR':tool.category==='Image'?'IMG':tool.category==='Convert'?'CVT':'PDF';
+      const icon=document.createElement('span'); icon.className='result-icon'; icon.textContent=tool.category==='Security'?'SEC':tool.category==='Image'?'IMG':tool.category==='Convert'?'CVT':'PDF';
       const copy=document.createElement('span'); copy.className='result-copy'; const strong=document.createElement('strong'); strong.textContent=tool.name; const small=document.createElement('small'); small.textContent=tool.desc; copy.append(strong,small);
       const arrow=document.createElement('span'); arrow.className='result-arrow'; arrow.textContent='›';
       button.append(icon,copy,arrow); button.addEventListener('click',()=>openTool(tool)); return button;

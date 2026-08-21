@@ -4,8 +4,7 @@ import path from 'node:path';
 const root = process.cwd();
 const candidates = [
   'src/generated/backend-capabilities.json',
-  'public/backend-capabilities.json',
-];
+  'public/backend-capabilities.json'];
 const rel = candidates.find((candidate) => fs.existsSync(path.join(root, candidate)));
 if (!rel) {
   console.error('FAIL: no AJN PDF backend capability manifest was found. Run the existing capability export before building.');

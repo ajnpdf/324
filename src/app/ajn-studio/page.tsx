@@ -6,10 +6,9 @@ import { SITE_URL } from '@/lib/seo-config';
 import { AJN_BRAND, AJN_STUDIO_ALTERNATE_NAMES } from '@/lib/brand';
 
 const products = [
-  { icon: Wrench, title: 'AJN PDF', text: 'PDF, OCR, image and document conversion tools with clear processing labels.', href: '/pdf-tools' },
+  { icon: Wrench, title: 'AJN PDF', text: 'PDF, image and document conversion tools with clear processing labels.', href: '/pdf-tools' },
   { icon: ImageIcon, title: 'AJN Discover', text: 'A public image feed for original AJN product updates, visuals and learning posts.', href: '/discover' },
-  { icon: Search, title: 'AJN content system', text: 'Useful guides, structured data and internal links that help users discover the right workflow.', href: '/blog' },
-];
+  { icon: Search, title: 'AJN content system', text: 'Useful guides, structured data and internal links that help users discover the right workflow.', href: '/blog' }];
 
 export default function AjnStudioPage() {
   const jsonLd = {

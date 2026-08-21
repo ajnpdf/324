@@ -26,8 +26,7 @@ const cards = [
     title: PROCESSING_DISCLOSURE.limitsTitle,
     text: PROCESSING_DISCLOSURE.limits,
     className: 'border-amber-100 bg-amber-50/60 text-amber-700',
-  },
-] as const;
+  }] as const;
 
 export function ProcessingModelOverview() {
   return (

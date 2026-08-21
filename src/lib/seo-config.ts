@@ -10,15 +10,13 @@ export const ADSENSE_CLIENT = 'ca-pub-4495802176396975';
 
 export const SEO_EXCLUDED_TOOL_IDS = new Set([
   'pdf-ppt',
-  'ocr-searchable',
   'pdf-a',
   'pdf-ua',
   'smart-read',
   'psd-pdf',
   'upscale-image',
   'remove-bg',
-  'blur-face',
-]);
+  'blur-face']);
 
 export const TOOL_CANONICAL_OVERRIDES: Record<string, string> = {
   'smart-read': '/pdf-text',

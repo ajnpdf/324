@@ -12,8 +12,7 @@ import {safeImageOutputName} from "@/lib/image-output";
 
 const FILTERS=[
   {v:"none",l:"None"},{v:"grayscale",l:"Grayscale"},{v:"sepia",l:"Sepia"},
-  {v:"invert",l:"Invert"},{v:"warm",l:"Warm"},{v:"cool",l:"Cool"},
-];
+  {v:"invert",l:"Invert"},{v:"warm",l:"Warm"},{v:"cool",l:"Cool"}];
 
 const DEFAULTS={brightness:1,contrast:1,saturation:1,exposure:0,filter:"none",rotation:0,flipH:false,flipV:false};
 

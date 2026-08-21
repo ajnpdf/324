@@ -53,12 +53,10 @@ if (-not (Test-AnyCommand @('soffice.exe','libreoffice.exe') @('C:\Program Files
   if (-not $installed) { Write-Warning 'LibreOffice is not installed. Install the current Windows x86-64 build from libreoffice.org, then rerun setup.' }
 }
 
-if (-not (Test-AnyCommand @('tesseract.exe') @('C:\Program Files\Tesseract-OCR\tesseract.exe'))) {
+if (-not (Test-AnyCommand @('.exe') @('C:\Program Files\-\.exe'))) {
   $installed = $false
-  if ($winget) { $installed = Install-WingetPackage 'UB-Mannheim.TesseractOCR' 'Tesseract OCR' }
-  if (-not $installed) { $installed = Install-ChocoPackage 'tesseract' 'Tesseract OCR' }
   if (-not $installed) {
-    Write-Warning 'Tesseract OCR could not be installed automatically. Install it with Chocolatey (choco install tesseract -y) or use the Tesseract Windows installation guidance, then rerun setup.'
+    Write-Warning '  could not be installed automatically. Install it with Chocolatey (choco install  -y) or use the  Windows installation guidance, then rerun setup.'
   }
 }
 
@@ -82,14 +80,14 @@ if (-not $ghostscript -and -not (Get-Command gswin64c.exe -ErrorAction SilentlyC
 }
 
 Add-ToSessionAndUserPath 'C:\Program Files\LibreOffice\program'
-Add-ToSessionAndUserPath 'C:\Program Files\Tesseract-OCR'
+Add-ToSessionAndUserPath 'C:\Program Files\-'
 Add-ToSessionAndUserPath 'C:\Program Files\Calibre2'
 
 $env:Path = @(
   [Environment]::GetEnvironmentVariable('Path','Machine')
   [Environment]::GetEnvironmentVariable('Path','User')
   'C:\Program Files\LibreOffice\program'
-  'C:\Program Files\Tesseract-OCR'
+  'C:\Program Files\-'
   'C:\Program Files\Calibre2'
 ) | Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
 $env:Path = $env:Path -join ';'

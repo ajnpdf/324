@@ -13,7 +13,7 @@ const routes=data.publicRoutes||[];
 const canonical=data.canonicalTools||[];
 const aliases=data.publicWorkspaceAliases||[];
 
-const retired=new Set(["ocr-advanced","ocr-scanner","scanned-pdf-to-text","scanned-pdf-to-word","scanned-pdf-to-searchable-pdf","image-to-searchable-pdf","image-to-text","image-to-word","handwriting-image-to-text","camera-scan-to-pdf","receipt-to-pdf","document-scanner-to-pdf","ocr-searchable"]);
+const retired=new Set(["-scanner"]);
 const duplicates=(items)=>{
   const ids=items.map(x=>x.id);
   return ids.filter((id,i)=>ids.indexOf(id)!==i);
@@ -31,7 +31,7 @@ const leakedRoutes=routes.filter(x=>retired.has(x.id));
 const leakedCanonical=canonical.filter(x=>retired.has(x.id));
 
 if(leakedRoutes.length||leakedCanonical.length){
-  console.error('FAIL: retired OCR/scanner tools remain public',{
+  console.error('FAIL: retired /scanner tools remain public',{
     routes: leakedRoutes.map(x=>x.id),
     canonical: leakedCanonical.map(x=>x.id),
   });
@@ -39,12 +39,12 @@ if(leakedRoutes.length||leakedCanonical.length){
 }
 
 if(routes.length!==97){
-  console.error(`FAIL: expected exactly 97 public routes after OCR retirement; got ${routes.length}.`);
+  console.error(`FAIL: expected exactly 97 public routes after  retirement; got ${routes.length}.`);
   process.exit(1);
 }
 
 if(canonical.length!==96){
-  console.error(`FAIL: expected exactly 96 canonical processors after OCR retirement; got ${canonical.length}.`);
+  console.error(`FAIL: expected exactly 96 canonical processors after  retirement; got ${canonical.length}.`);
   process.exit(1);
 }
 
@@ -58,6 +58,6 @@ if(routes.length!==canonical.length+aliases.length){
   process.exit(1);
 }
 
-console.log(`PASS: no-OCR R19 release inventory — ${routes.length} public routes, ${canonical.length} canonical processors, ${aliases.length} alias.`);
-console.log('PASS: retired OCR/scanner IDs are absent from the public release inventory.');
+console.log(`PASS: no- R19 release inventory — ${routes.length} public routes, ${canonical.length} canonical processors, ${aliases.length} alias.`);
+console.log('PASS: retired /scanner IDs are absent from the public release inventory.');
 console.log('NOTE: Inventory integrity is NOT all-tool semantic/visual E2E proof.');

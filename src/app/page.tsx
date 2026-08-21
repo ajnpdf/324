@@ -28,8 +28,7 @@ const categories = [
   { id: 'pdf', key: 'filters.pdf' },
   { id: 'edit', key: 'filters.edit' },
   { id: 'organize', key: 'filters.organize' },
-  { id: 'security', key: 'filters.security' },
-];
+  { id: 'security', key: 'filters.security' }];
 
 export default function HomePage() {
   const { t } = useLanguage();

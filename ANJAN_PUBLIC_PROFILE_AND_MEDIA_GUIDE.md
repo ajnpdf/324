@@ -29,4 +29,4 @@ The backend validates file type, dimensions and size; rejects duplicate image co
 
 ## Content focus
 
-Publish AJN PDF updates, real tool screenshots, OCR examples, conversion comparisons, document tips, AJN Studio visuals and developer updates. Avoid unrelated filler because it weakens the product topic and can create low-value indexed pages.
+Publish AJN PDF updates, real tool screenshots,  examples, conversion comparisons, document tips, AJN Studio visuals and developer updates. Avoid unrelated filler because it weakens the product topic and can create low-value indexed pages.

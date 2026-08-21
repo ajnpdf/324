@@ -59,7 +59,7 @@ try {
   if (!home?.response.ok) fail(`Homepage did not become ready on ${origin}.\n${output.slice(-4000)}`);
   pass('production server became ready');
 
-  for (const pathname of ['/merge-pdf', '/pdf-to-word', '/scanned-pdf-to-text']) {
+  for (const pathname of ['/merge-pdf', '/pdf-to-word']) {
     const result = await request(pathname);
     if (!result.response.ok) fail(`${pathname} returned HTTP ${result.response.status}`);
     if (!result.text.includes('AJN PDF')) fail(`${pathname} did not render AJN PDF HTML`);

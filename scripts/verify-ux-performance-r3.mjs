@@ -10,8 +10,7 @@ const required = [
   "src/components/ajnpdf/professional-skeleton.tsx",
   "src/components/ajnpdf/professional-skeleton.module.css",
   "src/components/ajnpdf/processing-activity-provider.tsx",
-  "src/components/ajnpdf/processing-activity-provider.module.css",
-];
+  "src/components/ajnpdf/processing-activity-provider.module.css"];
 
 const failures = [];
 

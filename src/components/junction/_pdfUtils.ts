@@ -256,8 +256,7 @@ export async function comparePdfs(f1: File, f2: File): Promise<string> {
     `Lines in file 1: ${lines1.length}`,
     `Lines in file 2: ${lines2.length}`,
     ``,
-    `--- DIFFERENCES ---`,
-  ];
+    `--- DIFFERENCES ---`];
 
   for (let i = 0; i < max; i++) {
     const a = lines1[i] ?? "(no line)";
@@ -421,10 +420,10 @@ export async function zipToPdfs(zipFile: File): Promise<File[]> {
   if (zipFile.size > MAX_ARCHIVE) throw new Error('ZIP file is too large. Maximum size is 50 MB.');
   const JSZip = (await import("jszip")).default;
   const zip = await JSZip.loadAsync(await zipFile.arrayBuffer());
-  const entries = Object.entries(zip.files).filter(([, zf]) => !zf.dir);
+  const entries = Object.entries(zip.files).filter(([ zf]) => !zf.dir);
   if (entries.length > MAX_ENTRIES) throw new Error(`ZIP has too many files. Maximum is ${MAX_ENTRIES}.`);
   let total = 0;
-  for (const [, zf] of entries) {
+  for (const [ zf] of entries) {
     const declared = Number((zf as any)?._data?.uncompressedSize || 0);
     if (declared > MAX_ENTRY) throw new Error('A file inside the ZIP is too large.');
     total += declared;

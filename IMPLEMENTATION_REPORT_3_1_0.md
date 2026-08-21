@@ -18,7 +18,7 @@
 - Format-aware input validation and output validation.
 - Process-isolated killable workers for conversion, Protect, Unlock, Repair and Compress.
 - Disk admission and PDF/image/frame/output workload ceilings.
-- Page-by-page PDF rendering for normal image/PPT/OCR workflows.
+- Page-by-page PDF rendering for normal image/PPT/ workflows.
 - Request-reference propagation into localized frontend errors.
 - Best-effort analytics that cannot alter tool success/failure.
 - Direct converter acceptance plus live HTTP acceptance wired into Windows setup.
@@ -26,8 +26,8 @@
 
 ## Source verification completed
 
-Python backend compilation passes. Source verifiers for SEO/ads, Phase 1, production routes, trust UI, links, final UI, conversions/OCR, SEO growth, theme/analytics, brand/media, final production, accessibility, mobile-first, i18n, tool UX, code quality, backend workflow and secret scanning pass on the clean source.
+Python backend compilation passes. Source verifiers for SEO/ads, Phase 1, production routes, trust UI, links, final UI, conversions/, SEO growth, theme/analytics, brand/media, final production, accessibility, mobile-first, i18n, tool UX, code quality, backend workflow and secret scanning pass on the clean source.
 
 ## Windows authority
 
-The Windows production setup remains authoritative for native Python dependencies, LibreOffice/Tesseract/Calibre execution, capability export, direct real conversion outputs, live HTTP acceptance, npm install/security maintenance, zero-warning ESLint, TypeScript and optimized Next.js build.
+The Windows production setup remains authoritative for native Python dependencies, LibreOffice//Calibre execution, capability export, direct real conversion outputs, live HTTP acceptance, npm install/security maintenance, zero-warning ESLint, TypeScript and optimized Next.js build.

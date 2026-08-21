@@ -5,7 +5,7 @@
 R16 adds deeper product capabilities on top of Processing Quality R15 without changing MCP source files:
 
 - scoped public API v1
-- advanced multilingual OCR Studio and OCR layout JSON
+- advanced multilingual  Studio and  layout JSON
 - evidence-backed electronic signatures
 - Google Drive import/export
 - Dropbox import
@@ -27,7 +27,7 @@ The deployment does **not** store plaintext API secrets in `AJN_PUBLIC_API_KEYS_
 
 ```text
 cd backend
-python generate_api_key.py --id developer --scopes read,convert,ocr,sign --rate 30
+python generate_api_key.py --id developer --scopes read,convert,sign --rate 30
 ```
 
 Copy the plaintext secret once to the API client. Store only the generated hash record in the backend secret environment.
@@ -36,7 +36,7 @@ Copy the plaintext secret once to the API client. Store only the generated hash 
 
 - `read`: account and capability discovery
 - `convert`: conversion endpoints
-- `ocr`: OCR endpoints
+- ``:  endpoints
 - `sign`: electronic-signature endpoint
 
 ### API routes
@@ -45,9 +45,9 @@ Copy the plaintext secret once to the API client. Store only the generated hash 
 - `GET /api/v1/account`
 - `GET /api/v1/capabilities`
 - `POST /api/v1/convert/{tool_id}`
-- `POST /api/v1/ocr/text`
-- `POST /api/v1/ocr/searchable-pdf`
-- `POST /api/v1/ocr/analyze`
+- `POST /api/v1//text`
+- `POST /api/v1//searchable-pdf`
+- `POST /api/v1//analyze`
 - `POST /api/v1/sign/electronic`
 
 The API uses the same validated conversion worker as the website. API authentication adds a separate per-key rate guard.
@@ -56,7 +56,7 @@ The API uses the same validated conversion worker as the website. API authentica
 
 R16's API-key rate buckets live in process memory. They are useful for one service instance and abuse reduction, but they are **not** a globally synchronized quota across multiple Cloud Run instances. Before paid API plans or strict customer quotas, replace/augment this with a shared store or managed API gateway/quota layer.
 
-## OCR Studio
+##  Studio
 
 ### Languages
 
@@ -67,7 +67,7 @@ R16's API-key rate buckets live in process memory. They are useful for one servi
 - Kannada (`kan`)
 - Malayalam (`mal`)
 
-Up to three installed languages can be combined in one OCR pass, for example `eng+tel`.
+Up to three installed languages can be combined in one  pass, for example `eng+tel`.
 
 ### Outputs
 
@@ -210,10 +210,10 @@ The production Docker image must pass:
 2. conversion registry/runner contract audit
 3. capability audit
 4. API v1 key/scope/rate/route contract
-5. OCR language-pack gate
-6. six-language OCR semantic acceptance
-7. deep OCR layout JSON semantic acceptance
-8. selected-page OCR TXT/DOCX/searchable-PDF acceptance
+5.  language-pack gate
+6. six-language  semantic acceptance
+7. deep  layout JSON semantic acceptance
+8. selected-page  TXT/DOCX/searchable-PDF acceptance
 9. electronic-signature evidence/hash/attachment/consent acceptance
 10. image-to-PDF fidelity acceptance
 11. XPS/AVIF/HEIC hard-format acceptance
@@ -232,7 +232,7 @@ Recommended sequence:
 2. pass R16 local frontend + Docker validation
 3. merge the clean MCP-free integration PR into `main` only after its GitHub CI and release gates are green
 4. deploy backend with `AJN_PUBLIC_API_ENABLED=false`
-5. verify normal site conversion/OCR/signing
+5. verify normal site conversion//signing
 6. generate API key locally and inject hashed API-key JSON through secret configuration
 7. enable API deliberately
 8. configure Google/Dropbox applications and allowed production origins

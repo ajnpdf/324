@@ -28,10 +28,8 @@ const publicFiles = [
   'src/app/admin/media/page.tsx',
   'src/app/blog/best-free-pdf-editor/page.tsx',
   'src/app/blog/browser-native-architecture/page.tsx',
-  'src/app/blog/how-ocr-works/page.tsx',
-  'src/app/blog/how-to-merge-pdfs-online-safely/page.tsx',
-  'src/app/blog/improve-ocr-indian-languages/page.tsx',
-  'src/app/blog/ocr-digital-archiving/page.tsx',
+'src/app/blog/how-to-merge-pdfs-online-safely/page.tsx',
+'src/app/blog/-digital-archiving/page.tsx',
   'src/app/blog/page.tsx',
   'src/app/cookies/page.tsx',
   'src/app/data-deletion/page.tsx',
@@ -40,8 +38,7 @@ const publicFiles = [
   'src/app/file-processing-policy/page.tsx',
   'src/app/file-processing-policy/layout.tsx',
   'src/app/limits/page.tsx',
-  'src/app/ocr/page.tsx',
-  'src/app/privacy/page.tsx',
+'src/app/privacy/page.tsx',
   'src/app/security/page.tsx',
   'src/app/status/layout.tsx',
   'src/app/status/page.tsx',
@@ -61,8 +58,7 @@ const publicFiles = [
   'src/lib/seo-strategy.ts',
   'src/lib/tool-capabilities.ts',
   'src/lib/tool-editorial.ts',
-  'src/lib/tool-policy.ts',
-];
+  'src/lib/tool-policy.ts'];
 
 const forbiddenVisible = [
   /server-assisted/i,
@@ -76,8 +72,7 @@ const forbiddenVisible = [
   /running backend/i,
   /backend status/i,
   /server-processed/i,
-  /server-side/i,
-];
+  /server-side/i];
 
 for (const rel of publicFiles) {
   if (!exists(rel)) { fail(`required R14 file missing: ${rel}`); continue; }
@@ -97,8 +92,7 @@ const staleClaims = [
   /50K\+\+/i,
   /50,000\+/i,
   /Safe Browsing Verified/i,
-  /Unlimited file size/i,
-];
+  /Unlimited file size/i];
 for (const rel of publicFiles) {
   const text = read(rel);
   for (const pattern of staleClaims) if (pattern.test(text)) fail(`${rel} reintroduces stale claim ${pattern}`);

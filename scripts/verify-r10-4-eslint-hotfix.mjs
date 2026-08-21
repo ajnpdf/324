@@ -10,8 +10,7 @@ const fail = (message) => { issues += 1; console.error(`FAIL: ${message}`); };
 const analytics = read('src/app/admin/analytics/page.tsx');
 const unusedAnalyticsIcons = [
   'BarChart3', 'Clock3', 'Database', 'Download',
-  'MousePointerClick', 'ImageIcon', 'Search', 'Sparkles',
-];
+  'MousePointerClick', 'ImageIcon', 'Search', 'Sparkles'];
 for (const icon of unusedAnalyticsIcons) {
   const importPattern = new RegExp(`\\n\\s*${icon},`);
   if (importPattern.test(analytics)) fail(`admin analytics still imports unused ${icon}`);

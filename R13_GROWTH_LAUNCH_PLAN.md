@@ -2,7 +2,7 @@
 
 ## Tier 1 acquisition tools
 
-Prioritize search quality, real examples, performance QA, internal linking and outreach for: Merge PDF, Split PDF, Compress PDF, PDF to Word, Word to PDF, PDF to JPG, JPG to PDF, PDF to Excel, Excel to PDF, PDF to PowerPoint, OCR/scanned PDF, Protect PDF, Unlock PDF, Edit/Add Text and Organize PDF.
+Prioritize search quality, real examples, performance QA, internal linking and outreach for: Merge PDF, Split PDF, Compress PDF, PDF to Word, Word to PDF, PDF to JPG, JPG to PDF, PDF to Excel, Excel to PDF, PDF to PowerPoint, /scanned PDF, Protect PDF, Unlock PDF, Edit/Add Text and Organize PDF.
 
 ## Content system
 
@@ -11,11 +11,11 @@ Use the 13 practical guides to answer real questions instead of creating thin ke
 ## Product-led distribution
 
 - Result screens: use another tool, copy/share the **tool link**; never share a user file without explicit user action.
-- Short demos: 20–40 second Merge, Compress, OCR and conversion workflows.
+- Short demos: 20–40 second Merge, Compress,  and conversion workflows.
 - Community posts: disclose that AJN PDF is the creator’s product, explain the problem solved, ask for feedback, avoid fake counts/testimonials and mass link drops.
 - Chrome Web Store: use the zero-permission/minimal-permission story accurately and show the four native local image utilities plus access to the broader workflow directory.
 - Selective directories: use a prepared launch kit (logo, concise value proposition, screenshots/demo, privacy/support links); avoid bulk-submission spam.
-- Backlinks: earn through useful guides, developer/format/OCR articles, educational resources and real partnerships; no PBNs or paid bulk links.
+- Backlinks: earn through useful guides, developer/format/ articles, educational resources and real partnerships; no PBNs or paid bulk links.
 
 ## Weekly search review
 

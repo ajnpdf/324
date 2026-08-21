@@ -14,7 +14,7 @@ R13 is a cumulative **frontend, routing, workflow UX, verification and growth ha
 - Tool workspaces surface actual per-tool upload limits before selection and prevent server-assisted uploads while the backend is unavailable; browser-local tools remain usable.
 - Cancellation has explicit Cancelling/Cancelled states and uses the existing request/engine abort path where supported. Numerical progress is only shown when a real value exists.
 - Priority SEO titles/descriptions were rewritten naturally; generic SEO descriptions no longer use keyword-stuffed “helps with” templates.
-- Existing tool/editorial copy was cleaned of audited universal local-only claims and six-language OCR wording was aligned with the supported set.
+- Existing tool/editorial copy was cleaned of audited universal local-only claims and six-language  wording was aligned with the supported set.
 - Eight new practical guides were added, for 13 substantive guides total, with unique metadata and contextual tool/guide linking.
 - R13 automated source, built-runtime, live-route, capability, browser-PDF and optional real Chrome/Edge layout audits were added.
 - R13 release marker `ajn-release=3.1.0-r13` allows the post-deploy audit to prove that Vercel is serving the intended release.

@@ -77,7 +77,7 @@ The source intentionally does not send a static domain-allowlist CSP header beca
 
 - `/health`, `/ready` and `/api/tools`
 - A real file for every publicly available tool
-- OCR in English, Hindi, Telugu, Tamil, Kannada and Malayalam
+-  in English, Hindi, Telugu, Tamil, Kannada and Malayalam
 - Protect, Unlock and Repair PDF
 - Office and eBook conversions
 - Backend timeout, rate-limit and unavailable states

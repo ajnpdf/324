@@ -91,7 +91,7 @@ const aliases = {
   '/tools/word-pdf': '/word-to-pdf', '/tools/pdf-word': '/pdf-to-word', '/tools/excel-pdf': '/excel-to-pdf', '/tools/pdf-excel': '/pdf-to-excel',
   '/tools/ppt-pdf': '/ppt-to-pdf', '/tools/jpg-pdf': '/jpg-to-pdf', '/tools/pdf-jpg': '/pdf-to-jpg', '/tools/heic-pdf': '/heic-to-pdf',
   '/tools/html-pdf': '/html-to-pdf', '/tools/xml-pdf': '/xml-to-pdf', '/tools/json-pdf': '/json-to-pdf', '/tools/txt-pdf': '/txt-to-pdf',
-  '/tools/smart-read': '/pdf-text', '/tools/pdf-ppt': '/pdf-to-powerpoint', '/tools/ocr-searchable': '/scanned-pdf-to-searchable-pdf', '/tools/psd-pdf': '/psd-pdf',
+  '/tools/smart-read': '/pdf-text', '/tools/pdf-ppt': '/pdf-to-powerpoint', : '/psd-pdf',
 };
 for (const [source, target] of Object.entries(aliases)) {
   try {
@@ -129,7 +129,7 @@ for (const pathname of trustPaths) {
   } catch (error) { fail(`${pathname}: ${error}`); }
 }
 
-for (const pathname of ['/robots.txt','/image-sitemap.xml','/status','/limits','/ocr','/blog']) {
+for (const pathname of ['/robots.txt','/image-sitemap.xml','/status','/limits','/blog']) {
   try {
     const result = await request(pathname);
     if (result.response.status !== 200) fail(`${pathname} returned ${result.response.status}`);
@@ -178,8 +178,7 @@ const md = [
   '- Chrome/Edge rendered zoom and interaction QA',
   '- Field Core Web Vitals / INP',
   '- Consent-platform and AdSense visual behavior',
-  '- Search Console recrawl timing and Chrome Web Store review',
-].join('\n');
+  '- Search Console recrawl timing and Chrome Web Store review'].join('\n');
 fs.writeFileSync(path.join(liveReportDir, 'R13_LIVE_AUDIT_RESULT.md'), `${md}\n`);
 
 if (failures.length) {

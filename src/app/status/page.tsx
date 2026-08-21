@@ -9,8 +9,7 @@ import { MainFooter } from '@/components/landing/main-footer';
 const cards = [
   { icon: Globe2, title: 'Website', body: 'Core pages, navigation and public tool routes are checked separately from advanced online workflows.' },
   { icon: ShieldCheck, title: 'On-device tools', body: 'Compatible browser workflows remain available even when an advanced online workflow is temporarily unavailable.' },
-  { icon: CheckCircle2, title: 'Online tools', body: 'Advanced conversion, OCR and PDF security workflows check live availability before a task begins.' },
-];
+  { icon: CheckCircle2, title: 'Online tools', body: 'Advanced conversion,  and PDF security workflows check live availability before a task begins.' }];
 
 export default function StatusPage() {
   return (

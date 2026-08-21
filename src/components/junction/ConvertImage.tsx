@@ -9,8 +9,7 @@ import {convertImageFormat} from "./_imageUtils";
 const FMTS=[
   {label:"JPEG",value:"jpeg"},
   {label:"PNG",value:"png"},
-  {label:"WebP",value:"webp"},
-];
+  {label:"WebP",value:"webp"}];
 const DESC:Record<string,string>={
   jpeg:"Best for photos. Smaller files with configurable lossy quality. Transparent areas are placed on white.",
   png:"Lossless output with transparency. Best for graphics, logos and screenshots.",

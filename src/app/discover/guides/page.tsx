@@ -6,9 +6,9 @@ import { MainFooter } from '@/components/landing/main-footer';
 import { GuideLibrary } from '@/components/discover/guide-library';
 
 export const metadata: Metadata = {
-  title: 'AJN PDF Guides - PDF, OCR, Conversion & Security',
+  title: 'AJN PDF Guides - PDF, Conversion & Security',
   description:
-    'Browse practical AJN PDF guides for core PDF workflows, document conversion, OCR and scans, image tools, security, limits and troubleshooting.',
+    'Browse practical AJN PDF guides for core PDF workflows, document conversion,  and scans, image tools, security, limits and troubleshooting.',
   alternates: { canonical: '/discover/guides' },
 };
 

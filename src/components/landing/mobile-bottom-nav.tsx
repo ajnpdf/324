@@ -10,8 +10,7 @@ const items = [
   { label: "Tools", href: "/pdf-tools", icon: LayoutGrid },
   { label: "Convert", href: "/conversion-tools", icon: Repeat2 },
   { label: "Images", href: "/image-tools", icon: ImageIcon },
-  { label: "PDF", href: "/pdf-utilities", icon: FileText },
-] as const;
+  { label: "PDF", href: "/pdf-utilities", icon: FileText }] as const;
 
 function isActive(pathname: string, href: string) {
   if (href === "/") return pathname === "/";

@@ -9,8 +9,7 @@ export function FeatureShowcase() {
   const benefits = [
     [Search,t('home.showcaseFindTitle'),t('home.showcaseFindDesc')],
     [FileCheck2,t('home.showcaseConfidenceTitle'),t('home.showcaseConfidenceDesc')],
-    [Share2,t('home.showcaseFinishTitle'),t('home.showcaseFinishDesc')],
-  ] as const;
+    [Share2,t('home.showcaseFinishTitle'),t('home.showcaseFinishDesc')]] as const;
   return <section className="relative mx-auto max-w-7xl px-4 py-20 md:px-8 md:py-28">
     <div className="grid overflow-hidden rounded-[1.8rem] border border-slate-200 bg-white shadow-[0_28px_80px_rgba(37,62,113,.09)] lg:grid-cols-[1.05fr_.95fr]">
       <div className="relative min-h-[430px] overflow-hidden bg-gradient-to-br from-slate-50 via-white to-blue-50/45 p-6 md:p-10">

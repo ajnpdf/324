@@ -5,12 +5,12 @@ const TOKEN_EXPANSIONS: Record<string, string[]> = {
   separate: ['split', 'extract'], divide: ['split'], cut: ['split', 'crop'],
   smaller: ['compress', 'reduce', 'size'], reduce: ['compress', 'smaller', 'optimize'], shrink: ['compress', 'reduce'],
   photo: ['image', 'jpg', 'jpeg'], picture: ['image', 'jpg', 'png'], photos: ['image', 'jpg', 'jpeg'],
-  scan: ['ocr', 'scanner', 'searchable'], scanned: ['ocr', 'scanner'], read: ['ocr', 'text'],
+  scan: ['', 'scanner', 'searchable'], scanned: ['', 'scanner'], read: ['', 'text'],
   word: ['doc', 'docx'], document: ['doc', 'docx', 'pdf'], spreadsheet: ['excel', 'xls', 'xlsx'],
   slides: ['powerpoint', 'ppt', 'pptx'], presentation: ['powerpoint', 'ppt', 'pptx'],
   password: ['protect', 'unlock', 'encrypt'], secure: ['protect', 'encrypt'], decrypt: ['unlock'],
   reorder: ['organize', 'pages'], arrange: ['organize', 'pages'], remove: ['delete', 'extract'],
-  text: ['txt', 'ocr', 'word'], web: ['html', 'url'], email: ['eml', 'msg'],
+  text: ['txt', '', 'word'], web: ['html', 'url'], email: ['eml', 'msg'],
 };
 
 const STOP_WORDS = new Set(['a', 'an', 'the', 'my', 'please', 'tool', 'online', 'free', 'file', 'files', 'make']);

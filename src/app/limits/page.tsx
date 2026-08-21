@@ -17,8 +17,7 @@ const onlineLimits = [
   { icon: FileStack, label: 'PDF pages', value: `${SERVER_LIMIT_DEFAULTS.maxPdfPages}`, note: 'Maximum PDF pages for applicable online workflows.' },
   { icon: Gauge, label: 'Image pixels', value: `${SERVER_LIMIT_DEFAULTS.maxImageMegapixels} MP`, note: 'Maximum decoded pixels for one uploaded image.' },
   { icon: HardDrive, label: 'Generated output', value: `${SERVER_LIMIT_DEFAULTS.maxOutputMb} MB`, note: 'Maximum generated output size before delivery.' },
-  { icon: Timer, label: 'Processing time', value: `${SERVER_LIMIT_DEFAULTS.processingTimeoutSeconds}s`, note: 'Default online-task timeout.' },
-];
+  { icon: Timer, label: 'Processing time', value: `${SERVER_LIMIT_DEFAULTS.processingTimeoutSeconds}s`, note: 'Default online-task timeout.' }];
 
 export default function LimitsPage() {
   return (

@@ -9,7 +9,7 @@ Files changed/added:
 - backend/Dockerfile
 - backend/.dockerignore
 - backend/test-fixtures/sample.pdf
-- backend/test-fixtures/ocr.png
+- backend/test-fixtures/.png
 - backend/test-fixtures/sample.docx
 - backend/test-fixtures/sample.xlsx
 - backend/test-fixtures/sample.pptx

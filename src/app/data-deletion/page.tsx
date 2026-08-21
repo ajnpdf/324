@@ -23,8 +23,7 @@ export default function DataDeletionPage() {
         {
           title: 'Browser preferences',
           paragraphs: ['Cookie and interface choices can be cleared using the privacy controls or the browser’s site-data settings.'],
-        },
-      ]}
+        }]}
     />
   );
 }

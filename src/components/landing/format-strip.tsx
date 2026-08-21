@@ -10,8 +10,7 @@ const formats = [
   { label: 'XLSX', icon: FileSpreadsheet, style: 'text-emerald-700' },
   { label: 'PPTX', icon: Presentation, style: 'text-red-500' },
   { label: 'TXT', icon: Type, style: 'text-slate-700' },
-  { label: 'ZIP', icon: Archive, style: 'text-blue-600' },
-];
+  { label: 'ZIP', icon: Archive, style: 'text-blue-600' }];
 
 export function FormatStrip() {
   return (

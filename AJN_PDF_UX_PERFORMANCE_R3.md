@@ -54,4 +54,4 @@ After Cloud Run starts:
 - startup probe -> `/ready`
 - liveness probe -> `/health`
 - deploy script -> `/health`, `/ready`, `/api/tools`
-- `TEST_CLOUD_RUN_BACKEND.ps1` -> real HTTP conversion/security/OCR acceptance
+- `TEST_CLOUD_RUN_BACKEND.ps1` -> real HTTP conversion/security/ acceptance

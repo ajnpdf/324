@@ -26,7 +26,7 @@ export function ProcessingAnimation() {
           <div className="file-node">
             <div className="scanner-beam"></div>
             <div className="pdf-tag">PDF</div>
-            <div className="ocr-lines">
+            <div className="-lines">
               <div className="line"></div>
               <div className="line"></div>
               <div className="line" style={{ width: '70%' }}></div>
@@ -98,7 +98,7 @@ export function ProcessingAnimation() {
             letter-spacing: 0.5px;
           }
 
-          .ocr-lines {
+          .-lines {
             width: 50%;
             display: flex;
             flex-direction: column;

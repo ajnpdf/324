@@ -26,8 +26,7 @@ const principles = [
     title: 'Responsible security workflows',
     text: 'Protection and unlocking workflows use the configured PDF security engine. Unlocking requires the current password and user authorization.',
     tone: 'green',
-  },
-];
+  }];
 
 export default function AboutPage() {
   const toolCount = BUILD_PUBLIC_TOOLS.length;

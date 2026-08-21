@@ -5,7 +5,7 @@ This hotfix fixes the R10.7 TypeScript failure in `ToolArtwork` by destructuring
 It also updates the production updater so `public/assets/conversion-icons` is copied, verified, staged, committed and pushed with the frontend release.
 
 Expected icon inventory:
-- 74 live conversion/OCR icons
+- 74 live conversion/ icons
 - 75 catalog icons
 - 5 source sheets
 

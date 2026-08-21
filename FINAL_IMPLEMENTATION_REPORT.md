@@ -33,8 +33,8 @@ AJN Studio is represented as the publishing organization, Anjan as the developer
 - Rewritten About, Transparency, Error, Not Found and five original guide pages
 - Removed absolute privacy, popularity, security and ranking claims
 - Removed outdated technical wording such as “System Interrupt,” “Sovereign Buffer,” “Final Binary” and “Surgical Precision”
-- 57 original PDF/image tool mappings and 75 Python conversion/OCR workflows
-- Tesseract OCR with English, Hindi, Telugu, Tamil, Kannada, Malayalam and orientation models
+- 57 original PDF/image tool mappings and 75 Python conversion/ workflows
+-   with English, Hindi, Telugu, Tamil, Kannada, Malayalam and orientation models
 - LibreOffice and Calibre dependency-aware conversions
 - Ghostscript/MuPDF-dependent workflows remain unavailable until licensing and deployment dependencies are resolved
 - Protect PDF AES-256, current-password-only Unlock PDF and Repair/Compress endpoints
@@ -42,7 +42,7 @@ AJN Studio is represented as the publishing organization, Anjan as the developer
 - Request-specific temporary workspaces, processing timeout, concurrency controls and cleanup
 - Separate analytics and media administrator tokens
 - Scoped processing, analytics and admin rate limits with trusted-proxy controls and Retry-After support
-- Anonymous SEO, CRO, Web Vitals and conversion analytics without persisted filenames, document content, OCR text, passwords or raw IP addresses
+- Anonymous SEO, CRO, Web Vitals and conversion analytics without persisted filenames, document content,  text, passwords or raw IP addresses
 - Public AJN Discover feed, individual image pages, RSS and image sitemap
 - Media publish, draft, schedule, edit, pagination, duplicate-image rejection and exact-title-confirmed deletion
 - WebP optimization, thumbnails and EXIF-removing re-encoding

@@ -27,8 +27,7 @@ const clusters = [
     title: 'Security and recovery',
     description: 'Understand authorization, passwords, repair limits and the difference between visible signatures and cryptographic signing.',
     ids: ['protect-pdf', 'unlock-pdf', 'repair-pdf', 'sign-pdf'],
-  },
-] as const;
+  }] as const;
 
 const trustGuides = [
   { href: '/limits', label: 'Current limits and processing ceilings' },
@@ -36,8 +35,7 @@ const trustGuides = [
   { href: '/transparency', label: 'Transparency and file handling' },
   { href: '/security', label: 'Security practices' },
   { href: '/faq', label: 'Frequently asked questions' },
-  { href: '/status', label: 'Live service availability' },
-] as const;
+  { href: '/status', label: 'Live service availability' }] as const;
 
 const toolById = new Map(BUILD_PUBLIC_TOOLS.map((tool) => [tool.id, tool]));
 

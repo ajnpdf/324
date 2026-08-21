@@ -28,8 +28,7 @@ const tools = fs.readFileSync(path.join(root, 'src/lib/tools-data.ts'), 'utf8');
 const conversionTools = fs.readFileSync(path.join(root, 'src/lib/conversion-tools.ts'), 'utf8');
 const toolIds = new Set([
   ...[...tools.matchAll(/\bid:\s*'([^']+)'/g)].map((match) => match[1]),
-  ...[...conversionTools.matchAll(/tool\('([^']+)'/g)].map((match) => match[1]),
-]);
+  ...[...conversionTools.matchAll(/tool\('([^']+)'/g)].map((match) => match[1])]);
 
 const errors = [];
 for (const file of files) {

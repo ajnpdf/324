@@ -6,7 +6,7 @@ import { MainFooter } from '@/components/landing/main-footer';
 
 export const metadata: Metadata = {
   title: 'Practical PDF Guides | AJN PDF',
-  description: 'Practical AJN PDF guides for PDF workflows, document conversion, OCR, compression, accessibility and file security.',
+  description: 'Practical AJN PDF guides for PDF workflows, document conversion, compression, accessibility and file security.',
   alternates: { canonical: '/blog' },
 };
 
@@ -64,8 +64,7 @@ const articles = [
     title: 'How to evaluate a free PDF editor',
     desc: 'Compare real output, processing labels, limits and download quality rather than relying on unsupported claims.',
     tag: 'Guide', readTime: '5 min', icon: BookOpen,
-  },
-];
+  }];
 
 export default function BlogPage() {
   return (
@@ -76,7 +75,7 @@ export default function BlogPage() {
           <div className="mx-auto max-w-3xl text-center">
             <span className="inline-flex items-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-4 py-2 text-[11px] font-extrabold text-blue-700"><BookOpen className="h-4 w-4" /> AJN PDF guides</span>
             <h1 className="mt-7 text-balance text-[clamp(2.5rem,7vw,4.8rem)] font-black leading-[1.02] tracking-[-.045em]">Practical guides for better document workflows</h1>
-            <p className="mt-6 text-base font-medium leading-8 text-muted-foreground md:text-lg">Useful guidance for PDF, OCR, conversion, compression, accessibility and everyday document work.</p>
+            <p className="mt-6 text-base font-medium leading-8 text-muted-foreground md:text-lg">Useful guidance for PDF, conversion, compression, accessibility and everyday document work.</p>
           </div>
 
           <div className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-3">

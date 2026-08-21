@@ -12,8 +12,7 @@ export default function Hero() {
     { icon: UploadCloud, title: t('home.heroChoose'), text: t('home.heroChooseDesc') },
     { icon: WandSparkles, title: t('home.heroAdjust'), text: t('home.heroAdjustDesc') },
     { icon: FileCheck2, title: t('home.heroProcess'), text: t('home.heroProcessDesc') },
-    { icon: Download, title: t('home.heroFinish'), text: t('home.heroFinishDesc') },
-  ];
+    { icon: Download, title: t('home.heroFinish'), text: t('home.heroFinishDesc') }];
 
   return (
     <section data-ajn-home-hero="primary" className="relative overflow-hidden px-3 pb-5 pt-[78px] sm:px-4 md:px-6 md:pb-9 md:pt-24 xl:px-8">

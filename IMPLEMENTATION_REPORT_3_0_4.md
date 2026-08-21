@@ -6,9 +6,9 @@ This source update closes implementation-level blockers from the AJN PDF 3.0.3 p
 
 - Windows LibreOffice resolution accepts `soffice.exe` only, not `soffice.COM`.
 - LibreOffice conversions use isolated profiles, bounded timeouts, process-tree cleanup, retry, stable-output waiting and PDF validation.
-- Searchable-PDF OCR no longer depends on Tesseract's optional `pdf` config file. It explicitly enables PDF rendering, prefers a normal output file, validates the generated one-page PDF, and falls back to binary stdout.
-- OCR work files are cleaned and the full acceptance test now checks for OCR/LibreOffice temporary leftovers, validates output signatures/containers and fails when an available tool has no generated fixture (except explicitly documented binary-format/manual cases).
-- `/api/tools` now represents all 78 backend-dependent capabilities: 75 conversion/OCR workflows plus Protect, Unlock and Repair.
+- Searchable-PDF  no longer depends on 's optional `pdf` config file. It explicitly enables PDF rendering, prefers a normal output file, validates the generated one-page PDF, and falls back to binary stdout.
+-  work files are cleaned and the full acceptance test now checks for /LibreOffice temporary leftovers, validates output signatures/containers and fails when an available tool has no generated fixture (except explicitly documented binary-format/manual cases).
+- `/api/tools` now represents all 78 backend-dependent capabilities: 75 conversion/ workflows plus Protect, Unlock and Repair.
 - Capability export schema v2 includes counts, backend version, generation time and a SHA-256 capability fingerprint.
 - Production frontend builds fail closed until a current machine-specific capability manifest exists.
 - Public navigation, global search, related tools, home counts and tool workspaces use dependency-aware build availability rather than source registration alone.

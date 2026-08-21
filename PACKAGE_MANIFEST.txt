@@ -23,7 +23,7 @@ Files: 377
       1038  08bdd0fe11dca23a92fd60a13ba3689ef2efdadedaf62d4afc3c1e2f9a9c7155  IMPLEMENTATION_REPORT_3_0_8.md
        913  f15bb60066348fbcc9afe674043b3fae3dbb80d086865de849c944ebc3cc316b  IMPLEMENTATION_REPORT_3_0_9.md
       2020  fc16c277c9b70318b49b93ec9525c7c456b2c90bd154f1733aab44f6857add03  IMPLEMENTATION_REPORT_3_1_0.md
-      1519  ca1ec5b9d18c99498d484c0545545ee07c9088d10e58d2dae38b14247765ba6e  INSTALL_OCR_LANGUAGES.ps1
+      1519  ca1ec5b9d18c99498d484c0545545ee07c9088d10e58d2dae38b14247765ba6e  INSTALL_RETIRED_LANGUAGES.ps1
       4990  21c19a28ac460bcb008ca3a86ac8927c0ad24fc2afee60b959575f69b07583ba  INSTALL_WINDOWS_CONVERTERS.ps1
        745  6347a29d9ab2432dfa9dfc4e35b7413d84ced38f0c2105b68be43e86378802bf  LINT_PRODUCTION_FIX_3_0_4_R4.md
       1115  16f2a4dcf2d9dc4ca22181a83730817ba0499d372025f09c5759d65b944deeb7  MOBILE_FIRST_PRODUCTION_FIX_3_0_5.md
@@ -51,7 +51,7 @@ Files: 377
       1363  b7fcd23a113d532ad14e1a24189800b3128010821025bc82bef1f48ffbcef4ef  SOURCE_VERIFICATION_REPORT.txt
       1012  2884464a2fb0c6e66bc6ed85328c8d4121777c898d85916744ac22dca091b47a  START_PYTHON_BACKEND.ps1
       2086  4b7dcac61881a6cef4f0c58a848b514f4500a625a420d4e4c6d7892e1ea4ae2b  TOOL_UX_I18N_AUDIT_3_0_6.md
-       569  ad7ac66c661e40078f3ef98cc9d4d47c08619406e16035aefc48580f378ac1b8  WINDOWS_OCR_LIBREOFFICE_FIX_3_0_4.md
+       569  ad7ac66c661e40078f3ef98cc9d4d47c08619406e16035aefc48580f378ac1b8  WINDOWS_RETIRED_LIBREOFFICE_FIX_3_0_4.md
         29  57cf1200b3fd6c3b7266d99be86ae17bd95cb4951c641c2097799c64a325a40b  backend/.dockerignore
        981  111937bbcf87d75496fee0b607027cbd2d676e6bc16a49ce8c22ebdb7ac04d18  backend/.env.example
       1203  dabf6d63595e413e5a472fbc6576736836c702203ba4d0f15c2a299222cf221d  backend/Dockerfile
@@ -130,8 +130,8 @@ Files: 377
        615  873321207a513e3f7ba4bc242471c10ace8635b57aa514756f4ca8cc3c465e7b  src/app/blog/how-to-merge-pdfs-online-safely/layout.tsx
       2811  099b66050c3dbd9f012ecfa7af07be0edce0067bbc7b9e4fdf7e10792025be2e  src/app/blog/how-to-merge-pdfs-online-safely/page.tsx
        381  b07f1ff1ac1669b3b2a126a25747ead3bf58699f63018ad17c14d329d56789c2  src/app/blog/layout.tsx
-       597  6615a8a53c64ee6447f79a6951bc13efe089fa99cd7edc65392b255ce5c05527  src/app/blog/ocr-digital-archiving/layout.tsx
-      2697  5b0e54d5cf8581f8eade04141272a834f86fdf5310d8f3dd8f1ad17e3b3da2bc  src/app/blog/ocr-digital-archiving/page.tsx
+       597  6615a8a53c64ee6447f79a6951bc13efe089fa99cd7edc65392b255ce5c05527  src/app/blog/-digital-archiving/layout.tsx
+      2697  5b0e54d5cf8581f8eade04141272a834f86fdf5310d8f3dd8f1ad17e3b3da2bc  src/app/blog/-digital-archiving/page.tsx
       5409  6ca551bad5d97ca75443b015154af7b644fa9f8e688c49265605c63832389460  src/app/blog/page.tsx
        361  429deaea46821a6878c05451ac3440a097b75f22a5fe3e1484fc52d0da7215e5  src/app/contact/layout.tsx
       2689  e7150ccdd585de4df438fdea106d513136dc1d9389f18f85b52bb4def4d36e9e  src/app/contact/page.tsx
@@ -218,8 +218,8 @@ Files: 377
      12082  7b2afd21523b682c3d398f4a5c0772bb3e5b6ba81f463a4fc8bebbbeefeddf2d  src/components/junction/JsonToPdf.tsx
      11224  5fdd92cd6637df22a13acb3c5672aac54523e04fcdfd21aab19087e0f6449282  src/components/junction/MemeMaker.tsx
       5242  aa5a06084ce55209fe6894b234f6d9ca71d1127b87eaf614cbf073f799102e65  src/components/junction/MergePdf.tsx
-     13080  e84411d4498851852d0a441d67c60bb28744a2a2bffe7ab855056d9fddd6226b  src/components/junction/OcrAdvanced.tsx
-      7322  c37522b56174d3cacb2ce0feae0fa00be88b6d74c3b719d2fbe4dbdd2217890e  src/components/junction/OcrScanner.tsx
+     13080  e84411d4498851852d0a441d67c60bb28744a2a2bffe7ab855056d9fddd6226b  src/components/junction/RecognitionAdvanced.tsx
+      7322  c37522b56174d3cacb2ce0feae0fa00be88b6d74c3b719d2fbe4dbdd2217890e  src/components/junction/RecognitionScanner.tsx
      17236  a1b0af908702f0d85f4c65ea163edb7536b04e0c4b6ff5beb016e878c30f0bc2  src/components/junction/OrganizePdf.tsx
      12105  a48e98bd342a4d40888329e5fb935667106add8d1f2b4349566a7c7d3be5db47  src/components/junction/PdfMetadata.tsx
       3549  1cfa294cdcf5693359135d91eee63144916fbd68b2be757c696a68efd8365ecc  src/components/junction/PdfToJpg.tsx
@@ -347,11 +347,11 @@ Files: 377
      10302  9163745ad0d808bf45eaeca7d49ba58ee40239e4c626a2fe3df4dfef76ea44b3  src/lib/i18n/translations.ts
       2086  baa51e04d10890aec1ecf5dfd42c03d7e93142056cb932f83bae5714e9dcd2b8  src/lib/internal-linking.ts
         40  7ac44dfe39f7d5354aecf66edc94f25ab12e303520636f2563a9cebc631f56be  src/lib/mocks/empty.js
-      1847  35f2e7a889904ffe549e688b19429183e6497408e6b090feb6f290da7d041f8d  src/lib/ocr/bbox.ts
-      1669  1b064a30eb494afb1fecb512a568c692c8efe0ffd6fe4f272acad4df5a37056a  src/lib/ocr/engine.ts
-      2062  8db5ee05cf8d01f882d55e5e801dce8c67eee98a7673e5927c939f5cd16316ed  src/lib/ocr/input.ts
-      3158  9c52269d058bc45e28ea4f5bb31cb1da60eac2e9cf33b0361aecc71179c684a2  src/lib/ocr/nlp.ts
-      7343  ed204ced1b767ae88077c1780157c6e95634ec1b536ecf8177c172761103a996  src/lib/ocr/pipeline.ts
+      1847  35f2e7a889904ffe549e688b19429183e6497408e6b090feb6f290da7d041f8d  src/lib//bbox.ts
+      1669  1b064a30eb494afb1fecb512a568c692c8efe0ffd6fe4f272acad4df5a37056a  src/lib//engine.ts
+      2062  8db5ee05cf8d01f882d55e5e801dce8c67eee98a7673e5927c939f5cd16316ed  src/lib//input.ts
+      3158  9c52269d058bc45e28ea4f5bb31cb1da60eac2e9cf33b0361aecc71179c684a2  src/lib//nlp.ts
+      7343  ed204ced1b767ae88077c1780157c6e95634ec1b536ecf8177c172761103a996  src/lib//pipeline.ts
       7774  db669281bea39ac61f5aafba3711a2d159aaeed3d646d965906ae3c46c94cff0  src/lib/pdf-backend.ts
       1643  36da6d2fa7d867e600ef8421fa4bcfd44a8371728d30def736dcea29e828ebd2  src/lib/pdf-compress/compressPDF.ts
       2615  30225e4fc96023690bd8bd504abcb43bbde93530fe7f599af9fbda6952266d24  src/lib/pdf-compress/index.ts

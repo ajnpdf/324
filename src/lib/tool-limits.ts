@@ -32,10 +32,6 @@ export function validateBackendSelection(files: File[], maxFiles: number, health
   return null;
 }
 
-export const OCR_LANGUAGE_CODES = ['eng', 'hin', 'tel', 'tam', 'kan', 'mal'] as const;
-export const OCR_LANGUAGE_LABELS: Record<(typeof OCR_LANGUAGE_CODES)[number], string> = {
-  eng: 'English', hin: 'Hindi', tel: 'Telugu', tam: 'Tamil', kan: 'Kannada', mal: 'Malayalam',
-};
 function hasPdfInput(id: string): boolean {
   return id.startsWith('pdf-') || id.startsWith('pdf-to-') || id.startsWith('scanned-pdf-') || id.endsWith('-pdf') || id.includes('pdf-pages');
 }

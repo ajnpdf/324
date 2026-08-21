@@ -13,4 +13,4 @@ This release fixes the remaining strict-lint failures reported by the AJN PDF 3.
 - Version gates synchronized to 3.0.8.
 
 ## Production authority
-A target Windows run must still complete lint, TypeScript, Next.js production build, OCR/LibreOffice acceptance, health/readiness and live capability checks before release.
+A target Windows run must still complete lint, TypeScript, Next.js production build, /LibreOffice acceptance, health/readiness and live capability checks before release.

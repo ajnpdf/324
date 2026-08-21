@@ -19,8 +19,7 @@ const stableBrowserIds = new Set([
   'pdf-jpg', 'image-reducer', 'image-resizer', 'crop-image', 'rotate-image',
   'watermark-image', 'flip-image', 'convert-image', 'meme-generator',
   'photo-editor', 'pdf-text', 'xml-pdf', 'json-pdf', 'txt-pdf',
-  'pdf-zip-extract', 'zip-extractor', 'subtitle-generator', 'sign-pdf',
-]);
+  'pdf-zip-extract', 'zip-extractor', 'subtitle-generator', 'sign-pdf']);
 
 const limitedBrowser: Record<string, string> = {
   'compress-pdf': 'Strong compression rasterizes pages and can reduce text searchability, links, and accessibility.',
@@ -38,16 +37,14 @@ const limitedBrowser: Record<string, string> = {
 
 const legacyAliasIds = new Set([
   'word-pdf', 'pdf-word', 'excel-pdf', 'pdf-excel', 'ppt-pdf', 'jpg-pdf',
-  'pdf-jpg', 'heic-pdf', 'html-pdf', 'xml-pdf', 'json-pdf', 'txt-pdf',
-]);
+  'pdf-jpg', 'heic-pdf', 'html-pdf', 'xml-pdf', 'json-pdf', 'txt-pdf']);
 
 const conversionBackendIds = new Set(CONVERSION_TOOLS.map((tool) => tool.id));
 const backendIds = new Set(['protect-pdf', 'unlock-pdf', 'repair-pdf', ...conversionBackendIds]);
 
 const hiddenIds = new Set([
   'pdf-ppt', 'pdf-a', 'pdf-ua', 'smart-read', 'psd-pdf',
-  'upscale-image', 'remove-bg', 'blur-face',
-]);
+  'upscale-image', 'remove-bg', 'blur-face']);
 
 export function getToolPolicy(id: string): ToolPolicy {
   if (legacyAliasIds.has(id)) {
@@ -63,7 +60,7 @@ export function getToolPolicy(id: string): ToolPolicy {
     };
   }
   if (id in limitedBrowser) {
-    const visibleLimited = new Set(['compress-pdf', 'extract-images', 'heic-pdf', ]);
+    const visibleLimited = new Set(['compress-pdf', 'extract-images', 'heic-pdf']);
     return {
       maturity: 'limited', processingMode: 'browser', maxFiles: 1, maxFileSizeMb: 40,
       publicByDefault: visibleLimited.has(id), limitation: limitedBrowser[id],
@@ -72,8 +69,7 @@ export function getToolPolicy(id: string): ToolPolicy {
   if (backendIds.has(id)) {
     const multiFileConversionIds = new Set([
       'image-to-pdf', 'jpg-to-pdf', 'jpeg-to-pdf', 'webp-to-pdf', 'tiff-to-pdf', 'bmp-to-pdf',
-      'gif-to-pdf', 'svg-to-pdf', 'heic-to-pdf',
-    ]);
+      'gif-to-pdf', 'svg-to-pdf', 'heic-to-pdf']);
     return {
       maturity: 'backend', processingMode: 'temporary-server',
       maxFiles: multiFileConversionIds.has(id) ? 30 : 1,

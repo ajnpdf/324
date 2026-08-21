@@ -27,7 +27,7 @@ if (ids.length === new Set(ids).size) pass(`${ids.length} unique registered base
 for (const id of ids) if (!mapped.has(id)) fail(`${id} has no component mapping`);
 if (!failed) pass('Every registered base tool has a component mapping');
 
-for (const id of ['pdf-ppt', 'ocr-searchable', 'pdf-a', 'pdf-ua', 'smart-read', 'upscale-image', 'remove-bg', 'blur-face']) {
+for (const id of ['pdf-ppt', 'pdf-a', 'pdf-ua', 'smart-read', 'upscale-image', 'remove-bg', 'blur-face']) {
   policy.includes(`'${id}'`) ? pass(`${id} is governed by production policy`) : fail(`${id} missing from production policy`);
 }
 if (toolData.includes('PUBLIC_TOOLS') && toolData.includes('isToolPublic')) pass('Public directories are filtered by production policy');

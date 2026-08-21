@@ -22,4 +22,4 @@ These require separate evidence or product work and are not hidden by the 95% te
 - Native mobile/desktop apps, cloud-drive integrations, external security certifications and long-term brand authority.
 
 ## R18.1 quality milestone
-Prioritize representative conversion fixtures and output-quality scoring for Compress PDF, PDF to Word, PDF to Excel, OCR and Compare PDF before claiming a 9.5/10 overall market-product rating.
+Prioritize representative conversion fixtures and output-quality scoring for Compress PDF, PDF to Word, PDF to Excel,  and Compare PDF before claiming a 9.5/10 overall market-product rating.

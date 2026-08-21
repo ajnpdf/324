@@ -16,7 +16,6 @@ for(const label of ['Comfortable','Compact','List']) grid.includes(label)?pass(`
 grid.includes('SEARCH_EXPANSIONS')&&grid.includes('distanceAtMostTwo')?pass('Search aliases and typo tolerance present'):fail('Smart search ranking missing');
 for(const id of ['merge-pdf','split-pdf','compress-pdf']) navbar.includes(`id: '${id}'`)?pass(`Header quick tool ${id}`):fail(`Header quick tool missing ${id}`);
 navbar.includes('function ConvertMenu()')&&navbar.includes('Convert to PDF')&&navbar.includes('Convert from PDF')?pass('Header professional Convert menu'):fail('Header Convert menu missing');
-!navbar.includes("scanned-pdf-to-text")&&!navbar.includes('OCR &amp; Scan')?pass('Retired OCR header shortcut is absent'):fail('Retired OCR header shortcut remains');
 navbar.includes('<AllToolsMenu')?pass('Header nine-dot All Tools launcher'):fail('Header All Tools launcher missing');
 for(const key of ['common.guides','common.about']) navbar.includes(`key: '${key}'`)?pass(`Header/mobile info ${key}`):fail(`Header/mobile info missing ${key}`);
 logic.includes('const selectedLevel: CompressionLevel')&&logic.includes('level: selectedLevel')?pass('Compression typing fixed'):fail('Compression typing missing');

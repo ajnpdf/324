@@ -6,8 +6,7 @@ const checks = [
   ['deletion helper checks git tracking', /git -C \$Repository ls-files -- \$Normalized/],
   ['already absent paths are skipped', /Skipping already-absent\/untracked cleanup path/],
   ['tracked deletions still use git add -u', /git -C \$Repository add -u -- \$Normalized/],
-  ['deleted frontend loop uses safe helper', /foreach \(\$Relative in \$DeletedFrontendFiles\) \{\s*Stage-TrackedDeletion \$RepoPath \$Relative\s*\}/s],
-];
+  ['deleted frontend loop uses safe helper', /foreach \(\$Relative in \$DeletedFrontendFiles\) \{\s*Stage-TrackedDeletion \$RepoPath \$Relative\s*\}/s]];
 let failures = 0;
 for (const [name, re] of checks) {
   if (re.test(file)) console.log(`PASS: ${name}`);

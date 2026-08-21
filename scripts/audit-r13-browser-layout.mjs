@@ -17,8 +17,7 @@ function findBrowser() {
         env.PROGRAMFILES && path.join(env.PROGRAMFILES, 'Google', 'Chrome', 'Application', 'chrome.exe'),
         env['PROGRAMFILES(X86)'] && path.join(env['PROGRAMFILES(X86)'], 'Google', 'Chrome', 'Application', 'chrome.exe'),
         env.PROGRAMFILES && path.join(env.PROGRAMFILES, 'Microsoft', 'Edge', 'Application', 'msedge.exe'),
-        env['PROGRAMFILES(X86)'] && path.join(env['PROGRAMFILES(X86)'], 'Microsoft', 'Edge', 'Application', 'msedge.exe'),
-      ]
+        env['PROGRAMFILES(X86)'] && path.join(env['PROGRAMFILES(X86)'], 'Microsoft', 'Edge', 'Application', 'msedge.exe')]
     : [process.env.AJN_CHROME_PATH, '/usr/bin/google-chrome', '/usr/bin/google-chrome-stable', '/usr/bin/chromium', '/usr/bin/chromium-browser', '/usr/bin/microsoft-edge'];
   return candidates.filter(Boolean).find((candidate) => fs.existsSync(candidate));
 }
@@ -55,8 +54,7 @@ server.stderr.on('data', (chunk) => { _serverLog += chunk.toString(); });
 const browser = spawn(browserPath, [
   '--headless=new', '--disable-gpu', '--no-first-run', '--no-default-browser-check', '--disable-extensions',
   '--disable-background-networking', '--disable-sync', '--hide-scrollbars', '--mute-audio',
-  `--remote-debugging-port=${debugPort}`, `--user-data-dir=${browserProfile}`, 'about:blank',
-], { stdio: 'ignore' });
+  `--remote-debugging-port=${debugPort}`, `--user-data-dir=${browserProfile}`, 'about:blank'], { stdio: 'ignore' });
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 async function waitHttp(url, timeoutMs = 30000) {
@@ -121,8 +119,7 @@ const cases = [
   { label: 'tablet-768-zoom110', physicalWidth: 768, physicalHeight: 1024, zoom: 1.10 },
   { label: 'tablet-768-zoom125', physicalWidth: 768, physicalHeight: 1024, zoom: 1.25 },
   { label: 'tablet-768-zoom150', physicalWidth: 768, physicalHeight: 1024, zoom: 1.50 },
-  { label: 'tablet-768-zoom200', physicalWidth: 768, physicalHeight: 1024, zoom: 2.00 },
-];
+  { label: 'tablet-768-zoom200', physicalWidth: 768, physicalHeight: 1024, zoom: 2.00 }];
 const pages = ['/', '/merge-pdf', '/pdf-tools', '/status'];
 const allToolIds = JSON.parse(fs.readFileSync(path.join(root, 'scripts', 'r13-public-tool-ids.json'), 'utf8'));
 const allToolRoutes = allToolIds.map((id) => `/${id}`);

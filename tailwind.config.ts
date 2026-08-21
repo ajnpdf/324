@@ -5,8 +5,7 @@ export default {
   content: [
     './src/app/**/*.{ts,tsx,mdx}',
     './src/components/**/*.{ts,tsx,mdx}',
-    './src/lib/**/*.{ts,tsx,mdx}',
-  ],
+    './src/lib/**/*.{ts,tsx,mdx}'],
   theme: {
     extend: {
       fontFamily: {

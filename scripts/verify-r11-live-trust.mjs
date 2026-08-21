@@ -35,18 +35,17 @@ walk(path.join(root, 'src'));
 const sourceText = sourceFiles.map((f) => fs.readFileSync(f, 'utf8')).join('\n');
 
 check('homepage SEO title targets free PDF tools', layout.includes('Free PDF Tools Online - Convert, Merge, Compress & Edit | AJN PDF'));
-check('homepage meta description is truthful and task-oriented', layout.includes('Use AJN PDF to convert, merge, compress, edit, sign, scan and OCR PDF, document and image files online with simple, powerful tools.'));
+check('homepage meta description is truthful and task-oriented', layout.includes('Use AJN PDF to convert, merge, compress, edit, sign, scan and  PDF, document and image files online with simple, powerful tools.'));
 check('Open Graph and Twitter metadata use the new homepage title', (layout.match(/Free PDF Tools Online - Convert, Merge, Compress & Edit \| AJN PDF/g) || []).length >= 3);
 check('canonical host is www.ajnpdf.com', seo.includes("export const SITE_URL = 'https://www.ajnpdf.com';"));
 check('bare domain permanently redirects to www', nextConfig.includes("value: 'ajnpdf.com'") && nextConfig.includes("destination: 'https://www.ajnpdf.com/:path*'"));
 check('stale Smart Read route redirects to canonical PDF text tool', nextConfig.includes("source: '/tools/smart-read'") && nextConfig.includes("destination: '/pdf-text'"));
 check('legacy PDF-to-PPT route redirects to current converter', nextConfig.includes("source: '/tools/pdf-ppt'") && nextConfig.includes("destination: '/pdf-to-powerpoint'"));
-check('legacy searchable OCR route redirects to current converter', nextConfig.includes("source: '/tools/ocr-searchable'") && nextConfig.includes("destination: '/scanned-pdf-to-searchable-pdf'"));
 
 const locales = ['en','hi','te','ta','kn'].map((code) => JSON.parse(read(`src/i18n/locales/${code}.json`)));
 check('all five locales retain the R10.9 baseline and identical key structure', locales.every((d) => Object.keys(d).length >= 511) && locales.every((d) => Object.keys(d).join('\n') === Object.keys(locales[0]).join('\n')));
 check('all five homepage title2 values are empty', locales.every((d) => d['home.title2'] === ''));
-check('all five homepage H1 values include PDF + OCR intent', locales.every((d) => /PDF/i.test(d['home.title1']) && /OCR/i.test(d['home.title1'])));
+check('all five homepage H1 values include PDF +  intent', locales.every((d) => /PDF/i.test(d['home.title1']) && //i.test(d['home.title1'])));
 
 const forbidden = [
   'ajnpdf1@gmail.com',
@@ -63,8 +62,7 @@ const forbidden = [
   'Fast, clear file workflows.',
   'ΓÇ',
   'â€”',
-  'â€“',
-];
+  'â€“'];
 for (const value of forbidden) check(`forbidden/stale public copy absent: ${value}`, !sourceText.includes(value));
 check('no global 115 percent zoom rule remains', !/zoom\s*:\s*1\.15/i.test(sourceText));
 

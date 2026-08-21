@@ -23,7 +23,6 @@ export function configuredPdfBackendCandidates(production = false): string[] {
   const candidates = [
     normalizePdfBackendUrl(process.env.NEXT_PUBLIC_PDF_BACKEND_URL, production),
     normalizePdfBackendUrl(process.env.NEXT_PUBLIC_AJN_PDF_API_URL, production),
-    normalizePdfBackendUrl(DEFAULT_PDF_BACKEND_URL, production),
-  ].filter(Boolean);
+    normalizePdfBackendUrl(DEFAULT_PDF_BACKEND_URL, production)].filter(Boolean);
   return [...new Set(candidates)];
 }

@@ -63,8 +63,7 @@ export default function ProtectPdf() {
           <F label="Document permissions">
             <div className="jn-grid2">
               {([
-                ["printing", "Allow printing"], ["copying", "Allow copying"], ["editing", "Allow editing"], ["annotations", "Allow annotations"], ["formFilling", "Allow form filling"],
-              ] as const).map(([key, label]) => (
+                ["printing", "Allow printing"], ["copying", "Allow copying"], ["editing", "Allow editing"], ["annotations", "Allow annotations"], ["formFilling", "Allow form filling"]] as const).map(([key, label]) => (
                 <label key={key} className="jn-file-pill" style={{ justifyContent: "flex-start" }}><input type="checkbox" checked={permissions[key]} onChange={event => setPermissions(prev => ({ ...prev, [key]: event.target.checked }))} /> <span style={{ fontSize: 10, fontWeight: 800 }}>{label}</span></label>
               ))}
             </div>

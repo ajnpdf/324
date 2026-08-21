@@ -21,7 +21,7 @@ R7 is a frontend-only UI/UX release built on the verified R6.2 production baseli
 
 ## Functionality preserved
 
-The update does not replace tool processors or backend logic. Existing production workflows remain in place for upload, conversion, OCR, visual PDF editing, signing, watermarking, output naming, progress reporting and downloads.
+The update does not replace tool processors or backend logic. Existing production workflows remain in place for upload, conversion, visual PDF editing, signing, watermarking, output naming, progress reporting and downloads.
 
 The updater does not copy `backend\`, `package.json`, `package-lock.json`, or `src/generated/backend-capabilities.json`. It captures the current Git-tracked backend state before the frontend update and verifies byte integrity again after copy and after the production build.
 

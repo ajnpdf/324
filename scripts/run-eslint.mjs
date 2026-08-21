@@ -16,8 +16,7 @@ const result = spawnSync(
     'scripts',
     '--max-warnings',
     '0',
-    '--report-unused-disable-directives',
-  ],
+    '--report-unused-disable-directives'],
   {
     stdio: 'inherit',
     env: { ...process.env },

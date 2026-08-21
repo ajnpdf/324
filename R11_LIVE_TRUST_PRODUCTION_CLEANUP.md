@@ -4,7 +4,7 @@ R11 is a focused production-hardening release built on R10.9. It does not redesi
 
 ## Implemented in R11
 
-- Homepage H1 changed to **Free PDF Tools Online - Convert, Merge, Compress, Edit & OCR**.
+- Homepage H1 changed to **Free PDF Tools Online - Convert, Merge, Compress, Edit & **.
 - Homepage SEO title changed to **Free PDF Tools Online - Convert, Merge, Compress & Edit | AJN PDF**.
 - Homepage meta/Open Graph/Twitter description aligned to the same truthful task-oriented message.
 - Removed the old secondary hero line "Fast, clear file workflows." in all five locales.
@@ -12,12 +12,12 @@ R11 is a focused production-hardening release built on R10.9. It does not redesi
 - Canonical host locked to `https://www.ajnpdf.com` to match the observed production redirect direction.
 - Bare `ajnpdf.com` permanently redirects to `www.ajnpdf.com`.
 - Extension homepage/tool links now use the same canonical `www` host.
-- Added permanent redirects for stale `/tools/smart-read`, `/tools/pdf-ppt` and `/tools/ocr-searchable` routes.
+- Added permanent redirects for stale `/tools/smart-read`, `/tools/pdf-ppt` and `/tools/-searchable` routes.
 - Kept existing canonical redirects such as `pdf-jpg -> pdf-to-jpg` and `json-pdf -> json-to-pdf`.
 - Changed temporary-processing copy from absolute deletion language to "scheduled for cleanup" wording across FAQ, transparency, tool editorial and tool policy surfaces.
 - Tool WebApplication schema now references Anjan as author, AJN Studio as publisher, and AJN PDF as brand.
 - Preserved build-time capability filtering so unavailable backend workflows are excluded from public SSG, sitemap and indexing.
-- Preserved admin `noindex` + `no-store`, chunk-reload recovery, ImageObject licensing fields, `/image-licensing`, `/limits`, `/ocr`, five-language UI and the light-only public theme.
+- Preserved admin `noindex` + `no-store`, chunk-reload recovery, ImageObject licensing fields, `/image-licensing`, `/limits`, `/`, five-language UI and the light-only public theme.
 - Added `scripts/verify-r11-live-trust.mjs` for source-level production/trust checks.
 - Added `scripts/audit-r11-live-site.mjs` for real post-deployment HTTP, redirect, stale-copy, sitemap, robots, admin-header and security-header checks.
 - Rebuilt the Chrome extension ZIP so the packaged extension uses the canonical `www` host.

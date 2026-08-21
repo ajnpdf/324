@@ -14,8 +14,7 @@ export default function DmcaPage() {
             'The AJN PDF URL or material claimed to be infringing.',
             'Your name, address, email and telephone number.',
             'A good-faith statement and an accuracy/authority statement.',
-            'A physical or electronic signature of the authorised complainant.',
-          ],
+            'A physical or electronic signature of the authorised complainant.'],
         },
         {
           title: 'Counter-notices',
@@ -24,8 +23,7 @@ export default function DmcaPage() {
         {
           title: 'Misrepresentation',
           paragraphs: ['Knowingly submitting a false notice may create legal liability. Consider obtaining professional legal advice before sending a notice or counter-notice.'],
-        },
-      ]}
+        }]}
     />
   );
 }

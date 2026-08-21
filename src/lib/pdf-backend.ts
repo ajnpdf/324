@@ -127,7 +127,7 @@ export async function repairPdfOnServer(file: File, outputName: string): Promise
   const form = new FormData(); form.set('file', file); form.set('output_name', outputName); return postPdf('/api/pdf/repair', form);
 }
 
-export type ConversionToolManifest = { id: string; name: string; category: string; inputExtensions: string[]; outputExtension: string; available: boolean; unavailableReason?: string | null; limitation?: string | null; multiFile: boolean; ocrLanguages?: string[]; };
+export type ConversionToolManifest = { id: string; name: string; category: string; inputExtensions: string[]; outputExtension: string; available: boolean; unavailableReason?: string | null; limitation?: string | null; multiFile: boolean; recognitionLanguages?: string[]; };
 
 export async function getConversionToolManifest(signal?: AbortSignal): Promise<ConversionToolManifest[]> {
   if (!isPdfBackendConfigured) return [];

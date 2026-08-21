@@ -27,7 +27,7 @@ interface ArchiveItem {
  */
 export default function ZipExtractor() {
   const { toast } = useToast();
-  const [, setFile] = useState<File | null>(null);
+  const [ setFile] = useState<File | null>(null);
   const [items, setItems] = useState<ArchiveItem[]>([]);
   const [phase, setPhase] = useState<'upload' | 'processing' | 'done'>('upload');
   const [progress, setProgress] = useState(0);

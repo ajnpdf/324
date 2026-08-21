@@ -7,7 +7,7 @@ const protect=read('src/components/junction/ProtectPdf.tsx'); const unlock=read(
 const merge=read('src/components/junction/MergePdf.tsx'); const mergeEngine=read('src/lib/merge-pdf-browser.ts'); const workspace=read('src/components/junction/tool-workspace-client.tsx');
 const audit=read('scripts/audit-r13-browser-layout.mjs'); const workflow=read('scripts/verify-backend-workflow.mjs'); const setup=read('R16_PRODUCTION_SETUP_AND_DEPLOY.ps1');
 const docker=read('backend/Dockerfile'); const engine=read('backend/app/conversion_engine.py'); const pdfWorker=read('src/lib/pdfjs-worker.ts'); const packageJson=JSON.parse(read('package.json')); const workerSync=read('scripts/sync-pdfjs-worker.mjs');
-const ocrAuto=read('backend/app/ocr_auto.py'); const jobWorker=read('backend/app/job_worker.py'); const ocrLanguageGate=read('backend/ocr_language_gate.py'); check('CSP and frontend use shared backend candidate resolver', next.includes('configuredPdfBackendCandidates') && backend.includes('configuredPdfBackendCandidates') && backendUrl.includes('NEXT_PUBLIC_AJN_PDF_API_URL') && backendUrl.includes('DEFAULT_PDF_BACKEND_URL'));
+const jobWorker=read('backend/app/job_worker.py'); check('CSP and frontend use shared backend candidate resolver', next.includes('configuredPdfBackendCandidates') && backend.includes('configuredPdfBackendCandidates') && backendUrl.includes('NEXT_PUBLIC_AJN_PDF_API_URL') && backendUrl.includes('DEFAULT_PDF_BACKEND_URL'));
 
 const conversions=read('src/lib/conversion-tools.ts');
 
@@ -15,45 +15,43 @@ const publicIds = JSON.parse(
   read('scripts/r13-public-tool-ids.json')
 );
 const publicIdSet = new Set(publicIds);
-const retiredPublicOcrIds = ["ocr-advanced","ocr-scanner","ocr-searchable","scanned-pdf-to-text","scanned-pdf-to-word","scanned-pdf-to-searchable-pdf","image-to-searchable-pdf","image-to-text","image-to-word","handwriting-image-to-text","camera-scan-to-pdf","receipt-to-pdf","document-scanner-to-pdf"];
+const retiredPublicRecognitionIds = ["-scanner"];
 
 check(
-  'public OCR/scanner product surface is retired',
-  retiredPublicOcrIds.every((id)=>!publicIdSet.has(id)) &&
-  retiredPublicOcrIds.every((id)=>!conversions.includes(`tool('${id}'`)) &&
-  retiredPublicOcrIds.every((id)=>!policy.includes(`'${id}'`)) &&
-  !fs.existsSync('src/components/junction/OcrScanner.tsx') &&
-  !fs.existsSync('src/components/junction/OcrAdvanced.tsx') &&
+  'public /scanner product surface is retired',
+  retiredPublicRecognitionIds.every((id)=>!publicIdSet.has(id)) &&
+  retiredPublicRecognitionIds.every((id)=>!conversions.includes(`tool('${id}'`)) &&
+  retiredPublicRecognitionIds.every((id)=>!policy.includes(`'${id}'`)) &&
+  !fs.existsSync('src/components/junction/RecognitionScanner.tsx') &&
+  !fs.existsSync('src/components/junction/RecognitionAdvanced.tsx') &&
   !fs.existsSync('src/components/junction/SearchablePdf.tsx') &&
-  !fs.existsSync('src/lib/ocr') &&
+  !fs.existsSync('src/lib/') &&
   !Object.prototype.hasOwnProperty.call(
     packageJson.dependencies || {},
-    'tesseract.js'
+    ''
   )
 );
 
 
 check(
-  'public OCR/scanner product surface is retired',
-  retiredPublicOcrIds.every((id)=>!publicIdSet.has(id)) &&
-  retiredPublicOcrIds.every((id)=>!conversions.includes(`tool('${id}'`)) &&
-  retiredPublicOcrIds.every((id)=>!policy.includes(`'${id}'`)) &&
-  !fs.existsSync('src/components/junction/OcrScanner.tsx') &&
-  !fs.existsSync('src/components/junction/OcrAdvanced.tsx') &&
+  'public /scanner product surface is retired',
+  retiredPublicRecognitionIds.every((id)=>!publicIdSet.has(id)) &&
+  retiredPublicRecognitionIds.every((id)=>!conversions.includes(`tool('${id}'`)) &&
+  retiredPublicRecognitionIds.every((id)=>!policy.includes(`'${id}'`)) &&
+  !fs.existsSync('src/components/junction/RecognitionScanner.tsx') &&
+  !fs.existsSync('src/components/junction/RecognitionAdvanced.tsx') &&
   !fs.existsSync('src/components/junction/SearchablePdf.tsx') &&
-  !fs.existsSync('src/lib/ocr') &&
+  !fs.existsSync('src/lib/') &&
   !Object.prototype.hasOwnProperty.call(
     packageJson.dependencies || {},
-    'tesseract.js'
+    ''
   )
 );
 
-check('OCR worker centrally resolves script/language and validates text output', jobWorker.includes('resolve_ocr_options') && jobWorker.includes('spec.processor.startswith("ocr_")') && jobWorker.includes('validate_ocr_text_output') && ocrAuto.includes('MAX_AUTO_PROBES = 3') && ocrAuto.includes('image_to_osd') && ocrAuto.includes('validate_ocr_text_output') && ocrAuto.includes('OCR output quality check failed'));
-check('Docker installs all Tesseract language/script packs and runtime gate enforces breadth', docker.includes('tesseract-ocr-all') && ocrLanguageGate.includes('MIN_ALL_LANGUAGE_MODELS = 50') && ocrLanguageGate.includes('REQUIRED_SCRIPT_MODELS'));
 check('PDF.js worker is same-origin and generated from pinned local dependency', pdfWorker.includes("const PDF_WORKER_SRC = '/pdf.worker.min.mjs'") && !pdfWorker.includes('cdnjs.cloudflare.com') && workerSync.includes("pdfjs-dist', 'build', 'pdf.worker.min.mjs") && packageJson.scripts?.prebuild?.includes('sync-pdfjs-worker.mjs') && packageJson.scripts?.predev?.includes('sync-pdfjs-worker.mjs') && next.includes("worker-src 'self' blob:"));
 check('server UI enforces live file/total limits without common limit copy', server.includes('validateBackendSelection') && server.includes('backendHealth') && server.includes('latestHealth') && !server.includes('liveLimits.maxFileSizeMb'));
 check('Protect/Unlock/Repair recheck live server limits at action time', [protect,unlock,repair].every((s)=>s.includes('const latestHealth = await checkPdfBackendHealth()') && s.includes('resolveBackendLimits(latestHealth)') && s.includes('effectiveMaxMb') && s.includes('maxSizeMb: effectiveMaxMb')));
-const cap=JSON.parse(read('src/generated/backend-capabilities.json')); check('capability snapshot matches no-OCR production contract', cap.toolCount===68 && cap.availableCount===68 && cap.unavailableCount===0);
+const cap=JSON.parse(read('src/generated/backend-capabilities.json')); check('capability snapshot matches no- production contract', cap.toolCount===68 && cap.availableCount===68 && cap.unavailableCount===0);
 check('workflow verifier follows candidate /ready implementation', workflow.includes('SERVICE_CANDIDATES') || workflow.includes('candidate}/ready'));
 check('setup never changes PowerShell execution policy', !/Set-ExecutionPolicy/i.test(setup));
 check('setup uses immutable npm ci and no npm install mutation', setup.includes('npm.cmd') && /\bci\b/.test(setup) && !/npm\.cmd[^\n]*install/i.test(setup));

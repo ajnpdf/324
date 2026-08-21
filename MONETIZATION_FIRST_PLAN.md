@@ -1,6 +1,6 @@
 # AJN PDF Monetization First Plan
 
-1. Make the highest-demand tools reliable: Merge, Split, Compress, JPG/PNG to PDF, PDF to image, Protect, Unlock, OCR and Office conversions.
+1. Make the highest-demand tools reliable: Merge, Split, Compress, JPG/PNG to PDF, PDF to image, Protect, Unlock,  and Office conversions.
 2. Deploy the FastAPI backend with HTTPS, persistent public-media storage and temporary conversion storage.
 3. Publish original guides, screenshots and AJN Discover posts that demonstrate real workflows.
 4. Verify Search Console, both sitemaps, Core Web Vitals, legal pages and consent.

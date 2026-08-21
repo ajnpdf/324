@@ -1,6 +1,6 @@
 # AJN PDF Conversion Tool Catalog
 
-## OCR and scanned documents — 10
+##  and scanned documents — 10
 
 Scanned PDF to Text, Scanned PDF to Word, Scanned PDF to Searchable PDF, Image to Searchable PDF, Image to Text, Image to Word, Camera Scan to PDF, Receipt to PDF, Document Scanner to PDF, Handwriting Image to Text.
 

@@ -88,8 +88,7 @@ const tools = Array.isArray(toolsPayload.tools)
 const securityIds = new Set([
   'protect-pdf',
   'unlock-pdf',
-  'repair-pdf',
-]);
+  'repair-pdf']);
 
 const conversionTools = tools.filter(
   (tool) => !securityIds.has(tool.id)

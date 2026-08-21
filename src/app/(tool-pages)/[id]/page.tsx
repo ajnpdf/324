@@ -65,10 +65,8 @@ export default async function ToolPage({ params }: ToolPageProps) {
         itemListElement: [
           { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
           { '@type': 'ListItem', position: 2, name: categoryLabel, item: `${SITE_URL}${categoryPath}` },
-          { '@type': 'ListItem', position: 3, name: tool.name, item: `${SITE_URL}${toolPath(tool.id)}` },
-        ],
-      },
-    ],
+          { '@type': 'ListItem', position: 3, name: tool.name, item: `${SITE_URL}${toolPath(tool.id)}` }],
+      }],
   };
 
   return (

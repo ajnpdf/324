@@ -1,7 +1,7 @@
 export const PROCESSING_DISCLOSURE = {
   headline: 'Local-first, with secure processing for advanced tools.',
   summary:
-    'Many AJN PDF tools process supported files directly in the active browser session. Advanced conversion, OCR, repair and security workflows can use AJN PDF’s configured processing service when the selected tool requires it.',
+    'Many AJN PDF tools process supported files directly in the active browser session. Advanced conversion, repair and security workflows can use AJN PDF’s configured processing service when the selected tool requires it.',
   browserTitle: 'Browser-native',
   browser:
     'Supported local workflows keep the selected file in the active browser session. Browser memory, document complexity and device capability remain practical limits.',
@@ -20,5 +20,4 @@ export const TRUST_DESTINATIONS = [
   { href: '/limits', label: 'Current limits' },
   { href: '/file-processing-policy', label: 'File processing policy' },
   { href: '/transparency', label: 'Transparency' },
-  { href: '/security', label: 'Security practices' },
-] as const;
+  { href: '/security', label: 'Security practices' }] as const;

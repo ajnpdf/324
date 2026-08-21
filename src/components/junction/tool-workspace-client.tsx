@@ -93,8 +93,7 @@ export function ToolWorkspaceClient({ id }: ToolWorkspaceClientProps) {
   const r19FidelityIds = new Set([
     'word-to-pdf','doc-to-pdf','docx-to-pdf','excel-to-pdf','xls-to-pdf','xlsx-to-pdf',
     'powerpoint-to-pdf','ppt-to-pdf','pptx-to-pdf','odt-to-pdf','ods-to-pdf','odp-to-pdf',
-    'pdf-to-word','pdf-to-docx','pdf-to-excel','pdf-to-xlsx','pdf-to-csv','pdf-to-powerpoint','pdf-to-pptx',
-  ]);
+    'pdf-to-word','pdf-to-docx','pdf-to-excel','pdf-to-xlsx','pdf-to-csv','pdf-to-powerpoint','pdf-to-pptx']);
   if (serverToolId && r19FidelityIds.has(serverToolId)) {
     return (
       <Suspense fallback={<PlatformLoader message="Preparing fidelity workspace..." />}>

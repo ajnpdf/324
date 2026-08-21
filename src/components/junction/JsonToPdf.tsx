@@ -25,7 +25,7 @@ export default function JsonToPdf() {
   const [rawText, setRawText] = useState<string>("");
   const [phase, setPhase] = useState<'upload' | 'configure' | 'processing' | 'done'>('upload');
   const [progress, setProgress] = useState(0);
-  const [, setStatus] = useState("");
+  const [ setStatus] = useState("");
   const [outputName, setOutputName] = useState("");
   const [resultBlob, setResultBlob] = useState<Blob | null>(null);
   const [isDragging, setIsDragging] = useState(false);

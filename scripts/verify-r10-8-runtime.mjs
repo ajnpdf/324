@@ -63,7 +63,7 @@ try {
   if (home.text.includes(removedTagline)) fail('removed legacy hero tagline is present in production HTML');
   pass('removed legacy hero tagline is absent from production HTML');
 
-  for (const route of ['/limits', '/ocr', '/status']) {
+  for (const route of ['/limits', '/status']) {
     const result = await get(route);
     if (!result.response.ok) fail(`${route} returned HTTP ${result.response.status}`);
     pass(`${route} returns HTTP ${result.response.status}`);
@@ -76,8 +76,7 @@ try {
     ['x-content-type-options', 'nosniff'],
     ['referrer-policy', 'Referrer-Policy'],
     ['permissions-policy', 'Permissions-Policy'],
-    ['cross-origin-opener-policy', 'COOP'],
-  ];
+    ['cross-origin-opener-policy', 'COOP']];
   for (const [name, label] of required) {
     if (!headers.get(name)) fail(`${label} response header is missing`);
     pass(`${label} response header is present`);

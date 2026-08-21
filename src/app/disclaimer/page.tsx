@@ -12,8 +12,8 @@ export default function DisclaimerPage() {
           paragraphs: ['Always open and review the downloaded file before deleting the original, sending it to another person or submitting it to an authority. Keep an unchanged backup.'],
         },
         {
-          title: 'Conversion and OCR accuracy',
-          paragraphs: ['Conversion and OCR results depend on the source file, scan quality, fonts and browser. Text, tables, images, metadata, accessibility structure and page layout may be incomplete or changed.'],
+          title: 'Conversion and  accuracy',
+          paragraphs: ['Conversion and  results depend on the source file, scan quality, fonts and browser. Text, tables, images, metadata, accessibility structure and page layout may be incomplete or changed.'],
         },
         {
           title: 'Signatures and compliance',
@@ -22,8 +22,7 @@ export default function DisclaimerPage() {
         {
           title: 'External services',
           paragraphs: ['Advertisements, hosting, content delivery and other third-party services operate under their own terms and privacy practices. AJN PDF does not control their availability.'],
-        },
-      ]}
+        }]}
     />
   );
 }

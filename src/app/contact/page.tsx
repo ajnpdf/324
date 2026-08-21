@@ -9,8 +9,7 @@ const contacts = [
   { title: 'Security report', text: 'Private, reproducible security reports and responsible disclosure.', subject: 'AJN PDF Security Report', icon: ShieldAlert },
   { title: 'Copyright request', text: 'Complete copyright, DMCA or takedown notices.', subject: 'AJN PDF Copyright Request', icon: Copyright },
   { title: 'Image licensing', text: 'Ask about attribution, reuse or licensing for a specific AJN Discover image.', subject: 'AJN PDF Image Licensing Request', icon: Copyright },
-  { title: 'Bug report', text: 'Include the tool URL, browser, file type and exact error message. Do not attach confidential documents.', subject: 'AJN PDF Bug Report', icon: Bug },
-];
+  { title: 'Bug report', text: 'Include the tool URL, browser, file type and exact error message. Do not attach confidential documents.', subject: 'AJN PDF Bug Report', icon: Bug }];
 
 export default function ContactPage() {
   return (

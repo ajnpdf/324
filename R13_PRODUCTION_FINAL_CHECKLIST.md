@@ -26,11 +26,11 @@
 - `/psd-pdf` returns intentional 410
 - sitemap has all root tools and no `/tools/` tool URLs
 - public trust pages do not serve audited stale claims
-- robots, image sitemap, status, limits, OCR and blog respond successfully
+- robots, image sitemap, status, limits,  and blog respond successfully
 - Chrome and Edge rendered interaction QA
 - 100/110/125/150/200% zoom/reflow QA
 - mobile 320–412px, tablet and desktop layout QA
-- Merge/Protect/Unlock/OCR real server-assisted workflow checks
+- Merge/Protect/Unlock/ real server-assisted workflow checks
 - backend healthy/degraded/offline UI checks
 - cancellation behavior against real requests
 - Core Web Vitals measurement

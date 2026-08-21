@@ -14,8 +14,7 @@ const required = [
   'src/app/file-processing-policy/page.tsx',
   'src/app/acceptable-use/page.tsx',
   'src/app/data-deletion/page.tsx',
-  'src/app/unlock-authorization-policy/page.tsx',
-];
+  'src/app/unlock-authorization-policy/page.tsx'];
 for (const file of required) {
   if (!fs.existsSync(path.resolve(file))) throw new Error(`Missing production file: ${file}`);
 }

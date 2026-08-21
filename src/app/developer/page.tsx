@@ -7,10 +7,9 @@ import { AJN_BRAND } from '@/lib/brand';
 import { SITE_URL } from '@/lib/seo-config';
 
 const focusAreas = [
-  { icon: FileSearch, title: 'Useful document workflows', text: 'PDF, OCR, image and office-file tools built around clear inputs, limits and downloadable results.' },
+  { icon: FileSearch, title: 'Useful document workflows', text: 'PDF, image and office-file tools built around clear inputs, limits and downloadable results.' },
   { icon: ShieldCheck, title: 'Honest processing', text: 'On-device and online workflows are labelled so users understand how each file is handled.' },
-  { icon: Layers3, title: 'Accessible product design', text: 'Responsive layouts, light and dark themes, keyboard states and reduced-motion support are part of the product system.' },
-];
+  { icon: Layers3, title: 'Accessible product design', text: 'Responsive layouts, light and dark themes, keyboard states and reduced-motion support are part of the product system.' }];
 
 export default function DeveloperPage() {
   const jsonLd = {
@@ -26,7 +25,7 @@ export default function DeveloperPage() {
       description: AJN_BRAND.developerBio,
       url: `${SITE_URL}/developer`,
       worksFor: { '@type': 'Organization', name: AJN_BRAND.studioName, url: `${SITE_URL}/ajn-studio` },
-      knowsAbout: ['Next.js', 'React', 'TypeScript', 'Python FastAPI', 'PDF tools', 'OCR', 'document conversion', 'web development', 'product design'],
+      knowsAbout: ['Next.js', 'React', 'TypeScript', 'Python FastAPI', 'PDF tools', '', 'document conversion', 'web development', 'product design'],
       sameAs: Object.values(AJN_BRAND.social),
     },
   };

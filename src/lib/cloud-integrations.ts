@@ -127,8 +127,7 @@ async function ensureGoogleLibraries(): Promise<void> {
   if (!GOOGLE_CLIENT_ID || !GOOGLE_API_KEY || !GOOGLE_APP_ID) throw new Error('Google Drive is not configured for this AJN PDF deployment.');
   await Promise.all([
     loadScript('https://accounts.google.com/gsi/client', 'ajn-google-gis', {}, () => Boolean(window.google?.accounts?.oauth2)),
-    loadScript('https://apis.google.com/js/api.js', 'ajn-google-api', {}, () => Boolean(window.gapi)),
-  ]);
+    loadScript('https://apis.google.com/js/api.js', 'ajn-google-api', {}, () => Boolean(window.gapi))]);
   if (!window.google?.accounts?.oauth2 || !window.gapi) throw new Error('Google Drive libraries did not initialize correctly.');
   if (!googlePickerLoaded) {
     await new Promise<void>((resolve, reject) => {
@@ -274,8 +273,7 @@ export async function exportToGoogleDrive(blob: Blob, filename: string): Promise
     `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify(metadata)}\r\n`,
     `--${boundary}\r\nContent-Type: ${blob.type || 'application/octet-stream'}\r\n\r\n`,
     blob,
-    `\r\n--${boundary}--`,
-  ]);
+    `\r\n--${boundary}--`]);
   const response = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name,webViewLink', {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}`, 'Content-Type': `multipart/related; boundary=${boundary}` },
@@ -310,6 +308,5 @@ export function cloudProviderStatuses(): CloudProviderStatus[] {
       importAvailable: false,
       exportAvailable: false,
       reason: 'OneDrive production access is intentionally gated until MSAL.js authorization-code + PKCE is configured for the SPA redirect URI.',
-    },
-  ];
+    }];
 }
