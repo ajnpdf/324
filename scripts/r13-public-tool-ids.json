@@ -17,13 +17,6 @@
   "add-image-to-pdf",
   "pdf-metadata",
   "extract-images",
-  "image-reducer",
-  "image-resizer",
-  "crop-image",
-  "rotate-image",
-  "watermark-image",
-  "flip-image",
-  "convert-image",
   "sign-pdf",
   "pdf-zip-extract"
 ]
