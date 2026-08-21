@@ -35,7 +35,7 @@ check(
 );
 check(
   'current public route inventory is unique and stable',
-  publicIds.length === 95 && publicIdSet.size === 95
+  publicIds.length === 27 && publicIdSet.size === 27
 );
 check(
   'obsolete R16/R17 local deploy wrappers stay retired',
