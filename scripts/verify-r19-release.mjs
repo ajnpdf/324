@@ -23,12 +23,12 @@ if (routeDup.length || canonicalDup.length) {
   process.exit(1);
 }
 
-if (routes.length !== 27) {
-  console.error(`FAIL: expected exactly 27 validated public routes; got ${routes.length}.`);
+if (routes.length !== 20) {
+  console.error(`FAIL: expected exactly 20 validated public PDF routes; got ${routes.length}.`);
   process.exit(1);
 }
-if (canonical.length !== 27) {
-  console.error(`FAIL: expected exactly 27 canonical public processors; got ${canonical.length}.`);
+if (canonical.length !== 20) {
+  console.error(`FAIL: expected exactly 20 canonical public PDF processors; got ${canonical.length}.`);
   process.exit(1);
 }
 if (aliases.length !== 0) {
@@ -47,17 +47,22 @@ if (data.publicRouteCount !== routes.length || data.canonicalProcessorCount !== 
 const required = [
   'merge-pdf','split-pdf','compress-pdf','rotate-pdf','delete-pdf-pages','organize-pdf','crop-pdf','watermark-pdf',
   'page-number','flatten-pdf','protect-pdf','unlock-pdf','repair-pdf','compare-pdf','add-text','add-image-to-pdf',
-  'pdf-metadata','extract-images','image-reducer','image-resizer','crop-image','rotate-image','watermark-image',
-  'flip-image','convert-image','sign-pdf','pdf-zip-extract',
+  'pdf-metadata','extract-images','sign-pdf','pdf-zip-extract',
 ];
+const movedImageIds = ['image-reducer','image-resizer','crop-image','rotate-image','watermark-image','flip-image','convert-image'];
 const actual = new Set(routes.map((item) => item.id));
 for (const id of required) {
   if (!actual.has(id)) {
-    console.error(`FAIL: validated public baseline is missing ${id}.`);
+    console.error(`FAIL: validated PDF baseline is missing ${id}.`);
+    process.exit(1);
+  }
+}
+for (const id of movedImageIds) {
+  if (actual.has(id)) {
+    console.error(`FAIL: ${id} must not be public in the PDF-only R21 product.`);
     process.exit(1);
   }
 }
 
-console.log(`PASS: release inventory — ${routes.length} validated public routes, ${canonical.length} canonical processors, ${aliases.length} aliases.`);
-console.log('PASS: unaccepted conversion processors remain out of the public release accounting.');
-console.log('NOTE: Backend/source processors may remain available for repair work without being public.');
+console.log(`PASS: release inventory — ${routes.length} PDF routes, ${canonical.length} canonical processors, ${aliases.length} aliases.`);
+console.log('PASS: image utilities and unaccepted conversion processors remain outside AJN PDF public release accounting.');
