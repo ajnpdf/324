@@ -46,8 +46,12 @@ export default function OfficeConversionTool({ toolId }: { toolId: string }) {
       const [nextHealth, tools] = await Promise.all([checkPdfBackendHealth(), getConversionToolManifest()]);
       if (!active) return;
       setHealth(nextHealth);
-      setManifest(tools.find(entry => entry.id === toolId) || null);
-      setError(nextHealth.status === 'online' ? '' : 'Conversion backend is unavailable.');
+      const nextManifest = tools.find(entry => entry.id === toolId) || null;
+      setManifest(nextManifest);
+      if (nextHealth.status !== 'online') setError('Conversion backend is unavailable.');
+      else if (!nextManifest) setError('This conversion is not registered on the active processing server yet.');
+      else if (!nextManifest.available) setError(nextManifest.unavailableReason || 'This conversion is unavailable on the active processing server.');
+      else setError('');
       setStatus('idle');
     })();
     return () => { active = false; };
@@ -62,12 +66,16 @@ export default function OfficeConversionTool({ toolId }: { toolId: string }) {
 
   const accept = manifest?.inputExtensions?.join(',') || '*/*';
   const canProcess = status === 'idle' && manifest?.available === true && files.length > 0;
+  const inputFormats = manifest?.inputExtensions?.map(value => value.replace(/^\./, '').toUpperCase()).join(', ') || 'Checking';
+  const outputFormat = manifest?.outputExtension?.replace(/^\./, '').toUpperCase() || 'Checking';
   const summary = useMemo(() => {
     if (EXCEL_TO_PDF.has(toolId)) return fitMode === 'preserve' ? 'Preserve workbook print settings' : 'Fit each sheet to one PDF page';
     if (PPT_TO_PDF.has(toolId)) return exportNotes ? 'Slides plus notes pages' : 'Slides only';
     if (PDF_TO_PPT.has(toolId)) return pptMode === 'preserve' ? 'Preserve appearance · page image slides' : 'Editable reconstruction · text and images';
-    if (PDF_TO_TABLE.has(toolId)) return 'Structured table detection only';
-    if (PDF_TO_WORD.has(toolId)) return includeImages ? 'Layout-aware Word with images' : 'Layout-aware Word without images';
+    if (PDF_TO_TABLE.has(toolId)) return 'Detect real table structure first; optional line fallback is explicit.';
+    if (PDF_TO_WORD.has(toolId)) return includeImages
+      ? 'Reconstruct selectable text, detected tables, basic formatting and embedded images into DOCX.'
+      : 'Reconstruct selectable text, detected tables and basic formatting into DOCX without embedded images.';
     if (OFFICE_TO_PDF.has(toolId)) return 'Format-specific LibreOffice PDF export with post-conversion validation';
     return 'Fidelity-first conversion';
   }, [toolId, fitMode, exportNotes, pptMode, includeImages]);
@@ -87,6 +95,7 @@ export default function OfficeConversionTool({ toolId }: { toolId: string }) {
     const latest = await checkPdfBackendHealth();
     setHealth(latest);
     if (latest.status !== 'online') { setError('Conversion backend is unavailable.'); return; }
+    if (!manifest?.available) { setError(manifest?.unavailableReason || 'This conversion is not available on the active processing server.'); return; }
     const issue = validateBackendSelection(files.map(item => item.file), policy.maxFiles, latest);
     if (issue) { setError(issue); return; }
     setStatus('processing');
@@ -106,6 +115,9 @@ export default function OfficeConversionTool({ toolId }: { toolId: string }) {
         },
       });
       if (!converted.blob.size) throw new Error('Converter returned an empty result.');
+      if (manifest.outputExtension && !converted.filename.toLowerCase().endsWith(manifest.outputExtension.toLowerCase())) {
+        throw new Error(`The processing server returned an unexpected output format. Expected ${manifest.outputExtension.toUpperCase()}.`);
+      }
       setResult(converted);
       setStatus('done');
     } catch (cause) {
@@ -118,9 +130,9 @@ export default function OfficeConversionTool({ toolId }: { toolId: string }) {
     return (
       <ToolWorkspace title={tool.name} description={tool.desc} accent="#2563EB">
         <Done
-          msg="Conversion ready"
+          msg={`Conversion ready · ${outputFormat}`}
           onDownload={() => dl(result.blob, result.filename)}
-          dlLabel="Download"
+          dlLabel={`Download ${outputFormat}`}
           onReset={() => { setFiles([]); setResult(null); setStatus('idle'); }}
           shareFile={{ blob: result.blob, name: result.filename }}
         />
@@ -137,8 +149,12 @@ export default function OfficeConversionTool({ toolId }: { toolId: string }) {
           accept={accept}
           multiple={false}
           label="Choose source file"
-          sub={manifest?.inputExtensions?.join(', ') || 'Supported document format'}
+          sub={manifest?.inputExtensions?.join(', ') || 'Checking supported document format'}
         />
+
+        <Info bg="rgba(37,99,235,.08)" col="#1D4ED8">
+          Input: {inputFormats} → Output: {outputFormat}{health?.version ? ` · Processing service ${health.version}` : ''}
+        </Info>
 
         <div className="space-y-4 rounded-2xl border border-border bg-muted/45 p-4">
           <F label="Output name"><input value={outputName} onChange={event => setOutputName(event.target.value)} style={IS} /></F>
@@ -177,15 +193,13 @@ export default function OfficeConversionTool({ toolId }: { toolId: string }) {
           )}
 
           {PDF_TO_TABLE.has(toolId) && (
-            <>
-<F label="No table detected">
-                <Pills
-                  opts={[{ label:'Stop safely', value:'stop' }, { label:'Allow line fallback', value:'allow' }]}
-                  val={allowUnstructured ? 'allow' : 'stop'}
-                  onChange={value => setAllowUnstructured(value === 'allow')}
-                />
-              </F>
-            </>
+            <F label="No table detected">
+              <Pills
+                opts={[{ label:'Stop safely', value:'stop' }, { label:'Allow line fallback', value:'allow' }]}
+                val={allowUnstructured ? 'allow' : 'stop'}
+                onChange={value => setAllowUnstructured(value === 'allow')}
+              />
+            </F>
           )}
 
           {PDF_TO_WORD.has(toolId) && (
@@ -201,7 +215,7 @@ export default function OfficeConversionTool({ toolId }: { toolId: string }) {
 
         <Info>{summary}</Info>
         <Info bg="rgba(245,158,11,.09)" col="#92400E">
-          AJN PDF validates the real output. Complex Office/PDF layouts can still require adjustment; the tool does not claim pixel-perfect editability.
+          AJN PDF validates the real output format. Complex Office/PDF layouts can still require adjustment; the tool does not claim pixel-perfect editability.
         </Info>
         <Err msg={error} />
         <Btn full onClick={process} disabled={!canProcess} loading={status === 'processing'}>
