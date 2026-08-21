@@ -32,6 +32,7 @@ jobs:
       - run: npm run verify:secrets
       - run: npm run verify:r18-production
       - run: npm run verify:r17-trust-seo
+      - run: node scripts/verify-r20-focused-seo.mjs
       - run: npm run verify:r16-consistency
       - run: npm run verify:tool-ux
       - run: npm run verify:final-ui
