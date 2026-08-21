@@ -34,7 +34,6 @@ export const CONVERSION_TOOLS: ServiceTool[] = [
   tool('image-to-pdf', 'Image to PDF', 'Combine supported image formats into one PDF document.', FileImage, 'img', ['image to pdf', 'photos to pdf', 'multiple images pdf']),
   tool('jpg-to-pdf', 'JPG to PDF', 'Convert one or more JPG images into a PDF document.', FileImage, 'img', ['jpg to pdf', 'photo to pdf', 'jpeg pdf']),
   tool('jpeg-to-pdf', 'JPEG to PDF', 'Convert one or more JPEG images into a PDF document.', FileImage, 'img', ['jpeg to pdf', 'jpeg image pdf']),
-  tool('png-to-pdf', 'PNG to PDF', 'Convert one or more PNG images into a PDF document.', FileImage, 'img', ['png to pdf', 'transparent image pdf', 'png document']),
   tool('webp-to-pdf', 'WEBP to PDF', 'Convert WEBP images into a shareable PDF document.', FileImage, 'img', ['webp to pdf', 'web image pdf']),
   tool('tiff-to-pdf', 'TIFF to PDF', 'Convert single-page or multipage TIFF files into PDF.', FileImage, 'img', ['tiff to pdf', 'tif pdf', 'multipage tiff pdf']),
   tool('bmp-to-pdf', 'BMP to PDF', 'Convert bitmap images into a PDF document.', FileImage, 'img', ['bmp to pdf', 'bitmap pdf']),
