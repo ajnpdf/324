@@ -38,8 +38,8 @@ export default async function ToolPage({ params }: ToolPageProps) {
   if (!tool) notFound();
 
   const category = getPublicToolCategory(tool);
-  const categoryPath = category === 'conversion' ? '/conversion-tools' : category === 'image' ? '/image-tools' : '/pdf-utilities';
-  const categoryLabel = category === 'conversion' ? 'Conversion Tools' : category === 'image' ? 'Image Tools' : 'PDF Tools';
+  const categoryPath = category === 'image' ? '/image-tools' : '/pdf-utilities';
+  const categoryLabel = category === 'image' ? 'Image Tools' : 'PDF Tools';
   const seo = getToolSeoProfile(tool);
 
   const jsonLd = {
@@ -65,8 +65,10 @@ export default async function ToolPage({ params }: ToolPageProps) {
         itemListElement: [
           { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
           { '@type': 'ListItem', position: 2, name: categoryLabel, item: `${SITE_URL}${categoryPath}` },
-          { '@type': 'ListItem', position: 3, name: tool.name, item: `${SITE_URL}${toolPath(tool.id)}` }],
-      }],
+          { '@type': 'ListItem', position: 3, name: tool.name, item: `${SITE_URL}${toolPath(tool.id)}` },
+        ],
+      },
+    ],
   };
 
   return (
