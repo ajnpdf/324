@@ -15,7 +15,7 @@ export interface ToolPolicy {
 const stableBrowserIds = new Set([
   'merge-pdf', 'split-pdf', 'rotate-pdf', 'delete-pdf-pages', 'organize-pdf',
   'crop-pdf', 'watermark-pdf', 'page-number', 'flatten-pdf', 'compare-pdf',
-  'add-text', 'add-image-to-pdf', 'pdf-metadata', 'jpg-pdf', 'png-to-pdf',
+  'add-text', 'add-image-to-pdf', 'pdf-metadata', 'jpg-pdf',
   'pdf-jpg', 'image-reducer', 'image-resizer', 'crop-image', 'rotate-image',
   'watermark-image', 'flip-image', 'convert-image', 'meme-generator',
   'photo-editor', 'pdf-text', 'xml-pdf', 'json-pdf', 'txt-pdf',
@@ -55,7 +55,7 @@ export function getToolPolicy(id: string): ToolPolicy {
   }
   if (stableBrowserIds.has(id)) {
     return {
-      maturity: 'stable', processingMode: 'browser', maxFiles: id === 'merge-pdf' ? MERGE_PDF_LIMITS.maxFiles : id === 'jpg-pdf' || id === 'png-to-pdf' ? 30 : 1,
+      maturity: 'stable', processingMode: 'browser', maxFiles: id === 'merge-pdf' ? MERGE_PDF_LIMITS.maxFiles : id === 'jpg-pdf' ? 30 : 1,
       maxFileSizeMb: id === 'merge-pdf' ? MERGE_PDF_LIMITS.maxFileSizeMb : 50, publicByDefault: true,
     };
   }
@@ -68,7 +68,7 @@ export function getToolPolicy(id: string): ToolPolicy {
   }
   if (backendIds.has(id)) {
     const multiFileConversionIds = new Set([
-      'image-to-pdf', 'jpg-to-pdf', 'jpeg-to-pdf', 'webp-to-pdf', 'tiff-to-pdf', 'bmp-to-pdf',
+      'image-to-pdf', 'jpg-to-pdf', 'jpeg-to-pdf', 'png-to-pdf', 'webp-to-pdf', 'tiff-to-pdf', 'bmp-to-pdf',
       'gif-to-pdf', 'svg-to-pdf', 'heic-to-pdf']);
     return {
       maturity: 'backend', processingMode: 'temporary-server',
