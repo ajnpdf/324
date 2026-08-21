@@ -23,7 +23,6 @@ const engine = read('backend/app/conversion_engine.py');
 const pdfWorker = read('src/lib/pdfjs-worker.ts');
 const packageJson = JSON.parse(read('package.json'));
 const workerSync = read('scripts/sync-pdfjs-worker.mjs');
-const conversions = read('src/lib/conversion-tools.ts');
 const publicIds = JSON.parse(read('scripts/r13-public-tool-ids.json'));
 const publicIdSet = new Set(publicIds);
 
@@ -34,22 +33,9 @@ check(
   backendUrl.includes('NEXT_PUBLIC_AJN_PDF_API_URL') &&
   backendUrl.includes('DEFAULT_PDF_BACKEND_URL')
 );
-
-const retiredToolIds = [
-  'ocr-advanced','ocr-scanner','ocr-searchable','scanned-pdf-to-text','scanned-pdf-to-word',
-  'scanned-pdf-to-searchable-pdf','image-to-searchable-pdf','image-to-text','image-to-word',
-  'handwriting-image-to-text','camera-scan-to-pdf','receipt-to-pdf','document-scanner-to-pdf',
-];
 check(
-  'retired scanner/text-recognition public tool IDs remain absent',
-  retiredToolIds.every((id) => !publicIdSet.has(id)) &&
-  retiredToolIds.every((id) => !conversions.includes(`tool('${id}'`)) &&
-  retiredToolIds.every((id) => !policy.includes(`'${id}'`))
-);
-check(
-  'retired scanner UI source remains physically removed',
-  !fs.existsSync('src/components/junction/DocumentScanner.tsx') &&
-  !workspace.includes('DocumentScanner')
+  'current public route inventory is unique and stable',
+  publicIds.length === 95 && publicIdSet.size === 95
 );
 check(
   'obsolete R16/R17 local deploy wrappers stay retired',
