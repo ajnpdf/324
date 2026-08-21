@@ -16,6 +16,7 @@ const forbidText = (source, needle, message) => {
 };
 
 const conversionTools = read('src/lib/conversion-tools.ts');
+const toolsData = read('src/lib/tools-data.ts');
 const toolPolicy = read('src/lib/tool-policy.ts');
 const workspace = read('src/components/junction/tool-workspace-client.tsx');
 const officeWorkspace = read('src/components/junction/OfficeConversionTool.tsx');
@@ -30,10 +31,15 @@ const duplicates = publicConversionIds.filter((id, index) => publicConversionIds
 if (duplicates.length) fail(`Duplicate canonical conversion IDs: ${[...new Set(duplicates)].join(', ')}`);
 else pass(`${publicConversionIds.length} canonical conversion IDs are unique`);
 
-requireText(conversionTools, "tool('png-to-pdf', 'PNG to PDF'", 'PNG to PDF is in the canonical frontend conversion registry');
+const pngPublicEntries = [...toolsData.matchAll(/\bid:\s*['"]png-to-pdf['"]/g)].length;
+if (pngPublicEntries !== 1) fail(`PNG to PDF must have exactly one base public card; found ${pngPublicEntries}`);
+else pass('PNG to PDF has exactly one public card definition');
+forbidText(conversionTools, "tool('png-to-pdf'", 'PNG to PDF is not duplicated in the appended conversion display catalog');
 requireText(backendEngine, "('.png', 'png-to-pdf', 'PNG to PDF')", 'PNG to PDF is registered by the backend engine');
 forbidText(toolPolicy, "'jpg-pdf', 'png-to-pdf'", 'PNG to PDF is not routed through the legacy browser-stable list');
+requireText(toolPolicy, "'repair-pdf', 'png-to-pdf', ...conversionBackendIds", 'PNG to PDF is classified as a backend capability');
 requireText(toolPolicy, "'image-to-pdf', 'jpg-to-pdf', 'jpeg-to-pdf', 'png-to-pdf'", 'PNG to PDF uses the canonical multi-file backend policy');
+requireText(workspace, "...CONVERSION_TOOLS.map((tool) => tool.id), 'png-to-pdf'", 'PNG public card is routed to the canonical server processor');
 forbidText(workspace, "'png-to-pdf': dynamic(() => import('./PngToPdf')", 'PNG to PDF has no competing local workspace route');
 
 requireText(workspace, "'pdf-to-word','pdf-to-docx'", 'PDF to Word/DOCX are included in the fidelity workspace route');
@@ -71,4 +77,4 @@ if (process.exitCode) {
   console.error('AJN PDF R20 CONVERSION ACCURACY: FAIL');
   process.exit(process.exitCode);
 }
-console.log(`AJN PDF R20 CONVERSION ACCURACY: PASS (${publicConversionIds.length} canonical conversions checked)`);
+console.log(`AJN PDF R20 CONVERSION ACCURACY: PASS (${publicConversionIds.length} conversion-catalog IDs + PNG backend route checked)`);
