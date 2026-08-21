@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { ArrowRight, CheckCircle2, CircleAlert, Monitor, Server, Sparkles } from 'lucide-react';
-import type { ServiceTool } from '@/lib/tools-data';
+import { getPublicToolCategory, type ServiceTool } from '@/lib/tools-data';
 import { getToolEditorial } from '@/lib/tool-editorial';
 import { getToolPolicy } from '@/lib/tool-policy';
 import { getRelatedGuides, getRelatedTools } from '@/lib/internal-linking';
@@ -10,10 +10,28 @@ import { toolPath } from '@/lib/tool-routes';
 export function ToolEditorialContent({ tool }: { tool: ServiceTool }) {
   const content = getToolEditorial(tool);
   const policy = getToolPolicy(tool.id);
+  const category = getPublicToolCategory(tool);
+  const isImageTool = category === 'image';
   const isBrowser = policy.processingMode === 'browser';
   const ModeIcon = isBrowser ? Monitor : Server;
   const relatedTools = getRelatedTools(tool.id, 6);
   const relatedGuides = getRelatedGuides(tool);
+  const overview = tool.id === 'watermark-pdf'
+    ? 'Watermark PDF places visible text on selected pages. Common uses include marking drafts, adding a company name, identifying confidential copies, or labeling distributed documents.'
+    : content.overview;
+  const limitations = isImageTool
+    ? [
+        policy.limitation || 'Image quality and output size depend on the source dimensions, format and selected settings.',
+        'Very large images can use significant browser memory. Keep the original image until the downloaded result has been reviewed.',
+      ]
+    : content.limitations;
+  const faqs = isImageTool
+    ? [
+        { question: `Is ${tool.name} free to use?`, answer: `Yes. The current AJN PDF production version provides ${tool.name} without a subscription.` },
+        { question: `Does AJN PDF store images used with ${tool.name}?`, answer: isBrowser ? 'Supported images are handled within the active browser session. Keep the tab open until the result is ready.' : 'The selected image is sent only for the active request, and temporary request data is scheduled for cleanup after the result is returned.' },
+        { question: `Will ${tool.name} preserve image quality?`, answer: 'Quality depends on the source image, output format and selected settings. Review the downloaded result before replacing the original.' },
+      ]
+    : content.faqs;
 
   return (
     <section className="relative z-10 mx-auto max-w-6xl px-4 pb-12 pt-10 md:px-8 md:pb-20">
@@ -22,7 +40,7 @@ export function ToolEditorialContent({ tool }: { tool: ServiceTool }) {
           <article>
             <div className="ajn-section-kicker"><Sparkles className="h-3.5 w-3.5 text-red-500" /> Practical guide</div>
             <h2 className="mt-5 text-3xl font-black tracking-[-.035em] text-slate-950 md:text-5xl">Use {tool.name} with clear expectations.</h2>
-            <p className="mt-6 text-sm font-medium leading-7 text-muted-foreground md:text-base">{content.overview}</p>
+            <p className="mt-6 text-sm font-medium leading-7 text-muted-foreground md:text-base">{overview}</p>
             <p className="mt-4 text-sm font-medium leading-7 text-muted-foreground md:text-base">{content.details}</p>
 
             <div className="mt-8 rounded-3xl border border-slate-100 bg-slate-50/80 p-6">
@@ -65,7 +83,7 @@ export function ToolEditorialContent({ tool }: { tool: ServiceTool }) {
           <div className="rounded-3xl border border-amber-100 bg-amber-50/70 p-6">
             <h3 className="flex items-center gap-2 text-lg font-black text-slate-950"><CircleAlert className="h-5 w-5 text-amber-600" /> Important limitations</h3>
             <ul className="mt-4 space-y-3 text-sm font-medium leading-6 text-muted-foreground">
-              {content.limitations.map((item) => <li key={item} className="flex gap-2"><span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-sm bg-amber-500" />{item}</li>)}
+              {limitations.map((item) => <li key={item} className="flex gap-2"><span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-sm bg-amber-500" />{item}</li>)}
             </ul>
           </div>
           <div className="rounded-3xl border border-blue-100 bg-blue-50/60 p-6">
@@ -79,7 +97,7 @@ export function ToolEditorialContent({ tool }: { tool: ServiceTool }) {
         <div className="relative mt-10 border-t border-slate-100 pt-10">
           <h3 className="text-2xl font-black tracking-tight text-slate-950">Questions about {tool.name}</h3>
           <div className="mt-5 grid gap-4 md:grid-cols-3">
-            {content.faqs.map((faq) => (
+            {faqs.map((faq) => (
               <article key={faq.question} className="rounded-3xl border border-border bg-card p-6 shadow-sm">
                 <h4 className="font-black leading-6 text-slate-950">{faq.question}</h4>
                 <p className="mt-3 text-sm font-medium leading-6 text-muted-foreground">{faq.answer}</p>
