@@ -12,7 +12,6 @@ const httpAcceptance = read('backend/http_acceptance_test.py');
 const frontend = read('src/lib/pdf-backend.ts');
 const serverTool = read('src/components/junction/ServerConversionTool.tsx');
 const toolLimits = read('src/lib/tool-limits.ts');
-const setup = read('R16_PRODUCTION_SETUP_AND_DEPLOY.ps1');
 const packageScript = read('PACKAGE_PRODUCTION.ps1');
 const secretScan = read('scripts/secret-scan.mjs');
 
@@ -59,12 +58,15 @@ check('Live HTTP acceptance iterates registered conversion specs', httpAcceptanc
 check('Live HTTP acceptance validates process-isolation and request headers', httpAcceptance.includes('X-AJN-Worker-Isolation') && httpAcceptance.includes('X-Request-ID'));
 check('Live HTTP acceptance includes negative/error-path tests', httpAcceptance.includes('def _negative_tests') && httpAcceptance.includes('fake.pdf') && httpAcceptance.includes('expected_status=415') && httpAcceptance.includes('http-accept-file-count'));
 check('Live HTTP acceptance includes Protect/Unlock/Repair/Compress', httpAcceptance.includes('def _security_endpoints') && httpAcceptance.includes('/api/pdf/protect') && httpAcceptance.includes('/api/pdf/unlock') && httpAcceptance.includes('/api/pdf/repair') && httpAcceptance.includes('/api/pdf/compress'));
-check('Windows setup runs live HTTP acceptance before frontend build', setup.includes('backend\\http_acceptance_test.py') && setup.indexOf('backend\\http_acceptance_test.py') < setup.indexOf('Invoke-Checked $Npm @("ci"'));
+check(
+  'Obsolete local deploy wrapper stays retired while live HTTP acceptance remains available',
+  !fs.existsSync('R16_PRODUCTION_SETUP_AND_DEPLOY.ps1') && fs.existsSync('backend/http_acceptance_test.py')
+);
 check('HTTP acceptance results cannot ship in production packages', packageScript.includes('HTTP_ACCEPTANCE_RESULTS.json') && secretScan.includes('HTTP_ACCEPTANCE_RESULTS.json'));
 
 if (failures.length) {
   console.error('FAIL: backend workflow verification failed:');
-  for (const item of failures) console.error(`- ${item}`);
+  for (const item of failures) console.error(`- ${item}`));
   process.exit(1);
 }
 console.log('AJN PDF backend workflow verification completed successfully.');
