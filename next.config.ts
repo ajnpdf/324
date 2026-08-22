@@ -9,13 +9,14 @@ const backendOrigins = [...new Set(configuredPdfBackendCandidates(isProduction).
 const connectSources = [
   "'self'", ...backendOrigins,
   'https://identitytoolkit.googleapis.com', 'https://securetoken.googleapis.com', 'https://www.googleapis.com', 'https://accounts.google.com',
+  'https://api.razorpay.com', 'https://*.razorpay.com',
   'https://www.google-analytics.com', 'https://region1.google-analytics.com', 'https://*.google-analytics.com',
   'https://pagead2.googlesyndication.com', 'https://*.googlesyndication.com', 'https://*.doubleclick.net'];
 const contentSecurityPolicy = [
   "default-src 'self'", "base-uri 'self'", "object-src 'none'", "frame-ancestors 'self'", "form-action 'self'",
-  "script-src 'self' 'unsafe-inline' https://accounts.google.com https://www.googletagmanager.com https://pagead2.googlesyndication.com https://*.googlesyndication.com",
+  "script-src 'self' 'unsafe-inline' https://accounts.google.com https://checkout.razorpay.com https://www.googletagmanager.com https://pagead2.googlesyndication.com https://*.googlesyndication.com",
   "style-src 'self' 'unsafe-inline'", "img-src 'self' data: blob: https:", "font-src 'self' data:",
-  `connect-src ${connectSources.join(' ')}`, "frame-src 'self' https://accounts.google.com https://*.googlesyndication.com https://*.doubleclick.net",
+  `connect-src ${connectSources.join(' ')}`, "frame-src 'self' https://accounts.google.com https://api.razorpay.com https://*.razorpay.com https://*.googlesyndication.com https://*.doubleclick.net",
   "worker-src 'self' blob:", "media-src 'self' blob:", isProduction ? 'upgrade-insecure-requests' : ''].filter(Boolean).join('; ');
 
 const imageToolIds = ['image-reducer','image-resizer','crop-image','rotate-image','watermark-image','flip-image','convert-image'];
@@ -62,7 +63,7 @@ const nextConfig: NextConfig = {
       { source: '/(.*)', headers: [
         { key: 'Content-Security-Policy', value: contentSecurityPolicy }, { key: 'X-Content-Type-Options', value: 'nosniff' },
         { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' }, { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
-        { key: 'Permissions-Policy', value: 'camera=(self), microphone=(), geolocation=(), payment=(), usb=()' },
+        { key: 'Permissions-Policy', value: 'camera=(self), microphone=(), geolocation=(), payment=(self), usb=()' },
         { key: 'Cross-Origin-Opener-Policy', value: 'same-origin-allow-popups' }, { key: 'Cross-Origin-Resource-Policy', value: 'same-site' },
         { key: 'X-DNS-Prefetch-Control', value: 'on' },
         ...(enableHsts ? [{ key: 'Strict-Transport-Security', value: `max-age=63072000; includeSubDomains${enableHstsPreload ? '; preload' : ''}` }] : [])] }];
