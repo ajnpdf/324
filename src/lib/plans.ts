@@ -18,15 +18,15 @@ export const AJN_PLANS: PlanDefinition[] = [
   {
     id: 'premium',
     name: 'Premium',
-    summary: 'Higher limits and a cleaner cross-device experience.',
+    summary: 'Prepaid Premium account access with a verified cross-device entitlement.',
     highlighted: true,
-    features: ['Higher file and batch limits when supported', 'Ad-free account experience', 'Saved preferences and account access', 'Priority server capacity when available', 'Desktop and mobile entitlement when released'],
+    features: ['30-day or 365-day prepaid access', 'Ad-free experience while signed in', 'Premium account status synced through Firebase', 'No automatic renewal in this release'],
   },
   {
     id: 'business',
     name: 'Business',
-    summary: 'API and organization features for teams.',
-    features: ['Shared billing', 'Higher API allowance', 'Team administration', 'Organization controls', 'Priority support when enabled'],
+    summary: 'Organization billing and API controls are available only by direct arrangement.',
+    features: ['Contact AJN for availability', 'No self-serve Business checkout yet', 'No unsupported organization claims'],
   },
 ];
 
