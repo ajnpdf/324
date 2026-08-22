@@ -4,13 +4,12 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import {
   FirebaseSession,
   firebaseAuthConfigured,
-  googleAuthConfigured,
-  googleClientId,
   parseFirebaseClaims,
   refreshFirebaseSession,
   sendPasswordReset,
-  signInFirebaseWithGoogleIdToken,
   signInWithEmail,
+  signInWithSocialProvider,
+  signOutFirebaseCompat,
   signUpWithEmail,
 } from './firebase-rest';
 
@@ -27,6 +26,8 @@ type AuthContextValue = {
   signIn(email: string, password: string): Promise<void>;
   signUp(email: string, password: string): Promise<void>;
   signInWithGoogle(): Promise<void>;
+  signInWithFacebook(): Promise<void>;
+  signInWithGithub(): Promise<void>;
   resetPassword(email: string): Promise<void>;
   signOut(): void;
   getIdToken(): Promise<string | null>;
@@ -136,25 +137,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [setAndPersist]);
 
   const signInWithGoogle = useCallback(async () => {
-    if (!googleAuthConfigured || !googleClientId) throw new Error('Google sign-in is not configured for this deployment.');
-    const google = (window as any).google;
-    if (!google?.accounts?.id) throw new Error('Google sign-in is still loading. Try again in a moment.');
-    const credential = await new Promise<string>((resolve, reject) => {
-      let settled = false;
-      google.accounts.id.initialize({
-        client_id: googleClientId,
-        callback: (response: { credential?: string }) => {
-          if (response?.credential) { settled = true; resolve(response.credential); }
-          else reject(new Error('Google did not return a sign-in credential.'));
-        },
-      });
-      google.accounts.id.prompt((notification: any) => {
-        if (!settled && (notification?.isNotDisplayed?.() || notification?.isSkippedMoment?.())) {
-          reject(new Error('Google sign-in could not open. Check popup/cookie settings or use email sign-in.'));
-        }
-      });
-    });
-    setAndPersist(await signInFirebaseWithGoogleIdToken(credential));
+    setAndPersist(await signInWithSocialProvider('google'));
+  }, [setAndPersist]);
+
+  const signInWithFacebook = useCallback(async () => {
+    setAndPersist(await signInWithSocialProvider('facebook'));
+  }, [setAndPersist]);
+
+  const signInWithGithub = useCallback(async () => {
+    setAndPersist(await signInWithSocialProvider('github'));
+  }, [setAndPersist]);
+
+  const signOut = useCallback(() => {
+    setAndPersist(null);
+    void signOutFirebaseCompat();
   }, [setAndPersist]);
 
   const claims = useMemo(() => session ? parseFirebaseClaims(session.idToken) : {}, [session]);
@@ -171,11 +167,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     signIn,
     signUp,
     signInWithGoogle,
+    signInWithFacebook,
+    signInWithGithub,
     resetPassword: sendPasswordReset,
-    signOut: () => setAndPersist(null),
+    signOut,
     getIdToken,
     refreshPlan,
-  }), [loading, session, claims, plan, planValidUntil, signIn, signUp, signInWithGoogle, setAndPersist, getIdToken, refreshPlan]);
+  }), [loading, session, claims, plan, planValidUntil, signIn, signUp, signInWithGoogle, signInWithFacebook, signInWithGithub, signOut, getIdToken, refreshPlan]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
