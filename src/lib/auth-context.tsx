@@ -8,7 +8,7 @@ import {
   refreshFirebaseSession,
   sendPasswordReset,
   signInWithEmail,
-  signInWithSocialProvider,
+  signInWithGoogleProvider,
   signOutFirebaseCompat,
   signUpWithEmail,
 } from './firebase-rest';
@@ -26,8 +26,6 @@ type AuthContextValue = {
   signIn(email: string, password: string): Promise<void>;
   signUp(email: string, password: string): Promise<void>;
   signInWithGoogle(): Promise<void>;
-  signInWithFacebook(): Promise<void>;
-  signInWithGithub(): Promise<void>;
   resetPassword(email: string): Promise<void>;
   signOut(): void;
   getIdToken(): Promise<string | null>;
@@ -137,15 +135,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [setAndPersist]);
 
   const signInWithGoogle = useCallback(async () => {
-    setAndPersist(await signInWithSocialProvider('google'));
-  }, [setAndPersist]);
-
-  const signInWithFacebook = useCallback(async () => {
-    setAndPersist(await signInWithSocialProvider('facebook'));
-  }, [setAndPersist]);
-
-  const signInWithGithub = useCallback(async () => {
-    setAndPersist(await signInWithSocialProvider('github'));
+    setAndPersist(await signInWithGoogleProvider());
   }, [setAndPersist]);
 
   const signOut = useCallback(() => {
@@ -167,13 +157,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     signIn,
     signUp,
     signInWithGoogle,
-    signInWithFacebook,
-    signInWithGithub,
     resetPassword: sendPasswordReset,
     signOut,
     getIdToken,
     refreshPlan,
-  }), [loading, session, claims, plan, planValidUntil, signIn, signUp, signInWithGoogle, signInWithFacebook, signInWithGithub, signOut, getIdToken, refreshPlan]);
+  }), [loading, session, claims, plan, planValidUntil, signIn, signUp, signInWithGoogle, signOut, getIdToken, refreshPlan]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
