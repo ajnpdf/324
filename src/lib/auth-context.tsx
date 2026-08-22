@@ -125,7 +125,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!session) return;
     void refreshPlan();
-  }, [session?.localId, refreshPlan]);
+  }, [session, refreshPlan]);
 
   const signIn = useCallback(async (email: string, password: string) => {
     setAndPersist(await signInWithEmail(email, password));
