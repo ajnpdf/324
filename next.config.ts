@@ -8,13 +8,13 @@ const backendOrigins = [...new Set(configuredPdfBackendCandidates(isProduction).
 
 const connectSources = [
   "'self'", ...backendOrigins,
-  'https://identitytoolkit.googleapis.com', 'https://securetoken.googleapis.com', 'https://www.googleapis.com', 'https://accounts.google.com', 'https://*.firebaseapp.com',
+  'https://identitytoolkit.googleapis.com', 'https://securetoken.googleapis.com', 'https://www.googleapis.com', 'https://apis.google.com', 'https://accounts.google.com', 'https://*.firebaseapp.com',
   'https://api.razorpay.com', 'https://*.razorpay.com',
   'https://www.google-analytics.com', 'https://region1.google-analytics.com', 'https://*.google-analytics.com',
   'https://pagead2.googlesyndication.com', 'https://*.googlesyndication.com', 'https://*.doubleclick.net'];
 const contentSecurityPolicy = [
   "default-src 'self'", "base-uri 'self'", "object-src 'none'", "frame-ancestors 'self'", "form-action 'self'",
-  "script-src 'self' 'unsafe-inline' https://www.gstatic.com https://accounts.google.com https://checkout.razorpay.com https://www.googletagmanager.com https://pagead2.googlesyndication.com https://*.googlesyndication.com",
+  "script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com https://accounts.google.com https://checkout.razorpay.com https://www.googletagmanager.com https://pagead2.googlesyndication.com https://*.googlesyndication.com",
   "style-src 'self' 'unsafe-inline'", "img-src 'self' data: blob: https:", "font-src 'self' data:",
   `connect-src ${connectSources.join(' ')}`, "frame-src 'self' https://*.firebaseapp.com https://accounts.google.com https://api.razorpay.com https://*.razorpay.com https://*.googlesyndication.com https://*.doubleclick.net",
   "worker-src 'self' blob:", "media-src 'self' blob:", isProduction ? 'upgrade-insecure-requests' : ''].filter(Boolean).join('; ');
