@@ -11,7 +11,7 @@ import MergePdf from './MergePdf';
 import { notFound } from 'next/navigation';
 
 /** AJN Universal Tool Connector — one production processor per capability. */
-const SERVER_CONVERSION_IDS = new Set(CONVERSION_TOOLS.map((tool) => tool.id));
+const SERVER_CONVERSION_IDS = new Set([...CONVERSION_TOOLS.map((tool) => tool.id), 'png-to-pdf']);
 
 // Old AJN URLs stay useful, but execute the same canonical backend processor.
 // This prevents duplicate pages from drifting into broken or fake implementations.
@@ -60,8 +60,7 @@ const TOOL_COMPONENTS: Record<string, any> = {
   'smart-read': dynamic(() => import('./UnavailableTool'), { ssr: false }),
   'pdf-a': dynamic(() => import('./UnavailableTool'), { ssr: false }),
 
-  // Image tools
-  'png-to-pdf': dynamic(() => import('./PngToPdf'), { ssr: false }),
+  // Image tools that are intentionally browser-native.
   'extract-images': dynamic(() => import('./ExtractImages'), { ssr: false }),
   'photo-editor': dynamic(() => import('./PhotoEditor'), { ssr: false }),
   'crop-image': dynamic(() => import('./CropImage'), { ssr: false }),

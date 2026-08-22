@@ -7,7 +7,6 @@ export { default as ConvertImage } from "./ConvertImage";
 export { default as CropImage } from "./CropImage";
 export { default as CropPdf } from "./CropPdf";
 export { default as DeletePages } from "./DeletePages";
-export { default as DocumentScanner } from "./DocumentScanner";
 export { default as ExtractImages } from "./ExtractImages";
 export { default as FlattenPdf } from "./FlattenPdf";
 export { default as FlipImage } from "./FlipImage";

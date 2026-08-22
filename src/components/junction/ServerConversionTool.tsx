@@ -16,7 +16,7 @@ const PDF_IMAGE_IDS = new Set([
   'pdf-to-image','pdf-to-jpg','pdf-to-jpeg','pdf-to-png','pdf-to-webp',
   'pdf-to-tiff','pdf-to-bmp','pdf-to-gif','pdf-to-svg','pdf-to-avif','pdf-to-heic']);
 const IMAGE_PDF_IDS = new Set([
-  'image-to-pdf','jpg-to-pdf','jpeg-to-pdf','webp-to-pdf','tiff-to-pdf','bmp-to-pdf','gif-to-pdf','heic-to-pdf',
+  'image-to-pdf','jpg-to-pdf','jpeg-to-pdf','png-to-pdf','webp-to-pdf','tiff-to-pdf','bmp-to-pdf','gif-to-pdf','svg-to-pdf','heic-to-pdf',
 ]);
 
 function extensionAccept(extensions: string[] | undefined): string {
@@ -34,7 +34,7 @@ export default function ServerConversionTool({ toolId }: { toolId: string }) {
   const [files,setFiles]=useState<ToolFile[]>([]);
   const [sourceUrl,setSourceUrl]=useState('');
   const [outputName,setOutputName]=useState(toolId);
-const [dpi,setDpi]=useState(180);
+  const [dpi,setDpi]=useState(180);
   const [quality,setQuality]=useState(92);
   const [grayscale,setGrayscale]=useState(false);
   const [pageRange,setPageRange]=useState('all');
@@ -62,6 +62,8 @@ const [dpi,setDpi]=useState(180);
   const multiple=manifest?.multiFile??policy.maxFiles>1;
   const accept=extensionAccept(manifest?.inputExtensions);
   const selectionSub=manifest?.inputExtensions?.join(', ')||t('conversion.supportedFormats');
+  const inputFormats=manifest?.inputExtensions?.map(value=>value.replace(/^\./,'').toUpperCase()).join(', ')||(isUrlTool?'URL':'Checking');
+  const outputFormat=manifest?.outputExtension?.replace(/^\./,'').toUpperCase()||'Checking';
   const onFilesChange=(next:ToolFile[])=>{const validation=validateBackendSelection(next.map(item=>item.file),policy.maxFiles,backendHealth);if(validation){setError(validation);return;}setError('');setFiles(next);};
   const canProcess=Boolean(tool&&status!=='processing'&&backendReady&&manifest?.available===true&&(isUrlTool?/^https?:\/\//i.test(sourceUrl.trim()):files.length>0));
   const qualityLimitation=conversionQualityLimitation(toolId,manifest?.limitation||policy.limitation);
@@ -92,6 +94,7 @@ const [dpi,setDpi]=useState(180);
         options:{dpi,quality,grayscale,pages:pageRange,page_size:pageSize,orientation,margin_mm:marginMm,auto_rotate:true,deskew:true,denoise:true,contrast:1.35},
       });
       if(!converted.blob.size)throw new Error('The converter returned an empty output file.');
+      if(manifest.outputExtension&&!converted.filename.toLowerCase().endsWith(manifest.outputExtension.toLowerCase()))throw new Error(`The processing server returned an unexpected output format. Expected ${manifest.outputExtension.toUpperCase()}.`);
       setProcessingStage('processing.finishing');setResult(converted);setStatus('done');
       sendAjnAnalytics({event_name:'tool_complete',path:window.location.pathname,tool_id:toolId});
     }catch(cause){setStatus('idle');setProcessingStage('processing.preparing');if(getPdfBackendErrorCode(cause)==='CANCELLED'){setError('');return;}setError(friendlyBackendError(t,cause));sendAjnAnalytics({event_name:'tool_error',path:window.location.pathname,tool_id:toolId});}
@@ -102,11 +105,13 @@ const [dpi,setDpi]=useState(180);
   return <ToolWorkspace title={tool.name} description={tool.desc} accent={tool.cat==='img'?'#10B981':'#2563EB'}>
     <div className="space-y-4">
       {status==='checking'?<div className="flex min-h-48 items-center justify-center gap-3 text-sm font-bold text-muted-foreground"><Loader2 className="h-5 w-5 animate-spin text-blue-600"/>{t('processing.preparing')}</div>
-      :status==='done'&&result?<Done msg={t('result.ready')} onDownload={()=>dl(result.blob,result.filename)} dlLabel={t('common.download')} onReset={reset} shareFile={{blob:result.blob,name:result.filename}}/>
+      :status==='done'&&result?<Done msg={`${t('result.ready')} · ${outputFormat}`} onDownload={()=>dl(result.blob,result.filename)} dlLabel={`${t('common.download')} ${outputFormat}`} onReset={reset} shareFile={{blob:result.blob,name:result.filename}}/>
       :<>
         {manifest?.available===false&&<Info bg="rgba(239,68,68,.08)" col="#991B1B">{manifest.unavailableReason||t('conversion.dependencyMissing')}</Info>}
         {availabilityIssue&&<div className="rounded-2xl border border-red-200 bg-red-50 p-4"><div className="text-sm font-bold text-red-900">{availabilityIssue==='service'?t('errors.SERVICE_UNAVAILABLE'):t('conversion.dependencyMissing')}</div><button type="button" onClick={()=>void refreshAvailability()} className="mt-3 rounded-xl border border-red-200 bg-white px-3 py-2 text-xs font-black text-red-800">{t('common.tryAgain')}</button></div>}
         {isUrlTool?<F label={t('conversion.publicUrl')} hint={t('conversion.publicUrlHint')}><input value={sourceUrl} onChange={e=>setSourceUrl(e.target.value)} placeholder="https://example.com/article" style={IS} inputMode="url"/></F>:<Drop files={files} onChange={onFilesChange} accept={accept} multiple={multiple} label={multiple?t('common.chooseFiles'):t('common.chooseFile')} sub={selectionSub}/>}
+
+        <Info bg="rgba(37,99,235,.08)" col="#1D4ED8">Input: {inputFormats} → Output: {outputFormat}{backendHealth?.version?` · Processing service ${backendHealth.version}`:''}</Info>
 
         <div className="rounded-2xl border border-border bg-muted/45 p-4 space-y-4">
           <G2><F label={t('common.outputName')} hint={t('conversion.outputExtensionHint',{extension:manifest?.outputExtension||''})}><input value={outputName} onChange={e=>setOutputName(e.target.value)} maxLength={100} style={IS}/></F>
@@ -119,6 +124,7 @@ const [dpi,setDpi]=useState(180);
           {false&&<F label={t('common.appearance')}><Pills opts={[{label:t('conversion.documentCleanup'),value:'clean'},{label:t('conversion.colourMode'),value:'colour'}]} val={grayscale?'clean':'colour'} onChange={value=>setGrayscale(value==='clean')}/></F>}
         </div>
 
+        {PDF_IMAGE_IDS.has(toolId)&&manifest?.outputExtension==='.zip'&&<Info bg="rgba(14,165,233,.08)" col="#075985">This tool renders the requested image format inside the ZIP. Each selected PDF page becomes its own {toolId.replace('pdf-to-','').replace('image','png').toUpperCase()} image.</Info>}
         {optionSummary&&<Info>{optionSummary}</Info>}
         {qualityLimitation&&<Info bg="rgba(245,158,11,.09)" col="#92400E">{qualityLimitation}</Info>}
         <Err msg={error}/>

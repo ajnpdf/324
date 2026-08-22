@@ -25,8 +25,8 @@ check(
   'frontend and backend fallback server limits are aligned at 30/30 MB',
   /maxFileSizeMb:\s*30/.test(constants) &&
   /maxTotalSizeMb:\s*30/.test(constants) &&
-  /AJN_MAX_FILE_MB", "30"/.test(backend) &&
-  /AJN_MAX_TOTAL_MB", "30"/.test(backend)
+  /AJN_MAX_FILE_MB['"],\s*['"]30['"]/.test(backend) &&
+  /AJN_MAX_TOTAL_MB['"],\s*['"]30['"]/.test(backend)
 );
 
 const staleLimitCopy = [
@@ -83,7 +83,10 @@ const requiredCiGates = [
   'verify:r13-runtime'];
 check('GitHub production CI contains the hardened regression gates', requiredCiGates.every((gate) => workflow.includes(gate)));
 check('GitHub production CI cancels stale runs', workflow.includes('cancel-in-progress: true') && workflow.includes('concurrency:'));
-check('release metadata identifies R18', layout.includes("'ajn-release': '3.1.0-r18'"));
+check(
+  'release metadata preserves R18-or-newer hardening lineage',
+  /'ajn-release':\s*'3\.(?:1\.0-r18|[2-9]\.\d+-r\d+)'/.test(layout)
+);
 check(
   'R18 verifier is wired into npm scripts and full check',
   pkg.scripts?.['verify:r18-production'] === 'node scripts/verify-r18-production-readiness.mjs' &&

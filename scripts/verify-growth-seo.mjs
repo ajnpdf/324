@@ -30,7 +30,6 @@ const layout = read('src/app/layout.tsx');
 const robots = read('src/app/robots.ts');
 const analytics = read('src/components/analytics/site-analytics.tsx');
 const backend = read('backend/app/main.py');
-const installer = read('INSTALL_WINDOWS_CONVERTERS.ps1');
 const env = read('.env.example');
 
 strategy.includes('ICP_SEGMENTS') && strategy.includes('SEARCH_INTENT_CLUSTERS') ? pass('ICP and search intent mapping configured') : fail('ICP/search intent mapping missing');

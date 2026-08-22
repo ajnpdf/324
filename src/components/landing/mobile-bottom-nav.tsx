@@ -2,15 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FileText, Home, Image as ImageIcon, LayoutGrid, Repeat2 } from "lucide-react";
+import { FileSignature, Home, LayoutGrid, UserRound } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/lib/auth-context";
 
-const items = [
+const baseItems = [
   { label: "Home", href: "/", icon: Home },
   { label: "Tools", href: "/pdf-tools", icon: LayoutGrid },
-  { label: "Convert", href: "/conversion-tools", icon: Repeat2 },
-  { label: "Images", href: "/image-tools", icon: ImageIcon },
-  { label: "PDF", href: "/pdf-utilities", icon: FileText }] as const;
+  { label: "Sign", href: "/sign-pdf", icon: FileSignature },
+] as const;
 
 function isActive(pathname: string, href: string) {
   if (href === "/") return pathname === "/";
@@ -19,7 +19,9 @@ function isActive(pathname: string, href: string) {
 
 export function MobileBottomNav() {
   const pathname = usePathname();
-  if (pathname.startsWith("/admin")) return null;
+  const auth = useAuth();
+  if (["/admin", "/login", "/signup", "/forgot-password"].some((prefix) => pathname.startsWith(prefix))) return null;
+  const items = [...baseItems, { label: auth.session ? "Account" : "Login", href: auth.session ? "/account" : "/login", icon: UserRound }];
 
   return (
     <nav className="ajn-mobile-bottom-nav md:hidden" aria-label="Quick navigation">
@@ -27,13 +29,7 @@ export function MobileBottomNav() {
         {items.map(({ label, href, icon: Icon }) => {
           const active = isActive(pathname, href);
           return (
-            <Link
-              key={href}
-              href={href}
-              aria-current={active ? "page" : undefined}
-              className={cn("ajn-mobile-nav-item", active && "is-active")}
-              data-analytics-id={`bottom-nav-${label.toLowerCase()}`}
-            >
+            <Link key={href} href={href} aria-current={active ? "page" : undefined} className={cn("ajn-mobile-nav-item", active && "is-active")} data-analytics-id={`bottom-nav-${label.toLowerCase()}`}>
               <span className="ajn-mobile-nav-icon"><Icon aria-hidden="true" /></span>
               <span>{label}</span>
             </Link>
