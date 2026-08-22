@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ADSENSE_PUBLISHER } from '@/lib/ad-slots';
 import { isAdEligiblePath } from '@/components/adsense-script-loader';
 import { useLanguage } from '@/lib/i18n/language-context';
+import { useAuth } from '@/lib/auth-context';
 
 declare global {
   interface Window { adsbygoogle?: unknown[]; }
@@ -30,6 +31,7 @@ export function AdSenseUnit({
   label,
 }: AdSenseUnitProps) {
   const { t } = useLanguage();
+  const auth = useAuth();
   const accessibleLabel = label || t('common.advertisement');
   const adRef = useRef<HTMLModElement | null>(null);
   const initialized = useRef(false);
@@ -40,7 +42,7 @@ export function AdSenseUnit({
     const syncConsent = () => {
       const host = window.location.hostname.toLowerCase();
       const productionHost = host === 'ajnpdf.com' || host === 'www.ajnpdf.com';
-      setAllowed(productionHost && isAdEligiblePath(window.location.pathname) && localStorage.getItem('ajn_cookie_consent') === 'accepted');
+      setAllowed(auth.plan === 'free' && productionHost && isAdEligiblePath(window.location.pathname) && localStorage.getItem('ajn_cookie_consent') === 'accepted');
     };
     syncConsent();
     window.addEventListener(CONSENT_EVENT, syncConsent);
@@ -49,7 +51,7 @@ export function AdSenseUnit({
       window.removeEventListener(CONSENT_EVENT, syncConsent);
       window.removeEventListener('storage', syncConsent);
     };
-  }, []);
+  }, [auth.plan]);
 
   useEffect(() => {
     if (!allowed || !slot) return;
@@ -69,7 +71,6 @@ export function AdSenseUnit({
     return () => window.removeEventListener(READY_EVENT, requestAd);
   }, [allowed, slot]);
 
-
   useEffect(() => {
     const node = adRef.current;
     if (!allowed || !slot || !node || typeof MutationObserver === 'undefined') return;
@@ -85,8 +86,8 @@ export function AdSenseUnit({
   }, [allowed, slot]);
 
   // Keep verification independent through the AdSense meta tag and /ads.txt.
-  // Ads themselves load only after advertising consent and only in production.
-  if (!slot || process.env.NODE_ENV !== 'production' || !allowed || adStatus === 'unfilled') return null;
+  // Premium/Business account sessions remain ad-free; free ads require consent.
+  if (auth.plan !== 'free' || !slot || process.env.NODE_ENV !== 'production' || !allowed || adStatus === 'unfilled') return null;
 
   const adStyle: React.CSSProperties = responsive
     ? { display: 'block', width: '100%' }

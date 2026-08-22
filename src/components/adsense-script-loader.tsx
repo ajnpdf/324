@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { ADSENSE_PUBLISHER } from '@/lib/ad-slots';
+import { useAuth } from '@/lib/auth-context';
 
 const SCRIPT_ID = 'ajn-adsense-consent-script';
 const READY_EVENT = 'ajn-adsense-ready';
@@ -16,13 +17,19 @@ export function isAdEligiblePath(pathname: string): boolean {
 }
 
 export function AdSenseScriptLoader() {
+  const auth = useAuth();
   useEffect(() => {
     const load = () => {
+      const existing = document.getElementById(SCRIPT_ID);
+      if (auth.plan !== 'free') {
+        if (existing) existing.remove();
+        return;
+      }
       const host = window.location.hostname.toLowerCase();
       const isProductionHost = host === 'ajnpdf.com' || host === 'www.ajnpdf.com';
       const accepted = localStorage.getItem('ajn_cookie_consent') === 'accepted';
       if (!isProductionHost || !accepted || !isAdEligiblePath(window.location.pathname)) return;
-      if (document.getElementById(SCRIPT_ID)) {
+      if (existing) {
         window.dispatchEvent(new Event(READY_EVENT));
         return;
       }
@@ -37,6 +44,6 @@ export function AdSenseScriptLoader() {
     load();
     window.addEventListener('ajn-cookie-consent-changed', load);
     return () => window.removeEventListener('ajn-cookie-consent-changed', load);
-  }, []);
+  }, [auth.plan]);
   return null;
 }

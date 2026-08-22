@@ -15,19 +15,22 @@ import {
 } from './firebase-rest';
 
 const STORAGE_KEY = 'ajn.firebase.session.v1';
+type Plan = 'free' | 'premium' | 'business';
 
 type AuthContextValue = {
   configured: boolean;
   loading: boolean;
   session: FirebaseSession | null;
   claims: ReturnType<typeof parseFirebaseClaims>;
-  plan: 'free' | 'premium' | 'business';
+  plan: Plan;
+  planValidUntil: string | null;
   signIn(email: string, password: string): Promise<void>;
   signUp(email: string, password: string): Promise<void>;
   signInWithGoogle(): Promise<void>;
   resetPassword(email: string): Promise<void>;
   signOut(): void;
   getIdToken(): Promise<string | null>;
+  refreshPlan(): Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -41,7 +44,7 @@ function persist(value: FirebaseSession | null) {
   }
 }
 
-function normalizePlan(value: unknown, premium: unknown): 'free' | 'premium' | 'business' {
+function normalizePlan(value: unknown, premium: unknown): Plan {
   if (value === 'business') return 'business';
   if (value === 'premium' || premium === true) return 'premium';
   return 'free';
@@ -50,9 +53,15 @@ function normalizePlan(value: unknown, premium: unknown): 'free' | 'premium' | '
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<FirebaseSession | null>(null);
   const [loading, setLoading] = useState(true);
+  const [billingPlan, setBillingPlan] = useState<Plan | null>(null);
+  const [planValidUntil, setPlanValidUntil] = useState<string | null>(null);
 
   const setAndPersist = useCallback((value: FirebaseSession | null) => {
     setSession(value);
+    if (!value) {
+      setBillingPlan(null);
+      setPlanValidUntil(null);
+    }
     persist(value);
   }, []);
 
@@ -91,6 +100,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [session, setAndPersist]);
 
+  const refreshPlan = useCallback(async () => {
+    const token = await getIdToken();
+    if (!token) {
+      setBillingPlan(null);
+      setPlanValidUntil(null);
+      return;
+    }
+    try {
+      const response = await fetch('/api/billing/account', {
+        headers: { Authorization: `Bearer ${token}` },
+        cache: 'no-store',
+      });
+      if (!response.ok) return;
+      const payload = await response.json();
+      const nextPlan = normalizePlan(payload?.plan, payload?.plan === 'premium');
+      setBillingPlan(nextPlan);
+      setPlanValidUntil(typeof payload?.valid_until === 'string' ? payload.valid_until : null);
+    } catch {
+      // Billing can be disabled while core Firebase authentication remains available.
+    }
+  }, [getIdToken]);
+
+  useEffect(() => {
+    if (!session) return;
+    void refreshPlan();
+  }, [session, refreshPlan]);
+
   const signIn = useCallback(async (email: string, password: string) => {
     setAndPersist(await signInWithEmail(email, password));
   }, [setAndPersist]);
@@ -122,7 +158,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [setAndPersist]);
 
   const claims = useMemo(() => session ? parseFirebaseClaims(session.idToken) : {}, [session]);
-  const plan = normalizePlan(claims.plan, claims.premium);
+  const claimPlan = normalizePlan(claims.plan, claims.premium);
+  const plan = billingPlan && billingPlan !== 'free' ? billingPlan : claimPlan;
 
   const value = useMemo<AuthContextValue>(() => ({
     configured: firebaseAuthConfigured,
@@ -130,13 +167,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     session,
     claims,
     plan,
+    planValidUntil,
     signIn,
     signUp,
     signInWithGoogle,
     resetPassword: sendPasswordReset,
     signOut: () => setAndPersist(null),
     getIdToken,
-  }), [loading, session, claims, plan, signIn, signUp, signInWithGoogle, setAndPersist, getIdToken]);
+    refreshPlan,
+  }), [loading, session, claims, plan, planValidUntil, signIn, signUp, signInWithGoogle, setAndPersist, getIdToken, refreshPlan]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
