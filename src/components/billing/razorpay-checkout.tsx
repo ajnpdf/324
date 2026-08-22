@@ -96,6 +96,7 @@ export function RazorpayCheckout({ monthlyInr, yearlyInr }: { monthlyInr: number
                 headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${currentToken}` },
                 body: JSON.stringify(result),
               }));
+              await auth.refreshPlan();
               setSuccess(`Premium activated${verified?.valid_until ? ` until ${new Date(verified.valid_until).toLocaleDateString()}` : ''}.`);
               resolve();
             } catch (reason) {
