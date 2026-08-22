@@ -18,6 +18,12 @@ const firebaseRest = read('src/lib/firebase-rest.ts');
 const firebaseToken = read('src/lib/firebase-token.ts');
 const adminProxy = read('src/app/api/account/admin-analytics/route.ts');
 const pricing = read('src/app/pricing/page.tsx');
+const billingUi = read('src/components/billing/razorpay-checkout.tsx');
+const billingServer = read('src/lib/billing-server.ts');
+const billingBackend = read('backend/app/billing_routes.py');
+const backendAsgi = read('backend/app/asgi.py');
+const backendRequirements = read('backend/requirements.txt');
+const plans = read('src/lib/plans.ts');
 const developer = read('src/app/developers/page.tsx');
 const androidBuild = read('scripts/R21_BUILD_ANDROID.ps1');
 const finalProduction = read('scripts/R21_FINAL_PRODUCTION.ps1');
@@ -36,22 +42,29 @@ check('header exposes product ecosystem and account surfaces', ['Pricing','AJN D
 check('mobile navigation no longer exposes image directory', !mobileNav.includes('/image-tools') && mobileNav.includes('/sign-pdf') && mobileNav.includes('/account'));
 check('Firebase auth provider is mounted globally', layout.includes('<AuthProvider>') && layout.includes('accounts.google.com/gsi/client'));
 check('Firebase auth REST flow covers signup, login, reset, Google and refresh', ['accounts:signUp','accounts:signInWithPassword','accounts:sendOobCode','accounts:signInWithIdp','securetoken.googleapis.com'].every((value) => firebaseRest.includes(value)));
-check('account session handles refresh and plan claims', auth.includes('refreshFirebaseSession') && auth.includes("'premium'") && auth.includes("'business'"));
+check('account session refreshes verified billing entitlement', auth.includes('refreshFirebaseSession') && auth.includes("'/api/billing/account'") && auth.includes('refreshPlan') && auth.includes("'premium'"));
 check('server verifies Firebase token before admin analytics', firebaseToken.includes('securetoken.google.com') && firebaseToken.includes('Firebase token signature is invalid') && adminProxy.includes('verifyFirebaseIdToken') && adminProxy.includes('AJN_ANALYTICS_ADMIN_TOKEN'));
 check('admin secret is not exposed through NEXT_PUBLIC variables', !adminProxy.includes('NEXT_PUBLIC_AJN_ADMIN') && !firebaseToken.includes('NEXT_PUBLIC_AJN_ADMIN'));
-check('pricing is billing-link gated instead of inventing checkout', pricing.includes('AJN_BILLING_URL') && pricing.includes('Billing link not configured yet'));
+check('Razorpay checkout is server-order based and capture verified', pricing.includes('RazorpayCheckout') && billingUi.includes("'/api/billing/order'") && billingUi.includes("'/api/billing/verify'") && billingBackend.includes("'/orders'") && billingBackend.includes("'/payments/{payment_id}'") && billingBackend.includes("status') or '') != 'captured'"));
+check('Razorpay signatures use HMAC SHA256 and timing-safe comparison', billingBackend.includes('hmac.new') && billingBackend.includes('hashlib.sha256') && billingBackend.includes('hmac.compare_digest') && billingBackend.includes('X-Razorpay-Signature'));
+check('billing writes Premium entitlement through trusted Firestore server code', billingBackend.includes("collection('subscriptions')") && billingBackend.includes("collection('billingOrders')") && billingBackend.includes('@firestore.transactional') && backendRequirements.includes('google-cloud-firestore==2.28.1'));
+check('browser never receives Razorpay Key Secret or webhook secret', !billingUi.includes('RAZORPAY_KEY_SECRET') && !billingUi.includes('RAZORPAY_WEBHOOK_SECRET') && !pricing.includes('RAZORPAY_KEY_SECRET') && !pricing.includes('RAZORPAY_WEBHOOK_SECRET') && !billingServer.includes('RAZORPAY_KEY_SECRET'));
+check('billing proxy verifies Firebase before forwarding trusted identity', billingServer.includes('verifyFirebaseIdToken') && billingServer.includes('AJN_BILLING_INTERNAL_TOKEN') && billingServer.includes('X-AJN-User-UID') && billingServer.includes('X-AJN-User-Email'));
+check('production ASGI mounts billing routes', backendAsgi.includes('billing_router') && backendAsgi.includes('include_router'));
+check('Razorpay CSP allows checkout without opening generic script origins', next.includes('https://checkout.razorpay.com') && next.includes('https://api.razorpay.com') && next.includes('https://*.razorpay.com'));
+check('Premium claims match enforced prepaid and ad-free behavior', plans.includes('30-day or 365-day prepaid access') && plans.includes('Ad-free experience while signed in') && plans.includes('No automatic renewal in this release'));
 check('developer page exposes existing API v1 contract', developer.includes('/api/v1/status') && developer.includes('/api/v1/capabilities') && developer.includes('/api/v1/convert/{tool_id}') && developer.includes('/api/v1/sign/electronic'));
 check('image routes are redirected to AJN IMG handoff', next.includes('imageToolRedirects') && next.includes("destination: '/img'"));
 check('Firebase and Windows/Android setup assets exist', ['firebase.json','firestore.rules','firestore.indexes.json','.env.r21.example','scripts/R21_FIREBASE_SETUP.ps1','scripts/R21_CREATE_API_KEY.ps1','scripts/R21_BUILD_ANDROID.ps1','scripts/R21_SETUP_ALL.ps1','scripts/R21_FINAL_PRODUCTION.ps1'].every(exists));
 check('Android build verifies explicit package identity and signer fingerprint', androidBuild.includes('ExpectedPackageId') && androidBuild.includes('twa-manifest.json') && androidBuild.includes('keytool -printcert -jarfile') && androidBuild.includes('R21_ANDROID_BUILD.json'));
 check('Digital Asset Links are server-configured without public secrets', assetLinks.includes('AJN_ANDROID_PACKAGE_ID') && assetLinks.includes('AJN_ANDROID_SHA256_FINGERPRINTS') && assetLinks.includes('delegate_permission/common.handle_all_urls') && !assetLinks.includes('NEXT_PUBLIC_'));
-check('final production helper removes billing and uses stderr-safe Vercel commands', finalProduction.includes("Set-LocalEnvValue 'NEXT_PUBLIC_AJN_BILLING_URL' ''") && finalProduction.includes("vercel@latest env rm NEXT_PUBLIC_AJN_BILLING_URL") && finalProduction.includes('$env:ComSpec') && finalProduction.includes('2>&1'));
+check('legacy billing-link env is removed by final production helper', finalProduction.includes("Set-LocalEnvValue 'NEXT_PUBLIC_AJN_BILLING_URL' ''") && finalProduction.includes("vercel@latest env rm NEXT_PUBLIC_AJN_BILLING_URL"));
 check('final production helper synchronizes admin token and verifies live R21', finalProduction.includes('AJN_ANALYTICS_ADMIN_TOKEN') && finalProduction.includes('gcloud run services update') && finalProduction.includes('https://www.ajnpdf.com/') && finalProduction.includes('3.2.0-r21'));
 check('ecosystem product pages exist', ['src/app/account/page.tsx','src/app/admin/page.tsx','src/app/pricing/page.tsx','src/app/desktop/page.tsx','src/app/mobile/page.tsx','src/app/sign/page.tsx','src/app/developers/page.tsx','src/app/img/page.tsx'].every(exists));
 
 if (failures.length) {
-  console.error('AJN PDF R21 PRODUCT ECOSYSTEM: FAIL');
+  console.error('AJN PDF PRODUCT ECOSYSTEM: FAIL');
   failures.forEach((failure) => console.error(`- ${failure}`));
   process.exit(1);
 }
-console.log('AJN PDF R21 PRODUCT ECOSYSTEM: PASS');
+console.log('AJN PDF PRODUCT ECOSYSTEM: PASS');
