@@ -49,7 +49,7 @@ WORKDIR /app
 COPY requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir -r requirements.txt \
-    && python -c "import fitz,pikepdf,docx,openpyxl,PIL,reportlab,ebooklib,cairosvg; print('PASS: backend Python runtime imports')"
+    && python -c "import fitz,pikepdf,docx,openpyxl,PIL,reportlab,ebooklib,cairosvg; from google.cloud import firestore; print('PASS: backend Python runtime imports')"
 
 COPY app ./app
 COPY public_backend_acceptance_test.py ./public_backend_acceptance_test.py
@@ -66,8 +66,8 @@ USER 10001
 # Build the exact image only if the FastAPI application starts and the three
 # public temporary-server workflows produce valid results end to end.
 RUN set -eu; \
-    python -c "from app.main import app; assert app.title == 'AJN PDF Conversion API'; print('PASS: FastAPI application import')"; \
-    uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 1 --proxy-headers > /tmp/ajn-build-uvicorn.log 2>&1 & \
+    python -c "from app.asgi import app; assert app.title == 'AJN PDF Conversion API'; print('PASS: FastAPI application import')"; \
+    uvicorn app.asgi:app --host 127.0.0.1 --port 8000 --workers 1 --proxy-headers > /tmp/ajn-build-uvicorn.log 2>&1 & \
     server_pid=$!; \
     trap 'kill "$server_pid" 2>/dev/null || true' EXIT INT TERM; \
     attempt=0; \
@@ -85,4 +85,4 @@ RUN set -eu; \
     wait "$server_pid" 2>/dev/null || true; \
     trap - EXIT INT TERM
 
-CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT} --workers 1 --proxy-headers"]
+CMD ["sh", "-c", "uvicorn app.asgi:app --host 0.0.0.0 --port ${PORT} --workers 1 --proxy-headers"]
