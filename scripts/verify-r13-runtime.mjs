@@ -63,23 +63,17 @@ async function mapLimit(items, limit, worker) {
   await Promise.all(runners);
 }
 
-const aliases = {
-  '/tools/word-pdf': '/word-to-pdf',
-  '/tools/pdf-word': '/pdf-to-word',
-  '/tools/excel-pdf': '/excel-to-pdf',
-  '/tools/pdf-excel': '/pdf-to-excel',
-  '/tools/ppt-pdf': '/ppt-to-pdf',
-  '/tools/jpg-pdf': '/jpg-to-pdf',
-  '/tools/pdf-jpg': '/pdf-to-jpg',
-  '/tools/heic-pdf': '/heic-to-pdf',
-  '/tools/html-pdf': '/html-to-pdf',
-  '/tools/xml-pdf': '/xml-to-pdf',
-  '/tools/json-pdf': '/json-to-pdf',
-  '/tools/txt-pdf': '/txt-to-pdf',
-  '/tools/smart-read': '/pdf-text',
-  '/tools/pdf-ppt': '/pdf-to-powerpoint',
-  '/tools/psd-pdf': '/psd-pdf',
-};
+// R21 is PDF-only. Historical conversion aliases now retire to the PDF directory,
+// while the former PSD/image route hands off to the separate AJN IMG product.
+const retiredPdfAliases = [
+  'word-pdf','pdf-word','excel-pdf','pdf-excel','ppt-pdf','jpg-pdf','pdf-jpg','heic-pdf',
+  'html-pdf','xml-pdf','json-pdf','txt-pdf','smart-read','pdf-ppt',
+];
+const r21HistoricalRedirects = Object.fromEntries([
+  ...retiredPdfAliases.flatMap((slug) => [[`/${slug}`, '/pdf-tools'], [`/tools/${slug}`, '/pdf-tools']]),
+  ['/psd-pdf', '/img'],
+  ['/tools/psd-pdf', '/img'],
+]);
 
 try {
   let home;
@@ -141,16 +135,17 @@ try {
   });
   if (legacyResults.every((item) => item.ok)) pass(`all ${ids.length} legacy /tools/* URLs permanently redirect in one hop to root slugs`);
 
-  for (const [source, target] of Object.entries(aliases)) {
+  const redirectFailuresBefore = failures.length;
+  for (const [source, target] of Object.entries(r21HistoricalRedirects)) {
     const result = await request(source);
     const location = locationPath(result);
-    if (![301, 308].includes(result.response.status) || location !== target) fail(`${source}: expected permanent redirect to ${target}, got ${result.response.status} ${location || '(missing)'}`);
+    if (![301, 308].includes(result.response.status) || location !== target) {
+      fail(`${source}: expected R21 permanent redirect to ${target}, got ${result.response.status} ${location || '(missing)'}`);
+    }
   }
-  if (!failures.some((item) => item.startsWith('/tools/') && Object.keys(aliases).some((alias) => item.startsWith(alias)))) pass('historical alias redirect map is intentional and direct');
-
-  const psd = await request('/psd-pdf');
-  if (psd.response.status !== 410) fail(`/psd-pdf returned ${psd.response.status}; expected intentional 410 retirement`);
-  else pass('retired PSD-to-PDF endpoint returns intentional 410 instead of unrelated redirect');
+  if (failures.length === redirectFailuresBefore) {
+    pass('historical conversion aliases retire directly to /pdf-tools and PSD hands off directly to /img');
+  }
 
   const toolsDir = await request('/tools');
   if (![301, 308].includes(toolsDir.response.status) || locationPath(toolsDir) !== '/pdf-tools') fail(`/tools directory redirect is incorrect: ${toolsDir.response.status} ${locationPath(toolsDir)}`);
@@ -179,7 +174,7 @@ try {
     origin,
     canonicalTools: rootResults,
     legacyTools: legacyResults,
-    historicalAliases: aliases,
+    historicalRedirects: r21HistoricalRedirects,
     failures,
   };
   const builtReportPath = process.env.AJN_R13_BUILT_REPORT || path.join(root, 'R13_BUILT_RUNTIME_REPORT.json');
@@ -190,7 +185,7 @@ try {
     for (const failure of failures) console.error(`FAIL: ${failure}`);
     throw new Error(`R13 built runtime verification failed with ${failures.length} issue(s).`);
   }
-  console.log(`AJN PDF R13 BUILT RUNTIME VERIFICATION: PASS (${ids.length} root pages + ${ids.length} legacy redirects).`);
+  console.log(`AJN PDF R13 BUILT RUNTIME VERIFICATION: PASS (${ids.length} root pages + ${ids.length} legacy redirects + R21 historical redirects).`);
   console.log('Real Chrome/Edge rendering, field Core Web Vitals, CMP/AdSense behavior and public Vercel deployment remain live-environment gates.');
 } catch (error) {
   console.error(`FAIL: ${error instanceof Error ? error.message : String(error)}`);
