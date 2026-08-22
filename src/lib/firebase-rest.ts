@@ -22,8 +22,6 @@ export type FirebaseClaims = {
   [key: string]: unknown;
 };
 
-export type FirebaseSocialProvider = 'google' | 'facebook' | 'github';
-
 const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY?.trim() || '';
 export const firebaseProjectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID?.trim() || '';
 export const firebaseAuthDomain = process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN?.trim() || (firebaseProjectId ? `${firebaseProjectId}.firebaseapp.com` : '');
@@ -63,9 +61,9 @@ function socialError(error: any, fallback: string) {
     'auth/account-exists-with-different-credential': 'An account already exists for this email with another sign-in method. Sign in with that method first.',
     'auth/cancelled-popup-request': 'The previous sign-in window was cancelled. Try again.',
     'auth/network-request-failed': 'The sign-in service could not be reached. Check your connection and try again.',
-    'auth/operation-not-allowed': 'This sign-in provider is not enabled in Firebase yet.',
-    'auth/popup-blocked': 'Your browser blocked the sign-in window. Allow popups for AJN PDF and try again.',
-    'auth/popup-closed-by-user': 'The sign-in window was closed before authentication finished.',
+    'auth/operation-not-allowed': 'Google sign-in is not enabled in Firebase yet.',
+    'auth/popup-blocked': 'Your browser blocked the Google sign-in window. Allow popups for AJN PDF and try again.',
+    'auth/popup-closed-by-user': 'The Google sign-in window was closed before authentication finished.',
     'auth/unauthorized-domain': 'This AJN PDF domain is not authorized in Firebase Authentication.',
     'auth/user-disabled': 'This account is disabled.',
   };
@@ -99,13 +97,13 @@ function toSession(payload: any): FirebaseSession {
 }
 
 function loadScript(src: string, marker: string) {
-  if (typeof window === 'undefined') return Promise.reject(new Error('Social sign-in is only available in the browser.'));
+  if (typeof window === 'undefined') return Promise.reject(new Error('Google sign-in is only available in the browser.'));
   const existing = document.querySelector<HTMLScriptElement>(`script[data-ajn-auth="${marker}"]`);
   if (existing?.dataset.loaded === 'true') return Promise.resolve();
   return new Promise<void>((resolve, reject) => {
     const script = existing || document.createElement('script');
     const done = () => { script.dataset.loaded = 'true'; resolve(); };
-    const failed = () => reject(new Error('Firebase social sign-in could not load. Check your connection and try again.'));
+    const failed = () => reject(new Error('Firebase Google sign-in could not load. Check your connection and try again.'));
     script.addEventListener('load', done, { once: true });
     script.addEventListener('error', failed, { once: true });
     if (!existing) {
@@ -119,8 +117,8 @@ function loadScript(src: string, marker: string) {
 }
 
 async function ensureFirebaseCompat() {
-  if (!firebaseSocialAuthConfigured) throw new Error('Firebase social sign-in is not configured for this deployment.');
-  if (typeof window === 'undefined') throw new Error('Social sign-in is only available in the browser.');
+  if (!firebaseSocialAuthConfigured) throw new Error('Firebase Google sign-in is not configured for this deployment.');
+  if (typeof window === 'undefined') throw new Error('Google sign-in is only available in the browser.');
   const current = (window as any).firebase;
   if (current?.auth && current?.initializeApp) {
     if (!current.apps?.length) current.initializeApp({ apiKey, authDomain: firebaseAuthDomain, projectId: firebaseProjectId, ...(firebaseAppId ? { appId: firebaseAppId } : {}) });
@@ -173,25 +171,16 @@ export async function sendPasswordReset(email: string) {
   await identity('accounts:sendOobCode', { requestType: 'PASSWORD_RESET', email: email.trim() });
 }
 
-export async function signInWithSocialProvider(providerName: FirebaseSocialProvider) {
+export async function signInWithGoogleProvider() {
   try {
     const firebase = await ensureFirebaseCompat();
     const auth = firebase.auth();
-    let provider: any;
-    if (providerName === 'google') {
-      provider = new firebase.auth.GoogleAuthProvider();
-      provider.setCustomParameters({ prompt: 'select_account' });
-    } else if (providerName === 'facebook') {
-      provider = new firebase.auth.FacebookAuthProvider();
-      provider.addScope('email');
-    } else {
-      provider = new firebase.auth.GithubAuthProvider();
-      provider.addScope('user:email');
-    }
+    const provider = new firebase.auth.GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: 'select_account' });
     const result = await auth.signInWithPopup(provider);
     return await sessionFromCompatUser(result.user);
   } catch (error) {
-    throw socialError(error, `${providerName} sign-in failed.`);
+    throw socialError(error, 'Google sign-in failed.');
   }
 }
 
