@@ -44,9 +44,9 @@ export async function verifyFirebaseIdToken(rawToken: string): Promise<VerifiedF
   const certificate = certificates[header.kid];
   if (!certificate) throw new Error('Firebase token signing key is unknown.');
 
-  // X509Certificate.publicKey is already a PublicKeyObject. Passing that
-  // object back through createPublicKey() throws ERR_CRYPTO_INVALID_KEY_OBJECT_TYPE
-  // in Node.js and caused every otherwise-valid Firebase session to be rejected.
+  // X509Certificate.publicKey is already a PublicKeyObject. Re-wrapping that
+  // public object through another key-construction helper causes Node.js to
+  // reject otherwise-valid Firebase sessions with an invalid key-object error.
   const publicKey = new X509Certificate(certificate).publicKey;
   const validSignature = verify('RSA-SHA256', Buffer.from(`${parts[0]}.${parts[1]}`), publicKey, decodeBase64Url(parts[2]));
   if (!validSignature) throw new Error('Firebase token signature is invalid.');
