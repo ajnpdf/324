@@ -11,6 +11,7 @@ if (-not $Root) { $Root = Split-Path -Parent $PSScriptRoot }
 $Root = (Resolve-Path $Root).Path
 $EnvFile = Join-Path $Root '.env.local'
 $ExpectedRelease = '3.2.0-r21'
+$DefaultBackendUrl = 'https://ajn-pdf-api-rswf5f4f3q-el.a.run.app'
 $script:AJNLastExitCode = 0
 
 function Write-Section([string]$Text) {
@@ -19,7 +20,7 @@ function Write-Section([string]$Text) {
   Write-Host "============================================================" -ForegroundColor Magenta
 }
 
-function Invoke-Cmd([string]$Command, [switch]$AllowFailure) {
+function Invoke-Cmd([string]$Command, [switch]$AllowFailure, [string]$FailureLabel = 'Native command failed') {
   $saved = $ErrorActionPreference
   $ErrorActionPreference = 'Continue'
   try {
@@ -29,7 +30,7 @@ function Invoke-Cmd([string]$Command, [switch]$AllowFailure) {
     $ErrorActionPreference = $saved
   }
   if (-not $AllowFailure -and $script:AJNLastExitCode -ne 0) {
-    throw "Command failed with exit code $script:AJNLastExitCode: $Command"
+    throw "$FailureLabel (exit code $($script:AJNLastExitCode))."
   }
 }
 
@@ -64,8 +65,8 @@ function Set-VercelProductionEnv([string]$Name, [string]$Value) {
   $utf8 = New-Object System.Text.UTF8Encoding($false)
   [IO.File]::WriteAllText($tmp, $Value, $utf8)
   try {
-    Invoke-Cmd "npx -y vercel@latest env rm $Name production -y" -AllowFailure
-    Invoke-Cmd "type `"$tmp`" | npx -y vercel@latest env add $Name production"
+    Invoke-Cmd "npx -y vercel@latest env rm $Name production -y" -AllowFailure -FailureLabel "Vercel env removal failed for $Name"
+    Invoke-Cmd "type `"$tmp`" | npx -y vercel@latest env add $Name production" -FailureLabel "Vercel env configuration failed for $Name"
     Write-Host "[ENV PASS] $Name" -ForegroundColor Green
   } finally {
     Remove-Item $tmp -Force -ErrorAction SilentlyContinue
@@ -94,6 +95,8 @@ $FirebaseApiKey = Get-LocalEnvValue 'NEXT_PUBLIC_FIREBASE_API_KEY'
 $GoogleClientId = Get-LocalEnvValue 'NEXT_PUBLIC_GOOGLE_CLIENT_ID'
 $AdminEmails = Get-LocalEnvValue 'AJN_ADMIN_EMAILS'
 $BuzzUrl = Get-LocalEnvValue 'NEXT_PUBLIC_AJN_BUZZ_URL'
+$BackendUrl = Get-LocalEnvValue 'NEXT_PUBLIC_PDF_BACKEND_URL'
+if (-not $BackendUrl) { $BackendUrl = $DefaultBackendUrl }
 
 $required = [ordered]@{
   NEXT_PUBLIC_FIREBASE_PROJECT_ID = $FirebaseProjectId
@@ -106,7 +109,9 @@ foreach ($entry in $required.GetEnumerator()) {
   if (-not $entry.Value) { throw "Required .env.local value is missing: $($entry.Key)" }
 }
 if ($BuzzUrl -notmatch '^https://') { throw 'NEXT_PUBLIC_AJN_BUZZ_URL must be HTTPS.' }
+if ($BackendUrl -notmatch '^https://') { throw 'NEXT_PUBLIC_PDF_BACKEND_URL must be HTTPS.' }
 Set-LocalEnvValue 'FIREBASE_PROJECT_ID' $FirebaseProjectId
+Set-LocalEnvValue 'NEXT_PUBLIC_PDF_BACKEND_URL' $BackendUrl
 Set-LocalEnvValue 'NEXT_PUBLIC_AJN_BILLING_URL' ''
 
 $head = (git rev-parse HEAD).Trim()
@@ -114,16 +119,11 @@ Write-Host "[PASS] Source HEAD: $head" -ForegroundColor Green
 Write-Host '[PASS] Billing URL removed; checkout remains disabled until a real provider exists.' -ForegroundColor Green
 
 Write-Host '`n[2/9] Running production source gates...' -ForegroundColor Cyan
-npm run verify:r21-product-ecosystem
-if ($LASTEXITCODE -ne 0) { throw 'R21 product verification failed.' }
-npm run verify:r19-release
-if ($LASTEXITCODE -ne 0) { throw 'R19 release verification failed.' }
-npm run lint
-if ($LASTEXITCODE -ne 0) { throw 'Lint failed.' }
-npm run typecheck
-if ($LASTEXITCODE -ne 0) { throw 'Typecheck failed.' }
-npm run build
-if ($LASTEXITCODE -ne 0) { throw 'Production build failed.' }
+Invoke-Cmd 'node scripts/verify-r21-product-ecosystem.mjs' -FailureLabel 'R21 product verification failed'
+Invoke-Cmd 'npm run verify:r19-release' -FailureLabel 'R19 release verification failed'
+Invoke-Cmd 'npm run lint' -FailureLabel 'Lint failed'
+Invoke-Cmd 'npm run typecheck' -FailureLabel 'Typecheck failed'
+Invoke-Cmd 'npm run build' -FailureLabel 'Production build failed'
 Write-Host '[PASS] Local production gates are green.' -ForegroundColor Green
 
 Write-Host '`n[3/9] Synchronizing server-only admin secret with Cloud Run...' -ForegroundColor Cyan
@@ -136,30 +136,25 @@ if (-not $AdminToken -or $AdminToken.Length -lt 40) {
   Write-Host '[PASS] Reusing the unexposed locally generated admin token from the interrupted deployment.' -ForegroundColor Green
 }
 
-gcloud config set project $FirebaseProjectId | Out-Host
-if ($LASTEXITCODE -ne 0) { throw 'Unable to select Google Cloud project.' }
-gcloud run services update $CloudRunService --project $FirebaseProjectId --region $CloudRunRegion --update-env-vars "AJN_ANALYTICS_ADMIN_TOKEN=$AdminToken" | Out-Host
-if ($LASTEXITCODE -ne 0) { throw 'Unable to synchronize AJN analytics admin token with Cloud Run.' }
-$BackendUrl = (gcloud run services describe $CloudRunService --project $FirebaseProjectId --region $CloudRunRegion --format='value(status.url)').Trim()
-if (-not $BackendUrl -or $BackendUrl -notmatch '^https://') { throw 'Unable to resolve Cloud Run service URL.' }
-Set-LocalEnvValue 'NEXT_PUBLIC_PDF_BACKEND_URL' $BackendUrl
+Invoke-Cmd "gcloud config set project $FirebaseProjectId" -FailureLabel 'Unable to select Google Cloud project'
+Invoke-Cmd "gcloud run services update $CloudRunService --project $FirebaseProjectId --region $CloudRunRegion --update-env-vars AJN_ANALYTICS_ADMIN_TOKEN=$AdminToken" -FailureLabel 'Unable to synchronize AJN analytics admin token with Cloud Run'
 Assert-Http200 "$BackendUrl/ready" | Out-Null
 Write-Host "[PASS] Cloud Run ready: $BackendUrl" -ForegroundColor Green
 
 Write-Host '`n[4/9] Logging in/linking the correct Vercel project...' -ForegroundColor Cyan
-Invoke-Cmd 'npx -y vercel@latest whoami' -AllowFailure
+Invoke-Cmd 'npx -y vercel@latest whoami' -AllowFailure -FailureLabel 'Vercel account check failed'
 if ($script:AJNLastExitCode -ne 0) {
-  Invoke-Cmd 'npx -y vercel@latest login'
+  Invoke-Cmd 'npx -y vercel@latest login' -FailureLabel 'Vercel login failed'
 }
 if (-not (Test-Path (Join-Path $Root '.vercel\project.json'))) {
   Write-Host 'Select the AJN PDF Vercel project that owns ajnpdf.com. Do NOT select an unrelated project.' -ForegroundColor Yellow
-  Invoke-Cmd 'npx -y vercel@latest link'
+  Invoke-Cmd 'npx -y vercel@latest link' -FailureLabel 'Vercel project linking failed'
 }
 if (-not (Test-Path (Join-Path $Root '.vercel\project.json'))) { throw 'Vercel project link was not created.' }
 Write-Host '[PASS] Vercel project link exists.' -ForegroundColor Green
 
 Write-Host '`n[5/9] Applying production environment to Vercel...' -ForegroundColor Cyan
-Invoke-Cmd 'npx -y vercel@latest env rm NEXT_PUBLIC_AJN_BILLING_URL production -y' -AllowFailure
+Invoke-Cmd 'npx -y vercel@latest env rm NEXT_PUBLIC_AJN_BILLING_URL production -y' -AllowFailure -FailureLabel 'Billing env cleanup failed'
 Set-VercelProductionEnv 'NEXT_PUBLIC_FIREBASE_PROJECT_ID' $FirebaseProjectId
 Set-VercelProductionEnv 'FIREBASE_PROJECT_ID' $FirebaseProjectId
 Set-VercelProductionEnv 'NEXT_PUBLIC_FIREBASE_API_KEY' $FirebaseApiKey
@@ -171,7 +166,7 @@ Set-VercelProductionEnv 'NEXT_PUBLIC_PDF_BACKEND_URL' $BackendUrl
 Write-Host '[PASS] Production environment configured; billing remains absent.' -ForegroundColor Green
 
 Write-Host '`n[6/9] Deploying AJN PDF R21 to Vercel production...' -ForegroundColor Cyan
-Invoke-Cmd 'npx -y vercel@latest --prod --yes'
+Invoke-Cmd 'npx -y vercel@latest --prod --yes' -FailureLabel 'Vercel production deployment failed'
 Write-Host '[PASS] Vercel production deployment command completed.' -ForegroundColor Green
 
 Write-Host '`n[7/9] Verifying live AJN PDF domain...' -ForegroundColor Cyan
@@ -217,7 +212,7 @@ if ($SkipAndroid) {
   Set-LocalEnvValue 'AJN_ANDROID_SHA256_FINGERPRINTS' ([string]$AndroidReport.sha256Fingerprint)
   Set-VercelProductionEnv 'AJN_ANDROID_PACKAGE_ID' ([string]$AndroidReport.packageId)
   Set-VercelProductionEnv 'AJN_ANDROID_SHA256_FINGERPRINTS' ([string]$AndroidReport.sha256Fingerprint)
-  Invoke-Cmd 'npx -y vercel@latest --prod --yes'
+  Invoke-Cmd 'npx -y vercel@latest --prod --yes' -FailureLabel 'Vercel Android asset-links redeployment failed'
 
   $asset = Assert-Http200 'https://www.ajnpdf.com/.well-known/assetlinks.json'
   $assetJson = $asset.Content | ConvertFrom-Json
