@@ -51,7 +51,8 @@ function Get-StatusCode($ErrorRecord) {
 }
 
 function Get-IdpConfig([string]$IdpId, [hashtable]$Headers) {
-  $uri = "https://identitytoolkit.googleapis.com/admin/v2/projects/$ProjectId/defaultSupportedIdpConfigs/$IdpId"
+  $escapedIdp = [uri]::EscapeDataString($IdpId)
+  $uri = "https://identitytoolkit.googleapis.com/admin/v2/projects/$ProjectId/defaultSupportedIdpConfigs/$escapedIdp"
   try {
     return Invoke-RestMethod -Method Get -Uri $uri -Headers $Headers -TimeoutSec 30
   } catch {
@@ -62,18 +63,24 @@ function Get-IdpConfig([string]$IdpId, [hashtable]$Headers) {
 
 function Set-IdpConfig([string]$IdpId, [string]$ClientId, [string]$ClientSecret, [hashtable]$Headers) {
   $existing = Get-IdpConfig $IdpId $Headers
-  $body = @{
-    name = "projects/$ProjectId/defaultSupportedIdpConfigs/$IdpId"
-    enabled = $true
-    clientId = $ClientId
-    clientSecret = $ClientSecret
-  } | ConvertTo-Json -Depth 5
+  $escapedIdp = [uri]::EscapeDataString($IdpId)
   if ($existing) {
-    $uri = "https://identitytoolkit.googleapis.com/admin/v2/projects/$ProjectId/defaultSupportedIdpConfigs/$IdpId?updateMask=enabled,clientId,clientSecret"
+    $body = @{
+      name = "projects/$ProjectId/defaultSupportedIdpConfigs/$IdpId"
+      enabled = $true
+      clientId = $ClientId
+      clientSecret = $ClientSecret
+    } | ConvertTo-Json -Depth 5
+    $uri = "https://identitytoolkit.googleapis.com/admin/v2/projects/$ProjectId/defaultSupportedIdpConfigs/${escapedIdp}?updateMask=enabled,clientId,clientSecret"
     Invoke-RestMethod -Method Patch -Uri $uri -Headers $Headers -ContentType 'application/json' -Body $body -TimeoutSec 30 | Out-Null
     Write-Host "[PASS] Updated and enabled $IdpId" -ForegroundColor Green
   } else {
-    $uri = "https://identitytoolkit.googleapis.com/admin/v2/projects/$ProjectId/defaultSupportedIdpConfigs?idpId=$IdpId"
+    $body = @{
+      enabled = $true
+      clientId = $ClientId
+      clientSecret = $ClientSecret
+    } | ConvertTo-Json -Depth 5
+    $uri = "https://identitytoolkit.googleapis.com/admin/v2/projects/$ProjectId/defaultSupportedIdpConfigs?idpId=$escapedIdp"
     Invoke-RestMethod -Method Post -Uri $uri -Headers $Headers -ContentType 'application/json' -Body $body -TimeoutSec 30 | Out-Null
     Write-Host "[PASS] Created and enabled $IdpId" -ForegroundColor Green
   }
@@ -81,10 +88,11 @@ function Set-IdpConfig([string]$IdpId, [string]$ClientId, [string]$ClientSecret,
 
 function Enable-ExistingIdp([string]$IdpId, [hashtable]$Headers) {
   $existing = Get-IdpConfig $IdpId $Headers
-  if (-not $existing) { throw "$IdpId is not configured in Firebase. Configure it once in Firebase Authentication, then rerun this command." }
+  if (-not $existing) { throw "$IdpId is not configured in Firebase. Enable Google once in Firebase Authentication, then rerun this command." }
   if ($existing.enabled -ne $true) {
-    $uri = "https://identitytoolkit.googleapis.com/admin/v2/projects/$ProjectId/defaultSupportedIdpConfigs/$IdpId?updateMask=enabled"
-    $body = @{ enabled = $true } | ConvertTo-Json
+    $escapedIdp = [uri]::EscapeDataString($IdpId)
+    $uri = "https://identitytoolkit.googleapis.com/admin/v2/projects/$ProjectId/defaultSupportedIdpConfigs/${escapedIdp}?updateMask=enabled"
+    $body = @{ name = "projects/$ProjectId/defaultSupportedIdpConfigs/$IdpId"; enabled = $true } | ConvertTo-Json
     Invoke-RestMethod -Method Patch -Uri $uri -Headers $Headers -ContentType 'application/json' -Body $body -TimeoutSec 30 | Out-Null
   }
   Write-Host "[PASS] $IdpId enabled" -ForegroundColor Green
@@ -95,9 +103,10 @@ function Get-SdkValue($SdkConfig, [string]$Raw, [string]$Key) {
     $property = $SdkConfig.PSObject.Properties[$Key]
     if ($property -and $property.Value) { return [string]$property.Value }
   }
+  $quotedKey = [regex]::Escape($Key)
   $patterns = @(
-    '"' + [regex]::Escape($Key) + '"\s*:\s*"([^"]+)"',
-    [regex]::Escape($Key) + '\s*:\s*["'']([^"'']+)["'']'
+    '"' + $quotedKey + '"\s*:\s*"([^"]+)"',
+    $quotedKey + '\s*:\s*["'']([^"'']+)["'']'
   )
   foreach ($pattern in $patterns) {
     $match = [regex]::Match($Raw, $pattern)
@@ -109,7 +118,7 @@ function Get-SdkValue($SdkConfig, [string]$Raw, [string]$Key) {
 Section 'AJN PDF R23 :: PROFESSIONAL AUTHENTICATION SETUP'
 
 Write-Host '[1/9] Verifying AJN PDF source and accounts...' -ForegroundColor Yellow
-foreach ($command in @('git','node','npx','gcloud')) {
+foreach ($command in @('git','node','npx','gcloud','curl.exe')) {
   if (-not (Get-Command $command -ErrorAction SilentlyContinue)) { throw "$command is required." }
 }
 $remote = (git remote get-url origin).Trim()
@@ -117,7 +126,8 @@ if ($remote -notmatch 'ajnpdf/324') { throw "Wrong GitHub repository: $remote" }
 if (-not (Test-Path '.vercel\project.json')) { throw 'Vercel project is not linked.' }
 $vercelProject = Get-Content '.vercel\project.json' -Raw | ConvertFrom-Json
 if ($vercelProject.projectId -ne 'prj_bZQ5WOwR2hjxFkATT6NaiIr1AoN8') { throw 'Wrong Vercel project. Expected the AJN PDF project.' }
-Invoke-Cmd 'npx -y vercel@latest whoami' -Label 'Vercel login check failed'
+$who = (cmd /c 'npx -y vercel@latest whoami 2>&1' | Out-String)
+if ($who -notmatch 'ajnpdf-2086') { throw 'Wrong Vercel login. Expected the AJN PDF Vercel account.' }
 Write-Host '[PASS] AJN PDF GitHub and Vercel targets verified.' -ForegroundColor Green
 
 Write-Host '`n[2/9] Verifying R23 authentication source...' -ForegroundColor Yellow
@@ -137,13 +147,14 @@ foreach ($domain in @($SiteDomain, 'ajnpdf.com', "$ProjectId.firebaseapp.com")) 
   if ($domains -notcontains $domain) { $domains += $domain }
 }
 $policyBody = @{
+  name = "projects/$ProjectId/config"
   signIn = @{
     anonymous = @{ enabled = $false }
     email = @{ enabled = $true; passwordRequired = $true }
   }
   authorizedDomains = @($domains | Select-Object -Unique)
 } | ConvertTo-Json -Depth 8
-$policyUri = "$configUri?updateMask=signIn.anonymous.enabled,signIn.email.enabled,signIn.email.passwordRequired,authorizedDomains"
+$policyUri = "${configUri}?updateMask=signIn.anonymous.enabled,signIn.email.enabled,signIn.email.passwordRequired,authorizedDomains"
 Invoke-RestMethod -Method Patch -Uri $policyUri -Headers $Headers -ContentType 'application/json' -Body $policyBody -TimeoutSec 30 | Out-Null
 $config = Invoke-RestMethod -Method Get -Uri $configUri -Headers $Headers -TimeoutSec 30
 if ($config.signIn.anonymous.enabled -eq $true) { throw 'Anonymous Authentication is still enabled.' }
@@ -155,9 +166,9 @@ Write-Host "[PASS] Authorized domains include $SiteDomain and ajnpdf.com." -Fore
 Write-Host '`n[4/9] Verifying Google and configuring Facebook + GitHub...' -ForegroundColor Yellow
 Enable-ExistingIdp 'google.com' $Headers
 $CallbackUrl = "https://$ProjectId.firebaseapp.com/__/auth/handler"
-Write-Host "OAuth callback URL for BOTH Facebook and GitHub:" -ForegroundColor Cyan
+Write-Host 'OAuth callback URL for BOTH Facebook and GitHub:' -ForegroundColor Cyan
 Write-Host $CallbackUrl -ForegroundColor Cyan
-Write-Host 'This exact callback must be registered in the Meta app and GitHub OAuth app.' -ForegroundColor Yellow
+Write-Host 'Register this exact callback in Meta Facebook Login and the GitHub OAuth App before testing those providers.' -ForegroundColor Yellow
 $FacebookClientId = (Read-Host 'Enter Facebook App ID / OAuth Client ID').Trim()
 $FacebookClientSecret = Read-Secret 'Enter Facebook App Secret'
 $GithubClientId = (Read-Host 'Enter GitHub OAuth Client ID').Trim()
@@ -238,7 +249,7 @@ $google = Get-IdpConfig 'google.com' $Headers
 $facebook = Get-IdpConfig 'facebook.com' $Headers
 $github = Get-IdpConfig 'github.com' $Headers
 if ($config.signIn.anonymous.enabled -eq $true) { throw 'Anonymous unexpectedly enabled.' }
-if ($config.signIn.email.enabled -ne $true) { throw 'Email/password unexpectedly disabled.' }
+if ($config.signIn.email.enabled -ne $true -or $config.signIn.email.passwordRequired -ne $true) { throw 'Email/password unexpectedly disabled.' }
 if ($google.enabled -ne $true -or $facebook.enabled -ne $true -or $github.enabled -ne $true) { throw 'One or more social providers are not enabled.' }
 
 Section 'AJN PDF R23 :: AUTHENTICATION RESULT'
@@ -250,4 +261,4 @@ Write-Host 'Anonymous / guest        : DISABLED' -ForegroundColor Green
 Write-Host "Authorized domain         : $SiteDomain" -ForegroundColor Green
 Write-Host "OAuth callback             : $CallbackUrl" -ForegroundColor Cyan
 Write-Host 'Password reset            : ENABLED in AJN PDF UI' -ForegroundColor Green
-Write-Host 'Next acceptance           : test one login with each provider on the live site.' -ForegroundColor Yellow
+Write-Host 'Final acceptance          : test one live login with each provider.' -ForegroundColor Yellow
