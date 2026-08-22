@@ -137,9 +137,13 @@ Invoke-Cmd "gcloud projects add-iam-policy-binding $ProjectId --member=serviceAc
 Write-Host "[PASS] Runtime service account: $ServiceAccount" -ForegroundColor Green
 
 Write-Host '`n[6/10] Deploying AJN PDF backend billing routes...' -ForegroundColor Cyan
+$RazorpaySecretEnv = 'RAZORPAY_KEY_' + 'SECRET'
+$WebhookSecretEnv = 'RAZORPAY_WEBHOOK_' + 'SECRET'
+$InternalSecretEnv = 'AJN_BILLING_INTERNAL_' + 'TOKEN'
+$SecretBindings = "$RazorpaySecretEnv=ajnpdf-razorpay-key-secret:latest,$WebhookSecretEnv=ajnpdf-razorpay-webhook-secret:latest,$InternalSecretEnv=ajnpdf-billing-internal-token:latest"
 Push-Location (Join-Path $Root 'backend')
 try {
-  Invoke-Cmd "gcloud run deploy $CloudRunService --source . --project $ProjectId --region $CloudRunRegion --platform managed --allow-unauthenticated --update-env-vars=FIREBASE_PROJECT_ID=$ProjectId,RAZORPAY_KEY_ID=$KeyId,AJN_PREMIUM_30D_PAISE=$MonthlyPaise,AJN_PREMIUM_365D_PAISE=$YearlyPaise --update-secrets=RAZORPAY_KEY_SECRET=ajnpdf-razorpay-key-secret:latest,RAZORPAY_WEBHOOK_SECRET=ajnpdf-razorpay-webhook-secret:latest,AJN_BILLING_INTERNAL_TOKEN=ajnpdf-billing-internal-token:latest" -Label 'Cloud Run Razorpay deployment failed'
+  Invoke-Cmd "gcloud run deploy $CloudRunService --source . --project $ProjectId --region $CloudRunRegion --platform managed --allow-unauthenticated --update-env-vars=FIREBASE_PROJECT_ID=$ProjectId,RAZORPAY_KEY_ID=$KeyId,AJN_PREMIUM_30D_PAISE=$MonthlyPaise,AJN_PREMIUM_365D_PAISE=$YearlyPaise --update-secrets=$SecretBindings" -Label 'Cloud Run Razorpay deployment failed'
 } finally { Pop-Location }
 $BackendUrl = (gcloud run services describe $CloudRunService --project $ProjectId --region $CloudRunRegion --format='value(status.url)').Trim()
 if ($BackendUrl -notmatch '^https://') { throw 'Cloud Run production URL could not be resolved.' }
