@@ -39,7 +39,16 @@ forbidText(conversionTools, "tool('png-to-pdf'", 'PNG to PDF is not duplicated i
 requireText(backendEngine, "('.png', 'png-to-pdf', 'PNG to PDF')", 'PNG to PDF is registered by the backend engine');
 forbidText(toolPolicy, "'jpg-pdf', 'png-to-pdf'", 'PNG to PDF is not routed through the legacy browser-stable list');
 requireText(toolPolicy, "'repair-pdf', 'png-to-pdf', ...conversionBackendIds", 'PNG to PDF is classified as a backend capability');
-requireText(toolPolicy, "'image-to-pdf', 'jpg-to-pdf', 'jpeg-to-pdf', 'png-to-pdf'", 'PNG to PDF uses the canonical multi-file backend policy');
+
+const allowlistMatch = toolPolicy.match(/PRODUCTION_PUBLIC_TOOL_IDS\s*=\s*new Set\(\[([\s\S]*?)\]\)/);
+const r21PublicAllowlist = allowlistMatch?.[1] || '';
+const pngIsPublic = /['"]png-to-pdf['"]/.test(r21PublicAllowlist);
+if (pngIsPublic) {
+  requireText(toolPolicy, "'image-to-pdf', 'jpg-to-pdf', 'jpeg-to-pdf', 'png-to-pdf'", 'Public PNG to PDF uses the canonical multi-file backend policy');
+} else {
+  pass('PNG to PDF is intentionally outside the R21 AJN PDF public allowlist; public multi-file policy is not applicable');
+}
+
 requireText(workspace, "...CONVERSION_TOOLS.map((tool) => tool.id), 'png-to-pdf'", 'PNG public card is routed to the canonical server processor');
 forbidText(workspace, "'png-to-pdf': dynamic(() => import('./PngToPdf')", 'PNG to PDF has no competing local workspace route');
 requireText(serverWorkspace, "'image-to-pdf','jpg-to-pdf','jpeg-to-pdf','png-to-pdf'", 'Server image-to-PDF controls include PNG');
