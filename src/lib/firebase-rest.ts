@@ -22,12 +22,20 @@ export type FirebaseClaims = {
   [key: string]: unknown;
 };
 
+export type FirebaseSocialProvider = 'google' | 'facebook' | 'github';
+
 const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY?.trim() || '';
 export const firebaseProjectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID?.trim() || '';
-export const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID?.trim() || '';
+export const firebaseAuthDomain = process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN?.trim() || (firebaseProjectId ? `${firebaseProjectId}.firebaseapp.com` : '');
+export const firebaseAppId = process.env.NEXT_PUBLIC_FIREBASE_APP_ID?.trim() || '';
 
 export const firebaseAuthConfigured = Boolean(apiKey && firebaseProjectId);
-export const googleAuthConfigured = firebaseAuthConfigured && Boolean(googleClientId);
+export const firebaseSocialAuthConfigured = firebaseAuthConfigured && Boolean(firebaseAuthDomain);
+
+const FIREBASE_CDN_VERSION = '12.17.1';
+const FIREBASE_APP_SCRIPT = `https://www.gstatic.com/firebasejs/${FIREBASE_CDN_VERSION}/firebase-app-compat.js`;
+const FIREBASE_AUTH_SCRIPT = `https://www.gstatic.com/firebasejs/${FIREBASE_CDN_VERSION}/firebase-auth-compat.js`;
+let firebaseCompatPromise: Promise<any> | null = null;
 
 function requireConfig() {
   if (!firebaseAuthConfigured) throw new Error('Firebase Authentication is not configured for this deployment.');
@@ -38,13 +46,30 @@ function decodeError(payload: any, fallback: string) {
   const known: Record<string, string> = {
     EMAIL_EXISTS: 'An account already exists for this email.',
     EMAIL_NOT_FOUND: 'No account was found for this email.',
+    INVALID_EMAIL: 'Enter a valid email address.',
     INVALID_PASSWORD: 'The email or password is incorrect.',
     INVALID_LOGIN_CREDENTIALS: 'The email or password is incorrect.',
     USER_DISABLED: 'This account is disabled.',
     WEAK_PASSWORD: 'Use a stronger password with at least 6 characters.',
+    OPERATION_NOT_ALLOWED: 'This sign-in method is not enabled yet.',
     TOO_MANY_ATTEMPTS_TRY_LATER: 'Too many attempts. Try again later.',
   };
   return known[raw] || raw.replaceAll('_', ' ').toLowerCase() || fallback;
+}
+
+function socialError(error: any, fallback: string) {
+  const code = String(error?.code || '').trim();
+  const known: Record<string, string> = {
+    'auth/account-exists-with-different-credential': 'An account already exists for this email with another sign-in method. Sign in with that method first.',
+    'auth/cancelled-popup-request': 'The previous sign-in window was cancelled. Try again.',
+    'auth/network-request-failed': 'The sign-in service could not be reached. Check your connection and try again.',
+    'auth/operation-not-allowed': 'This sign-in provider is not enabled in Firebase yet.',
+    'auth/popup-blocked': 'Your browser blocked the sign-in window. Allow popups for AJN PDF and try again.',
+    'auth/popup-closed-by-user': 'The sign-in window was closed before authentication finished.',
+    'auth/unauthorized-domain': 'This AJN PDF domain is not authorized in Firebase Authentication.',
+    'auth/user-disabled': 'This account is disabled.',
+  };
+  return new Error(known[code] || String(error?.message || fallback));
 }
 
 async function identity(path: string, body: Record<string, unknown>) {
@@ -73,6 +98,67 @@ function toSession(payload: any): FirebaseSession {
   };
 }
 
+function loadScript(src: string, marker: string) {
+  if (typeof window === 'undefined') return Promise.reject(new Error('Social sign-in is only available in the browser.'));
+  const existing = document.querySelector<HTMLScriptElement>(`script[data-ajn-auth="${marker}"]`);
+  if (existing?.dataset.loaded === 'true') return Promise.resolve();
+  return new Promise<void>((resolve, reject) => {
+    const script = existing || document.createElement('script');
+    const done = () => { script.dataset.loaded = 'true'; resolve(); };
+    const failed = () => reject(new Error('Firebase social sign-in could not load. Check your connection and try again.'));
+    script.addEventListener('load', done, { once: true });
+    script.addEventListener('error', failed, { once: true });
+    if (!existing) {
+      script.src = src;
+      script.async = true;
+      script.defer = true;
+      script.dataset.ajnAuth = marker;
+      document.head.appendChild(script);
+    }
+  });
+}
+
+async function ensureFirebaseCompat() {
+  if (!firebaseSocialAuthConfigured) throw new Error('Firebase social sign-in is not configured for this deployment.');
+  if (typeof window === 'undefined') throw new Error('Social sign-in is only available in the browser.');
+  const current = (window as any).firebase;
+  if (current?.auth && current?.initializeApp) {
+    if (!current.apps?.length) current.initializeApp({ apiKey, authDomain: firebaseAuthDomain, projectId: firebaseProjectId, ...(firebaseAppId ? { appId: firebaseAppId } : {}) });
+    return current;
+  }
+  if (!firebaseCompatPromise) {
+    firebaseCompatPromise = (async () => {
+      await loadScript(FIREBASE_APP_SCRIPT, 'firebase-app');
+      await loadScript(FIREBASE_AUTH_SCRIPT, 'firebase-auth');
+      const firebase = (window as any).firebase;
+      if (!firebase?.auth || !firebase?.initializeApp) throw new Error('Firebase Authentication SDK did not initialize correctly.');
+      if (!firebase.apps?.length) firebase.initializeApp({ apiKey, authDomain: firebaseAuthDomain, projectId: firebaseProjectId, ...(firebaseAppId ? { appId: firebaseAppId } : {}) });
+      firebase.auth().useDeviceLanguage?.();
+      return firebase;
+    })().catch((error) => {
+      firebaseCompatPromise = null;
+      throw error;
+    });
+  }
+  return firebaseCompatPromise;
+}
+
+async function sessionFromCompatUser(user: any): Promise<FirebaseSession> {
+  if (!user) throw new Error('Firebase did not return an authenticated user.');
+  const idToken = await user.getIdToken(true);
+  const tokenResult = await user.getIdTokenResult?.();
+  const expiration = tokenResult?.expirationTime ? Date.parse(tokenResult.expirationTime) : Date.now() + 3600_000;
+  return {
+    idToken: String(idToken || ''),
+    refreshToken: String(user.refreshToken || ''),
+    expiresAt: Number.isFinite(expiration) ? expiration : Date.now() + 3600_000,
+    localId: String(user.uid || ''),
+    email: String(user.email || ''),
+    displayName: String(user.displayName || '') || undefined,
+    photoUrl: String(user.photoURL || '') || undefined,
+  };
+}
+
 export async function signUpWithEmail(email: string, password: string) {
   const payload = await identity('accounts:signUp', { email: email.trim(), password, returnSecureToken: true });
   return toSession(payload);
@@ -87,14 +173,36 @@ export async function sendPasswordReset(email: string) {
   await identity('accounts:sendOobCode', { requestType: 'PASSWORD_RESET', email: email.trim() });
 }
 
-export async function signInFirebaseWithGoogleIdToken(googleIdToken: string) {
-  const payload = await identity('accounts:signInWithIdp', {
-    postBody: `id_token=${encodeURIComponent(googleIdToken)}&providerId=google.com`,
-    requestUri: typeof window === 'undefined' ? 'https://www.ajnpdf.com' : window.location.origin,
-    returnIdpCredential: true,
-    returnSecureToken: true,
-  });
-  return toSession(payload);
+export async function signInWithSocialProvider(providerName: FirebaseSocialProvider) {
+  try {
+    const firebase = await ensureFirebaseCompat();
+    const auth = firebase.auth();
+    let provider: any;
+    if (providerName === 'google') {
+      provider = new firebase.auth.GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: 'select_account' });
+    } else if (providerName === 'facebook') {
+      provider = new firebase.auth.FacebookAuthProvider();
+      provider.addScope('email');
+    } else {
+      provider = new firebase.auth.GithubAuthProvider();
+      provider.addScope('user:email');
+    }
+    const result = await auth.signInWithPopup(provider);
+    return await sessionFromCompatUser(result.user);
+  } catch (error) {
+    throw socialError(error, `${providerName} sign-in failed.`);
+  }
+}
+
+export async function signOutFirebaseCompat() {
+  if (typeof window === 'undefined') return;
+  try {
+    const firebase = (window as any).firebase;
+    if (firebase?.auth && firebase?.apps?.length) await firebase.auth().signOut();
+  } catch {
+    // Local AJN session is still cleared even if the provider SDK cannot sign out.
+  }
 }
 
 export async function refreshFirebaseSession(session: FirebaseSession): Promise<FirebaseSession> {

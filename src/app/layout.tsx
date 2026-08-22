@@ -65,7 +65,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" data-theme="light" className={`${manrope.variable} ${inter.variable} ${jetBrainsMono.variable}`} style={{ colorScheme: 'light' }}>
       <body className="font-sans antialiased">
         <Script id="json-ld" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} strategy="afterInteractive" />
-        <Script src="https://accounts.google.com/gsi/client" strategy="afterInteractive" />
         <ThemeProvider>
           <LanguageProvider>
             <AuthProvider>
