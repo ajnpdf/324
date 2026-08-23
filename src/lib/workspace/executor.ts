@@ -134,7 +134,9 @@ export async function executeWorkspaceWorkflow(
   assertNotAborted(options.signal);
   options.onProgress?.({ phase: 'saving', current: total - 1, total, message: 'Writing the final PDF…' });
   const bytes = await document.save({ useObjectStreams: true, addDefaultPage: false, updateFieldAppearances: false });
-  const blob = new Blob([bytes], { type: 'application/pdf' });
+  const blobBuffer = new ArrayBuffer(bytes.byteLength);
+  new Uint8Array(blobBuffer).set(bytes);
+  const blob = new Blob([blobBuffer], { type: 'application/pdf' });
   options.onProgress?.({ phase: 'done', current: total, total, message: 'PDF ready.' });
   return { blob, bytes, filename: safeOutputName(files[0].name), pageCount: document.getPageCount() };
 }
