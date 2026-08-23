@@ -1,38 +1,53 @@
 'use client';
 
-/**
- * AJN Feature Management System
- * Allows real-time control of platform modules (Kill Switches & Segmented Rollouts).
- * In production, this can be linked to LaunchDarkly or Flagsmith.
- */
+export type FeatureKey = 'workspace' | 'sharing' | 'ai_assistant' | 'batch_processing' | 'advanced_retouching';
+export type FeatureSnapshot = Record<FeatureKey, boolean>;
 
-export type FeatureKey = 
-  | 'sharing' 
-  | 'ai_assistant' 
-  | 'batch_processing' 
-  | 'advanced_retouching';
+const DEFAULTS: FeatureSnapshot = {
+  workspace: true,
+  sharing: true,
+  batch_processing: true,
+  ai_assistant: false,
+  advanced_retouching: false,
+};
 
 class FeatureFlagSystem {
-  private flags: Record<FeatureKey, boolean> = {
-    'sharing': true,
-    'ai_assistant': true,
-    'batch_processing': true,
-    'advanced_retouching': true
-  };
+  private flags: FeatureSnapshot = { ...DEFAULTS };
+  private loaded = false;
+  private listeners = new Set<() => void>();
 
-  /**
-   * Checks whether a specific feature is enabled in the current application state.
-   */
   isEnabled(key: FeatureKey): boolean {
-    // Note: In production, this would fetch from a remote config provider.
-    return this.flags[key];
+    return Boolean(this.flags[key]);
   }
 
-  /**
-   * Administrative override for testing or emergency kill-switch activation.
-   */
-  setFlag(key: FeatureKey, value: boolean) {
-    this.flags[key] = value;
+  snapshot(): FeatureSnapshot {
+    return { ...this.flags };
+  }
+
+  subscribe(listener: () => void) {
+    this.listeners.add(listener);
+    return () => this.listeners.delete(listener);
+  }
+
+  private emit() {
+    for (const listener of this.listeners) listener();
+  }
+
+  async refresh(force = false): Promise<FeatureSnapshot> {
+    if (this.loaded && !force) return this.snapshot();
+    try {
+      const response = await fetch('/api/config/features', { cache: 'no-store' });
+      if (!response.ok) throw new Error('Feature configuration unavailable.');
+      const payload = await response.json() as { flags?: Partial<FeatureSnapshot> };
+      this.flags = { ...DEFAULTS, ...(payload.flags || {}) };
+      this.loaded = true;
+      this.emit();
+    } catch {
+      // Safe defaults keep proven production features available while risky unfinished features stay disabled.
+      this.flags = { ...DEFAULTS };
+      this.loaded = true;
+    }
+    return this.snapshot();
   }
 }
 

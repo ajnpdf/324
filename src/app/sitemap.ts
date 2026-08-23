@@ -11,6 +11,7 @@ const CORE_PAGE_DEFINITIONS: CorePageDefinition[] = [
   { path: '/', changeFrequency: 'daily', priority: 1 },
   { path: '/pdf-tools', changeFrequency: 'weekly', priority: 0.95 },
   { path: '/pdf-utilities', changeFrequency: 'weekly', priority: 0.85 },
+  { path: '/workspace', changeFrequency: 'weekly', priority: 0.9 },
   { path: '/pricing', changeFrequency: 'weekly', priority: 0.75 },
   { path: '/desktop', changeFrequency: 'monthly', priority: 0.65 },
   { path: '/mobile', changeFrequency: 'monthly', priority: 0.65 },
