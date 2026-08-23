@@ -25,6 +25,7 @@ const account = read('src/app/account/page.tsx');
 const security = read('src/app/account/security/page.tsx');
 const navbar = read('src/components/landing/navbar.tsx');
 const chrome = read('src/app/chrome-extension/page.tsx');
+const legacyAnalytics = read('src/app/admin/analytics/page.tsx');
 
 must(page, /AJN Workspace R25/, 'workspace public surface');
 must(page, /Local processing/, 'workspace local-processing disclosure');
@@ -58,6 +59,9 @@ must(account, /\/account\/billing/, 'billing history account navigation');
 must(security, /sendPasswordReset/, 'real Firebase password reset control');
 must(security, /Multi-device session revocation is not claimed/, 'security claim boundary');
 must(navbar, /href="\/workspace"/, 'workspace primary navigation');
+must(legacyAnalytics, /redirect\('\/admin'\)/, 'legacy manual-token analytics redirects to protected admin');
+if (/ajn_analytics_admin_token|X-AJN-Admin-Token/.test(legacyAnalytics)) throw new Error('R25 verification failed: legacy analytics page still handles a manual admin token.');
+console.log('PASS: legacy analytics page no longer accepts a browser admin token');
 if (/100\+\s*(AJN PDF\s*)?workflows/i.test(chrome)) throw new Error('R25 verification failed: stale 100+ workflow claim remains on Chrome extension page.');
 console.log('PASS: Chrome extension copy uses the real current catalog instead of a stale 100+ claim');
 
