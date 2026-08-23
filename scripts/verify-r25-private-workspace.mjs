@@ -31,6 +31,7 @@ must(client, /Run locally/, 'workspace local execution action');
 must(executor, /PDFDocument\.load/, 'real PDF parsing');
 must(executor, /copyPages/, 'real PDF merge implementation');
 must(executor, /drawText/, 'real PDF watermark and numbering mutation');
+must(executor, /output validation detected|could not be reopened safely/, 'generated PDF is reopened and validated before download');
 if (/\bfetch\s*\(/.test(executor)) throw new Error('R25 verification failed: local workspace executor must not upload files with fetch().');
 console.log('PASS: workspace executor has no network upload path');
 must(storage, /PDF bytes are never stored|Storage can be unavailable/, 'privacy-safe local storage implementation');
