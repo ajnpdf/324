@@ -132,11 +132,20 @@ export async function executeWorkspaceWorkflow(
   }
 
   assertNotAborted(options.signal);
-  options.onProgress?.({ phase: 'saving', current: total - 1, total, message: 'Writing the final PDF…' });
+  options.onProgress?.({ phase: 'saving', current: total - 1, total, message: 'Writing and validating the final PDF…' });
+  const expectedPageCount = document.getPageCount();
   const bytes = await document.save({ useObjectStreams: true, addDefaultPage: false, updateFieldAppearances: false });
+  assertNotAborted(options.signal);
+  let validated: PDFDocument;
+  try {
+    validated = await PDFDocument.load(bytes, { ignoreEncryption: false, updateMetadata: false });
+  } catch {
+    throw new Error('AJN PDF generated output that could not be reopened safely. No download was offered.');
+  }
+  if (validated.getPageCount() !== expectedPageCount) throw new Error('AJN PDF output validation detected an unexpected page-count change. No download was offered.');
   const blobBuffer = new ArrayBuffer(bytes.byteLength);
   new Uint8Array(blobBuffer).set(bytes);
   const blob = new Blob([blobBuffer], { type: 'application/pdf' });
-  options.onProgress?.({ phase: 'done', current: total, total, message: 'PDF ready.' });
-  return { blob, bytes, filename: safeOutputName(files[0].name), pageCount: document.getPageCount() };
+  options.onProgress?.({ phase: 'done', current: total, total, message: 'PDF validated and ready.' });
+  return { blob, bytes, filename: safeOutputName(files[0].name), pageCount: expectedPageCount };
 }
