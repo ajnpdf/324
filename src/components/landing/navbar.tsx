@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { ChevronDown, Code2, FileSignature, Images, Laptop, Menu, Search, Smartphone, UserRound, X } from 'lucide-react';
+import { ChevronDown, Code2, FileSignature, Images, Laptop, Menu, Search, Smartphone, UserRound, Workflow, X } from 'lucide-react';
 import { LogoAnimation } from './logo-animation';
 import { Button } from '../ui/button';
 import { SearchModal } from '../search-modal';
@@ -60,6 +60,7 @@ export function Navbar() {
 
           <nav className="hidden min-w-0 flex-1 items-center gap-0.5 min-[1080px]:flex" aria-label={t('nav.primary')}>
             <Link href="/pdf-tools" className="inline-flex h-10 items-center rounded-xl px-3 text-[12px] font-extrabold text-slate-700 transition hover:bg-violet-50 hover:text-violet-700">PDF Tools</Link>
+            <Link href="/workspace" className="inline-flex h-10 items-center gap-1.5 rounded-xl px-2.5 text-[11px] font-extrabold text-violet-700 transition hover:bg-violet-50"><Workflow className="h-3.5 w-3.5"/>Workspace</Link>
             {quickTools.map(({ id, fallback }) => { const localized = localizeTool(id, fallback, '', []); return <Link key={id} href={toolPath(id)} className="inline-flex h-10 items-center rounded-xl px-2.5 text-[11px] font-extrabold text-slate-600 transition hover:bg-slate-50 hover:text-slate-950">{localized.name}</Link>; })}
             <Link href="/pricing" className="inline-flex h-10 items-center rounded-xl px-2.5 text-[11px] font-extrabold text-slate-600 transition hover:bg-violet-50 hover:text-violet-700">Pricing</Link>
             <details className="group relative">
@@ -84,7 +85,7 @@ export function Navbar() {
               <nav className="mx-auto grid max-h-[calc(100dvh-64px)] max-w-7xl gap-1.5 overflow-y-auto px-3 py-4 sm:px-4" aria-label={t('nav.mobile')}>
                 <div className="grid grid-cols-2 gap-2 min-[480px]:grid-cols-3">{quickTools.map(({ id, fallback }) => { const localized = localizeTool(id, fallback, '', []); return <Link key={id} href={toolPath(id)} onClick={() => setMobileOpen(false)} className="rounded-xl border border-slate-200 bg-slate-50 px-2 py-3 text-center text-[11px] font-black text-slate-800 hover:border-violet-200 hover:bg-violet-50 hover:text-violet-700">{localized.name}</Link>; })}</div>
                 <div className="my-2 border-t border-slate-200" />
-                {[{label:'All PDF Tools',href:'/pdf-tools'},{label:'Pricing',href:'/pricing'},...products].map((item)=><Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)} className="flex min-h-11 items-center justify-between rounded-xl px-3 text-sm font-extrabold text-slate-700 hover:bg-slate-50 hover:text-slate-950">{item.label}<span aria-hidden="true">›</span></Link>)}
+                {[{label:'All PDF Tools',href:'/pdf-tools'},{label:'Workspace',href:'/workspace'},{label:'Pricing',href:'/pricing'},...products].map((item)=><Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)} className="flex min-h-11 items-center justify-between rounded-xl px-3 text-sm font-extrabold text-slate-700 hover:bg-slate-50 hover:text-slate-950">{item.label}<span aria-hidden="true">›</span></Link>)}
                 <div className="my-2 border-t border-slate-200" />
                 <Link href={auth.session?'/account':'/login'} onClick={()=>setMobileOpen(false)} className="flex min-h-11 items-center rounded-xl bg-violet-50 px-3 text-sm font-black text-violet-800">{auth.session?'Account':'Log in'}</Link>
                 {!auth.session?<Link href="/signup" onClick={()=>setMobileOpen(false)} className="flex min-h-11 items-center rounded-xl bg-violet-700 px-3 text-sm font-black text-white">Create account</Link>:null}

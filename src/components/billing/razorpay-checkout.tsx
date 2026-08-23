@@ -33,23 +33,32 @@ function loadCheckoutScript() {
     if (window.Razorpay) return resolve();
     const existing = document.querySelector<HTMLScriptElement>('script[data-ajn-razorpay="checkout"]');
     if (existing) {
+      if (existing.dataset.loaded === 'true') return resolve();
       existing.addEventListener('load', () => resolve(), { once: true });
-      existing.addEventListener('error', () => reject(new Error('Razorpay Checkout could not load.')), { once: true });
+      existing.addEventListener('error', () => reject(new Error('Razorpay Checkout could not load. Check your connection and try again.')), { once: true });
       return;
     }
     const script = document.createElement('script');
     script.src = 'https://checkout.razorpay.com/v1/checkout.js';
     script.async = true;
     script.dataset.ajnRazorpay = 'checkout';
-    script.onload = () => resolve();
-    script.onerror = () => reject(new Error('Razorpay Checkout could not load.'));
+    script.onload = () => { script.dataset.loaded = 'true'; resolve(); };
+    script.onerror = () => reject(new Error('Razorpay Checkout could not load. Check your connection and try again.'));
     document.head.appendChild(script);
   });
 }
 
+async function billingFetch(path: string, init: RequestInit) {
+  try {
+    return await fetch(path, { ...init, cache: 'no-store' });
+  } catch {
+    throw new Error('AJN PDF billing service could not be reached. Check your connection and try again.');
+  }
+}
+
 async function jsonResponse(response: Response) {
   const payload = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(String(payload?.error || payload?.detail || 'Billing request failed.'));
+  if (!response.ok) throw new Error(String(payload?.error || payload?.detail || 'Billing request failed. Please try again.'));
   return payload;
 }
 
@@ -60,22 +69,28 @@ export function RazorpayCheckout({ monthlyInr, yearlyInr }: { monthlyInr: number
   const [success, setSuccess] = useState('');
 
   const buy = async (plan: BillingPlanId) => {
+    if (loading) return;
     setError('');
     setSuccess('');
     setLoading(plan);
     try {
       const token = await auth.getIdToken();
       if (!token) throw new Error('Sign in to purchase AJN PDF Premium.');
-      const order = await jsonResponse(await fetch('/api/billing/order', {
+      const order = await jsonResponse(await billingFetch('/api/billing/order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ plan }),
       })) as RazorpayOrder;
 
+      if (!order.order_id || !order.key_id || !Number.isFinite(Number(order.amount)) || Number(order.amount) <= 0) {
+        throw new Error('AJN PDF received an invalid payment order. No payment was started.');
+      }
+
       await loadCheckoutScript();
       if (!window.Razorpay) throw new Error('Razorpay Checkout is unavailable.');
 
       await new Promise<void>((resolve, reject) => {
+        let completed = false;
         const checkout = new window.Razorpay!({
           key: order.key_id,
           amount: order.amount,
@@ -89,14 +104,16 @@ export function RazorpayCheckout({ monthlyInr, yearlyInr }: { monthlyInr: number
           timeout: 600,
           handler: async (result: RazorpayResult) => {
             try {
+              if (!result.razorpay_order_id || !result.razorpay_payment_id || !result.razorpay_signature) throw new Error('Razorpay did not return complete payment verification data.');
               const currentToken = await auth.getIdToken();
               if (!currentToken) throw new Error('Your AJN session expired. Sign in again to verify the payment.');
-              const verified = await jsonResponse(await fetch('/api/billing/verify', {
+              const verified = await jsonResponse(await billingFetch('/api/billing/verify', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${currentToken}` },
                 body: JSON.stringify(result),
               }));
               await auth.refreshPlan();
+              completed = true;
               setSuccess(`Premium activated${verified?.valid_until ? ` until ${new Date(verified.valid_until).toLocaleDateString()}` : ''}.`);
               resolve();
             } catch (reason) {
@@ -104,7 +121,7 @@ export function RazorpayCheckout({ monthlyInr, yearlyInr }: { monthlyInr: number
             }
           },
           modal: {
-            ondismiss: () => reject(new Error('Payment window closed before completion.')),
+            ondismiss: () => { if (!completed) reject(new Error('Payment window closed before completion. No Premium activation was applied.')); },
           },
           theme: { color: '#6d28d9' },
         });
