@@ -38,7 +38,7 @@ export default function Hero() {
           <div>
             <div className="inline-flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50/80 px-3 py-1.5 text-[10px] font-black uppercase tracking-[.14em] text-blue-700 shadow-sm">
               <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
-              Professional PDF workspace
+              Free Online PDF Tools
             </div>
 
             <h1 className="mt-5 max-w-4xl text-balance text-[clamp(2.55rem,7vw,5rem)] font-black leading-[.96] tracking-[-.06em] text-slate-950">
