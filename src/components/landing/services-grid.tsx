@@ -153,8 +153,8 @@ function ToolCard({ tool, query, priority = false }: { tool: PublicTool; query: 
       data-analytics-id={`tool-card-${tool.id}`}
       data-analytics-category="pdf"
     >
-      <article className="relative flex h-full min-h-[154px] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-[0_6px_20px_rgba(15,23,42,.045)] transition duration-200 hover:-translate-y-1 hover:border-blue-200 hover:shadow-[0_16px_34px_rgba(15,23,42,.09)] sm:min-h-[164px] sm:p-5">
-        <div aria-hidden="true" className="absolute inset-x-5 top-0 h-px bg-gradient-to-r from-red-500 via-blue-600 to-emerald-500 opacity-55" />
+      <article className="relative flex h-full min-h-[156px] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-[0_6px_20px_rgba(15,23,42,.045)] transition duration-200 hover:-translate-y-1 hover:border-blue-200 hover:shadow-[0_16px_34px_rgba(15,23,42,.09)] sm:min-h-[166px] sm:p-5">
+        <div aria-hidden="true" className="absolute inset-x-5 top-0 h-px bg-gradient-to-r from-red-500 via-blue-600 to-emerald-500 opacity-60" />
 
         <div className="flex items-start justify-between gap-4">
           <div className="rounded-xl border border-slate-100 bg-slate-50/80 p-1.5 shadow-sm transition group-hover:border-blue-100 group-hover:bg-blue-50/50">
@@ -162,7 +162,7 @@ function ToolCard({ tool, query, priority = false }: { tool: PublicTool; query: 
               toolId={tool.id}
               toolName={localized.name}
               priority={priority}
-              className="h-12 w-12 shrink-0 sm:h-14 sm:w-14"
+              className="h-14 w-14 shrink-0 sm:h-16 sm:w-16"
             />
           </div>
           <span className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-400 shadow-sm transition group-hover:border-blue-200 group-hover:bg-blue-50 group-hover:text-blue-700">
