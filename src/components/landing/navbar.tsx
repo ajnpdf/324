@@ -222,7 +222,7 @@ export function Navbar() {
                 <div className="my-2 border-t border-slate-200" />
 
                 {[
-                  { label: 'All PDF Tools', href: '/pdf-tools' },
+                  { label:'All PDF Tools', href: '/pdf-tools' },
                   { label: 'Pricing', href: '/pricing' },
                   ...products,
                 ].map((item) => (
