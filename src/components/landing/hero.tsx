@@ -47,7 +47,7 @@ export default function Hero() {
             </h1>
 
             <p className="mt-5 max-w-2xl text-sm font-medium leading-7 text-slate-600 sm:text-base md:text-lg md:leading-8">
-              Merge, split, compress, organize, edit, sign, protect and repair PDFs from one focused AJN PDF workspace.
+              Merge, split, compress, edit, organize, sign and protect PDF files online. Repair tools are also available when a PDF structure needs recovery.
             </p>
 
             <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
@@ -59,10 +59,10 @@ export default function Hero() {
                 Choose a PDF tool
               </Link>
               <Link
-                href="/pdf-tools"
+                href="/merge-pdf"
                 className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 text-xs font-black text-slate-800 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
               >
-                Browse all PDF tools
+                Start with Merge PDF
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
             </div>
