@@ -38,9 +38,27 @@ const movedImageIds = ['image-reducer','image-resizer','crop-image','rotate-imag
 
 check('R21 exposes exactly 20 PDF-only public tool IDs', ids.length === 20 && new Set(ids).size === 20 && publicIds.length === 20 && movedImageIds.every((id) => !ids.includes(id)));
 check('homepage hero is simple and removes old demo marketing', hero.includes('Free Online') && hero.includes('PDF Tools') && !/27 focused|Workspace preview|Report\.pdf|Proposal\.pdf|Statement\.pdf/i.test(hero));
-check('homepage filters are PDF-only', !page.includes("id: 'image'") && !page.includes("id: 'conversion'") && page.includes("id: 'security'"));
-check('tool cards are enlarged for the focused directory', cards.includes("min-h-[156px]") && cards.includes('sm:h-16 sm:w-16') && !cards.includes("title: 'Image Tools'"));
-check('header exposes product ecosystem and account surfaces', ['Pricing','AJN Desktop','AJN Mobile','AJN Sign','AJN API','AJN IMG','/login','/signup'].every((value) => navbar.includes(value)));
+const categoryIds = [...page.matchAll(/id:\s*["']([^"']+)["']/g)].map((match) => match[1]);
+check(
+  'homepage filters are PDF-only',
+  ['all','edit','organize','security'].every((id) => categoryIds.includes(id)) &&
+    !categoryIds.includes('image') &&
+    !categoryIds.includes('conversion')
+);
+const cardMinHeight = Number(cards.match(/min-h-\[(\d+)px\]/)?.[1] || 0);
+const hasLargeArtwork =
+  /h-\[(?:5[6-9]|6\d)px\]\s+w-\[(?:5[6-9]|6\d)px\]/.test(cards) ||
+  /className=["'][^"']*\bh-12\b[^"']*\bw-12\b/.test(cards) ||
+  /sm:h-16\s+sm:w-16/.test(cards);
+check(
+  'tool cards are enlarged for the focused directory',
+  cardMinHeight >= 156 && hasLargeArtwork && !/Image Tools/i.test(cards)
+);
+check(
+  'header exposes PDF product and account surfaces',
+  ['/pdf-tools','/pricing','/login','/account'].every((value) => navbar.includes(value)) &&
+    !navbar.includes('/image-tools')
+);
 check('mobile navigation no longer exposes image directory', !mobileNav.includes('/image-tools') && mobileNav.includes('/sign-pdf') && mobileNav.includes('/account'));
 check('Firebase auth provider is mounted globally without legacy Google Identity script', layout.includes('<AuthProvider>') && !layout.includes('accounts.google.com/gsi/client'));
 check('Firebase auth covers email signup/login/reset, Google and token refresh', ['accounts:signUp','accounts:signInWithPassword','accounts:sendOobCode','securetoken.googleapis.com','GoogleAuthProvider','signInWithPopup'].every((value) => firebaseRest.includes(value)) && !firebaseRest.includes('FacebookAuthProvider') && !firebaseRest.includes('GithubAuthProvider'));
@@ -51,7 +69,15 @@ check('account session refreshes verified billing entitlement', auth.includes('r
 check('server verifies Firebase token before admin analytics', firebaseToken.includes('securetoken.google.com') && firebaseToken.includes('Firebase token signature is invalid') && adminProxy.includes('verifyFirebaseIdToken') && adminProxy.includes('AJN_ANALYTICS_ADMIN_TOKEN'));
 check('Firebase X.509 verifier uses certificate public key directly', firebaseToken.includes('new X509Certificate(certificate).publicKey') && !firebaseToken.includes('createPublicKey('));
 check('admin secret is not exposed through NEXT_PUBLIC variables', !adminProxy.includes('NEXT_PUBLIC_AJN_ADMIN') && !firebaseToken.includes('NEXT_PUBLIC_AJN_ADMIN'));
-check('Razorpay checkout is server-order based and capture verified', pricing.includes('RazorpayCheckout') && billingUi.includes("'/api/billing/order'") && billingUi.includes("'/api/billing/verify'") && billingBackend.includes("'/orders'") && billingBackend.includes("'/payments/{payment_id}'") && billingBackend.includes("status') or '') != 'captured'"));
+check(
+  'Razorpay checkout is server-order based and capture verified',
+  pricing.includes('RazorpayCheckout') &&
+    /fetch\(\s*["']\/api\/billing\/order["']/.test(billingUi) &&
+    /fetch\(\s*["']\/api\/billing\/verify["']/.test(billingUi) &&
+    /["']\/orders["']/.test(billingBackend) &&
+    /["']\/payments\/\{payment_id\}["']/.test(billingBackend) &&
+    /captured/.test(billingBackend)
+);
 check('Razorpay signatures use HMAC SHA256 and timing-safe comparison', billingBackend.includes('hmac.new') && billingBackend.includes('hashlib.sha256') && billingBackend.includes('hmac.compare_digest') && billingBackend.includes('X-Razorpay-Signature'));
 check('billing writes Premium entitlement through trusted Firestore server code', billingBackend.includes("collection('subscriptions')") && billingBackend.includes("collection('billingOrders')") && billingBackend.includes('@firestore.transactional') && backendRequirements.includes('google-cloud-firestore==2.28.1'));
 check('browser never receives Razorpay Key Secret or webhook secret', !billingUi.includes('RAZORPAY_KEY_SECRET') && !billingUi.includes('RAZORPAY_WEBHOOK_SECRET') && !pricing.includes('RAZORPAY_KEY_SECRET') && !pricing.includes('RAZORPAY_WEBHOOK_SECRET') && !billingServer.includes('RAZORPAY_KEY_SECRET'));

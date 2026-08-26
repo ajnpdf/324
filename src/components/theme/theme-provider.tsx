@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { createContext, useContext, useEffect, useMemo } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
-type Theme = 'light' | 'dark';
+type Theme = "light" | "dark";
 
 type ThemeContextValue = {
   theme: Theme;
@@ -12,34 +12,62 @@ type ThemeContextValue = {
 };
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
-const STORAGE_KEY = 'ajn_theme';
+const STORAGE_KEY = "ajn_theme";
 
-function forceLightTheme() {
+function applyTheme(theme: Theme) {
   const root = document.documentElement;
-  root.classList.remove('dark');
-  root.dataset.theme = 'light';
-  root.style.colorScheme = 'light';
+  root.classList.toggle("dark", theme === "dark");
+  root.dataset.theme = theme;
+  root.style.colorScheme = theme;
 }
 
-/** R6 is intentionally light-only. Kept as a provider for API compatibility. */
+function getInitialTheme(): Theme {
+  try {
+    const saved = window.localStorage.getItem(STORAGE_KEY);
+    if (saved === "light" || saved === "dark") return saved;
+  } catch {
+    // Storage may be unavailable; fall back to the OS preference.
+  }
+
+  return window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
+  const [theme, setThemeState] = useState<Theme>("light");
+  const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
-    forceLightTheme();
-    window.localStorage.removeItem(STORAGE_KEY);
+    const initial = getInitialTheme();
+    setThemeState(initial);
+    applyTheme(initial);
+    setMounted(true);
   }, []);
 
-  const value = useMemo<ThemeContextValue>(() => ({
-    theme: 'light',
-    mounted: true,
-    setTheme: () => forceLightTheme(),
-    toggleTheme: () => forceLightTheme(),
-  }), []);
+  const setTheme = useCallback((next: Theme) => {
+    setThemeState(next);
+    applyTheme(next);
+
+    try {
+      window.localStorage.setItem(STORAGE_KEY, next);
+    } catch {
+      // Theme still applies for the current session.
+    }
+  }, []);
+
+  const toggleTheme = useCallback(() => {
+    setTheme(theme === "dark" ? "light" : "dark");
+  }, [setTheme, theme]);
+
+  const value = useMemo<ThemeContextValue>(
+    () => ({ theme, mounted, setTheme, toggleTheme }),
+    [theme, mounted, setTheme, toggleTheme],
+  );
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 }
 
 export function useTheme() {
   const value = useContext(ThemeContext);
-  if (!value) throw new Error('useTheme must be used inside ThemeProvider.');
+  if (!value) throw new Error("useTheme must be used inside ThemeProvider.");
   return value;
 }

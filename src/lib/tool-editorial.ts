@@ -56,7 +56,7 @@ const CUSTOM: Record<string, Partial<ToolEditorial>> = {
   'compress-pdf': {
     overview: 'Compress PDF reduces file size so documents are easier to email, upload, and store. AJN PDF offers selectable quality settings rather than using one aggressive compression level for every document.',
     details: 'The balanced mode aims to reduce image data while keeping ordinary screen readability. Strong compression may rasterize pages to achieve a smaller result. When rasterization is used, searchable text, links, form fields, and accessibility information can be reduced or lost, so the downloaded file should always be reviewed.',
-    tips: ['Use balanced compression for resumes and office documents.', 'Use high quality for print files and small text.', 'Compare the final page clarity and file size before deleting the original.'],
+    tips: ['Choose a target smaller than the original PDF.', 'Very small targets can reduce page clarity.', 'Check the downloaded PDF before deleting the original.'],
     limitations: ['Already optimized PDFs may become only slightly smaller.', 'Strong compression can reduce text searchability and link functionality.'],
   },
   'rotate-pdf': {

@@ -1,5 +1,2 @@
-import { ProfessionalSkeleton } from "@/components/ajnpdf/professional-skeleton";
-
-export default function Loading() {
-  return <ProfessionalSkeleton variant="tools" />;
-}
+import { PageSkeleton } from "@/components/feedback/PageSkeleton";
+export default function Loading(){ return <PageSkeleton />; }
