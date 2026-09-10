@@ -22,7 +22,7 @@ export interface ServiceTool {
 export const ALL_TOOLS: ServiceTool[] = [
   // --- 1. PDF TOOLS ---
   {
-    id: 'merge-pdf', name: 'Merge PDF', desc: 'Combine multiple PDF files into one easily.',
+    id: 'merge-pdf', name: 'Merge PDF', desc: 'Combine multiple PDFs into one file in the order you choose.',
     icon: Layout, tag: 'merge', cat: 'pdf', mode: 'PDF', badge: 'Popular', color: 'text-blue-500', perfIndex: 'Fast',
     benefits: ["Combine files quickly", "Flexible file order"],
     useCases: ["Combining reports"],
@@ -30,7 +30,7 @@ export const ALL_TOOLS: ServiceTool[] = [
     keywords: ["combine", "join", "concatenate", "bundle", "attach", "multiple pdf"]
   },
   {
-    id: 'split-pdf', name: 'Split PDF', desc: 'Cut your PDF into smaller parts or extract pages.',
+    id: 'split-pdf', name: 'Split PDF', desc: 'Extract pages or split a PDF into smaller files.',
     icon: Scissors, tag: 'split', cat: 'pdf', mode: 'PDF', badge: 'Popular', color: 'text-purple-500', perfIndex: 'Precise',
     benefits: ["Extract exact pages", "Custom ranges"],
     useCases: ["Separating forms"],
@@ -38,15 +38,15 @@ export const ALL_TOOLS: ServiceTool[] = [
     keywords: ["extract", "separate", "cut", "divide", "break", "range", "pages"]
   },
   {
-    id: 'compress-pdf', name: 'Compress PDF', desc: 'Reduce PDF size with selectable quality settings.',
+    id: 'compress-pdf', name: 'Compress PDF', desc: 'Compress a PDF toward the file size you need.',
     icon: Shrink, tag: 'compress', cat: 'pdf', mode: 'PDF', badge: 'Popular', color: 'text-emerald-500', perfIndex: 'Small',
     benefits: ["Save storage", "Clear quality"],
     useCases: ["Smaller resumes"],
-    instructions: ["Upload PDF", "Shrink", "Download"],
+    instructions: ["Upload PDF", "Enter target size", "Download"],
     keywords: ["shrink", "reduce", "size", "smaller", "optimization", "kb", "mb"]
   },
   {
-    id: 'rotate-pdf', name: 'Rotate PDF', desc: 'Turn specific pages or all pages of your PDF.',
+    id: 'rotate-pdf', name: 'Rotate PDF', desc: 'Rotate selected pages or the entire PDF.',
     icon: RotateCw, tag: 'edit', cat: 'pdf', mode: 'PDF', color: 'text-amber-500', perfIndex: 'Correct',
     benefits: ["Fix orientation", "Batch rotation"],
     useCases: ["Fixing scans"],
@@ -54,7 +54,7 @@ export const ALL_TOOLS: ServiceTool[] = [
     keywords: ["turn", "flip", "orientation", "landscape", "portrait", "upside down"]
   },
   {
-    id: 'delete-pdf-pages', name: 'Remove Pages', desc: 'Select and delete unwanted pages from your PDF.',
+    id: 'delete-pdf-pages', name: 'Remove Pages', desc: 'Remove selected pages from a PDF.',
     icon: Trash2, tag: 'edit', cat: 'pdf', mode: 'PDF', color: 'text-red-500', perfIndex: 'Clean',
     benefits: ["Quick deletion", "Visual selector"],
     useCases: ["Cleaning drafts"],
@@ -62,7 +62,7 @@ export const ALL_TOOLS: ServiceTool[] = [
     keywords: ["delete", "remove", "clean", "trash", "erase", "strip"]
   },
   {
-    id: 'organize-pdf', name: 'Organize PDF', desc: 'Sort and organize PDF pages exactly how you want.',
+    id: 'organize-pdf', name: 'Organize PDF', desc: 'Reorder PDF pages in a clear visual workflow.',
     icon: LayoutGrid, tag: 'edit', cat: 'pdf', mode: 'PDF', color: 'text-primary', perfIndex: 'Flexible',
     benefits: ["Sort pages visually", "Delete or add pages"],
     useCases: ["Building reports"],
@@ -70,7 +70,7 @@ export const ALL_TOOLS: ServiceTool[] = [
     keywords: ["reorder", "arrange", "manage", "move", "pages", "sequence"]
   },
   {
-    id: 'crop-pdf', name: 'Crop PDF', desc: 'Trim margins and change the size of your PDF pages.',
+    id: 'crop-pdf', name: 'Crop PDF', desc: 'Trim margins and adjust the visible page area.',
     icon: Crop, tag: 'edit', cat: 'pdf', mode: 'PDF', color: 'text-orange-500', perfIndex: 'Precise',
     benefits: ["Remove white space", "Focus on text"],
     useCases: ["Adjusting prints"],
@@ -86,7 +86,7 @@ export const ALL_TOOLS: ServiceTool[] = [
     keywords: ["copyright", "logo", "stamp", "brand", "protect", "overlay", "text"]
   },
   {
-    id: 'page-number', name: 'Page Numbers', desc: 'Add page numbers to your PDF document easily.',
+    id: 'page-number', name: 'Page Numbers', desc: 'Add page numbers with placement and starting-number controls.',
     icon: FileDigit, tag: 'edit', cat: 'pdf', mode: 'PDF', color: 'text-indigo-500', perfIndex: 'Index',
     benefits: ["Custom start number", "Professional look"],
     useCases: ["Numbered reports"],
@@ -94,11 +94,11 @@ export const ALL_TOOLS: ServiceTool[] = [
     keywords: ["pagination", "index", "footer", "header", "numbers", "numbering"]
   },
   {
-    id: 'flatten-pdf', name: 'Flatten PDF', desc: 'Make PDF forms and layers permanent.',
+    id: 'flatten-pdf', name: 'Flatten PDF', desc: 'Flatten supported interactive form fields into fixed page content.',
     icon: Layers, tag: 'edit', cat: 'pdf', mode: 'PDF', color: 'text-slate-700', perfIndex: 'Permanent',
-    benefits: ["Locks Content", "Collapses Forms"],
-    useCases: ["Secure Forms"],
-    instructions: ["Upload PDF", "Flatten", "Save Static PDF"],
+    benefits: ["Fix supported form values", "Simpler form output"],
+    useCases: ["Preparing completed forms"],
+    instructions: ["Upload PDF", "Flatten supported form fields", "Download"],
     keywords: ["static", "layer", "forms", "merge layers", "lock"]
   },
   {
@@ -126,15 +126,23 @@ export const ALL_TOOLS: ServiceTool[] = [
     keywords: ["fix", "corrupted", "broken", "recover", "damaged", "restore"]
   },
   {
-    id: 'compare-pdf', name: 'Compare PDF', desc: 'See the differences between two PDF versions easily.',
+    id: 'compare-pdf', name: 'Compare PDF', desc: 'Compare two PDF versions side by side and review text-item differences.',
     icon: Diff, tag: 'utility', cat: 'pdf', mode: 'PDF', color: 'text-indigo-600', perfIndex: 'Audit',
     benefits: ["Revision tracking", "Highlight changes"],
     useCases: ["Legal reviewing"],
     instructions: ["Upload Original", "Upload Modified", "Compare"],
     keywords: ["diff", "changes", "compare", "audit", "revision"]
   },
-  {
-    id: 'add-text', name: 'Add Text', desc: 'Add custom text anywhere on your PDF pages.',
+    {
+    id: 'edit-pdf', name: 'Edit PDF', desc: 'Edit native PDF text and word-level text inside scanned/image PDFs. Remove, replace or add words, edit images, links, signatures and pages locally in your browser.',
+    icon: FileEdit, tag: 'edit', cat: 'pdf', mode: 'PDF', badge: 'New', color: 'text-blue-700', perfIndex: 'Browser',
+    benefits: ['Smart existing-text replacement', 'Word-level scanned/image text editing', 'Remove, replace or add OCR words', 'Edit all detected text', 'Same-origin browser OCR', 'Detected font family, size and baseline matching', 'Existing image editing', 'Secure raster redaction', 'Browser-only PDF processing', 'Undo, redo and local recovery', 'Validated PDF download'],
+    useCases: ['Change dates, names, numbers and amounts', 'Correct native or scanned text in forms and documents', 'Find and replace text across a document', 'Move or replace existing images', 'Add signatures, links, images and highlights', 'Securely redact regions by rasterizing affected pages', 'Reorder, duplicate, delete and rotate pages'],
+    instructions: ['Choose a PDF from your device', 'Click existing text or choose a manual editing tool', 'Edit and format the content in the live page preview', 'Review the result and download the edited PDF'],
+    keywords: ['edit pdf', 'pdf editor', 'edit pdf online', 'edit pdf online free', 'free pdf editor', 'best free pdf editor', 'change text in pdf', 'replace text in pdf', 'edit all text in pdf', 'edit scanned pdf', 'ocr pdf editor', 'find replace pdf', 'edit date in pdf', 'edit name in pdf', 'change amount in pdf', 'browser pdf editor', 'pdf editor without upload', 'add signature to pdf', 'replace image in pdf', 'add link to pdf', 'secure redact pdf', 'highlight pdf', 'edit pdf pages']
+  },
+{
+    id: 'add-text', name: 'Add Text', desc: 'Place custom text on selected PDF pages.',
     icon: Type, tag: 'edit', cat: 'pdf', mode: 'PDF', color: 'text-blue-700', perfIndex: 'Direct',
     benefits: ["Text size", "Color selection"],
     useCases: ["Quick edits"],
@@ -142,7 +150,7 @@ export const ALL_TOOLS: ServiceTool[] = [
     keywords: ["write", "text", "edit", "annotate", "type"]
   },
   {
-    id: 'add-image-to-pdf', name: 'Add Image', desc: 'Add a logo or photo anywhere on a PDF page.',
+    id: 'add-image-to-pdf', name: 'Add Image', desc: 'Place a logo, signature image or photo on a PDF page.',
     icon: ImageIcon, tag: 'edit', cat: 'pdf', mode: 'PDF', color: 'text-purple-700', perfIndex: 'Retina',
     benefits: ["Embed logos", "Insert photos"],
     useCases: ["Manuals", "Branding"],
@@ -150,7 +158,7 @@ export const ALL_TOOLS: ServiceTool[] = [
     keywords: ["insert", "image", "picture", "photo", "embed"]
   },
   {
-    id: 'pdf-metadata', name: 'Edit Metadata', desc: 'Edit PDF details like author, title, and properties.',
+    id: 'pdf-metadata', name: 'Edit Metadata', desc: 'Update PDF title, author, subject and metadata fields.',
     icon: Tag, tag: 'edit', cat: 'pdf', mode: 'PDF', color: 'text-slate-500', perfIndex: 'System',
     benefits: ["Clean files", "Easy tags"],
     useCases: ["Publishing"],
@@ -272,7 +280,7 @@ export const ALL_TOOLS: ServiceTool[] = [
     icon: Shrink, tag: 'compress', cat: 'img', mode: 'Image', badge: 'Popular', color: 'text-emerald-500', perfIndex: 'Small',
     benefits: ["Set quality", "Choose size"],
     useCases: ["Web Assets"],
-    instructions: ["Load image", "Shrink", "Download"],
+    instructions: ["Load image", "Enter target size", "Download"],
     keywords: ["compress", "shrink", "resize", "kb", "mb", "optimization"]
   },
   {

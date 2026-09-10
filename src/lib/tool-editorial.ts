@@ -41,6 +41,28 @@ function conversionEditorial(tool: ServiceTool, processing: string, limitation: 
 }
 
 const CUSTOM: Record<string, Partial<ToolEditorial>> = {
+  'edit-pdf': {
+    overview: 'Edit PDF is AJN PDF’s full browser editing workspace for practical document corrections. Use it to change dates, names, numbers and amounts, replace visible text, add new text, insert images or signatures, highlight content, and manage pages without sending the PDF to a file-processing server.',
+    details: 'Smart Replace reads the PDF text layer with PDF.js, captures the selected text position, size, baseline, width and available font information, then creates a replacement at the same location. When a PDF uses scanned content, unusual glyphs or a font that cannot be reproduced cleanly, AJN PDF can reconstruct detected text into editable objects, and scanned pages can use browser OCR; Manual Whiteout plus Add Text remains available for difficult layouts. AJN PDF keeps edit operations in the browser and creates a new downloadable PDF with pdf-lib; the source file is not overwritten.',
+    tips: [
+      'Click detected text when changing a date, name, number or amount so position and font metrics can be reused.',
+      'Use Manual Whiteout plus Add Text for scans, flattened text or unusual embedded fonts.',
+      'Check font match, baseline, spacing and alignment in the live preview before downloading.',
+      'Keep the original PDF until the edited download has been opened and verified.'
+    ],
+    limitations: [
+      'PDF files are not Word documents. Some PDFs use subset, proprietary, vector or glyph-based fonts that cannot be reproduced exactly; AJN PDF uses the closest available visual match and shows the match status.',
+      'Image-only scanned text has no normal PDF text layer. Edit PDF automatically OCRs scan-like pages and also provides Scan current page / Scan all pages controls, including hybrid scans with hidden text layers; OCR accuracy still depends on scan quality and the selected language.',
+      'Whiteout is only a visual cover. Use the separate Secure Redact tool for sensitive regions; it rasterizes affected pages during export and burns the redaction into page pixels so the covered original page objects are not retained underneath.'
+    ],
+    faqs: [
+      { question: 'Can I edit existing text in a PDF with AJN PDF?', answer: 'For PDFs with a usable text layer, click detected text to create a smart replacement that keeps its position, size, baseline and available font characteristics. Difficult PDFs can use Manual Whiteout plus Add Text.' },
+      { question: 'Can I change a date, name or amount in a PDF?', answer: 'Yes. These short corrections are a primary Edit PDF workflow. Select the existing text, enter the new value, review the font and alignment match, then download the new PDF.' },
+      { question: 'Does Edit PDF upload my document to a processing server?', answer: 'The Edit PDF processor is browser-only. PDF rendering, text analysis, editing state and PDF export run in the active browser session. OCR uses same-origin static engine, worker, WebAssembly core and language assets under /ajn-ocr, so the editor has no runtime OCR CDN dependency and the PDF is not uploaded to a PDF-processing server. Local crash recovery uses IndexedDB on the same device.' },
+      { question: 'Will the replacement use exactly the same font?', answer: 'AJN PDF analyzes the PDF font reference, family, size, style, baseline and width. Exact reuse is not possible for every embedded or subset font, so the editor reports Visual Match, Family Match or Fallback instead of silently claiming a perfect match.' }
+    ],
+  },
+
   'merge-pdf': {
     overview: 'Merge PDF combines two or more PDF documents into one file in the exact order you choose. It is useful for joining reports, scanned pages, forms, invoices, assignments, and supporting documents before sharing or archiving them.',
     details: 'AJN PDF reads the selected documents, copies their pages into a new PDF, and preserves the original page sequence. You can reorder the uploaded files, remove an item before processing, choose pages from each document, and set a clear output filename. The original files are not modified.',
@@ -56,7 +78,7 @@ const CUSTOM: Record<string, Partial<ToolEditorial>> = {
   'compress-pdf': {
     overview: 'Compress PDF reduces file size so documents are easier to email, upload, and store. AJN PDF offers selectable quality settings rather than using one aggressive compression level for every document.',
     details: 'The balanced mode aims to reduce image data while keeping ordinary screen readability. Strong compression may rasterize pages to achieve a smaller result. When rasterization is used, searchable text, links, form fields, and accessibility information can be reduced or lost, so the downloaded file should always be reviewed.',
-    tips: ['Use balanced compression for resumes and office documents.', 'Use high quality for print files and small text.', 'Compare the final page clarity and file size before deleting the original.'],
+    tips: ['Choose a target smaller than the original PDF.', 'Very small targets can reduce page clarity.', 'Check the downloaded PDF before deleting the original.'],
     limitations: ['Already optimized PDFs may become only slightly smaller.', 'Strong compression can reduce text searchability and link functionality.'],
   },
   'rotate-pdf': {

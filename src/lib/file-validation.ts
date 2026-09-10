@@ -30,8 +30,24 @@ export async function hasPdfHeader(file: File): Promise<boolean> {
   return new TextDecoder().decode(bytes) === '%PDF-';
 }
 
-export function safeOutputName(value: string, fallback: string, extension: string): string {
-  const cleaned = value.trim().replace(/[<>:"/\\|?*\x00-\x1F]/g, '_').replace(/\s+/g, ' ').slice(0, 120);
-  const base = cleaned || fallback;
-  return base.toLowerCase().endsWith(extension.toLowerCase()) ? base : `${base}${extension}`;
+export function isPdfCandidate(file: File): boolean {
+  const mime = String(file.type || '').toLowerCase();
+  return mime === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+}
+
+export async function validatePdfFile(file: File, maxSizeMb = 50): Promise<string | null> {
+  if (!isPdfCandidate(file)) return `${file.name} is not a PDF file.`;
+  const basic = validateFiles([file], { minFiles: 1, maxFiles: 1, maxSizeMb });
+  if (basic) return basic;
+  if (!(await hasPdfHeader(file))) return `${file.name} is not a readable PDF file.`;
+  return null;
+}
+
+export function safeOutputName(value: string | undefined, fallback: string, extension: string): string {
+  const ext = extension.startsWith('.') ? extension : `.${extension}`;
+  let base = (value || fallback).trim();
+  while (base.toLowerCase().endsWith(ext.toLowerCase())) base = base.slice(0, -ext.length);
+  base = base.replace(/[<>:"/\\|?*\x00-\x1F]/g, '_').replace(/\s+/g, ' ').replace(/[. ]+$/g, '').slice(0, 120) || fallback;
+  if (/^(con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/i.test(base)) base = `_${base}`;
+  return `${base}${ext}`;
 }

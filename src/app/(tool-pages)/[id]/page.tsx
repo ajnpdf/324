@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Script from 'next/script';
 import { notFound } from 'next/navigation';
 import { ToolWorkspaceClient } from '@/components/junction/tool-workspace-client';
-import { ALL_TOOLS, getPublicToolCategory } from '@/lib/tools-data';
+import { ALL_TOOLS } from '@/lib/tools-data';
 import { isToolPublic } from '@/lib/tool-policy';
 import { BUILD_PUBLIC_TOOLS } from '@/lib/build-public-tools';
 import { buildToolMetadata, SITE_NAME, SITE_URL } from '@/lib/seo-config';
@@ -14,6 +14,8 @@ import { MainFooter } from '@/components/landing/main-footer';
 import { getToolSeoProfile } from '@/lib/seo-strategy';
 import { Navbar } from '@/components/landing/navbar';
 import { toolPath } from '@/lib/tool-routes';
+import { ToolSeoRelatedLinks } from '@/components/seo-related-tools';
+import { SeoPillarSection } from '@/components/seo-pillar-section';
 
 export const dynamicParams = false;
 
@@ -37,9 +39,8 @@ export default async function ToolPage({ params }: ToolPageProps) {
   const tool = BUILD_PUBLIC_TOOLS.find((item) => item.id === id);
   if (!tool) notFound();
 
-  const category = getPublicToolCategory(tool);
-  const categoryPath = category === 'image' ? '/image-tools' : '/pdf-utilities';
-  const categoryLabel = category === 'image' ? 'Image Tools' : 'PDF Tools';
+  const categoryPath = '/pdf-tools';
+  const categoryLabel = 'PDF Tools';
   const seo = getToolSeoProfile(tool);
 
   const jsonLd = {
@@ -81,9 +82,11 @@ export default async function ToolPage({ params }: ToolPageProps) {
       />
       <ToolWorkspaceClient id={id} />
       <ToolEditorialContent tool={tool} />
+      <SeoPillarSection toolId={tool.id} />
+      <ToolSeoRelatedLinks toolId={tool.id} />
       <div className="relative z-10 mx-auto max-w-5xl px-4 pb-12">
         <div className="border-t border-black/5 pt-10">
-          <AdSenseUnit slot={ADSENSE_SLOTS.toolContent} width={200} height={300} className="min-h-[300px]" />
+          <AdSenseUnit slot={ADSENSE_SLOTS.toolContent} responsive className="min-h-[120px] sm:min-h-[180px]" />
         </div>
       </div>
       <MainFooter />

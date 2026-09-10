@@ -1,15 +1,19 @@
 "use client";
 import React, { useCallback, useId, useRef, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
-import { AlertTriangle, Download, FileCheck2, Loader2, RefreshCcw, Share2, UploadCloud, X } from "lucide-react";
+import { Download, Eye, FileCheck2, RefreshCcw, Share2, UploadCloud, X } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { sendAjnAnalytics } from "../analytics/site-analytics";
 import { useLanguage } from "@/lib/i18n/language-context";
 import { ToolArtwork } from "@/components/ajn/tool-artwork";
 import { toolIdFromPathname } from "@/lib/tool-routes";
 import { getToolLimitProfile } from "@/lib/tool-limits";
-import { usePdfBackendStatus } from "./backend-status";
 import { CloudImportActions, GoogleDriveExportAction } from "./CloudFileActions";
+import { PrivacyBadge } from "@/components/workspace/PrivacyBadge";
+import { RecoveryError } from "@/components/workspace/RecoveryError";
+
+import { safeOutputName } from "@/lib/file-validation";
+export { safeOutputName } from "@/lib/file-validation";
 
 export interface ToolFile { file: File; name: string; size: number; }
 
@@ -19,16 +23,11 @@ export function fmtBytes(b: number) {
   return `${(b / 1048576).toFixed(1)} MB`;
 }
 
-export function getFilesFromEvent(event: React.ChangeEvent<HTMLInputElement> | React.DragEvent<HTMLElement>): FileList | null {
-  if ("dataTransfer" in event) return event.dataTransfer?.files ?? null;
-  return event.target.files;
-}
-
-export function safeOutputName(value: string | undefined, fallbackBase: string, extension: string) {
-  const ext = extension.startsWith(".") ? extension : `.${extension}`;
-  const raw = (value || fallbackBase).trim().replace(new RegExp(`${ext.replace('.', '\\.')}$`, "i"), "");
-  const clean = raw.replace(/[<>:"/\\|?*\u0000-\u001F]/g, "-").replace(/[. ]+$/g, "").slice(0, 120) || fallbackBase;
-  return `${clean}${ext}`;
+export function getFilesFromEvent(event: React.ChangeEvent<HTMLInputElement> | React.DragEvent<HTMLElement>): File[] {
+  if ("dataTransfer" in event) return Array.from(event.dataTransfer?.files ?? []);
+  const files = Array.from(event.target.files ?? []);
+  event.target.value = "";
+  return files;
 }
 
 export function dl(blob: Blob, name: string) {
@@ -37,7 +36,8 @@ export function dl(blob: Blob, name: string) {
   const a = document.body.appendChild(document.createElement("a"));
   a.style.display = "none";
   a.href = u;
-  a.download = name;
+  const dot = name.lastIndexOf('.');
+  a.download = safeOutputName(name, 'document', dot > 0 ? name.slice(dot) : '.pdf');
   a.click();
   const toolId = toolIdFromPathname(window.location.pathname);
   sendAjnAnalytics({ event_name: "download", path: window.location.pathname, tool_id: toolId });
@@ -130,7 +130,7 @@ function injectStyles(accent = T.red) {
     .jn-btn-base:active:not(:disabled){transform:scale(.98)}
     .jn-btn-base:disabled{opacity:.5;cursor:not-allowed}
     .jn-btn-base:focus-visible,.jn-drop:focus-visible{outline:3px solid color-mix(in srgb,var(--jn-accent,${accent}) 30%,transparent);outline-offset:3px}
-    .jn-drop{border:1.5px dashed color-mix(in srgb,var(--jn-accent,${accent}) 30%,var(--jn-border));border-radius:22px;padding:clamp(1.35rem,4vw,2.4rem) 1rem;text-align:center;cursor:pointer;background:linear-gradient(145deg,var(--jn-drop-bg),color-mix(in srgb,var(--jn-drop-bg) 84%,#eef5ff));transition:all .2s ease}
+    .jn-drop{border:1.5px dashed color-mix(in srgb,var(--jn-accent,${accent}) 30%,var(--jn-border));border-radius:22px;padding:clamp(1.35rem,4vw,2.4rem) 1rem;text-align:center;cursor:pointer;background:var(--jn-drop-bg);transition:all .2s ease}
     .jn-drop:hover,.jn-drop.active{border-color:var(--jn-accent,${accent});background:var(--jn-drop-hover);transform:translateY(-1px);box-shadow:0 12px 30px rgba(35,70,145,.08)}
     .jn-inline-loader{display:inline-flex;align-items:center;gap:2px;height:14px}.jn-inline-loader i{display:block;width:3px;height:8px;border-radius:2px;background:currentColor;animation:jn-bar .75s ease-in-out infinite}.jn-inline-loader i:nth-child(2){animation-delay:.12s}.jn-inline-loader i:nth-child(3){animation-delay:.24s}@keyframes jn-bar{0%,100%{transform:scaleY(.55);opacity:.55}50%{transform:scaleY(1);opacity:1}}
     @media(prefers-reduced-motion:reduce){.jn-card{animation:none}.jn-btn-base,.jn-drop{transition:none}.jn-inline-loader i{animation:none}}
@@ -146,29 +146,28 @@ export function ToolWorkspace({ title, description, accent = T.blue, children }:
   const localized = localizeTool(toolId, title, description, []);
   const limitProfile = getToolLimitProfile(toolId);
   const serverMode = limitProfile.executionMode === "server";
-  const { checking, online, refresh } = usePdfBackendStatus(serverMode ? 30000 : 0, serverMode);
-  const serviceBlocked = serverMode && (checking || !online);
 
   return (
-    <div className="jn-workspace relative min-h-screen overflow-hidden" style={{ "--jn-accent": "#2563EB", background: "transparent", WebkitFontSmoothing: "antialiased" } as React.CSSProperties}>
+    <div className="jn-workspace relative min-h-screen overflow-hidden" style={{ "--jn-accent": accent, background: "transparent", WebkitFontSmoothing: "antialiased" } as React.CSSProperties}>
       <main className="relative z-10 mx-auto w-full max-w-4xl px-3 pb-12 pt-24 sm:px-5 sm:pt-28">
         <div className="mx-auto mb-5 flex max-w-3xl items-center gap-3.5 text-left sm:mb-7 sm:gap-5">
           <ToolArtwork toolId={toolId} toolName={localized.name} priority className="h-[52px] w-[52px] sm:h-14 sm:w-14" />
           <div className="min-w-0 flex-1">
-            <h1 className="text-balance text-2xl font-black tracking-[-0.035em] text-slate-950 sm:text-4xl">{localized.name}</h1>
-            <p className="mt-1.5 max-w-2xl text-sm font-medium leading-6 text-slate-600 sm:text-[15px]">{localized.desc}</p>
+            <h1 className="text-balance text-2xl font-black tracking-[-0.035em] text-slate-950 sm:text-3xl">{localized.name}</h1>
+            <p className="mt-1.5 max-w-2xl text-sm font-medium leading-6 text-[#475569] dark:text-[#b6c0d0] sm:text-[15px]">{localized.desc}</p>
+            <PrivacyBadge toolId={toolId} className="mt-2" />
           </div>
         </div>
-        <section className="jn-card ajn-product-canvas rounded-[1.75rem] border border-slate-200 bg-white p-4 shadow-[0_18px_48px_rgba(30,62,130,.08)] sm:p-6">{serverMode && serviceBlocked && (
-            <div role="status" aria-live="polite" className="mb-4 flex items-start justify-between gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-amber-950">
-              <div className="flex min-w-0 gap-2.5">
-                {checking ? <Loader2 className="mt-0.5 h-4 w-4 shrink-0 animate-spin" /> : <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />}
-                <div><p className="text-xs font-black">{checking ? "Checking availability…" : "Temporarily unavailable"}</p><p className="mt-1 text-[11px] font-semibold leading-5 opacity-80">{checking ? "AJN PDF is confirming live availability before accepting the selected file." : "This tool is temporarily unavailable. On-device AJN PDF tools remain available."}</p></div>
+        <section className="jn-card ajn-product-canvas rounded-[1.25rem] border border-[#e3e9f4] bg-white p-4 shadow-[0_14px_44px_rgba(14,27,44,.07)] dark:border-white/10 dark:bg-[#111827] dark:shadow-[0_20px_60px_rgba(0,0,0,.32)] sm:p-6">{serverMode && (
+            <div role="status" className="mb-4 flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-emerald-950 dark:border-emerald-400/20 dark:bg-emerald-400/10 dark:text-emerald-100">
+              <span className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-emerald-500 shadow-[0_0_0_4px_rgba(16,185,129,.12)]" aria-hidden="true" />
+              <div>
+                <p className="text-xs font-black">Secure server processing</p>
+                <p className="mt-1 text-[11px] font-semibold leading-5 opacity-80">The secure processor connects when you start. A cold start will no longer disable this tool; real processing errors are shown here if the request cannot complete.</p>
               </div>
-              {!checking && <button type="button" onClick={() => void refresh()} className="shrink-0 rounded-lg border border-amber-300 bg-white px-3 py-2 text-[10px] font-black text-amber-900">Retry</button>}
             </div>
           )}
-          <fieldset disabled={serviceBlocked} aria-disabled={serviceBlocked || undefined} className="m-0 min-w-0 border-0 p-0 disabled:cursor-not-allowed disabled:opacity-70">
+          <fieldset className="m-0 min-w-0 border-0 p-0">
             {children}
           </fieldset>
         </section>
@@ -182,7 +181,7 @@ export function Btn({ onClick, disabled, loading, children, variant = "primary",
   variant?: "primary"|"secondary"|"ghost"; full?: boolean; style?: React.CSSProperties;
 }) {
   const v = {
-    primary: { background: "linear-gradient(135deg,#2563EB,#1D4ED8)", color: "#fff", boxShadow: "0 12px 28px rgba(37,99,235,.22)" },
+    primary: { background: "#2563EB", color: "#fff", boxShadow: "0 10px 24px rgba(37,99,235,.18)" },
     secondary: { background: "var(--jn-secondary-bg)", color: "var(--jn-text-primary)", border: "1px solid var(--jn-border)" },
     ghost: { background: "transparent", color: "var(--jn-text-primary)", border: "1px solid var(--jn-border)" },
   };
@@ -248,12 +247,47 @@ export function Done({ msg, onDownload, dlLabel, onReset, shareFile }: { msg?:st
       window.setTimeout(() => setShareState("idle"), 1800);
     }
   };
+  const canPreviewPdf = Boolean(
+    shareFile &&
+    (
+      shareFile.blob.type.toLowerCase().startsWith("application/pdf") ||
+      shareFile.name.toLowerCase().endsWith(".pdf")
+    )
+  );
+  const previewPdf = () => {
+    if (!shareFile || !canPreviewPdf || typeof window === "undefined") return;
+
+    const previewBlob = shareFile.blob.type.toLowerCase().startsWith("application/pdf")
+      ? shareFile.blob
+      : new Blob([shareFile.blob], { type: "application/pdf" });
+    const previewUrl = URL.createObjectURL(previewBlob);
+    const opener = document.createElement("a");
+    opener.href = previewUrl;
+    opener.target = "_blank";
+    opener.rel = "noopener noreferrer";
+    opener.style.display = "none";
+    opener.setAttribute("aria-label", `${t("common.preview")} PDF`);
+    document.body.appendChild(opener);
+    opener.click();
+    opener.remove();
+
+    const toolId = toolIdFromPathname(window.location.pathname);
+    sendAjnAnalytics({
+      event_name: "interaction",
+      path: window.location.pathname,
+      tool_id: toolId,
+      element_id: "preview_pdf",
+    });
+
+    window.setTimeout(() => URL.revokeObjectURL(previewUrl), 5 * 60 * 1000);
+  };
   return <div className="animate-in fade-in slide-in-from-bottom-2 py-4 text-center duration-300" role="status" aria-live="polite">
-    <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl border border-emerald-200 bg-emerald-50 text-emerald-700"><FileCheck2 className="h-6 w-6"/></div>
-    <h3 className="text-xl font-black text-slate-950">{msg || t("result.ready")}</h3>
-    <p className="mx-auto mt-1 max-w-md text-xs font-medium leading-5 text-slate-500">{t("result.shareHelp")}</p>
+    <div className="jn-success-draw mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full border border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-400/20 dark:bg-emerald-400/10 dark:text-emerald-300"><FileCheck2 className="h-6 w-6"/></div>
+    <h3 className="text-xl font-black text-[#0e1b2c] dark:text-[#eef2f9]">{msg || t("result.ready")}</h3>
+    <p className="mx-auto mt-1 max-w-md text-xs font-medium leading-5 text-[#64748b] dark:text-[#8b96ab]">{t("result.shareHelp")}</p>
     <div className="mt-5 flex flex-wrap justify-center gap-2">
       {onDownload && <Btn onClick={onDownload} style={{background:"#0f172a"}}><Download size={16}/>{dlLabel || t("common.download")}</Btn>}
+      {canPreviewPdf && <Btn variant="secondary" onClick={previewPdf}><Eye size={15}/>{t("common.preview")} PDF</Btn>}
       {shareFile && <Btn variant="secondary" onClick={() => void share()}><Share2 size={15}/>{shareState === "copied-link" ? t("result.toolLinkCopied") : shareState === "unavailable" ? t("result.shareUnavailable") : t("result.shareFile")}</Btn>}
       {shareFile && <GoogleDriveExportAction blob={shareFile.blob} name={shareFile.name} />}
       <Btn variant="secondary" onClick={()=>{if(typeof window!=="undefined"){const toolId=toolIdFromPathname(window.location.pathname);sendAjnAnalytics({event_name:"tool_reset",path:window.location.pathname,tool_id:toolId});}onReset();}}><RefreshCcw size={15}/>{t("common.processAnother")}</Btn>
@@ -271,13 +305,20 @@ export function Pills<T extends string|number>({ opts, val, onChange }: { opts:{
 }
 
 export function F({ label, hint, children }: { label:string; hint?:string; children:ReactNode }) {
-  return <div className="flex flex-col gap-1.5"><div className="text-xs font-bold text-slate-700">{label}</div>{children}{hint && <p className="m-0 text-xs font-medium leading-5 text-slate-500">{hint}</p>}</div>;
+  const id = useId();
+  const controls = React.Children.map(children, (child) => {
+    if (React.isValidElement(child) && ['input', 'select', 'textarea'].includes(String(child.type))) {
+      return React.cloneElement(child as React.ReactElement<Record<string, unknown>>, { id, 'aria-label': label, 'aria-describedby': hint ? `${id}-hint` : undefined });
+    }
+    return child;
+  });
+  return <div className="flex min-w-0 flex-col gap-1.5"><label htmlFor={id} className="text-xs font-bold text-slate-700">{label}</label>{controls}{hint && <p id={`${id}-hint`} className="m-0 text-xs font-medium leading-5 text-slate-500">{hint}</p>}</div>;
 }
 
 export function Info({ children, bg="rgba(37,99,235,0.05)", col="var(--jn-text-secondary)" }: { children:ReactNode; bg?:string; col?:string }) {
   return <div style={{background:bg,color:col}} className="rounded-xl border border-slate-200/70 p-3 text-xs font-medium leading-5">{children}</div>;
 }
 export function G2({ children, gap=12 }: { children:ReactNode; gap?:number }) { return <div className="jn-grid2" style={{gap}}>{children}</div>; }
-export function Err({ msg }: { msg:string }) { return msg ? <div role="alert" aria-live="assertive" className="mt-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-xs font-semibold leading-5 text-red-700"><strong className="mr-1 font-black">Could not finish.</strong>{msg} Check the file or settings, then try again.</div> : null; }
+export function Err({ msg }: { msg:string }) { return msg ? <RecoveryError message={msg} /> : null; }
 
 export interface WorkspaceProps { title:string; description:string; accent?:string; children:ReactNode; }

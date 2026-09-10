@@ -35,11 +35,11 @@ export function ToolEditorialContent({ tool }: { tool: ServiceTool }) {
 
   return (
     <section className="relative z-10 mx-auto max-w-6xl px-4 pb-12 pt-10 md:px-8 md:pb-20">
-      <div className="relative overflow-hidden rounded-[2rem] border border-border bg-card p-6 shadow-[0_30px_80px_rgba(15,23,42,.10)] md:rounded-2xl md:p-10">
+      <div className="relative overflow-hidden rounded-[1.5rem] border border-border bg-card p-6 shadow-[0_30px_80px_rgba(15,23,42,.10)] md:rounded-2xl md:p-10">
         <div className="relative grid gap-10 lg:grid-cols-[1.2fr_.8fr]">
           <article>
             <div className="ajn-section-kicker"><Sparkles className="h-3.5 w-3.5 text-red-500" /> Practical guide</div>
-            <h2 className="mt-5 text-3xl font-black tracking-[-.035em] text-slate-950 md:text-5xl">Use {tool.name} with clear expectations.</h2>
+            <h2 className="mt-5 text-2xl font-black tracking-[-.035em] text-slate-950 md:text-3xl">Use {tool.name} with clear expectations.</h2>
             <p className="mt-6 text-sm font-medium leading-7 text-muted-foreground md:text-base">{overview}</p>
             <p className="mt-4 text-sm font-medium leading-7 text-muted-foreground md:text-base">{content.details}</p>
 
@@ -129,7 +129,7 @@ export function ToolEditorialContent({ tool }: { tool: ServiceTool }) {
         </div>
 
         <div className="relative mt-10 flex flex-wrap gap-3 border-t border-slate-100 pt-7">
-          <Link href="/pdf-tools" className="inline-flex items-center gap-2 rounded-2xl bg-blue-600 px-5 py-3 text-xs font-black text-white shadow-lg shadow-blue-100 transition hover:-translate-y-0.5 hover:bg-blue-700">Browse public tools <ArrowRight className="h-4 w-4" /></Link>
+          <Link href="/pdf-tools" className="inline-flex items-center gap-2 rounded-2xl bg-blue-600 px-5 py-3 text-xs font-black text-white shadow-lg shadow-blue-100 transition hover:-translate-y-0.5 hover:bg-blue-700">Browse PDF tools <ArrowRight className="h-4 w-4" /></Link>
           <Link href="/security" className="rounded-2xl border border-border bg-card px-5 py-3 text-xs font-black text-card-foreground hover:bg-muted">Security and privacy</Link>
           <Link href="/discover/guides" className="rounded-2xl border border-border bg-card px-5 py-3 text-xs font-black text-card-foreground hover:bg-muted">Guide library</Link>
           <Link href="/contact" className="rounded-2xl border border-border bg-card px-5 py-3 text-xs font-black text-card-foreground hover:bg-muted">Report a problem</Link>

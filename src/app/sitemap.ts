@@ -1,73 +1,81 @@
-import type { MetadataRoute } from 'next';
-import { BUILD_PUBLIC_TOOLS } from '@/lib/build-public-tools';
-import { SEO_EXCLUDED_TOOL_IDS, SITE_URL } from '@/lib/seo-config';
-import { getSitemapLastModified } from '@/generated/sitemap-lastmod';
-import { toolPath } from '@/lib/tool-routes';
+import type { MetadataRoute } from "next";
+import { BUILD_PUBLIC_TOOLS } from "@/lib/build-public-tools";
+import { SEO_EXCLUDED_TOOL_IDS, SITE_URL } from "@/lib/seo-config";
+import { getSitemapLastModified } from "@/generated/sitemap-lastmod";
+import { toolPath } from "@/lib/tool-routes";
 
-type SitemapFrequency = NonNullable<MetadataRoute.Sitemap[number]['changeFrequency']>;
-type CorePageDefinition = { path: string; changeFrequency: SitemapFrequency; priority: number };
+type SitemapFrequency = NonNullable<MetadataRoute.Sitemap[number]["changeFrequency"]>;
+type CorePageDefinition = { path:string; changeFrequency:SitemapFrequency; priority:number };
 
 const CORE_PAGE_DEFINITIONS: CorePageDefinition[] = [
-  { path: '/', changeFrequency: 'daily', priority: 1 },
-  { path: '/pdf-tools', changeFrequency: 'weekly', priority: 0.95 },
-  { path: '/pdf-utilities', changeFrequency: 'weekly', priority: 0.85 },
-  { path: '/pricing', changeFrequency: 'weekly', priority: 0.75 },
-  { path: '/desktop', changeFrequency: 'monthly', priority: 0.65 },
-  { path: '/mobile', changeFrequency: 'monthly', priority: 0.65 },
-  { path: '/sign', changeFrequency: 'monthly', priority: 0.75 },
-  { path: '/developers', changeFrequency: 'weekly', priority: 0.7 },
-  { path: '/chrome-extension', changeFrequency: 'monthly', priority: 0.55 },
-  { path: '/chrome-extension/privacy', changeFrequency: 'yearly', priority: 0.3 },
-  { path: '/about', changeFrequency: 'monthly', priority: 0.6 },
-  { path: '/developer', changeFrequency: 'monthly', priority: 0.7 },
-  { path: '/ajn-studio', changeFrequency: 'monthly', priority: 0.6 },
-  { path: '/discover', changeFrequency: 'daily', priority: 0.7 },
-  { path: '/blog', changeFrequency: 'weekly', priority: 0.7 },
-  { path: '/blog/best-free-pdf-editor', changeFrequency: 'monthly', priority: 0.6 },
-  { path: '/blog/browser-native-architecture', changeFrequency: 'monthly', priority: 0.55 },
-  { path: '/blog/document-security-aes256', changeFrequency: 'monthly', priority: 0.6 },
-  { path: '/blog/how-to-merge-pdfs-online-safely', changeFrequency: 'monthly', priority: 0.65 },
-  { path: '/blog/reduce-pdf-size-keep-quality', changeFrequency: 'monthly', priority: 0.65 },
-  { path: '/blog/pdf-accessibility-basics', changeFrequency: 'monthly', priority: 0.55 },
-  { path: '/faq', changeFrequency: 'monthly', priority: 0.5 },
-  { path: '/security', changeFrequency: 'monthly', priority: 0.5 },
-  { path: '/limits', changeFrequency: 'monthly', priority: 0.6 },
-  { path: '/transparency', changeFrequency: 'monthly', priority: 0.45 },
-  { path: '/contact', changeFrequency: 'monthly', priority: 0.45 },
-  { path: '/privacy', changeFrequency: 'yearly', priority: 0.3 },
-  { path: '/terms', changeFrequency: 'yearly', priority: 0.3 },
-  { path: '/cookies', changeFrequency: 'yearly', priority: 0.3 },
-  { path: '/copyright', changeFrequency: 'yearly', priority: 0.3 },
-  { path: '/dmca', changeFrequency: 'yearly', priority: 0.3 },
-  { path: '/disclaimer', changeFrequency: 'yearly', priority: 0.3 },
-  { path: '/acceptable-use', changeFrequency: 'yearly', priority: 0.3 },
-  { path: '/file-processing-policy', changeFrequency: 'yearly', priority: 0.4 },
-  { path: '/data-deletion', changeFrequency: 'yearly', priority: 0.3 },
-  { path: '/unlock-authorization-policy', changeFrequency: 'yearly', priority: 0.3 },
-  { path: '/status', changeFrequency: 'daily', priority: 0.4 },
+  { path:"/", changeFrequency:"daily", priority:1 },
+  { path:"/pdf-tools", changeFrequency:"weekly", priority:.95 },
+  { path:"/trust", changeFrequency:"monthly", priority:.8 },
+  { path:"/changelog", changeFrequency:"monthly", priority:.72 },
+  { path:"/status", changeFrequency:"daily", priority:.68 },
+  { path:"/pricing", changeFrequency:"weekly", priority:.75 },
+  { path:"/about", changeFrequency:"monthly", priority:.55 },
+  { path:"/blog", changeFrequency:"weekly", priority:.65 },
+  { path:"/blog/best-free-pdf-editor", changeFrequency:"monthly", priority:.6 },
+  { path:"/blog/browser-native-architecture", changeFrequency:"monthly", priority:.5 },
+  { path:"/blog/document-security-aes256", changeFrequency:"monthly", priority:.6 },
+  { path:"/blog/how-to-merge-pdfs-online-safely", changeFrequency:"monthly", priority:.6 },
+  { path:"/blog/image-to-pdf-jpg-vs-png", changeFrequency:"monthly", priority:.5 },
+  { path:"/blog/reduce-pdf-size-keep-quality", changeFrequency:"monthly", priority:.6 },
+  { path:"/blog/pdf-accessibility-basics", changeFrequency:"monthly", priority:.5 },
+  { path:"/blog/pdf-vs-docx", changeFrequency:"monthly", priority:.55 },
+  { path:"/blog/why-pdf-compression-limited", changeFrequency:"monthly", priority:.55 },
+  { path:"/blog/merge-pdf-on-android", changeFrequency:"monthly", priority:.64 },
+  { path:"/blog/merge-pdf-on-iphone", changeFrequency:"monthly", priority:.64 },
+  { path:"/blog/merge-pdf-on-chromebook", changeFrequency:"monthly", priority:.64 },
+  { path:"/blog/merge-pdf-without-installing-software", changeFrequency:"monthly", priority:.64 },
+  { path:"/blog/combine-pdf-pages-in-correct-order", changeFrequency:"monthly", priority:.64 },
+  { path:"/blog/compress-pdf-for-email", changeFrequency:"monthly", priority:.64 },
+  { path:"/blog/compress-pdf-on-android", changeFrequency:"monthly", priority:.64 },
+  { path:"/blog/reduce-pdf-size-on-iphone", changeFrequency:"monthly", priority:.64 },
+  { path:"/blog/reduce-pdf-size-without-installing-software", changeFrequency:"monthly", priority:.64 },
+  { path:"/blog/compress-pdf-for-job-application", changeFrequency:"monthly", priority:.64 },
+  { path:"/blog/edit-pdf-without-installing-software", changeFrequency:"monthly", priority:.64 },
+  { path:"/blog/edit-pdf-on-android", changeFrequency:"monthly", priority:.64 },
+  { path:"/blog/edit-pdf-on-chromebook", changeFrequency:"monthly", priority:.64 },
+  { path:"/blog/change-date-in-pdf-online", changeFrequency:"monthly", priority:.64 },
+  { path:"/blog/change-name-or-number-in-pdf", changeFrequency:"monthly", priority:.64 },
+  { path:"/blog/split-pdf-on-android", changeFrequency:"monthly", priority:.64 },
+  { path:"/blog/extract-pages-from-pdf", changeFrequency:"monthly", priority:.64 },
+  { path:"/blog/split-pdf-for-email", changeFrequency:"monthly", priority:.64 },
+  { path:"/blog/separate-pdf-pages-without-software", changeFrequency:"monthly", priority:.64 },
+  { path:"/blog/split-large-pdf-into-smaller-files", changeFrequency:"monthly", priority:.64 },
+  { path:"/discover/guides", changeFrequency:"weekly", priority:.55 },
+  { path:"/developer", changeFrequency:"monthly", priority:.55 },
+  { path:"/ajn-studio", changeFrequency:"monthly", priority:.55 },
+  { path:"/faq", changeFrequency:"monthly", priority:.5 },
+  { path:"/security", changeFrequency:"monthly", priority:.5 },
+  { path:"/limits", changeFrequency:"monthly", priority:.5 },
+  { path:"/transparency", changeFrequency:"monthly", priority:.5 },
+  { path:"/contact", changeFrequency:"monthly", priority:.45 },
+  { path:"/privacy", changeFrequency:"yearly", priority:.3 },
+  { path:"/terms", changeFrequency:"yearly", priority:.3 },
+  { path:"/cookies", changeFrequency:"yearly", priority:.3 },
+  { path:"/copyright", changeFrequency:"yearly", priority:.3 },
+  { path:"/dmca", changeFrequency:"yearly", priority:.3 },
+  { path:"/disclaimer", changeFrequency:"yearly", priority:.3 },
+  { path:"/acceptable-use", changeFrequency:"yearly", priority:.3 },
+  { path:"/file-processing-policy", changeFrequency:"yearly", priority:.45 },
+  { path:"/data-deletion", changeFrequency:"yearly", priority:.3 },
+  { path:"/unlock-authorization-policy", changeFrequency:"yearly", priority:.3 },
 ];
 
 function coreEntry(definition: CorePageDefinition): MetadataRoute.Sitemap[number] {
-  return {
-    url: `${SITE_URL}${definition.path === '/' ? '/' : definition.path}`,
-    lastModified: getSitemapLastModified(definition.path),
-    changeFrequency: definition.changeFrequency,
-    priority: definition.priority,
-  };
+  return { url:`${SITE_URL}${definition.path === "/" ? "/" : definition.path}`, lastModified:getSitemapLastModified(definition.path), changeFrequency:definition.changeFrequency, priority:definition.priority };
 }
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const corePages = CORE_PAGE_DEFINITIONS.map(coreEntry);
   const toolPages: MetadataRoute.Sitemap = BUILD_PUBLIC_TOOLS
-    .filter((tool) => !SEO_EXCLUDED_TOOL_IDS.has(tool.id))
-    .map((tool) => {
+    .filter(tool => !SEO_EXCLUDED_TOOL_IDS.has(tool.id))
+    .map(tool => {
       const pathname = toolPath(tool.id);
-      return {
-        url: `${SITE_URL}${pathname}`,
-        lastModified: getSitemapLastModified(pathname),
-        changeFrequency: 'monthly',
-        priority: tool.badge === 'Popular' ? 0.9 : 0.72,
-      };
+      return { url:`${SITE_URL}${pathname}`, lastModified:getSitemapLastModified(pathname), changeFrequency:"monthly", priority:tool.badge === "Popular" ? .9 : .72 };
     });
   return [...corePages, ...toolPages];
 }

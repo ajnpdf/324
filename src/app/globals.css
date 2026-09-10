@@ -2,55 +2,118 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base{
+@layer base {
   :root {
-    --background: 216 100% 99%;
-    --foreground: 222 47% 11%;
+    --background: 220 33% 98%;
+    --foreground: 217 52% 11%;
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 217 52% 11%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
-    --primary: 221 83% 53%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 214 100% 97%;
-    --secondary-foreground: 222 47% 11%;
-    --muted: 214 32% 96%;
-    --muted-foreground: 215 16% 42%;
-    --accent: 145 72% 95%;
-    --accent-foreground: 151 84% 20%;
-    --destructive: 354 82% 52%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 216 33% 90%;
-    --input: 216 33% 90%;
-    --ring: 221 83% 53%;
-    --radius: 1.35rem;
-    --ajn-blue: #2563eb;
-    --ajn-green: #059669;
-    --ajn-red: #e9233f;
-    --ajn-navy: #0f172a;
-    --ajn-surface: #f7faff;
-  }
-}
+    --popover-foreground: 217 52% 11%;
+    --primary: 220 79% 48%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 216 56% 97%;
+    --secondary-foreground: 217 52% 11%;
+    --muted: 216 33% 96%;
+    --muted-foreground: 215 20% 38%;
+    --accent: 153 61% 92%;
+    --accent-foreground: 158 84% 28%;
+    --destructive: 4 74% 49%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 217 39% 92%;
+    --input: 217 39% 92%;
+    --ring: 220 79% 48%;
+    --radius: 1rem;
 
-@layer base{
+    --ajn-bg: #f7f9fd;
+    --ajn-bg-soft: #eef2f9;
+    --ajn-surface: #ffffff;
+    --ajn-surface-soft: #f8fafc;
+    --ajn-stroke: #e3e9f4;
+    --ajn-stroke-strong: rgba(26, 86, 219, .35);
+    --ajn-ink: #0e1b2c;
+    --ajn-muted: #5b6b80;
+
+    --ajn-blue: #1a56db;
+    --ajn-blue-deep: #123fa8;
+    --ajn-green: #0e9f6e;
+    --ajn-red: #d92d20;
+    --ajn-red-deep: #b42318;
+    --ajn-amber: #f59e0b;
+    --ajn-navy: #0f172a;
+
+    --ajn-blue-tint: #e1effe;
+    --ajn-green-tint: #def7ec;
+    --ajn-red-tint: #fef3f2;
+    --ajn-amber-tint: #fff7df;
+    --ajn-shadow: 0 14px 44px rgba(14, 27, 44, .09);
+    --ajn-shadow-soft: 0 8px 24px rgba(14, 27, 44, .055);
+  }
+
+  .dark {
+    --background: 218 48% 5%;
+    --foreground: 216 33% 95%;
+    --card: 217 33% 12%;
+    --card-foreground: 216 33% 95%;
+    --popover: 217 33% 12%;
+    --popover-foreground: 216 33% 95%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 219 45% 9%;
+    --secondary-foreground: 216 33% 95%;
+    --muted: 218 31% 14%;
+    --muted-foreground: 218 15% 61%;
+    --accent: 161 48% 13%;
+    --accent-foreground: 154 72% 57%;
+    --destructive: 0 72% 55%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 217 22% 20%;
+    --input: 217 22% 20%;
+    --ring: 217 91% 60%;
+
+    --ajn-bg: #070b14;
+    --ajn-bg-soft: #0c1220;
+    --ajn-surface: #111827;
+    --ajn-surface-soft: #0d1524;
+    --ajn-stroke: rgba(255, 255, 255, .09);
+    --ajn-stroke-strong: rgba(59, 130, 246, .35);
+    --ajn-ink: #eef2f9;
+    --ajn-muted: #8b96ab;
+
+    --ajn-blue: #3b82f6;
+    --ajn-blue-deep: #1a56db;
+    --ajn-green: #10b981;
+    --ajn-red: #ef4444;
+    --ajn-red-deep: #d92d20;
+    --ajn-amber: #f59e0b;
+
+    --ajn-blue-tint: rgba(59, 130, 246, .12);
+    --ajn-green-tint: rgba(16, 185, 129, .12);
+    --ajn-red-tint: rgba(239, 68, 68, .12);
+    --ajn-amber-tint: rgba(245, 158, 11, .12);
+    --ajn-shadow: 0 20px 60px rgba(0, 0, 0, .42);
+    --ajn-shadow-soft: 0 10px 30px rgba(0, 0, 0, .22);
+  }
+
   * {
     @apply border-border;
     -webkit-tap-highlight-color: transparent;
   }
 
   html {
-    scroll-behavior: smooth;
     min-height: 100%;
-    background: #f8fbff;
+    scroll-behavior: smooth;
+    background: var(--ajn-bg);
   }
 
   body {
     min-height: 100vh;
     min-height: 100svh;
     overflow-x: hidden;
-    color: var(--ajn-navy);
-    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 48%, #ffffff 100%);
+    background: var(--ajn-bg);
+    color: var(--ajn-ink);
     @apply font-sans antialiased;
+    transition: background-color .26s ease, color .26s ease;
   }
 
   a,
@@ -58,1538 +121,900 @@
   input,
   select,
   textarea {
-    outline-color: rgba(37, 99, 235, 0.45);
+    outline-color: rgba(26, 86, 219, .45);
   }
 
   ::selection {
-    background: rgba(37, 99, 235, 0.18);
-    color: #0f172a;
+    background: rgba(26, 86, 219, .18);
+    color: var(--ajn-ink);
   }
 }
 
-@layer components{
+@layer components {
   .ajn-page-shell {
     position: relative;
     isolation: isolate;
     min-height: 100vh;
     overflow: hidden;
+    background: var(--ajn-bg);
+    color: var(--ajn-ink);
+    transition: background-color .26s ease, color .26s ease;
   }
 
-  .ajn-page-shell::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: -3;
-    pointer-events: none;
-    background-image:
-      linear-gradient(rgba(37, 99, 235, 0.035) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(37, 99, 235, 0.035) 1px, transparent 1px);
-    background-size: 44px 44px;
-    mask-image: linear-gradient(to bottom, rgba(0,0,0,.6), transparent 72%);
-  }
-
-  .ajn-glass-card {
-    border: 1px solid rgba(148, 163, 184, 0.2);
-    background: rgba(255, 255, 255, 0.82);
-    box-shadow:
-      0 28px 75px rgba(15, 23, 42, 0.09),
-      inset 0 1px 0 rgba(255, 255, 255, 0.92);
-    backdrop-filter: blur(22px) saturate(145%);
+  .ajn-glass-card,
+  .ajn-theme-surface {
+    border: 1px solid var(--ajn-stroke);
+    background: color-mix(in srgb, var(--ajn-surface) 94%, transparent);
+    color: var(--ajn-ink);
+    box-shadow: var(--ajn-shadow-soft);
+    backdrop-filter: blur(18px);
   }
 
   .ajn-section-kicker {
     display: inline-flex;
     align-items: center;
-    gap: 0.45rem;
-    color: #1d4ed8;
-    font-size: 0.68rem;
+    gap: .45rem;
+    color: var(--ajn-blue);
+    font-size: .68rem;
     font-weight: 800;
-    letter-spacing: 0.11em;
+    letter-spacing: .11em;
     text-transform: uppercase;
   }
 
   .ajn-tool-card {
-    --ajn-card-x: 50%;
-    --ajn-card-y: 50%;
     position: relative;
     height: 100%;
     overflow: hidden;
-    border-radius: 1.55rem;
-    border: 1px solid rgba(148, 163, 184, 0.22);
-    background: #ffffff;
-    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.075);
-    transition: transform .28s ease, box-shadow .28s ease, border-color .28s ease;
-  }
-
-  .ajn-tool-card::after {
-    content: "";
-    position: absolute;
-    left: 1.25rem;
-    right: 1.25rem;
-    top: 0;
-    height: 3px;
-    border-radius: 0 0 999px 999px;
-    background: linear-gradient(90deg, var(--ajn-red), var(--ajn-blue), var(--ajn-green));
-    opacity: .62;
+    border-radius: 1.1rem;
+    border: 1px solid var(--ajn-stroke);
+    background: var(--ajn-surface);
+    box-shadow: var(--ajn-shadow-soft);
+    transition: transform .2s cubic-bezier(.2,.8,.25,1), box-shadow .2s ease, border-color .2s ease;
   }
 
   .ajn-tool-card:hover {
-    border-color: rgba(37, 99, 235, 0.28);
-    box-shadow: 0 30px 65px rgba(15, 23, 42, 0.13);
+    transform: translateY(-4px);
+    border-color: var(--ajn-stroke-strong);
+    box-shadow: var(--ajn-shadow);
+  }
+
+  .ajn-category-card {
+    position: relative;
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid var(--ajn-stroke);
+    border-radius: 1.15rem;
+    background: var(--ajn-surface);
+    padding: 1.35rem;
+    box-shadow: var(--ajn-shadow-soft);
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  }
+
+  .ajn-category-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--ajn-stroke-strong);
+    box-shadow: var(--ajn-shadow);
   }
 
   .ajn-ad-zone {
     width: min(100% - 2rem, 72rem);
     margin-inline: auto;
-    border: 1px dashed rgba(100, 116, 139, 0.24);
-    border-radius: 1.5rem;
-    background: rgba(255, 255, 255, 0.56);
-    padding: 1.25rem;
+    border: 1px dashed color-mix(in srgb, var(--ajn-muted) 34%, transparent);
+    border-radius: 1rem;
+    background: color-mix(in srgb, var(--ajn-surface) 70%, transparent);
+    padding: 1.1rem;
   }
 
-  .ajn-status-pulse {
-    position: relative;
-    width: 0.55rem;
-    height: 0.55rem;
-    border-radius: 999px;
-    background: #10b981;
-    box-shadow: 0 0 0 0 rgba(16,185,129,.34);
-    animation: ajn-status-pulse 2.4s infinite;
-  }
-}
-
-
-
-@keyframes ajn-status-pulse {
-  0% { box-shadow: 0 0 0 0 rgba(16,185,129,.36); }
-  70% { box-shadow: 0 0 0 9px rgba(16,185,129,0); }
-  100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); }
-}
-
-
-
-.scrollbar-hide::-webkit-scrollbar { display: none; }
-.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-
-@media (hover: none){
-  .ajn-tool-card,
-  .ajn-tool-card:hover {
-    transform: none !important;
-  }
-}
-
-@media (prefers-reduced-motion: reduce){
-  html { scroll-behavior: auto; }
-  *, *::before, *::after {
-    scroll-behavior: auto !important;
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
-  }
-  .ajn-tool-card,
-  .ajn-tool-card:hover {
-    transform: none !important;
-  }
-}
-
-/* Final production responsiveness: designed for 80%–150% browser zoom. */
-@layer components{
-  .ajn-category-card { position:relative; min-width:0; overflow:hidden; border:1px solid rgba(148,163,184,.22); border-radius:1.75rem; background:linear-gradient(145deg,rgba(255,255,255,.98),rgba(248,250,255,.92)); padding:1.5rem; box-shadow:0 18px 48px rgba(15,23,42,.075); transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease; }
-  .ajn-category-card::before { content:""; position:absolute; inset:0 0 auto 0; height:3px; background:linear-gradient(90deg,var(--ajn-red),var(--ajn-blue),var(--ajn-green)); opacity:.7; }
-  .ajn-category-card:hover { transform:translateY(-4px); border-color:rgba(37,99,235,.28); box-shadow:0 28px 66px rgba(15,23,42,.12); }
-}
-@media (min-width:1024px) and (max-width:1280px){ .ajn-tool-card>div{padding:1.15rem}.ajn-tool-card h3{font-size:.95rem}.ajn-tool-card p{line-height:1.15rem} }
-@media (max-width:430px){ .ajn-section-kicker{max-width:100%;font-size:.61rem;letter-spacing:.08em}.ajn-ad-zone{width:calc(100% - 1rem);padding:.75rem}.ajn-tool-card{border-radius:1.25rem}.ajn-category-card{border-radius:1.35rem;padding:1.15rem} }
-@media (prefers-reduced-motion:reduce){ .ajn-category-card:hover{transform:none!important} }
-
-/* AJN PDF theme and motion production layer */
-@layer base{
-  
-
-  html,
-  body {
-    transition: background-color .24s ease, color .24s ease;
-  }
-
-  
-
-  
-
-  
-}
-
-@layer components{
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  .ajn-theme-surface {
-    border: 1px solid hsl(var(--border));
-    background: hsl(var(--card) / .92);
-    color: hsl(var(--card-foreground));
-    box-shadow: 0 18px 48px rgba(15, 23, 42, .08);
-    backdrop-filter: blur(18px);
-  }
-
-  
-
+  .ajn-status-pulse,
   .ajn-live-dot {
     width: .55rem;
     height: .55rem;
     border-radius: 999px;
-    background: #10b981;
-    box-shadow: 0 0 0 0 rgba(16,185,129,.35);
+    background: var(--ajn-green);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, .34);
     animation: ajn-status-pulse 2.2s infinite;
   }
 
-  .ajn-rgb-line {
-    position: relative;
-    overflow: hidden;
+  .ajn-scrollbar-hide::-webkit-scrollbar,
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
   }
 
-  .ajn-rgb-line::after {
-    content: "";
-    position: absolute;
-    inset: auto 0 0;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--ajn-red), var(--ajn-blue), var(--ajn-green), transparent);
-    background-size: 220% 100%;
-    animation: ajn-rgb-sweep 4.8s linear infinite;
-    opacity: .72;
+  .ajn-scrollbar-hide,
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 }
 
-@keyframes ajn-rgb-sweep {
-  from { background-position: 120% 0; }
-  to { background-position: -120% 0; }
+@keyframes ajn-status-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, .36); }
+  70% { box-shadow: 0 0 0 9px rgba(16, 185, 129, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
 }
 
-@keyframes ajn-brand-breathe {
-  0%, 100% { filter: saturate(1) drop-shadow(0 8px 20px rgba(37,99,235,.10)); }
-  50% { filter: saturate(1.16) drop-shadow(0 12px 28px rgba(37,99,235,.20)); }
+/* Dark compatibility for existing screens that still use older Tailwind utility colors. */
+html.dark body [class~="bg-white"] {
+  background-color: var(--ajn-surface) !important;
 }
 
-.ajn-brand-breathe {
-  animation: ajn-brand-breathe 5.8s ease-in-out infinite;
+html.dark body [class~="bg-slate-50"],
+html.dark body [class~="bg-slate-100"] {
+  background-color: var(--ajn-bg-soft) !important;
 }
 
-/* Legacy workspaces use injected class names; make them theme-aware without changing processing logic. */
+html.dark body [class*="bg-white/"] {
+  background-color: rgba(17, 24, 39, .9) !important;
+}
 
+html.dark body [class~="text-slate-950"],
+html.dark body [class~="text-slate-900"],
+html.dark body [class~="text-slate-800"],
+html.dark body [class~="text-slate-700"] {
+  color: var(--ajn-ink) !important;
+}
 
+html.dark body [class~="text-slate-600"],
+html.dark body [class~="text-slate-500"],
+html.dark body [class~="text-slate-400"] {
+  color: var(--ajn-muted) !important;
+}
 
+html.dark body [class~="border-slate-200"],
+html.dark body [class~="border-slate-100"] {
+  border-color: var(--ajn-stroke) !important;
+}
 
+html.dark body [class~="bg-blue-50"] {
+  background-color: var(--ajn-blue-tint) !important;
+}
 
+html.dark body [class~="bg-emerald-50"] {
+  background-color: var(--ajn-green-tint) !important;
+}
 
-@media (prefers-reduced-motion: reduce){
-  .ajn-brand-breathe,
-  .ajn-rgb-line::after,
+html.dark body [class~="bg-red-50"] {
+  background-color: var(--ajn-red-tint) !important;
+}
+
+html.dark body [class~="bg-amber-50"],
+html.dark body [class~="bg-amber-100"] {
+  background-color: var(--ajn-amber-tint) !important;
+}
+
+html.dark body input,
+html.dark body select,
+html.dark body textarea {
+  color-scheme: dark;
+}
+
+@media (hover: none) {
+  .ajn-tool-card,
+  .ajn-tool-card:hover,
+  .ajn-category-card,
+  .ajn-category-card:hover {
+    transform: none !important;
+  }
+}
+
+@media (max-width: 430px) {
+  .ajn-section-kicker {
+    max-width: 100%;
+    font-size: .61rem;
+    letter-spacing: .08em;
+  }
+
+  .ajn-ad-zone {
+    width: calc(100% - 1rem);
+    padding: .75rem;
+  }
+
+  .ajn-tool-card,
+  .ajn-category-card {
+    border-radius: 1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+
+  .ajn-tool-card,
+  .ajn-tool-card:hover,
+  .ajn-category-card,
+  .ajn-category-card:hover {
+    transform: none !important;
+  }
+
+  .ajn-status-pulse,
   .ajn-live-dot {
     animation: none !important;
   }
 }
 
-/* Compatibility layer for legacy pages that predate semantic theme tokens. */
-
-
-
-
-
-
-
-
-
-
-
-/* Dark-mode corrections for inline-styled legacy processing workspaces. */
-
-
-
-
-
-
-/* AJN Studio production contrast, profile and public-media layer. */
-@layer base{
-  :root {
-    --surface: #ffffff;
-    --surface-elevated: #f8fbff;
-    --text-primary: #0f172a;
-    --text-secondary: #334155;
-    --text-muted: #64748b;
-    --focus-ring: #2563eb;
-  }
-
-  
-
-  input::placeholder,
-  textarea::placeholder { color: hsl(var(--muted-foreground)); opacity: .92; }
-
-  
-
-  :focus-visible { outline: 3px solid color-mix(in srgb, var(--focus-ring) 42%, transparent); outline-offset: 2px; }
-}
-
-@layer components{
-  .ajn-primary-button,
-  .ajn-secondary-button {
-    display: inline-flex;
-    min-height: 3rem;
-    align-items: center;
-    justify-content: center;
-    gap: .55rem;
-    border-radius: .9rem;
-    padding: .75rem 1.25rem;
-    font-size: .75rem;
-    font-weight: 900;
-    transition: transform .2s ease, background-color .2s ease, border-color .2s ease, box-shadow .2s ease;
-  }
-
-  .ajn-primary-button { background: #2563eb; color: #fff; box-shadow: 0 14px 34px rgba(37,99,235,.24); }
-  .ajn-primary-button:hover { background: #1d4ed8; transform: translateY(-1px); }
-  
-  
-
-  .ajn-secondary-button { border: 1px solid hsl(var(--border)); background: hsl(var(--card)); color: hsl(var(--card-foreground)); }
-  .ajn-secondary-button:hover { border-color: rgba(37,99,235,.35); background: hsl(var(--muted)); transform: translateY(-1px); }
-
-  .ajn-icon-link {
-    display: inline-flex;
-    height: 2.7rem;
-    width: 2.7rem;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid hsl(var(--border));
-    border-radius: .85rem;
-    background: hsl(var(--card));
-    color: hsl(var(--muted-foreground));
-    transition: .2s ease;
-  }
-  .ajn-icon-link:hover { border-color: rgba(37,99,235,.35); color: hsl(var(--primary)); transform: translateY(-1px); }
-
-  .ajn-profile-frame {
-    overflow: hidden;
-    border: 1px solid hsl(var(--border));
-    border-radius: 2.3rem;
-    background: hsl(var(--card));
-    padding: .55rem;
-    box-shadow: 0 32px 85px rgba(15,23,42,.16);
-  }
-  
-  .ajn-profile-frame img { border-radius: 1.9rem; }
-
-  .ajn-profile-badge {
-    position: absolute;
-    bottom: 1.4rem;
-    right: -1rem;
-    display: inline-flex;
-    align-items: center;
-    gap: .55rem;
-    border: 1px solid rgba(255,255,255,.25);
-    border-radius: 1rem;
-    background: #0f172a;
-    color: #fff;
-    padding: .8rem 1rem;
-    font-size: .7rem;
-    font-weight: 900;
-    box-shadow: 0 18px 44px rgba(15,23,42,.28);
-  }
-
-  .ajn-media-card {
-    overflow: hidden;
-    border: 1px solid hsl(var(--border));
-    border-radius: 1.65rem;
-    background: hsl(var(--card));
-    color: hsl(var(--card-foreground));
-    box-shadow: 0 18px 48px rgba(15,23,42,.075);
-    transition: border-color .22s ease, box-shadow .22s ease, transform .22s ease;
-  }
-  .ajn-media-card:hover { border-color: rgba(37,99,235,.34); box-shadow: 0 28px 68px rgba(15,23,42,.13); transform: translateY(-3px); }
-  
-  
-
-  .ajn-backend-status {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: .75rem;
-    border-radius: 1rem;
-    border: 1px solid currentColor;
-  }
-  .ajn-status-success { color: #047857; background: rgba(16,185,129,.09); border-color: rgba(4,120,87,.22); }
-  .ajn-status-warning { color: #92400e; background: rgba(245,158,11,.10); border-color: rgba(146,64,14,.22); }
-  .ajn-status-error { color: #b91c1c; background: rgba(239,68,68,.09); border-color: rgba(185,28,28,.22); }
-  
-  
-  
-  .ajn-status-refresh { display:inline-flex;align-items:center;justify-content:center;width:2rem;height:2rem;border-radius:.65rem;border:1px solid hsl(var(--border));background:hsl(var(--card));color:inherit; }
-  .ajn-status-refresh:hover { background: hsl(var(--muted)); }
-
-  .jn-workspace {
-    --jn-text-primary: #0f172a;
-    --jn-text-secondary: #334155;
-    --jn-text-muted: #64748b;
-    --jn-text-subtle: rgba(15,23,42,.44);
-    --jn-border: rgba(148,163,184,.30);
-    --jn-header-bg: rgba(255,255,255,.92);
-    --jn-surface: #fff;
-    --jn-card-bg: rgba(255,255,255,.95);
-    --jn-card-shadow: 0 28px 70px rgba(15,23,42,.12), inset 0 1px 0 rgba(255,255,255,.95);
-    --jn-input-bg: rgba(255,255,255,.82);
-    --jn-secondary-bg: rgba(255,255,255,.72);
-    --jn-soft-bg: rgba(15,23,42,.055);
-    --jn-pill-bg: rgba(255,255,255,.58);
-    --jn-drop-bg: rgba(248,250,252,.94);
-    --jn-drop-hover: rgba(239,246,255,.98);
-    --jn-link: #1d4ed8;
-    color: var(--jn-text-primary);
-  }
-  
-  
-  
-
-  
-  
-  
-  
-  
-  
-}
-
-@media (max-width: 640px){
-  .ajn-profile-badge { bottom: .8rem; right: -.25rem; }
-  .ajn-primary-button,
-  .ajn-secondary-button { width: 100%; }
-}
-
-@media (prefers-reduced-motion: reduce){
-  .ajn-media-card,
-  .ajn-primary-button,
-  .ajn-secondary-button,
-  .ajn-icon-link { transition: none !important; transform: none !important; }
-}
-
-/* Final contrast safeguards for legacy components that still use Tailwind utility colors. */
-
-
-
-
-
-
-
-
-
-
-@media (forced-colors: active){
-  .ajn-primary-button,
-  .ajn-secondary-button,
-  .ajn-icon-link,
-  .ajn-media-card { forced-color-adjust: auto; }
-}
-
-
-/* Final premium contrast and accessibility pass. */
-@layer base{
-  body { color: hsl(var(--foreground)); }
-  button:disabled, input:disabled, select:disabled, textarea:disabled { opacity: .62; cursor: not-allowed; }
-  a:visited { text-decoration-color: currentColor; }
-  input, select, textarea { color: hsl(var(--foreground)); background-color: hsl(var(--background)); border-color: hsl(var(--input)); }
-}
-
-@media (max-width: 430px){
-  .ajn-profile-frame { border-radius: 1.6rem; }
-  .ajn-profile-frame img { border-radius: 1.3rem; }
-}
-
-/* AJN PDF 3.0.6 multilingual script font fallbacks. No external font file is bundled. */
-html[data-language="hi"] body { font-family: var(--font-inter), "Nirmala UI", "Noto Sans Devanagari", system-ui, sans-serif; }
-html[data-language="te"] body { font-family: var(--font-inter), "Nirmala UI", "Noto Sans Telugu", system-ui, sans-serif; }
-html[data-language="ta"] body { font-family: var(--font-inter), "Nirmala UI", "Noto Sans Tamil", system-ui, sans-serif; }
-html[data-language="kn"] body { font-family: var(--font-inter), "Nirmala UI", "Noto Sans Kannada", system-ui, sans-serif; }
-
-/* Premium tool-workspace normalization for the older editor generation. */
-.jn-workspace { position: relative; isolation: isolate; color: var(--jn-text-primary); }
-.jn-workspace [class*="uppercase"] { text-transform:none !important; letter-spacing:normal !important; }
-.jn-workspace .text-\[8px\], .jn-workspace .text-\[9px\], .jn-workspace .text-\[10px\] { font-size:.75rem !important; line-height:1.2rem !important; }
-.jn-workspace .h-\[340px\] { height:220px !important; min-height:180px !important; }
-.jn-workspace .min-h-\[600px\] { min-height:430px !important; }
-.jn-workspace .rounded-\[4rem\] { border-radius:1.75rem !important; }
-.jn-workspace .rounded-\[2\.5rem\] { border-radius:1.5rem !important; }
-.jn-workspace img { max-width:100%; }
-@media (max-width:640px){
-  .jn-workspace .h-\[340px\] { height:170px !important; min-height:150px !important; }
-  .jn-workspace .min-h-\[600px\] { min-height:300px !important; }
-  .jn-workspace [class*="p-12"] { padding:1rem !important; }
-  .jn-workspace [class*="p-8"] { padding:1rem !important; }
-}
-
-/* Professional product canvas: simple surfaces without decorative wave/blob layers. */
-.ajn-product-canvas { border:1px solid rgba(148,163,184,.16); border-radius:2rem; background:rgba(255,255,255,.76); box-shadow:0 30px 90px rgba(26,61,132,.10),inset 0 1px 0 rgba(255,255,255,.92); backdrop-filter:blur(20px) saturate(145%); }
-.ajn-tool-card { box-shadow:0 7px 24px rgba(25,55,110,.065); border-color:rgba(30,64,175,.075); border-radius:1.25rem; }
-.ajn-tool-card:hover { transform:translateY(-4px); box-shadow:0 20px 48px rgba(31,76,170,.14); }
-.ajn-tool-icon-pdf { color:#E11D2E; background:#FFF0F2; box-shadow:0 12px 28px rgba(225,29,46,.10); }
-.ajn-tool-icon-conversion { color:#2563EB; background:#EEF4FF; box-shadow:0 12px 28px rgba(37,99,235,.10); }
-.ajn-tool-icon-image { color:#10B981; background:#EDFBF4; box-shadow:0 12px 28px rgba(16,185,129,.10); }
-
-
-
-
-
-/* ========================================================================== */
-/* AJN PDF 3.1.0 R4 — Premium Liquid UI                                         */
-/* Light: lavender + clean blue. Dark: premium orange + true black.           */
-/* Frontend-only design layer. Backend/API processing contracts are unchanged. */
-/* ========================================================================== */
-@layer base{
-  :root {
-    --background: 240 45% 99%;
-    --foreground: 225 44% 12%;
-    --card: 0 0% 100%;
-    --card-foreground: 225 44% 12%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 225 44% 12%;
-    --primary: 245 93% 69%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 235 100% 97%;
-    --secondary-foreground: 231 45% 22%;
-    --muted: 235 35% 96%;
-    --muted-foreground: 224 15% 43%;
-    --accent: 232 100% 96%;
-    --accent-foreground: 238 54% 35%;
-    --border: 235 34% 90%;
-    --input: 235 34% 89%;
-    --ring: 245 93% 69%;
-    --radius: 1.4rem;
-    --ajn-liquid-primary: #7367ff;
-    --ajn-liquid-blue: #4c8dff;
-    --ajn-liquid-lavender: #baa9ff;
-    --ajn-liquid-soft: #efedff;
-    --ajn-liquid-ink: #11182d;
-    --ajn-liquid-orange: #ff8a00;
-  }
-
-  
-
-  html { background: #f8f8ff; }
-  
-
-  body {
-    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 48%, #ffffff 100%);
-  }
-
-  
-}
-
-@layer components{
-  .ajn-page-shell::before {
-    background-image:
-      linear-gradient(rgba(115, 103, 255, .028) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(76, 141, 255, .028) 1px, transparent 1px);
-    background-size: 52px 52px;
-  }
-  
-
-  .ajn-liquid-card {
-    border: 1px solid rgba(128, 119, 214, .16);
-    background:
-      linear-gradient(145deg, rgba(255,255,255,.92), rgba(248,248,255,.76));
-    box-shadow:
-      0 26px 70px rgba(59, 51, 115, .10),
-      inset 0 1px 0 rgba(255,255,255,.96);
-    backdrop-filter: blur(24px) saturate(145%);
-    -webkit-backdrop-filter: blur(24px) saturate(145%);
-  }
-  
-
-  .ajn-glass-card {
-    border-color: rgba(128, 119, 214, .17);
-    background: rgba(255, 255, 255, .82);
-    box-shadow: 0 24px 64px rgba(59, 51, 115, .085), inset 0 1px 0 rgba(255,255,255,.96);
-  }
-  
-
-  .ajn-nav-idle {
-    background: rgba(255,255,255,.70);
-    border-color: transparent;
-  }
-  .ajn-nav-scrolled {
-    border-color: rgba(128,119,214,.14);
-    background: rgba(255,255,255,.88);
-    box-shadow: 0 14px 42px rgba(44,39,93,.075);
-  }
-  
-  
-
-  .ajn-primary-action {
-    border: 1px solid rgba(255,255,255,.22) !important;
-    color: #fff !important;
-    background: linear-gradient(135deg, #7367ff 0%, #4c8dff 100%) !important;
-    box-shadow: 0 14px 34px rgba(91, 92, 235, .28) !important;
-    transition: transform .2s ease, box-shadow .2s ease, filter .2s ease !important;
-  }
-  .ajn-primary-action:hover {
-    transform: translateY(-2px);
-    filter: saturate(1.07);
-    box-shadow: 0 18px 42px rgba(91, 92, 235, .34) !important;
-  }
-  
-  
-
-  .ajn-secondary-action {
-    border: 1px solid rgba(115,103,255,.18) !important;
-    color: #3e3a72 !important;
-    background: rgba(255,255,255,.78) !important;
-    box-shadow: 0 8px 24px rgba(56,49,110,.06) !important;
-    backdrop-filter: blur(14px);
-  }
-  .ajn-secondary-action:hover { border-color: rgba(115,103,255,.36) !important; background: #f7f6ff !important; }
-  
-  
-
-  .ajn-gradient-text {
-    color: #6559f4;
-    background: linear-gradient(100deg, #6d61ff 4%, #7e75ff 40%, #3f8fff 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-  
-
-  .ajn-section-kicker,
-  .ajn-mobile-hero-kicker {
-    border-color: rgba(115,103,255,.14);
-    background: rgba(244,242,255,.86);
-    color: #5c51df;
-    box-shadow: 0 10px 28px rgba(92,81,223,.06);
-  }
-  .ajn-mobile-hero-kicker {
-    display: inline-flex;
-    align-items: center;
-    gap: .45rem;
-    border-width: 1px;
-    border-style: solid;
-    border-radius: 999px;
-    padding: .42rem .65rem;
-    font-size: .62rem;
-    font-weight: 900;
-    letter-spacing: .06em;
-    text-transform: uppercase;
-  }
-  
-
-  .ajn-mobile-hero { min-height: 310px; }
-  .ajn-mini-trust {
-    display: inline-flex;
-    min-height: 34px;
-    align-items: center;
-    justify-content: center;
-    gap: .4rem;
-    border: 1px solid rgba(128,119,214,.13);
-    border-radius: .9rem;
-    background: rgba(255,255,255,.58);
-    padding: .45rem .55rem;
-  }
-  
-
-  .ajn-tool-card {
-    border-radius: 1.45rem;
-    border-color: rgba(128,119,214,.14);
-    background: #ffffff;
-    box-shadow: 0 14px 34px rgba(47,43,91,.065), inset 0 1px 0 rgba(255,255,255,.94);
-  }
-  .ajn-tool-card:hover {
-    transform: translateY(-5px);
-    border-color: rgba(115,103,255,.28);
-    box-shadow: 0 24px 56px rgba(47,43,91,.12);
-  }
-  
-  
-  
-
-  .ajn-tool-icon-pdf { color:#6c5cff; background:#f0edff; box-shadow:0 10px 24px rgba(108,92,255,.09); }
-  .ajn-tool-icon-conversion { color:#397ff2; background:#edf5ff; box-shadow:0 10px 24px rgba(57,127,242,.09); }
-  .ajn-tool-icon-image { color:#ff6f71; background:#fff0f2; box-shadow:0 10px 24px rgba(255,111,113,.09); }
-  
-
-  .ajn-category-card,
-  .ajn-feature-chip,
-  .ajn-category-card { border-radius: 1.6rem; }
-  
-
-  .ajn-tool-header {
-    border-color: rgba(128,119,214,.13);
-    background: rgba(255,255,255,.86);
-    box-shadow: 0 12px 38px rgba(47,43,91,.055);
-  }
-  
-  .ajn-soft-chip,
-  .ajn-processing-chip {
-    display: inline-flex;
-    min-height: 32px;
-    align-items: center;
-    gap: .4rem;
-    border-radius: 999px;
-    padding: .4rem .7rem;
-    font-size: .62rem;
-    font-weight: 900;
-  }
-  .ajn-soft-chip { background:#f4f3ff; color:#625a9d; }
-  .ajn-processing-chip.is-browser { background:#ecfdf5; color:#047857; }
-  .ajn-processing-chip.is-server { background:#eff6ff; color:#2563eb; }
-  
-  
-  
-  .ajn-tool-hero-icon {
-    border:1px solid rgba(115,103,255,.15);
-    color:#5f55e8;
-    background:linear-gradient(145deg,#f3f0ff,#eaf2ff);
-    box-shadow:0 16px 36px rgba(93,81,232,.14), inset 0 1px 0 #fff;
-  }
-  
-
-  .ajn-dropzone {
-    border-color: rgba(115,103,255,.28);
-    background: linear-gradient(145deg, rgba(250,249,255,.90), rgba(241,246,255,.74));
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.9);
-  }
-  .ajn-dropzone:hover,
-  .ajn-dropzone.is-active { border-color: rgba(94,81,232,.55); background: linear-gradient(145deg,#f6f3ff,#edf5ff); box-shadow:0 16px 42px rgba(94,81,232,.08); }
-  
-  
-
-  .ajn-upload-icon { color:#6559f4; border:1px solid rgba(115,103,255,.15); background:rgba(255,255,255,.78); box-shadow:0 14px 34px rgba(88,76,201,.13); backdrop-filter:blur(14px); }
-  
-  .ajn-dropzone-button { color:#fff; background:linear-gradient(135deg,#7367ff,#4c8dff); box-shadow:0 12px 30px rgba(91,92,235,.24); }
-  
-  .ajn-dropzone-active-layer { background:linear-gradient(130deg,rgba(115,103,255,.06),rgba(76,141,255,.08)); }
-  
-
-  .ajn-progress-card { border:1px solid rgba(128,119,214,.14); background:rgba(255,255,255,.82); box-shadow:0 16px 42px rgba(47,43,91,.07); }
-  
-  .ajn-progress-value { color:#685cf2; }
-  
-  .ajn-progress-track { background:#ecebfa; }
-  
-  .ajn-progress-fill { background:linear-gradient(90deg,#7568ff,#4d90ff); box-shadow:0 0 14px rgba(115,103,255,.28); }
-  
-
-  .ajn-premium-bg { z-index:-1; }
-
-
-
-
-  
-  
-
-
-  
-  
-
-  .ajn-mobile-bottom-nav {
-    position:fixed;
-    left:0;
-    right:0;
-    bottom:0;
-    z-index:120;
-    padding:0 .65rem calc(.55rem + env(safe-area-inset-bottom));
-    pointer-events:none;
-  }
-  .ajn-mobile-bottom-nav-inner {
-    display:grid;
-    grid-template-columns:repeat(5,minmax(0,1fr));
-    gap:.2rem;
-    width:min(100%,32rem);
-    margin:0 auto;
-    border:1px solid rgba(128,119,214,.18);
-    border-radius:1.55rem;
-    background:rgba(255,255,255,.91);
-    box-shadow:0 16px 46px rgba(38,34,75,.16),inset 0 1px 0 rgba(255,255,255,.96);
-    backdrop-filter:blur(24px) saturate(150%);
-    -webkit-backdrop-filter:blur(24px) saturate(150%);
-    padding:.38rem;
-    pointer-events:auto;
-  }
-  
-  .ajn-mobile-nav-item { display:flex; min-width:0; min-height:52px; flex-direction:column; align-items:center; justify-content:center; gap:.18rem; border-radius:1.05rem; color:#73768a; font-size:.56rem; font-weight:850; transition:background .18s ease,color .18s ease,transform .18s ease; }
-  .ajn-mobile-nav-item:active { transform:scale(.96); }
-  .ajn-mobile-nav-icon { display:grid; place-items:center; width:1.8rem; height:1.55rem; border-radius:.65rem; }
-  .ajn-mobile-nav-icon svg { width:1rem; height:1rem; }
-  .ajn-mobile-nav-item.is-active { color:#6256ef; background:linear-gradient(145deg,#f1efff,#eef4ff); }
-  .ajn-mobile-nav-item.is-active .ajn-mobile-nav-icon { color:#fff; background:linear-gradient(135deg,#7367ff,#4c8dff); box-shadow:0 7px 18px rgba(91,92,235,.22); }
-  
-  
-  
-
-  
-}
-
-
-
-
-@media (max-width:767px){
-  .ajn-page-shell { padding-bottom:5.35rem; }
-  .ajn-tool-card { border-radius:1.25rem; }
-  .ajn-tool-card:hover { transform:none; }
-  .ajn-category-card { border-radius:1.35rem; }
-
-
-
-}
-
-
-
+/* === AJN PDF V4 VISUAL SYSTEM === */
 /* ============================================================
-   AJN PDF R5 — branded horizontal tool cards
-   Professional compact directory with exact per-tool artwork.
-   ============================================================ */
-.ajn-horizontal-tool-card {
-  overflow: hidden;
-  min-height: 106px;
-  border-radius: 1.05rem;
-  background: #ffffff;
-  box-shadow: 0 7px 24px rgba(37,54,112,.07), inset 0 1px 0 rgba(255,255,255,.95);
-}
-.ajn-horizontal-tool-card::after {
-  left: auto;
-  right: 1rem;
-  bottom: 0;
-  width: 2rem;
-  height: 2px;
-  border-radius: 999px 999px 0 0;
-  opacity: .45;
-}
-.ajn-horizontal-tool-card:hover {
-  transform: translateY(-2px);
-  border-color: rgba(92,82,235,.24);
-  box-shadow: 0 14px 34px rgba(42,61,128,.12), inset 0 1px 0 rgba(255,255,255,.96);
+   AJN PDF V4 — APPROVED BACKGROUND + CARD VISUAL LAYER
+   Local UI only. No processor/business-logic changes.
+============================================================ */
+
+:root {
+  --ajn-v4-bg: #ffffff;
+  --ajn-v4-surface: #ffffff;
+  --ajn-v4-stroke: #e3e9f4;
+  --ajn-v4-stroke-strong: rgba(26,86,219,.35);
+  --ajn-v4-ink: #0e1b2c;
+  --ajn-v4-muted: #5b6b80;
+  --ajn-v4-blue: #1a56db;
+  --ajn-v4-blue-deep: #123fa8;
+  --ajn-v4-green: #0e9f6e;
+  --ajn-v4-red: #d92d20;
+  --ajn-v4-red-deep: #b42318;
+  --ajn-v4-blue-tint: #e1effe;
+  --ajn-v4-green-tint: #def7ec;
+  --ajn-v4-red-tint: #fef3f2;
+  --ajn-v4-shadow: 0 14px 44px rgba(14,27,44,.09);
+  --ajn-v4-glow-blue: rgba(59,130,246,.14);
+  --ajn-v4-glow-green: rgba(16,185,129,.18);
 }
 
+.dark {
+  --ajn-v4-bg: #0a101d;
+  --ajn-v4-surface: #111827;
+  --ajn-v4-stroke: rgba(255,255,255,.09);
+  --ajn-v4-stroke-strong: rgba(59,130,246,.35);
+  --ajn-v4-ink: #eef2f9;
+  --ajn-v4-muted: #8b96ab;
+  --ajn-v4-blue: #3b82f6;
+  --ajn-v4-blue-deep: #1a56db;
+  --ajn-v4-green: #10b981;
+  --ajn-v4-red: #ef4444;
+  --ajn-v4-red-deep: #d92d20;
+  --ajn-v4-blue-tint: rgba(59,130,246,.14);
+  --ajn-v4-green-tint: rgba(16,185,129,.13);
+  --ajn-v4-red-tint: rgba(239,68,68,.12);
+  --ajn-v4-shadow: 0 20px 60px rgba(0,0,0,.5);
+  --ajn-v4-glow-blue: rgba(59,130,246,.16);
+  --ajn-v4-glow-green: rgba(16,185,129,.14);
+}
 
+body,
+.ajn-page-shell {
+  background: var(--ajn-v4-bg);
+}
 
-.ajn-tool-artwork {
-  border-radius: .88rem;
-  border: 1px solid rgba(82,87,190,.15);
-  background: #070b2a;
-  box-shadow: 0 7px 18px rgba(31,38,100,.14);
+/* Soft blurred blue + green ambient background, built with solid blobs (no CSS gradient). */
+.ajn-page-shell::before,
+.ajn-page-shell::after {
+  content: "";
+  position: fixed;
+  z-index: -2;
+  pointer-events: none;
+  border-radius: 9999px;
+  filter: blur(120px);
+  transition: background-color .45s ease, opacity .45s ease;
+}
+
+.ajn-page-shell::before {
+  width: 60vw;
+  height: 40vh;
+  left: -10vw;
+  bottom: -12vh;
+  background: var(--ajn-v4-glow-blue);
+}
+
+.ajn-page-shell::after {
+  width: 55vw;
+  height: 38vh;
+  right: -8vw;
+  bottom: -10vh;
+  background: var(--ajn-v4-glow-green);
+}
+
+/* Faint upper green depth hint on page main without introducing a gradient. */
+.ajn-page-shell > main {
+  position: relative;
   isolation: isolate;
 }
-.ajn-tool-artwork::after {
+
+.ajn-page-shell > main::before {
   content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
+  position: fixed;
+  z-index: -2;
   pointer-events: none;
-  border-radius: inherit;
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
-}
-.ajn-tool-artwork img {
-  transition: transform .22s cubic-bezier(.2,.8,.2,1), filter .22s ease;
-}
-.group:hover .ajn-tool-artwork img {
-  transform: scale(1.025);
-  filter: saturate(1.04) contrast(1.015);
-}
-
-
-.ajn-card-brand-badge {
-  display: inline-flex;
-  min-height: 18px;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(91,81,232,.12);
-  border-radius: .42rem;
-  background: rgba(103,92,245,.07);
-  padding: .16rem .4rem;
-  color: #5f55df;
-  font-size: 8px;
-  font-weight: 950;
-  line-height: 1;
-  letter-spacing: .12em;
+  width: 40vw;
+  height: 26vh;
+  right: 18vw;
+  top: -14vh;
+  border-radius: 9999px;
+  filter: blur(120px);
+  background: var(--ajn-v4-glow-green);
+  opacity: .5;
 }
 
-
-@media (max-width: 640px){
-  .ajn-horizontal-tool-card { min-height: 102px; border-radius: .98rem; }
-  .ajn-horizontal-tool-card:hover { transform: none; }
-}
-
-@media (prefers-reduced-motion: reduce){
-  .ajn-horizontal-tool-card,
-  .ajn-horizontal-tool-card:hover,
-  .ajn-tool-artwork img,
-  .group:hover .ajn-tool-artwork img {
-    transform: none !important;
-    transition: none !important;
-  }
-}
-
-/* ==========================================================
-   AJN PDF R6 — polished light-only UI
-   Compact horizontal cards, smaller artwork, quieter motion.
-   ========================================================== */
-html,
-html[data-theme="light"] {
-  color-scheme: light !important;
-  background: #ffffff;
-}
-
-
-
-body {
-  background: #ffffff;
-}
-
-.ajn-page-shell {
-  background: transparent;
-}
-
-.ajn-horizontal-tool-card,
-.ajn-tool-card {
-  min-height: 82px;
-  border-radius: 16px;
-  border: 1px solid #e6eaf2;
-  background: rgba(255,255,255,.985);
-  box-shadow: 0 4px 14px rgba(15, 23, 42, .045);
-  transform: none;
-  transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease, background-color .18s ease;
-}
-
-.ajn-tool-card::before,
-.ajn-tool-card::after {
-  display: none;
-}
-
-.ajn-horizontal-tool-card:hover,
-.ajn-tool-card:hover {
-  transform: translateY(-1px);
-  border-color: rgba(79, 112, 255, .32);
-  background: #ffffff;
-  box-shadow: 0 10px 24px rgba(32, 54, 112, .09);
-}
-
-.ajn-tool-artwork {
-  border-radius: 11px;
-  border: 1px solid rgba(105, 117, 157, .14);
-  background: #0a1038;
-  box-shadow: 0 3px 10px rgba(25, 36, 92, .12);
-}
-
-.ajn-tool-artwork::after {
-  border-radius: inherit;
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,.04);
-}
-
-.ajn-tool-artwork img {
-  transform: none !important;
-  transition: filter .18s ease;
-}
-
-.group:hover .ajn-tool-artwork img {
-  transform: none !important;
-  filter: saturate(1.025) contrast(1.01);
-}
-
-.ajn-card-brand-badge {
-  min-height: 16px;
-  border: 0;
-  border-radius: 5px;
-  background: #f2f4ff;
-  padding: .13rem .32rem;
-  color: #6257df;
-  font-size: 7.5px;
-  letter-spacing: .10em;
-  box-shadow: none;
-}
-
-.ajn-card-arrow {
-  border: 1px solid #e8ebf3;
-  background: #f8faff;
-  color: #4f6ee8;
-  transition: border-color .18s ease, background-color .18s ease, color .18s ease;
-}
-
-.group:hover .ajn-card-arrow {
-  border-color: #d7dffa;
-  background: #f2f5ff;
-  color: #3156d9;
-}
-
-.ajn-tool-header,
-.ajn-nav-scrolled,
-.ajn-nav-idle {
-  background: rgba(255,255,255,.94) !important;
-  border-color: rgba(226,232,240,.9) !important;
-}
-
-.ajn-liquid-card,
-.ajn-glass-card {
-  border-color: rgba(226,232,240,.92) !important;
-  background: rgba(255,255,255,.97) !important;
-  box-shadow: 0 12px 34px rgba(15,23,42,.065) !important;
-}
-
-.ajn-tool-hero-icon {
-  border: 1px solid #e5e9f4;
-  background: linear-gradient(145deg, #f8f9ff, #f4f8ff);
-  box-shadow: 0 8px 22px rgba(45,75,160,.08);
-}
-
-@media (max-width: 640px){
-  .ajn-horizontal-tool-card,
-  .ajn-tool-card {
-    min-height: 82px;
-    border-radius: 14px;
-  }
-
-  .ajn-horizontal-tool-card:hover,
-  .ajn-tool-card:hover {
-    transform: none;
-  }
-}
-
-@media (prefers-reduced-motion: reduce){
-  .ajn-horizontal-tool-card,
-  .ajn-tool-card,
-  .ajn-tool-artwork img,
-  .ajn-card-arrow {
-    transition: none !important;
-    transform: none !important;
-  }
-}
-
-/* Hide the old baked-in white logo plate and redraw the approved AJN mark
-   directly on the artwork with a transparent background. */
-.ajn-tool-artwork::before {
-  content: "";
-  position: absolute;
-  z-index: 1;
-  top: 0;
-  right: 0;
-  width: 31%;
-  height: 39%;
-  background: linear-gradient(145deg, rgba(16,23,66,.98), rgba(8,13,47,.98));
-  border-bottom-left-radius: 10px;
-  pointer-events: none;
-}
-
-.ajn-tool-artwork::after {
-  z-index: 3;
-}
-
-.ajn-tool-corner-logo {
-  position: absolute;
-  z-index: 2;
-  top: 3px;
-  right: 3px;
-  width: 15px;
-  height: 15px;
-  object-fit: contain;
-  filter: drop-shadow(0 1px 2px rgba(0,0,0,.24));
-  pointer-events: none;
-}
-
-/* ========================================================================== */
-/* AJN PDF R7 — SIMPLE PROFESSIONAL VECTOR ICON SYSTEM                        */
-/* ========================================================================== */
-
-.ajn-horizontal-tool-card,
-.ajn-tool-card {
-  min-height: 78px;
-  border-radius: 15px;
-  border: 1px solid #e7eaf1;
-  background: #fff;
-  box-shadow: 0 3px 12px rgba(15, 23, 42, .035);
-  transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
-}
-
-.ajn-horizontal-tool-card:hover,
-.ajn-tool-card:hover {
-  transform: translateY(-1px);
-  border-color: #d5dcf1;
-  box-shadow: 0 9px 22px rgba(40, 58, 105, .075);
-}
-
-.ajn-tool-artwork,
-.ajn-simple-tool-icon {
+/* Shared premium card mechanics */
+.ajn-v4-card,
+.ajn-premium-tool-card,
+.ajn-v4-step-card {
   position: relative;
   overflow: hidden;
-  border-radius: 14px;
-  box-shadow: none;
-  isolation: isolate;
+  border: 1px solid var(--ajn-v4-stroke);
+  border-radius: 20px;
+  background: var(--ajn-v4-surface);
+  color: var(--ajn-v4-ink);
+  box-shadow: var(--ajn-v4-shadow);
+  transition:
+    transform .35s cubic-bezier(.2,.8,.3,1.1),
+    border-color .35s ease,
+    box-shadow .35s ease,
+    background-color .35s ease;
 }
 
-.ajn-tool-artwork::before,
-.ajn-tool-artwork::after,
-.ajn-tool-corner-logo {
-  display: none !important;
+.ajn-v4-card:hover,
+.ajn-premium-tool-card:hover {
+  transform: translateY(-8px);
 }
 
-.ajn-format-tile {
+.ajn-v4-step-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--ajn-v4-stroke-strong);
+}
+
+.ajn-premium-tool-card::after,
+.ajn-v4-card::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 4px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .4s cubic-bezier(.2,.8,.25,1);
+  pointer-events: none;
+}
+
+.ajn-premium-tool-card:hover::after,
+.ajn-v4-card:hover::after {
+  transform: scaleX(1);
+}
+
+.ajn-card-blue::after { background: var(--ajn-v4-blue); }
+.ajn-card-green::after { background: var(--ajn-v4-green); }
+.ajn-card-red::after { background: var(--ajn-v4-red); }
+
+.ajn-card-blue:hover { border-color: var(--ajn-v4-stroke-strong); }
+.ajn-card-green:hover { border-color: rgba(16,185,129,.4); }
+.ajn-card-red:hover { border-color: rgba(239,68,68,.4); }
+
+.ajn-icon-blue {
+  background: var(--ajn-v4-blue-tint);
+  border-color: color-mix(in srgb, var(--ajn-v4-blue) 16%, transparent);
+}
+
+.ajn-icon-green {
+  background: var(--ajn-v4-green-tint);
+  border-color: color-mix(in srgb, var(--ajn-v4-green) 16%, transparent);
+}
+
+.ajn-icon-red {
+  background: var(--ajn-v4-red-tint);
+  border-color: color-mix(in srgb, var(--ajn-v4-red) 16%, transparent);
+}
+
+.ajn-step-num {
+  width: 38px;
+  height: 38px;
+  border-radius: 9999px;
   display: inline-flex;
-  min-width: 1.45rem;
-  max-width: 2.4rem;
-  height: 1.05rem;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
-  border-width: 1px;
-  border-style: solid;
-  border-radius: .48rem;
-  padding: 0 .2rem;
-  font-size: .38rem;
-  font-weight: 900;
-  line-height: 1;
-  letter-spacing: -.015em;
-  white-space: nowrap;
-  text-overflow: clip;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, .025);
+  font-size: 13px;
+  font-weight: 800;
 }
 
-.ajn-card-brand-badge { display: none !important; }
-
-.ajn-card-arrow {
-  width: 1.8rem;
-  height: 1.8rem;
-  border: 0;
-  border-radius: .65rem;
-  background: transparent;
-  color: #94a3b8;
+.ajn-step-num-blue {
+  background: var(--ajn-v4-blue-tint);
+  color: var(--ajn-v4-blue);
 }
 
-.group:hover .ajn-card-arrow {
-  background: #f8fafc;
-  color: #475569;
+.ajn-step-num-green {
+  background: var(--ajn-v4-green-tint);
+  color: var(--ajn-v4-green);
 }
 
-.ajn-hero-value-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: .4rem;
-  min-height: 2rem;
-  border: 1px solid #edf0f6;
-  border-radius: 999px;
-  background: rgba(255,255,255,.82);
-  padding: .38rem .68rem;
-  box-shadow: 0 4px 14px rgba(15,23,42,.025);
+.ajn-step-num-red {
+  background: var(--ajn-v4-red-tint);
+  color: var(--ajn-v4-red);
 }
 
-.ajn-mobile-value-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: .25rem;
-  border: 1px solid #edf0f6;
-  border-radius: 999px;
-  background: rgba(255,255,255,.9);
-  padding: .28rem .48rem;
+/* Quick-access cards inherit the approved surface depth without changing scroller behavior. */
+[data-ajn-quick-tool-card="true"] {
+  border-radius: 18px !important;
+  background: var(--ajn-v4-surface) !important;
+  border-color: var(--ajn-v4-stroke) !important;
+  box-shadow: 0 10px 30px rgba(14,27,44,.07);
 }
 
-.ajn-workflow-panel {
-  box-shadow: 0 18px 45px rgba(67, 56, 202, .06);
+.dark [data-ajn-quick-tool-card="true"] {
+  box-shadow: 0 16px 40px rgba(0,0,0,.34);
 }
 
-@media (max-width: 640px){
-  .ajn-horizontal-tool-card,
-  .ajn-tool-card {
-    min-height: 76px;
-    border-radius: 14px;
+[data-ajn-quick-tool-card="true"]:hover {
+  transform: translateY(-5px);
+  border-color: var(--ajn-v4-stroke-strong) !important;
+}
+
+/* Make group boards sit over the glow while preserving their current solid category tints. */
+#ajn-public-tool-grid > section {
+  box-shadow: 0 10px 34px rgba(14,27,44,.055);
+}
+
+.dark #ajn-public-tool-grid > section {
+  box-shadow: 0 16px 44px rgba(0,0,0,.24);
+}
+
+/* Light mode must stay bright/white as requested. */
+html:not(.dark) .ajn-page-shell {
+  background-color: #ffffff;
+}
+
+/* Dark mode exact approved background. */
+html.dark .ajn-page-shell {
+  background-color: #0a101d;
+}
+
+@media (max-width: 700px) {
+  .ajn-page-shell::before {
+    width: 82vw;
+    height: 28vh;
+    left: -28vw;
   }
-  .ajn-format-tile {
-    min-width: 1.35rem;
-    max-width: 2.2rem;
-    height: 1rem;
-    border-radius: .42rem;
-    font-size: .36rem;
-  }
-}
 
-@media (prefers-reduced-motion: reduce){
-  .ajn-horizontal-tool-card,
-  .ajn-tool-card,
-  .ajn-card-arrow {
-    transition: none !important;
+  .ajn-page-shell::after {
+    width: 78vw;
+    height: 26vh;
+    right: -30vw;
   }
-  .ajn-horizontal-tool-card:hover,
-  .ajn-tool-card:hover {
-    transform: none !important;
+
+  .ajn-page-shell > main::before {
+    width: 62vw;
+    right: 2vw;
+  }
+
+  .ajn-v4-card,
+  .ajn-premium-tool-card,
+  .ajn-v4-step-card {
+    border-radius: 16px;
   }
 }
 
-/* ========================================================================== */
-/* AJN PDF R8 — PREMIUM PRO WORKSPACE / CLEAN GRID / WAVE BACKGROUND          */
-/* ========================================================================== */
+@media (hover: none) {
+  .ajn-v4-card:hover,
+  .ajn-premium-tool-card:hover,
+  .ajn-v4-step-card:hover,
+  [data-ajn-quick-tool-card="true"]:hover {
+    transform: none;
+  }
 
-
-
-
-
-
-
-.ajn-hero-value-chip,.ajn-mobile-value-chip { border-radius:.72rem; }
-.ajn-workflow-panel { border-radius:1.35rem; }
-
-.ajn-tool-card-compact .ajn-card-arrow { display:none; }
-.ajn-tool-card-compact h3 { font-size:.84rem; }
-.ajn-tool-card-list { max-width:100%; }
-.ajn-tool-card-list .ajn-card-arrow { background:#f8fafc; }
-
-.ajn-r8-hero-document { position:relative; height:160px; max-width:320px; margin-left:auto; margin-right:auto; }
-.ajn-r8-doc-sheet { position:absolute; left:50%; top:0; width:132px; height:152px; border:1px solid #e4e8f2; border-radius:16px; background:white; box-shadow:0 18px 40px rgba(37,62,113,.10); }
-.ajn-r8-doc-back { transform:translateX(-72%) rotate(-6deg); opacity:.62; }
-.ajn-r8-doc-mid { transform:translateX(-28%) rotate(5deg); opacity:.78; }
-.ajn-r8-doc-front { transform:translateX(-50%); display:flex; flex-direction:column; gap:9px; padding:22px 18px; }
-.ajn-r8-doc-label { display:inline-flex; width:max-content; border-radius:8px; background:#fef2f2; padding:5px 8px; color:#dc2626; font-size:10px; font-weight:900; letter-spacing:.08em; }
-.ajn-r8-doc-line { display:block; height:7px; border-radius:4px; background:#eef2f7; }
-
-.ajn-r8-file-preview { display:flex; min-height:74px; flex-direction:column; justify-content:center; gap:4px; border:1px solid #e8ebf2; border-radius:12px; background:#fbfcff; padding:12px; color:#0f172a; }
-.ajn-r8-file-preview span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:11px; font-weight:850; }
-.ajn-r8-file-preview b { color:#94a3b8; font-size:9px; font-weight:750; }
-
-@media (min-width:1280px){
-  .ajn-tool-card-compact .ajn-simple-tool-icon { width:2.65rem !important; height:2.65rem !important; border-radius:12px; }
-  .ajn-tool-card-compact > div { gap:.65rem; padding-left:.7rem; padding-right:.7rem; }
-}
-@media (max-width:767px){
-
-
-  .ajn-horizontal-tool-card,.ajn-tool-card { min-height:74px; border-radius:13px; }
-}
-@media (prefers-reduced-motion:reduce){.ajn-r8-doc-sheet{animation:none!important;transition:none!important}}
-
-/* ========================================================================== */
-/* AJN PDF R8.2 - PREMIUM CONTENT POLISH / ADAPTIVE TOOL VIEWS                */
-/* ========================================================================== */
-.ajn-tool-card {
-  border-color: rgba(148,163,184,.22);
-  background: linear-gradient(180deg,#fff 0%,#fdfefe 100%);
-  box-shadow: 0 5px 16px rgba(15,23,42,.035);
-}
-.ajn-tool-card:hover {
-  border-color: rgba(37,99,235,.22);
-  box-shadow: 0 14px 30px rgba(37,62,113,.075);
-}
-.ajn-tool-card-list {
-  min-height: 82px;
-}
-.ajn-tool-card-list > div {
-  padding-left: 1rem;
-  padding-right: 1rem;
-}
-.ajn-tool-card-list .ajn-simple-tool-icon {
-  width: 3rem !important;
-  height: 3rem !important;
-}
-
-.ajn-visual-story-card {
-  transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
-}
-.ajn-visual-story-card:hover {
-  transform: translateY(-2px);
-  border-color: rgba(37,99,235,.20);
-  box-shadow: 0 30px 72px rgba(37,62,113,.105);
-}
-.ajn-story-page {
-  min-height: 98px;
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-  border: 1px solid #e5eaf2;
-  border-radius: 12px;
-  background: rgba(255,255,255,.96);
-  padding: 11px;
-  box-shadow: 0 10px 24px rgba(37,62,113,.055);
-}
-.ajn-story-page span {
-  align-self: flex-end;
-  color: #94a3b8;
-  font-size: 9px;
-  font-weight: 900;
-}
-.ajn-story-page i {
-  display: block;
-  height: 6px;
-  border-radius: 4px;
-  background: #eef2f7;
-}
-.ajn-story-page i:nth-of-type(1) { width: 82%; }
-.ajn-story-page i:nth-of-type(2) { width: 63%; }
-.ajn-story-page i:nth-of-type(3) { width: 74%; }
-.ajn-story-format {
-  min-width: 0;
-  min-height: 118px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  border: 1px solid #e6eaf2;
-  border-radius: 14px;
-  background: #fbfcff;
-  padding: 14px 10px;
-  text-align: center;
-}
-.ajn-story-format b { color:#0f172a; font-size:12px; font-weight:900; }
-.ajn-story-format span { color:#94a3b8; font-size:9px; font-weight:750; }
-.ajn-story-check {
-  min-height: 38px;
-  display:flex;
-  align-items:center;
-  gap:8px;
-  border:1px solid #e8ebf2;
-  border-radius:10px;
-  background:#fff;
-  padding:9px 10px;
-  color:#475569;
-  font-size:10px;
-  font-weight:850;
-}
-.ajn-story-check svg { width:14px; height:14px; color:#059669; }
-
-@media (max-width:767px){
-  .ajn-tool-card-list > div { padding-left:.75rem; padding-right:.75rem; }
-  .ajn-visual-story-card:hover { transform:none; }
-  .ajn-story-page { min-height:86px; }
-}
-@media (prefers-reduced-motion:reduce){
-  .ajn-visual-story-card { transition:none !important; }
-  .ajn-visual-story-card:hover { transform:none !important; }
-}
-
-/* ========================================================================== */
-/* AJN PDF R8.3 - PLAIN WHITE ICON SURFACES / QUIETER PREMIUM DETAIL          */
-/* ========================================================================== */
-.ajn-simple-tool-icon,
-.ajn-white-icon-tile {
-  background: #fff !important;
-  border: 1px solid rgba(148,163,184,.28) !important;
-  box-shadow: 0 4px 12px rgba(15,23,42,.045) !important;
-}
-.ajn-simple-tool-icon {
-  border-radius: 12px;
-}
-.ajn-format-tile {
-  background: #fff !important;
-  border-color: rgba(148,163,184,.32) !important;
-  color: #475569 !important;
-  box-shadow: none !important;
-}
-.group:hover .ajn-simple-tool-icon,
-.ajn-white-icon-tile:hover {
-  background: #fff !important;
-  border-color: rgba(100,116,139,.38) !important;
-}
-@media (max-width:767px){
-  .ajn-simple-tool-icon { box-shadow: 0 3px 9px rgba(15,23,42,.04) !important; }
-}
-
-
-/* ========================================================================== */
-/* AJN PDF R9 - FINAL SIMPLE PROFESSIONAL SURFACE SYSTEM                       */
-/* No decorative waves, circular glows or pointer-following card highlights.   */
-/* ========================================================================== */
-body { background:#ffffff; }
-.ajn-page-shell { background:linear-gradient(180deg,#ffffff 0%,#fbfcfe 48%,#ffffff 100%); }
-.jn-workspace::before,
-.jn-workspace::after { display:none !important; content:none !important; }
-.ajn-horizontal-tool-card,
-.ajn-tool-card {
-  background:#ffffff !important;
-  border-color:#e5e7eb !important;
-  box-shadow:0 4px 14px rgba(15,23,42,.045) !important;
-}
-.ajn-horizontal-tool-card:hover,
-.ajn-tool-card:hover {
-  background:#ffffff !important;
-  border-color:#cbd5e1 !important;
-  box-shadow:0 10px 24px rgba(15,23,42,.075) !important;
-}
-.ajn-simple-tool-icon,
-.ajn-white-icon-tile {
-  background:#ffffff !important;
-  border-color:#e2e8f0 !important;
-  box-shadow:0 2px 8px rgba(15,23,42,.04) !important;
-}
-
-/* R10.8 mobile rendering and contrast polish */
-.ajn-progressive-tool-card {
-  content-visibility: auto;
-  contain-intrinsic-size: 82px;
-}
-.ajn-r8-file-preview b { color:#64748b; }
-.ajn-ad-zone {
-  contain: layout style;
-  overflow-anchor: none;
-}
-@media (max-width: 767px) {
-  .ajn-progressive-tool-card { contain-intrinsic-size: 78px; }
-}
-
-/* ========================================================================== */
-/* AJN PDF R13 — PRODUCTION FINAL / RESPONSIVE / SINGLE-BRAND VISUAL SYSTEM   */
-/* ========================================================================== */
-:root {
-  --ajn-primary: #2563eb;
-  --ajn-primary-hover: #1d4ed8;
-  --ajn-primary-pressed: #1e40af;
-  --ajn-primary-soft: #eff6ff;
-  --ajn-success: #047857;
-  --ajn-success-soft: #ecfdf5;
-  --ajn-warning: #b45309;
-  --ajn-warning-soft: #fffbeb;
-  --ajn-error: #b91c1c;
-  --ajn-error-soft: #fef2f2;
-  --ajn-disabled: #64748b;
-  --ajn-disabled-soft: #f1f5f9;
-  --ajn-focus-ring: #2563eb;
-}
-
-html,
-body {
-  max-width: 100%;
-  overflow-x: hidden;
-}
-
-/* Never use CSS zoom to compensate for layout sizing. Browser zoom/reflow is
-   supported through responsive layout and fluid type instead. */
-html { font-size: 100%; }
-
-.ajn-primary-action,
-.jn-btn-base:not(:disabled) {
-  transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease,
-    box-shadow 140ms ease, transform 140ms ease;
-}
-
-.ajn-primary-action {
-  background: var(--ajn-primary) !important;
-  color: #fff !important;
-  border-color: var(--ajn-primary) !important;
-}
-.ajn-primary-action:hover { background: var(--ajn-primary-hover) !important; }
-.ajn-primary-action:active { background: var(--ajn-primary-pressed) !important; transform: translateY(1px); }
-
-:where(a, button, input, select, textarea, [role="button"], [tabindex]):focus-visible {
-  outline: 3px solid color-mix(in srgb, var(--ajn-focus-ring) 72%, white);
-  outline-offset: 3px;
-}
-
-.ajn-tool-card {
-  content-visibility: auto;
-  contain-intrinsic-size: auto 88px;
-}
-
-.ajn-tool-card::after {
-  background: var(--ajn-primary) !important;
-}
-
-.ajn-tool-card-enter {
-  animation: ajn-r13-card-enter 150ms ease-out both;
-}
-
-@keyframes ajn-r13-card-enter {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.ajn-status-dot {
-  display: inline-block;
-  width: .55rem;
-  height: .55rem;
-  flex: 0 0 auto;
-  border-radius: 999px;
-  background: var(--ajn-disabled);
-}
-.ajn-status-dot[data-state="checking"] { background: var(--ajn-warning); animation: ajn-r13-status-pulse 1.25s ease-in-out infinite; }
-.ajn-status-dot[data-state="operational"] { background: var(--ajn-success); }
-.ajn-status-dot[data-state="degraded"] { background: var(--ajn-warning); }
-.ajn-status-dot[data-state="unavailable"] { background: var(--ajn-error); }
-
-@keyframes ajn-r13-status-pulse {
-  0%, 100% { opacity: .45; transform: scale(.86); }
-  50% { opacity: 1; transform: scale(1); }
-}
-
-/* Keep ad inventory visually separate from document actions while reserving
-   layout space to protect CLS. */
-.ajn-ad-zone,
-[data-ajn-ad-zone="true"] {
-  border: 1px solid #e2e8f0;
-  background: #f8fafc;
-  box-shadow: none;
-}
-
-/* Selected directory controls use a visible state, not a faint border only. */
-[aria-pressed="true"].ajn-filter-chip,
-[aria-selected="true"].ajn-filter-chip,
-.ajn-filter-chip[data-active="true"] {
-  border-color: var(--ajn-primary) !important;
-  background: var(--ajn-primary) !important;
-  color: #fff !important;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, .16);
-}
-
-/* Responsive hardening for compact phones and high browser zoom. */
-@media (max-width: 430px) {
-  .ajn-tool-card { contain-intrinsic-size: auto 80px; }
-  .ajn-tool-card-enter { animation-duration: 130ms; }
-}
-
-@media (max-width: 359px) {
-  .ajn-tool-card { min-width: 0; }
+  .ajn-premium-tool-card::after,
+  .ajn-v4-card::after {
+    transform: scaleX(1);
+    opacity: .8;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ajn-tool-card-enter,
-  .ajn-status-dot[data-state="checking"] {
+  .ajn-page-shell::before,
+  .ajn-page-shell::after,
+  .ajn-page-shell > main::before,
+  .ajn-v4-card,
+  .ajn-premium-tool-card,
+  .ajn-v4-step-card,
+  [data-ajn-quick-tool-card="true"] {
+    transition: none !important;
+  }
+}
+
+/* === AJN PDF V8 WORKSPACE MOTION === */
+/* === AJN PDF V8 WORKSPACE EXPERIENCE START === */
+@keyframes ajn-check-draw {
+  from { stroke-dashoffset: 32; }
+  to { stroke-dashoffset: 0; }
+}
+
+.jn-success-draw svg path,
+.jn-success-draw svg polyline {
+  stroke-dasharray: 32;
+  stroke-dashoffset: 32;
+  animation: ajn-check-draw .6s cubic-bezier(.2,.8,.25,1) forwards;
+}
+
+.ajn-workspace-mode {
+  border: 1px solid var(--jn-border, #e3e9f4);
+  background: color-mix(in srgb, var(--jn-pill-bg, #f8fafc) 88%, transparent);
+  box-shadow: 0 8px 22px rgba(14,27,44,.035);
+}
+
+.dark .ajn-workspace-mode {
+  box-shadow: 0 12px 30px rgba(0,0,0,.18);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jn-success-draw svg path,
+  .jn-success-draw svg polyline {
     animation: none !important;
+    stroke-dashoffset: 0 !important;
   }
-  .ajn-primary-action,
-  .jn-btn-base,
-  .ajn-tool-card,
-  .ajn-card-arrow {
-    transition-duration: .01ms !important;
-  }
-  .ajn-primary-action:active { transform: none !important; }
+}
+/* === AJN PDF V8 WORKSPACE EXPERIENCE END === */
+
+/* ============================================================
+   AJN PDF V9 — semantic contrast + workspace system
+============================================================ */
+:root {
+  --ajn-text-primary: #0e1b2c;
+  --ajn-text-secondary: #475569;
+  --ajn-text-muted: #64748b;
+  --ajn-raised: #f8fafc;
+  --jn-text-primary: #0e1b2c;
+  --jn-text-secondary: #475569;
+  --jn-text-muted: #64748b;
+  --jn-border: #e3e9f4;
+  --jn-input-bg: #ffffff;
+  --jn-secondary-bg: #ffffff;
+  --jn-soft-bg: #eef2f9;
+  --jn-pill-bg: #f8fafc;
+  --jn-drop-bg: #ffffff;
+  --jn-drop-hover: #f4f8ff;
+}
+
+.dark {
+  --ajn-bg: #0a101d;
+  --ajn-bg-soft: #0c1220;
+  --ajn-surface: #111827;
+  --ajn-surface-soft: #151e2e;
+  --ajn-raised: #151e2e;
+  --ajn-ink: #eef2f9;
+  --ajn-text-primary: #eef2f9;
+  --ajn-text-secondary: #b6c0d0;
+  --ajn-muted: #8b96ab;
+  --ajn-text-muted: #8b96ab;
+  --ajn-stroke: rgba(255,255,255,.10);
+
+  --jn-text-primary: #eef2f9;
+  --jn-text-secondary: #b6c0d0;
+  --jn-text-muted: #8b96ab;
+  --jn-border: rgba(255,255,255,.10);
+  --jn-input-bg: #0c1220;
+  --jn-secondary-bg: #151e2e;
+  --jn-soft-bg: #1a2434;
+  --jn-pill-bg: #151e2e;
+  --jn-drop-bg: #111827;
+  --jn-drop-hover: #151e2e;
+}
+
+/* Legacy utility normalization: prevent light cards + pale text in dark mode. */
+html.dark body [class~="bg-slate-200"],
+html.dark body [class~="bg-slate-300"],
+html.dark body [class~="bg-gray-100"],
+html.dark body [class~="bg-gray-200"] {
+  background-color: #151e2e !important;
+}
+
+html.dark body [class~="text-slate-300"],
+html.dark body [class~="text-slate-400"],
+html.dark body [class~="text-slate-500"],
+html.dark body [class~="text-slate-600"],
+html.dark body [class~="text-gray-400"],
+html.dark body [class~="text-gray-500"],
+html.dark body [class~="text-gray-600"] {
+  color: #b6c0d0 !important;
+}
+
+html.dark body [class~="text-slate-700"],
+html.dark body [class~="text-slate-800"],
+html.dark body [class~="text-slate-900"],
+html.dark body [class~="text-slate-950"],
+html.dark body [class~="text-gray-700"],
+html.dark body [class~="text-gray-800"],
+html.dark body [class~="text-gray-900"] {
+  color: #eef2f9 !important;
+}
+
+html.dark .jn-workspace .ajn-product-canvas,
+html.dark .jn-workspace .jn-file-pill,
+html.dark .jn-workspace .ajn-workspace-mode {
+  background: #111827 !important;
+  border-color: rgba(255,255,255,.10) !important;
+  color: #eef2f9 !important;
+}
+
+html.dark .jn-workspace .jn-drop {
+  background: #111827 !important;
+  color: #eef2f9 !important;
+}
+
+html.dark .jn-workspace input,
+html.dark .jn-workspace select,
+html.dark .jn-workspace textarea {
+  background: #0c1220 !important;
+  color: #eef2f9 !important;
+  border-color: rgba(255,255,255,.10) !important;
+}
+
+html.dark .jn-workspace input::placeholder,
+html.dark .jn-workspace textarea::placeholder {
+  color: #8b96ab !important;
+}
+
+.ajn-privacy-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  min-height: 1.9rem;
+  border: 1px solid var(--ajn-stroke);
+  border-radius: 999px;
+  background: var(--ajn-raised);
+  color: var(--ajn-text-secondary);
+  padding: .35rem .65rem;
+  font-size: .65rem;
+  line-height: 1;
+  font-weight: 800;
+}
+
+.ajn-recovery-card {
+  border: 1px solid color-mix(in srgb, #d92d20 30%, var(--ajn-stroke));
+  border-radius: 1rem;
+  background: color-mix(in srgb, #d92d20 7%, var(--ajn-surface));
+  color: var(--ajn-text-secondary);
+  padding: .9rem 1rem;
+}
+
+.ajn-result-receipt {
+  border: 1px solid var(--ajn-stroke);
+  border-radius: 1rem;
+  background: var(--ajn-raised);
+  padding: 1rem;
+  color: var(--ajn-text-primary);
+}
+
+.ajn-route-skeleton {
+  animation: ajn-skeleton-pulse 1.2s ease-in-out infinite alternate;
+}
+@keyframes ajn-skeleton-pulse {
+  from { opacity: .55; }
+  to { opacity: .9; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ajn-route-skeleton { animation: none !important; opacity: .75; }
+}
+
+/* Ensure old Recommended/editorial cards are readable in both themes. */
+html.dark [data-ajn-editorial-card],
+html.dark .ajn-editorial-card,
+html.dark .ajn-recommended-card {
+  background: #111827 !important;
+  border-color: rgba(255,255,255,.10) !important;
+  color: #eef2f9 !important;
+}
+html.dark [data-ajn-editorial-card] p,
+html.dark [data-ajn-editorial-card] li,
+html.dark .ajn-editorial-card p,
+html.dark .ajn-editorial-card li,
+html.dark .ajn-recommended-card p,
+html.dark .ajn-recommended-card li {
+  color: #b6c0d0 !important;
+}
+
+/* ============================================================
+   AJN PDF V9.4.1 ACCESSIBILITY FIX
+   Keyboard focus and Windows High Contrast support
+============================================================ */
+
+:where(
+  a,
+  button,
+  input,
+  select,
+  textarea,
+  summary,
+  [role="button"],
+  [role="link"],
+  [tabindex]:not([tabindex="-1"])
+):focus-visible {
+  outline: 3px solid #1a56db;
+  outline-offset: 3px;
+  border-radius: .25rem;
+}
+
+.dark :where(
+  a,
+  button,
+  input,
+  select,
+  textarea,
+  summary,
+  [role="button"],
+  [role="link"],
+  [tabindex]:not([tabindex="-1"])
+):focus-visible {
+  outline-color: #60a5fa;
 }
 
 @media (forced-colors: active) {
-  .ajn-status-dot { forced-color-adjust: auto; border: 1px solid ButtonText; }
-  .ajn-primary-action { border: 1px solid ButtonText !important; }
+  :root,
+  .dark {
+    --ajn-bg: Canvas;
+    --ajn-surface: Canvas;
+    --ajn-surface-soft: Canvas;
+    --ajn-ink: CanvasText;
+    --ajn-text-primary: CanvasText;
+    --ajn-text-secondary: CanvasText;
+    --ajn-text-muted: CanvasText;
+    --ajn-stroke: CanvasText;
+
+    --jn-text-primary: CanvasText;
+    --jn-text-secondary: CanvasText;
+    --jn-text-muted: CanvasText;
+    --jn-border: CanvasText;
+    --jn-input-bg: Field;
+    --jn-secondary-bg: Canvas;
+    --jn-soft-bg: Canvas;
+    --jn-pill-bg: Canvas;
+    --jn-drop-bg: Canvas;
+    --jn-drop-hover: Canvas;
+  }
+
+  :where(
+    a,
+    button,
+    input,
+    select,
+    textarea,
+    summary,
+    [role="button"],
+    [role="link"]
+  ) {
+    forced-color-adjust: auto;
+  }
+
+  :where(
+    button,
+    input,
+    select,
+    textarea,
+    .jn-drop,
+    .jn-file-pill,
+    .ajn-product-canvas
+  ) {
+    border-color: CanvasText !important;
+    box-shadow: none !important;
+  }
+
+  :where(
+    a,
+    button,
+    input,
+    select,
+    textarea,
+    summary,
+    [role="button"],
+    [role="link"],
+    [tabindex]:not([tabindex="-1"])
+  ):focus-visible {
+    outline: 3px solid Highlight !important;
+    outline-offset: 3px !important;
+  }
+
+  .ajn-status-pulse,
+  .ajn-live-dot {
+    background: Highlight !important;
+    box-shadow: none !important;
+  }
 }
 
+/* === AJN PDF V9 MOBILE NAVIGATION === */
+.ajn-mobile-bottom-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 120;
+  padding: 0 .65rem calc(.55rem + env(safe-area-inset-bottom));
+  pointer-events: none;
+}
 
-/* AJN R13 FINAL BROWSER-AUDIT MULTI-BUTTON REFLOW */
-@media (max-width: 768px) {
-  main .flex:has(> button:nth-child(3)) {
-    min-width: 0;
-    max-width: 100%;
-    flex-wrap: wrap !important;
-    overflow-x: visible !important;
-  }
+.ajn-mobile-bottom-nav-inner {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: .2rem;
+  width: min(100%, 32rem);
+  margin: 0 auto;
+  border: 1px solid var(--ajn-stroke);
+  border-radius: 1.35rem;
+  background: color-mix(in srgb, var(--ajn-surface) 94%, transparent);
+  box-shadow: 0 16px 42px rgba(14, 27, 44, .14);
+  -webkit-backdrop-filter: blur(22px) saturate(145%);
+  backdrop-filter: blur(22px) saturate(145%);
+  padding: .38rem;
+  pointer-events: auto;
+}
 
-  main .flex:has(> button:nth-child(3)) > button {
-    max-width: 100%;
-    flex: 0 1 auto;
-  }
+.dark .ajn-mobile-bottom-nav-inner {
+  background: color-mix(in srgb, #111827 94%, transparent);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, .42);
+}
 
-  main [role="tablist"] {
-    min-width: 0;
-    max-width: 100%;
-    flex-wrap: wrap !important;
-    overflow-x: visible !important;
-  }
+.ajn-mobile-nav-item {
+  display: flex;
+  min-width: 0;
+  min-height: 52px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: .18rem;
+  border-radius: 1rem;
+  color: var(--ajn-text-muted);
+  font-size: .58rem;
+  line-height: 1;
+  font-weight: 850;
+  transition: background-color .18s ease, color .18s ease, transform .18s ease;
+}
 
-  main [role="tablist"] > button {
-    max-width: 100%;
-    flex: 0 1 auto;
-    white-space: normal;
+.ajn-mobile-nav-item:active { transform: scale(.97); }
+
+.ajn-mobile-nav-icon {
+  display: grid;
+  place-items: center;
+  width: 1.9rem;
+  height: 1.65rem;
+  border-radius: .65rem;
+}
+
+.ajn-mobile-nav-icon svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.ajn-mobile-nav-item.is-active {
+  color: #1a56db;
+  background: #e1effe;
+}
+
+.ajn-mobile-nav-item.is-active .ajn-mobile-nav-icon {
+  color: #ffffff;
+  background: #1a56db;
+  box-shadow: 0 7px 18px rgba(26, 86, 219, .22);
+}
+
+.dark .ajn-mobile-nav-item.is-active {
+  color: #93c5fd;
+  background: rgba(59, 130, 246, .14);
+}
+
+.dark .ajn-mobile-nav-item.is-active .ajn-mobile-nav-icon {
+  color: #ffffff;
+  background: #3b82f6;
+}
+
+@media (max-width: 767px) {
+  .ajn-page-shell {
+    padding-bottom: calc(5.35rem + env(safe-area-inset-bottom));
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .ajn-mobile-nav-item { transition: none !important; }
+  .ajn-mobile-nav-item:active { transform: none !important; }
+}
+/* === AJN PDF V9 MOBILE NAVIGATION END === */
