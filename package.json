@@ -117,9 +117,9 @@
     "@playwright/test": "1.58.2"
   },
   "allowScripts": {
-    "sharp@0.34.5": true,
     "core-js": false,
-    "unrs-resolver@1.12.2": true
+    "unrs-resolver@1.12.2": true,
+    "sharp@0.35.3": true
   },
   "overrides": {
     "sharp": "0.35.3",
