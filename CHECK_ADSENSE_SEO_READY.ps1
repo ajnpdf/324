@@ -9,6 +9,21 @@ Write-Host '============================================================' -Foreg
 Write-Host ' AJN PDF :: ADSENSE + SEO READINESS CHECK' -ForegroundColor Cyan
 Write-Host '============================================================' -ForegroundColor Cyan
 
+if (-not (Test-Path '.\package.json')) {
+    throw 'package.json not found.'
+}
+
+$adsTxtPath = '.\public\ads.txt'
+$expectedAdsTxt = 'google.com, pub-4495802176396975, DIRECT, f08c47fec0942fa0'
+if (-not (Test-Path $adsTxtPath)) {
+    throw 'public/ads.txt is missing.'
+}
+$adsTxt = (Get-Content $adsTxtPath -Raw).Trim()
+if ($adsTxt -ne $expectedAdsTxt) {
+    throw 'public/ads.txt does not contain the expected authorised AdSense publisher declaration.'
+}
+Write-Host '[PASS] ads.txt publisher declaration' -ForegroundColor Green
+
 if (-not (Test-Path '.\node_modules')) {
     Write-Host '[INFO] Installing dependencies first...' -ForegroundColor Yellow
     & npm ci --no-audit --no-fund
