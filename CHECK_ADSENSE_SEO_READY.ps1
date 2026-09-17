@@ -31,6 +31,7 @@ if (-not (Test-Path '.\node_modules')) {
 }
 
 $checks = @(
+    'node scripts/generate-sitemap-lastmod.mjs',
     'npm run verify:seo-ads',
     'npm run verify:sitemap-indexing',
     'npm run verify:r20-seo',
