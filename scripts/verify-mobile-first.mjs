@@ -32,7 +32,7 @@ check(
 );
 
 check(
-  "hero presents the approved V9 PDF-only value proposition",
+  "hero presents the approved focused PDF-only value proposition",
   hero.includes("Free Online PDF Tools") &&
     hero.includes("Merge, compress, split, organize, edit, sign and protect PDF files") &&
     hero.includes("all in one simple workspace."),
@@ -62,7 +62,7 @@ check(
 
 const categoryIds = [...home.matchAll(/id:\s*["']([^"']+)["']/g)].map((match) => match[1]);
 check(
-  "V9 filters include All, Edit, Organize and Security only",
+  "focused filters include All, Edit, Organize and Security only",
   ["all", "edit", "organize", "security"].every((id) => categoryIds.includes(id)) &&
     ["image", "pdf", "conversion"].every((id) => !categoryIds.includes(id)),
 );
@@ -80,7 +80,7 @@ check(
 );
 
 check(
-  "all 20 PDF tools are grouped without progressive hiding",
+  "all 26 PDF tools are grouped without progressive hiding",
   ["Popular PDF Tools", "Organize PDF", "Edit & Sign PDF", "Protect & Repair"]
     .every((label) => grid.includes(label)) &&
     !grid.includes("INITIAL_VISIBLE_TOOLS") &&
@@ -97,21 +97,22 @@ check(
 check("phone cards expose keyboard focus styling", grid.includes("focus-visible:ring-2"));
 
 check(
-  "bottom navigation uses focused PDF/account destinations",
+  "bottom navigation uses focused canonical destinations",
   bottomNav.includes('href: "/"') &&
     bottomNav.includes('href: "/pdf-tools"') &&
     bottomNav.includes('href: "/sign-pdf"') &&
-    bottomNav.includes('"/account"') &&
-    bottomNav.includes('"/login"') &&
+    bottomNav.includes('href: "/status"') &&
     !bottomNav.includes("/conversion-tools") &&
     !bottomNav.includes("/image-tools") &&
-    !bottomNav.includes("/pdf-utilities"),
+    !bottomNav.includes("/pdf-utilities") &&
+    !bottomNav.includes('"/account"') &&
+    !bottomNav.includes('"/login"'),
 );
 
 check(
-  "bottom navigation has three fixed destinations plus dynamic account/login",
-  (bottomNav.match(/\{ label:/g) || []).length === 4 &&
-    bottomNav.includes('auth.session ? "Account" : "Login"'),
+  "bottom navigation has exactly four fixed destinations",
+  (bottomNav.match(/\{ href:/g) || []).length === 4 &&
+    !bottomNav.includes('auth.session ? "Account" : "Login"'),
 );
 
 check(
@@ -132,4 +133,4 @@ check(
 check("reduced-motion behavior remains present", css.includes("@media (prefers-reduced-motion: reduce)"));
 
 if (failed) process.exit(1);
-console.log("AJN PDF V9 MOBILE-FIRST VERIFICATION: PASS");
+console.log("AJN PDF FOCUSED MOBILE-FIRST VERIFICATION: PASS");
