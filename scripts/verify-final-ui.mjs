@@ -22,19 +22,20 @@ const ambient = read("src/app/ambient-light.css");
 const layout = read("src/app/layout.tsx");
 const themeProvider = read("src/components/theme/theme-provider.tsx");
 const policy = read("src/lib/tool-policy.ts");
+const next = read("next.config.ts");
 const pkg = JSON.parse(read("package.json"));
 
 hero.includes("Free Online PDF Tools")
-  ? pass("V9 hero heading is exact")
-  : fail("V9 hero heading is missing or changed");
+  ? pass("Focused hero heading is exact")
+  : fail("Focused hero heading is missing or changed");
 
 const heroDescriptionOk =
   hero.includes("Merge, compress, split, organize, edit, sign and protect PDF files") &&
   hero.includes("all in one simple workspace.");
 
 heroDescriptionOk
-  ? pass("V9 hero description is correct")
-  : fail("V9 hero description is missing or changed");
+  ? pass("Hero description is correct")
+  : fail("Hero description is missing or changed");
 
 for (const forbidden of [
   "Choose a PDF tool",
@@ -84,7 +85,7 @@ for (const id of [
   "merge-pdf",
   "compress-pdf",
   "split-pdf",
-  "add-text",
+  "edit-pdf",
   "sign-pdf",
 ]) {
   new RegExp(`id:\\s*["']${id}["']`).test(navbar)
@@ -92,11 +93,21 @@ for (const id of [
     : fail(`Header quick tool missing ${id}`);
 }
 
-for (const route of ["/pdf-tools", "/pricing", "/login", "/account"]) {
-  navbar.includes(`href="${route}"`) || navbar.includes(`href='${route}'`)
-    ? pass(`Header route present: ${route}`)
-    : fail(`Header route missing: ${route}`);
+for (const route of ["/pdf-tools", "/status", "/security"]) {
+  navbar.includes(`href="${route}"`) || navbar.includes(`href='${route}'`) || navbar.includes(`href: "${route}"`) || navbar.includes(`href: '${route}'`)
+    ? pass(`Focused navigation route present: ${route}`)
+    : fail(`Focused navigation route missing: ${route}`);
 }
+
+for (const retiredRoute of ["/pricing", "/login", "/account"]) {
+  !navbar.includes(`href="${retiredRoute}"`) && !navbar.includes(`href='${retiredRoute}'`)
+    ? pass(`Retired account route absent from header: ${retiredRoute}`)
+    : fail(`Retired account route remains in header: ${retiredRoute}`);
+}
+
+next.includes("source: '/pricing'") && next.includes("source: '/login'") && next.includes("source: '/account/:path*'") && next.includes("destination: '/pdf-tools'")
+  ? pass("Retired account/pricing routes redirect to PDF tools")
+  : fail("Retired account/pricing redirects are incomplete");
 
 navbar.includes("<AllToolsMenu")
   ? pass("All Tools launcher present")
@@ -182,9 +193,9 @@ const ids = [...publicBlock.matchAll(/["']([^"']+)["']/g)].map(
   (match) => match[1],
 );
 
-ids.length === 20 && new Set(ids).size === 20
-  ? pass("Exactly 20 public PDF tools")
-  : fail(`Expected exactly 20 public PDF tools; found ${ids.length}`);
+ids.length === 26 && new Set(ids).size === 26
+  ? pass("Exactly 26 focused public PDF tools")
+  : fail(`Expected exactly 26 public PDF tools; found ${ids.length}`);
 
 for (const prohibited of [
   /100%\s*(private|local|secure)/i,
@@ -193,6 +204,8 @@ for (const prohibited of [
   /free forever/i,
   /no limits/i,
   /90\+\s*tools/i,
+  /100\+\s*tools/i,
+  /107\s+tools/i,
 ]) {
   prohibited.test([home, hero, grid, navbar, menu, footer].join("\n"))
     ? fail(`Unsupported claim ${prohibited}`)
@@ -204,4 +217,4 @@ pkg.scripts?.check?.includes("verify:final-ui")
   : fail("Final UI verifier missing from production check");
 
 if (failed) process.exit(1);
-console.log("AJN PDF V9 FINAL UI VERIFICATION: PASS");
+console.log("AJN PDF FOCUSED FINAL UI VERIFICATION: PASS");
