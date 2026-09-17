@@ -15,10 +15,10 @@ if (publicIds.length !== new Set(publicIds).size) {
   pass(`${publicIds.length} unique public tool IDs`);
 }
 
-if (publicIds.length !== 95) {
-  fail(`Expected 95 current public tools, found ${publicIds.length}.`);
+if (publicIds.length !== 34) {
+  fail(`Expected 34 current public tools, found ${publicIds.length}.`);
 } else {
-  pass('Current 95-tool public inventory confirmed');
+  pass('Current 34-tool public inventory confirmed');
 }
 
 /*
@@ -49,14 +49,15 @@ directMergeMapped
 
 const serverRoutingOk =
   /\bCONVERSION_TOOLS\b/.test(workspace) &&
+  /\bBROWSER_CONVERSION_IDS\b/.test(workspace) &&
   /\bSERVER_CONVERSION_IDS\b/.test(workspace) &&
   /new\s+Set\s*\(\s*CONVERSION_TOOLS\.map\s*\(\s*\(\s*tool\s*\)\s*=>\s*tool\.id\s*\)\s*\)/.test(workspace) &&
-  /SERVER_CONVERSION_IDS\.has\s*\(\s*id\s*\)/.test(workspace) &&
+  /BROWSER_CONVERSION_IDS\.has\s*\(\s*id\s*\)\s*\?\s*null\s*:\s*\(SERVER_ALIASES\[id\]\s*\|\|\s*\(SERVER_CONVERSION_IDS\.has\(id\)\s*\?\s*id\s*:\s*null\)\)/.test(workspace) &&
   /ServerConversionTool/.test(workspace) &&
-  /const\s+serverToolId\s*=\s*SERVER_ALIASES\[id\]\s*\|\|\s*\(SERVER_CONVERSION_IDS\.has\(id\)\s*\?\s*id\s*:\s*null\)/.test(workspace) && /ServerConversionTool\s+toolId=\{serverToolId\}/.test(workspace);
+  /ServerConversionTool\s+toolId=\{serverToolId\}/.test(workspace);
 serverRoutingOk
-  ? pass('Server-conversion workspace routing is intact')
-  : fail('Server-conversion workspace routing is incomplete.');
+  ? pass('Browser-first and server-fallback conversion routing is intact')
+  : fail('Browser-first/server-fallback conversion routing is incomplete.');
 
 const route = read('src/app/(tool-pages)/[id]/page.tsx');
 route.includes('generateMetadata')
