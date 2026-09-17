@@ -135,6 +135,8 @@ export default function ScanToPdf() {
             <div className="grid gap-3 sm:grid-cols-2">
               {items.map((item, index) => (
                 <article key={item.id} className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-3">
+                  {/* Blob URLs are local camera previews; next/image cannot optimize these ephemeral sources. */}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={item.url} alt="Scanned page preview" className="h-16 w-12 rounded-lg object-cover" />
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-xs font-black text-slate-800">Page {index + 1}</p>
