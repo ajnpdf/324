@@ -85,7 +85,7 @@ check('GitHub production CI contains the hardened regression gates', requiredCiG
 check('GitHub production CI cancels stale runs', workflow.includes('cancel-in-progress: true') && workflow.includes('concurrency:'));
 check(
   'release metadata preserves R18-or-newer hardening lineage',
-  /'ajn-release':\s*'3\.(?:1\.0-r18|[2-9]\.\d+-r\d+)'/.test(layout)
+  /["']ajn-release["']:\s*["']3\.(?:1\.0-r18|[2-9]\.\d+-r\d+)["']/.test(layout)
 );
 check(
   'R18 verifier is wired into npm scripts and full check',
