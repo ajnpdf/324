@@ -48,7 +48,7 @@ check('sitemap excludes redirected thin utility and duplicate guide routes', !si
 check('PDF tools directory remains server-renderable and useful', !pdfToolsPage.includes('useSearchParams') && pdfToolsPage.includes('Choose the right PDF task before you start.'));
 check('privacy policy discloses browser/server processing and AdSense consent', privacy.includes('active browser session') && privacy.includes('temporarily over HTTPS') && privacy.includes('Google AdSense') && privacy.includes('consent'));
 check('legal and trust pages required for publisher review exist', ['src/app/about/page.tsx','src/app/contact/page.tsx','src/app/privacy/page.tsx','src/app/terms/page.tsx','src/app/cookies/page.tsx','src/app/file-processing-policy/page.tsx','src/app/security/page.tsx','src/app/limits/page.tsx'].every(exists));
-check('one-command local launcher validates Node and starts Next.js', localStart.includes('node --version') && localStart.includes('npm') && localStart.includes('9002'));
+check('one-command local launcher validates Node and starts Next.js', localStart.includes('node -p') && localStart.includes('npm run dev') && localStart.includes('9002'));
 check('release checker validates AdSense, sitemap and build readiness', releaseCheck.includes('ads.txt') && releaseCheck.includes('verify:seo-ads') && releaseCheck.includes('verify:sitemap-indexing') && releaseCheck.includes('npm run build'));
 
 if (failures.length) {
