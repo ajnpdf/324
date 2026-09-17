@@ -12,8 +12,8 @@ export interface ToolPolicy {
   limitation?: string;
 }
 
-// Production allowlist: AJN PDF remains PDF-focused and now includes five browser-only
-// image-to-PDF creation workflows. General image editing stays on AJN Buzz.
+// Production allowlist: PDF-focused tools plus browser-native creation/conversion workflows.
+// General image editing stays outside the AJN PDF public catalog.
 export const PRODUCTION_PUBLIC_TOOL_IDS = new Set([
   'edit-pdf',
   'add-image-to-pdf',
@@ -28,6 +28,14 @@ export const PRODUCTION_PUBLIC_TOOL_IDS = new Set([
   'jpeg-to-pdf',
   'png-to-pdf',
   'webp-to-pdf',
+  'heic-to-pdf',
+  'pdf-to-jpg',
+  'pdf-to-png',
+  'txt-to-pdf',
+  'html-to-pdf',
+  'markdown-to-pdf',
+  'json-to-pdf',
+  'xml-to-pdf',
   'flatten-pdf',
   'merge-pdf',
   'organize-pdf',
@@ -47,12 +55,18 @@ const browserImageToPdfIds = new Set([
   'image-to-pdf', 'jpg-to-pdf', 'jpeg-to-pdf', 'png-to-pdf', 'webp-to-pdf',
 ]);
 
+const browserConversionIds = new Set([
+  ...browserImageToPdfIds,
+  'pdf-to-jpg', 'pdf-to-png',
+  'txt-to-pdf', 'html-to-pdf', 'markdown-to-pdf', 'json-to-pdf', 'xml-to-pdf',
+]);
+
 const stableBrowserIds = new Set([
   'edit-pdf',
   'merge-pdf', 'split-pdf', 'rotate-pdf', 'delete-pdf-pages', 'organize-pdf',
   'crop-pdf', 'watermark-pdf', 'page-number', 'flatten-pdf', 'compare-pdf',
   'add-text', 'add-image-to-pdf', 'pdf-metadata', 'pdf-zip-extract', 'sign-pdf',
-  ...browserImageToPdfIds,
+  ...browserConversionIds,
   // Source-only image processors retained for AJN IMG/Buzz migration.
   'image-reducer', 'image-resizer', 'crop-image', 'rotate-image', 'watermark-image',
   'flip-image', 'convert-image', 'meme-generator', 'photo-editor',
@@ -61,7 +75,7 @@ const stableBrowserIds = new Set([
 const limitedBrowser: Record<string, string> = {
   'compress-pdf': 'Target-size compression rasterizes pages and can reduce text searchability, links, forms, and accessibility at very small targets.',
   'extract-images': 'Unusual inline, masked, or vector images may not be extracted.',
-  'heic-pdf': 'HEIC support depends on browser decoding and the bundled converter.',
+  'heic-to-pdf': 'HEIC support depends on browser decoding and the bundled HEIF converter.',
   'word-pdf': 'Best for DOCX files with simple layouts; complex Word formatting can change.',
   'pdf-word': 'Creates editable text but does not preserve every original layout element.',
   'excel-pdf': 'Complex charts, formulas, and print areas may render differently.',
@@ -77,7 +91,7 @@ const legacyAliasIds = new Set([
   'pdf-jpg', 'heic-pdf', 'html-pdf', 'xml-pdf', 'json-pdf', 'txt-pdf']);
 
 const conversionBackendIds = new Set(CONVERSION_TOOLS.map((tool) => tool.id));
-const backendIds = new Set(['protect-pdf', 'unlock-pdf', 'repair-pdf', 'png-to-pdf', ...conversionBackendIds]);
+const backendIds = new Set(['protect-pdf', 'unlock-pdf', 'repair-pdf', ...conversionBackendIds]);
 
 const hiddenIds = new Set([
   'pdf-ppt', 'pdf-a', 'pdf-ua', 'smart-read', 'psd-pdf',
@@ -108,7 +122,7 @@ export function getToolPolicy(id: string): ToolPolicy {
     };
   }
   if (id in limitedBrowser) {
-    const visibleLimited = new Set(['compress-pdf', 'extract-images']);
+    const visibleLimited = new Set(['compress-pdf', 'extract-images', 'heic-to-pdf']);
     return {
       maturity: 'limited', processingMode: 'browser', maxFiles: 1, maxFileSizeMb: 40,
       publicByDefault: visibleLimited.has(id), limitation: limitedBrowser[id],
