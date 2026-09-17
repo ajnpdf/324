@@ -23,12 +23,12 @@ if (routeDup.length || canonicalDup.length) {
   process.exit(1);
 }
 
-if (routes.length !== 26) {
-  console.error(`FAIL: expected exactly 26 validated public PDF routes; got ${routes.length}.`);
+if (routes.length !== 34) {
+  console.error(`FAIL: expected exactly 34 validated public PDF routes; got ${routes.length}.`);
   process.exit(1);
 }
-if (canonical.length !== 26) {
-  console.error(`FAIL: expected exactly 26 canonical public PDF processors; got ${canonical.length}.`);
+if (canonical.length !== 34) {
+  console.error(`FAIL: expected exactly 34 canonical public PDF processors; got ${canonical.length}.`);
   process.exit(1);
 }
 if (aliases.length !== 0) {
@@ -48,6 +48,7 @@ const required = [
   'edit-pdf','merge-pdf','split-pdf','compress-pdf','rotate-pdf','delete-pdf-pages','organize-pdf','crop-pdf','watermark-pdf',
   'page-number','flatten-pdf','protect-pdf','unlock-pdf','repair-pdf','compare-pdf','add-text','add-image-to-pdf',
   'pdf-metadata','extract-images','sign-pdf','pdf-zip-extract','image-to-pdf','jpeg-to-pdf','jpg-to-pdf','png-to-pdf','webp-to-pdf',
+  'heic-to-pdf','pdf-to-jpg','pdf-to-png','txt-to-pdf','html-to-pdf','markdown-to-pdf','json-to-pdf','xml-to-pdf',
 ];
 const movedImageIds = ['image-reducer','image-resizer','crop-image','rotate-image','watermark-image','flip-image','convert-image'];
 const actual = new Set(routes.map((item) => item.id));
@@ -65,4 +66,4 @@ for (const id of movedImageIds) {
 }
 
 console.log(`PASS: release inventory — ${routes.length} PDF routes, ${canonical.length} canonical processors, ${aliases.length} aliases.`);
-console.log('PASS: image editing utilities and unaccepted conversion processors remain outside AJN PDF public release accounting.');
+console.log('PASS: standalone image editing utilities and unaccepted server conversions remain outside AJN PDF public release accounting.');
