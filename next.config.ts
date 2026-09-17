@@ -51,30 +51,45 @@ const imageToolRedirects = imageToolIds.flatMap((id) => [
   { source: `/tools/${id}`, destination: '/img', permanent: true },
 ]);
 
+// Canonical browser-native conversion routes are intentionally NOT present here.
 const retiredToolAliases = [
   'azw3-to-pdf', 'bmp-to-pdf', 'csv-to-pdf', 'doc-to-pdf', 'docx-to-pdf',
   'eml-to-pdf', 'epub-to-pdf', 'excel-pdf', 'excel-to-pdf', 'gif-to-pdf',
-  'heic-pdf', 'heic-to-pdf', 'html-pdf', 'html-to-pdf', 'jpg-pdf',
-  'json-pdf', 'json-to-pdf', 'markdown-to-pdf', 'mobi-to-pdf', 'msg-to-pdf',
-  'ocr-advanced', 'ocr-scanner', 'odp-to-pdf', 'ods-to-pdf', 'odt-to-pdf',
-  'pdf-a', 'pdf-excel', 'pdf-jpg', 'pdf-ocr', 'pdf-pages-to-zip',
-  'pdf-ppt', 'pdf-to-avif', 'pdf-to-azw3', 'pdf-to-bmp', 'pdf-to-csv',
-  'pdf-to-docx', 'pdf-to-epub', 'pdf-to-excel', 'pdf-to-gif', 'pdf-to-heic',
-  'pdf-to-html', 'pdf-to-image', 'pdf-to-jpeg', 'pdf-to-jpg', 'pdf-to-json',
-  'pdf-to-markdown', 'pdf-to-mobi', 'pdf-to-odt', 'pdf-to-png', 'pdf-to-powerpoint',
-  'pdf-to-pptx', 'pdf-to-rtf', 'pdf-to-svg', 'pdf-to-tiff', 'pdf-to-txt',
-  'pdf-to-webp', 'pdf-to-word', 'pdf-to-xlsx', 'pdf-to-xml', 'pdf-ua',
-  'pdf-word', 'powerpoint-to-pdf', 'ppt-pdf', 'ppt-to-pdf', 'pptx-to-pdf',
-  'psd-pdf', 'rtf-to-pdf', 'scan-text', 'smart-read', 'svg-to-pdf',
-  'tiff-to-pdf', 'txt-pdf', 'txt-to-pdf', 'url-to-pdf', 'word-pdf',
-  'word-to-pdf', 'xls-to-pdf', 'xlsx-to-pdf', 'xml-pdf', 'xml-to-pdf',
-  'xps-to-pdf',
+  'jpg-pdf', 'mobi-to-pdf', 'msg-to-pdf', 'ocr-advanced', 'ocr-scanner',
+  'odp-to-pdf', 'ods-to-pdf', 'odt-to-pdf', 'pdf-a', 'pdf-excel',
+  'pdf-ocr', 'pdf-pages-to-zip', 'pdf-ppt', 'pdf-to-avif', 'pdf-to-azw3',
+  'pdf-to-bmp', 'pdf-to-csv', 'pdf-to-docx', 'pdf-to-epub', 'pdf-to-excel',
+  'pdf-to-gif', 'pdf-to-heic', 'pdf-to-html', 'pdf-to-image', 'pdf-to-jpeg',
+  'pdf-to-json', 'pdf-to-markdown', 'pdf-to-mobi', 'pdf-to-odt',
+  'pdf-to-powerpoint', 'pdf-to-pptx', 'pdf-to-rtf', 'pdf-to-svg', 'pdf-to-tiff',
+  'pdf-to-txt', 'pdf-to-webp', 'pdf-to-word', 'pdf-to-xlsx', 'pdf-to-xml',
+  'pdf-ua', 'pdf-word', 'powerpoint-to-pdf', 'ppt-pdf', 'ppt-to-pdf',
+  'pptx-to-pdf', 'psd-pdf', 'rtf-to-pdf', 'scan-text', 'smart-read',
+  'svg-to-pdf', 'tiff-to-pdf', 'url-to-pdf', 'word-pdf', 'word-to-pdf',
+  'xls-to-pdf', 'xlsx-to-pdf', 'xps-to-pdf',
 ];
 
 const retiredToolRedirects = retiredToolAliases.flatMap((source) => [
   { source: `/${source}`, destination: source === 'psd-pdf' ? '/img' : '/pdf-tools', permanent: true },
   { source: `/tools/${source}`, destination: source === 'psd-pdf' ? '/img' : '/pdf-tools', permanent: true },
 ]);
+
+const canonicalAliasRedirects = [
+  { source: '/heic-pdf', destination: '/heic-to-pdf', permanent: true },
+  { source: '/html-pdf', destination: '/html-to-pdf', permanent: true },
+  { source: '/json-pdf', destination: '/json-to-pdf', permanent: true },
+  { source: '/txt-pdf', destination: '/txt-to-pdf', permanent: true },
+  { source: '/xml-pdf', destination: '/xml-to-pdf', permanent: true },
+  { source: '/pdf-jpg', destination: '/pdf-to-jpg', permanent: true },
+  { source: '/tools/heic-pdf', destination: '/heic-to-pdf', permanent: true },
+  { source: '/tools/html-pdf', destination: '/html-to-pdf', permanent: true },
+  { source: '/tools/json-pdf', destination: '/json-to-pdf', permanent: true },
+  { source: '/tools/txt-pdf', destination: '/txt-to-pdf', permanent: true },
+  { source: '/tools/xml-pdf', destination: '/xml-to-pdf', permanent: true },
+  { source: '/tools/pdf-jpg', destination: '/pdf-to-jpg', permanent: true },
+  { source: '/scan-to-pdf', destination: '/scanner', permanent: true },
+  { source: '/tools/scan-to-pdf', destination: '/scanner', permanent: true },
+];
 
 const publicToolIds = [
   'edit-pdf',
@@ -83,6 +98,8 @@ const publicToolIds = [
   'jpg-to-pdf', 'merge-pdf', 'organize-pdf', 'page-number', 'pdf-metadata',
   'pdf-zip-extract', 'png-to-pdf', 'protect-pdf', 'repair-pdf', 'rotate-pdf',
   'sign-pdf', 'split-pdf', 'unlock-pdf', 'watermark-pdf', 'webp-to-pdf',
+  'heic-to-pdf', 'pdf-to-jpg', 'pdf-to-png', 'txt-to-pdf', 'html-to-pdf',
+  'markdown-to-pdf', 'json-to-pdf', 'xml-to-pdf',
 ];
 
 const publicToolLegacyRedirects = publicToolIds.map((id) => ({
@@ -133,6 +150,7 @@ const nextConfig: NextConfig = {
     return [
       ...duplicateGuideRedirects,
       ...imageToolRedirects,
+      ...canonicalAliasRedirects,
       ...retiredToolRedirects,
       ...publicToolLegacyRedirects,
       { source: '/login', destination: '/pdf-tools', permanent: true },
@@ -180,6 +198,10 @@ const nextConfig: NextConfig = {
       },
       {
         source: '/discover/guides',
+        headers: [{ key: 'X-Robots-Tag', value: 'noindex, follow' }],
+      },
+      {
+        source: '/scanner',
         headers: [{ key: 'X-Robots-Tag', value: 'noindex, follow' }],
       },
       {
