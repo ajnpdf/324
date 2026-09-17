@@ -21,19 +21,24 @@ const pdfToolsPage = read('src/app/pdf-tools/page.tsx');
 const adsTxt = read('public/ads.txt');
 const localStart = read('START_AJN_PDF_LOCAL.ps1');
 const releaseCheck = read('CHECK_ADSENSE_SEO_READY.ps1');
+const scannerPage = read('src/app/scanner/page.tsx');
 
 const allowlist = policy.match(/PRODUCTION_PUBLIC_TOOL_IDS = new Set\(\[([\s\S]*?)\]\);/)?.[1] || '';
 const ids = [...allowlist.matchAll(/'([^']+)'/g)].map((m) => m[1]);
 const movedImageIds = ['image-reducer','image-resizer','crop-image','rotate-image','watermark-image','flip-image','convert-image'];
 const imageToPdfIds = ['image-to-pdf','jpg-to-pdf','jpeg-to-pdf','png-to-pdf','webp-to-pdf'];
+const browserConversionIds = ['heic-to-pdf','pdf-to-jpg','pdf-to-png','txt-to-pdf','html-to-pdf','markdown-to-pdf','json-to-pdf','xml-to-pdf'];
 
-check('focused release exposes exactly 26 unique PDF tools', ids.length === 26 && new Set(ids).size === 26);
+check('focused release exposes exactly 34 unique PDF tools', ids.length === 34 && new Set(ids).size === 34);
 check('general image editing stays outside AJN PDF', movedImageIds.every((id) => !ids.includes(id)) && next.includes('imageToolRedirects') && next.includes("destination: '/img'"));
 check('image-to-PDF creation workflows remain in the PDF catalog', imageToPdfIds.every((id) => ids.includes(id)));
+check('browser-only conversion expansion remains in the PDF catalog', browserConversionIds.every((id) => ids.includes(id)));
 check('homepage hero is focused on free online PDF tools', hero.includes('Free Online') && hero.includes('PDF Tools') && !/100\+|107\s+tools|Workspace preview|Report\.pdf/i.test(hero));
 const categoryIds = [...page.matchAll(/id:\s*["']([^"']+)["']/g)].map((match) => match[1]);
-check('homepage filters are PDF-only', ['all','edit','organize','security'].every((id) => categoryIds.includes(id)) && !categoryIds.includes('image') && !categoryIds.includes('conversion'));
-check('tool cards stay focused and do not advertise an image-tools directory', cards.includes('ToolArtwork') && !/Image Tools/i.test(cards));
+check('homepage filters are PDF-only', ['all','edit','organize','security'].every((id) => categoryIds.includes(id)) && !categoryIds.includes('image'));
+check('every public tool is rendered directly in the homepage grid', cards.includes('BUILD_PUBLIC_TOOLS.length') && cards.includes('filteredTools.map((tool) => <ToolCard') && cards.includes('Nothing is hidden behind a More tools menu'));
+check('tool cards use simple visible line icons and avoid an image-tools directory', cards.includes('const Icon = tool.icon') && cards.includes('strokeWidth={2}') && !/Image Tools/i.test(cards));
+check('scanner is visible but noindex and outside AdSense eligibility', cards.includes('ScannerCard') && cards.includes('href="/scanner"') && scannerPage.includes('index: false') && !adsLoader.includes("'/scanner'"));
 check('desktop navigation avoids retired image/conversion directories', !navbar.includes('/image-tools') && !navbar.includes('/conversion-tools'));
 check('mobile navigation avoids retired image directory', !mobileNav.includes('/image-tools'));
 check('global metadata contains AdSense ownership signal and focused PDF schema', layout.includes('google-adsense-account') && ['Edit PDF','Merge PDF','Split PDF','Compress PDF','Sign PDF'].every((label) => layout.includes(label)));
