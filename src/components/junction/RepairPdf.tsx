@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { ToolWorkspace, Drop, Btn, Done, Err, F, IS, Info, ToolFile, dl } from "./_shared";
-import { repairPdfOnServer } from "@/lib/pdf-backend";
+import { checkPdfBackendHealth, repairPdfOnServer } from "@/lib/pdf-backend";
 import { safeOutputName, validateFiles } from "@/lib/file-validation";
 
 import { useLanguage } from "@/lib/i18n/language-context";
@@ -18,7 +18,8 @@ export default function RepairPdf() {
   const [error, setError] = useState("");
 
   const run = async () => {
-    const latestLimits = resolveBackendLimits();
+    const latestHealth = await checkPdfBackendHealth();
+    const latestLimits = resolveBackendLimits(latestHealth);
     const effectiveMaxMb = Math.min(latestLimits.maxFileSizeMb, latestLimits.maxTotalSizeMb);
     const validation = validateFiles(files.map(item => item.file), { extensions: [".pdf"], minFiles: 1, maxFiles: 1, maxSizeMb: effectiveMaxMb });
     if (validation) { setError(validation); return; }
